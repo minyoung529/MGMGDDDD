@@ -188,6 +188,28 @@ public class WireController : MonoBehaviour
             DestroyImmediate(starAnchorTemp.GetComponent<Rigidbody>());
         }
     }
+    public void AddStar(Vector3 pos)
+    {
+
+        if(starAnchorTemp == null)
+        {
+            #region unpack prefab
+            //When the first segment is created, the prefab is unpacked, to avoid an error that causes references to be lost in play mode.
+            if (PrefabUtility.IsPartOfAnyPrefab(this.gameObject))
+                PrefabUtility.UnpackPrefabInstance(this.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            #endregion
+
+            starAnchorTemp = Instantiate(startAnchorPoint, pos, Quaternion.identity, transform);
+        }
+
+        //If you do not use physics, the components are removed to the start anchor point, to improve performance.
+        if (!usePhysics)
+        {
+            DestroyImmediate(starAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(starAnchorTemp.GetComponent<Collider>());
+            DestroyImmediate(starAnchorTemp.GetComponent<Rigidbody>());
+        }
+    }
 
     public void AddSegment()
     {
