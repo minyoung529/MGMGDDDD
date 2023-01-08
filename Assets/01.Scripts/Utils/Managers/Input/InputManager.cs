@@ -35,21 +35,21 @@ public class InputManager
             InputAction action = (InputAction)i;
 
             // string => Enum Parse
-            if (GetKeyDown(action))
-            {
-                EventManager<InputType>.TriggerEvent(i, InputType.GetKeyDown);
-                EventManager<InputType, InputAction>.TriggerEvent(i, InputType.GetKeyDown, action);
-            }
-            else if (GetKey(action))
-            {
-                EventManager<InputType>.TriggerEvent(i, InputType.Getkey);
-                EventManager<InputType, InputAction>.TriggerEvent(i, InputType.Getkey, action);
-            }
-            else if (GetKeyUp(action))
-            {
-                EventManager<InputType>.TriggerEvent(i, InputType.GetKeyUp);
-                EventManager<InputType, InputAction>.TriggerEvent(i, InputType.GetKeyUp, action);
-            }
+            //if (GetKeyDown(action))
+            //{
+            //    EventManager<InputType>.TriggerEvent(i, InputType.GetKeyDown);
+            //    EventManager<InputType, InputAction>.TriggerEvent(i, InputType.GetKeyDown, action);
+            //}
+            //else if (GetKey(action))
+            //{
+            //    EventManager<InputType>.TriggerEvent(i, InputType.Getkey);
+            //    EventManager<InputType, InputAction>.TriggerEvent(i, InputType.Getkey, action);
+            //}
+            //else if (GetKeyUp(action))
+            //{
+            //    EventManager<InputType>.TriggerEvent(i, InputType.GetKeyUp);
+            //    EventManager<InputType, InputAction>.TriggerEvent(i, InputType.GetKeyUp, action);
+            //}
 
             // Else Axis => 
         }
