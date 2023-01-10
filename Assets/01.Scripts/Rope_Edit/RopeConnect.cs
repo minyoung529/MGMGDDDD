@@ -10,6 +10,8 @@ public class RopeConnect : MonoBehaviour
     LayerMask layerMask;
     [SerializeField]
     WireController wire;
+
+    WireController wireCtrl;
     Transform ropePos;
 
     private void Awake()
@@ -19,33 +21,28 @@ public class RopeConnect : MonoBehaviour
 
     private void Update()
     {
-        Collider[] cols = Physics.OverlapSphere(transform.position, 5f, layerMask);
-        if (cols.Length <= 0) return;
-        Debug.Log(cols.Length);
-        ropePos = cols[0].transform;
-        if (Input.GetMouseButtonDown(0))
-        {
-            SetConnectState();
-        }
-        else if (Input.GetMouseButtonDown(1))
-        {
-            OnConnected();
-        }
+
     }
 
-    public void SetConnectState()
+    public void OnConnect()
     {
-        Debug.Log("Set_StartPosition");
-        wire.AddStar(ropePos.position);
-        wire.SetPosition(ropePos.position);
+        Debug.Log("On_StartPosition");
+
+        WireController w = Instantiate(wire.gameObject, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<WireController>();
+        w.AddStart(ropePos.position);
+        w.SetPosition(ropePos.position);
+        w.AddSegment();
     }
 
-    public void OnConnected()
+    public void ThrowRope()
     {
-        Debug.Log("Connect_Rope");
-        wire.AddSegment();
-        wire.AddEnd();
-    }
+        Vector3 wirePos = new Vector3(transform.position.x, 0, transform.position.z);
 
+        wireCtrl.AddStart(transform.position);
+        wireCtrl.SetPosition(gameObject.transform.forward * 10f);
+
+        wireCtrl.AddSegment();
+        wireCtrl.AddEnd();
+    }
 
 }

@@ -188,7 +188,7 @@ public class WireController : MonoBehaviour
             DestroyImmediate(starAnchorTemp.GetComponent<Rigidbody>());
         }
     }
-    public void AddStar(Vector3 pos)
+    public void AddStart(Vector3 pos)
     {
 
         if(starAnchorTemp == null)
