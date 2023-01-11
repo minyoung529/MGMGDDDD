@@ -17,13 +17,18 @@ public class RopeController : MonoBehaviour
 
     private float distance = 1000f;
 
+    private Rigidbody rigid;
+
+    [SerializeField]
+    private LayerMask conenctedLayer;
+
     void Start()
     {
         playerConnect = Utils.GetOrAddComponent<ConnectedObject>(gameObject);
+        rigid = GetComponent<Rigidbody>();
 
-        WireController wire = InstantiateRope();
-        wire.ConnectStartPoint(playerConnect.RopePosition);
-        wires.Add(wire);
+        CreateRope(rigid);
+        playerConnect.Connect(wires[0], true);
     }
 
     void Update()
@@ -33,7 +38,7 @@ public class RopeController : MonoBehaviour
             ConnectTarget();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetMouseButtonDown(1))
         {
             ResetRopes();
         }
@@ -56,61 +61,64 @@ public class RopeController : MonoBehaviour
         Vector3 dir = (mousePos - Camera.main.transform.position).normalized;
         Ray ray = new Ray(Camera.main.transform.position, dir);
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, LayerMask.GetMask("Player")))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, conenctedLayer))
         {
-            if (connectedObjs.Count > 0)
-            {
-                WireController newWire = InstantiateRope();
-                newWire.ConnectStartPoint(connectedObjs.Last().transform);
-                wires.Add(newWire);
-            }
-
-            ConnectObject(hitInfo.transform, wires.Last());
+            TryConnect(hitInfo.transform, wires.Last());
         }
     }
 
-    private WireController InstantiateRope()
+    private void TryConnect(Transform target, WireController wire)
     {
-        WireController newWire = Instantiate(wirePrefab);
-        return newWire;
+        ConnectedObject obj = target.GetComponent<ConnectedObject>();
+        if (obj == playerConnect) return;
+        if (connectedObjs.Find(x => x == obj)) return;
+
+        wire.StartCoroutine(wire.TryConnect(obj, OnConnect));
     }
 
-    private void ConnectObject(Transform target, WireController wire)
+    private void OnConnect(ConnectedObject connectedObj, WireController wire)
     {
-        ConnectedObject connectedObj = target.GetComponent<ConnectedObject>();
-
-        if (pets.Find(x => x == connectedObj) == null)
+        if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {
-            pets.Add(connectedObj);
+            CreateRope(connectedObj.Rigidbody);
+
+            if (pets.Find(x => x == connectedObj) == null)
+            {
+                pets.Add(connectedObj);
+            }
         }
 
         connectedObjs.Add(connectedObj);
         connectedObj?.Connect(wire, false);
     }
 
-    private void ResetRopes()
+    #region UnConnect
+    private void UnConnect(int index)
     {
-        int count = connectedObjs.Count;
-        for (int i = 0; i < count; i++)
+        while (connectedObjs.Count > index)
         {
-            UnConnect(connectedObjs.Count - 1);
+            connectedObjs[index].UnConnect();
+            connectedObjs.RemoveAt(index);
+
+            // 플레이어의 줄은 지우지 않음
+            if (wires.Count > 1)
+            {
+                Destroy(wires[index + 1].gameObject);
+                wires.RemoveAt(index + 1);
+            }
         }
     }
 
-    private void UnConnect(int index)
+    private void ResetRopes()
     {
-        // 플레이어의 줄은 지우지 않음
-        if (index != 0)
-        {
-            Destroy(wires[index].gameObject);
+        UnConnect(0);
+    }
+    #endregion
 
-            for (int i = index; i < wires.Count; i++)
-            {
-                wires.RemoveAt(i);
-            }
-        }
-
-        connectedObjs[index].UnConnect();
-        connectedObjs.RemoveAt(index);
+    private void CreateRope(Rigidbody rigid)
+    {
+        WireController wire = Instantiate(wirePrefab);
+        wire.ConnectStartPoint(rigid);
+        wires.Add(wire);
     }
 }

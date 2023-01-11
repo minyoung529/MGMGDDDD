@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,8 +70,6 @@ public class WireController : MonoBehaviour
     [Tooltip("Sets the maximum distance from the start anchor point to the end anchor point, based on the number of segments and the separation between them.")]
     public float maxDistanceToStarAnchor;
 
-
-
     [Header("SPAWNED SEGMENTS")]
     public List<Transform> segments;
     [HideInInspector]
@@ -102,14 +101,20 @@ public class WireController : MonoBehaviour
     /// </summary>
     public Preset presetJoint;
 
-    private FollowTo followStart;
-    private FollowTo followEnd;
+    private FollowTo startFixedJoint;
+    private Joint endFixedJoint;
+
+    public Rigidbody startRigid;
+    public Rigidbody endRigid;
 
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
-        followStart = startAnchorTemp.GetComponent<FollowTo>();
-        followEnd = endAnchorTemp.GetComponent<FollowTo>();
+        startFixedJoint = startAnchorTemp.GetComponent<FollowTo>();
+        endFixedJoint = endAnchorTemp.GetComponent<FixedJoint>();
+
+        startRigid = startAnchorTemp.GetComponent<Rigidbody>();
+        endRigid = endAnchorTemp.GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -430,47 +435,46 @@ public class WireController : MonoBehaviour
 
     /// Custom
     #region Connect
-    public void ConnectStartPoint(ConnectedObject connect)
+    public void ConnectStartPoint(Rigidbody rigid)
     {
-        followStart.Target = connect.transform;
+        if (startFixedJoint)
+            startFixedJoint.Target = rigid.transform;
+    }
 
-        if (connect)
+    public void ConnectEndPoint(Rigidbody rigid)
+    {
+        if (endFixedJoint)
+            endFixedJoint.connectedBody = rigid;
+    }
+    #endregion
+
+    #region Animation
+    public IEnumerator TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected)
+    {
+        float timer = 5f;
+        float speed = 10f;
+        Rigidbody rigid;
+        rigid = endAnchorTemp.GetComponent<Rigidbody>();
+        rigid.isKinematic = true;
+
+        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 1f)
         {
-            connect.StartWire = this;
+            Vector3 dir = (connect.transform.position - endAnchorTemp.position).normalized;
+            rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);
+
+            // Æ÷È¹ ¼º°ø
+            if (Vector3.Distance(connect.transform.position, endAnchorTemp.position) < 0.2f)
+            {
+                rigid.isKinematic = false;
+                onConnected.Invoke(connect, this);
+                yield break;
+            }
+
+            timer -= Time.deltaTime;
+            yield return null;
         }
-    }
 
-    public void ConnectEndPoint(ConnectedObject connect)
-    {
-        followEnd.Target = connect.transform;
-
-        if (connect)
-        {
-            connect.FrontWire = this;
-        }
-    }
-
-    public void ConnectStartPoint(Transform target)
-    {
-        followStart.Target = target;
-    }
-
-    public void ConnectEndPoint(Transform target)
-    {
-        followEnd.Target = target;
-    }
-
-
-    public void UnConnectStartPoint(ConnectedObject connect)
-    {
-        followStart.Target = null;
-        connect.StartWire = null;
-    }
-
-    public void UnConnectEndPoint(ConnectedObject connect)
-    {
-        followEnd.Target = null;
-        connect.FrontWire = null;
+        rigid.isKinematic = false;
     }
     #endregion
 }

@@ -9,6 +9,17 @@ public class ConnectedObject : MonoBehaviour
 
     [SerializeField]
     private Transform ropePosition;
+
+    private WireController backWire = null;
+    private WireController frontWire = null;
+
+    private Joint fixedJoint;
+    private Rigidbody rigid;
+
+    #region Property
+    public Rigidbody Rigidbody => rigid;
+    public WireController StartWire { get => backWire; set => backWire = value; }
+    public WireController FrontWire { get => frontWire; set => frontWire = value; }
     public Transform RopePosition
     {
         get
@@ -17,46 +28,49 @@ public class ConnectedObject : MonoBehaviour
             return transform;
         }
     }
-
-    private FollowTo follow;
-    public FollowTo Follow { get => follow; }
-
-    private WireController backWire = null;
-    private WireController frontWire = null;
-
-    public WireController StartWire { get => backWire; set => backWire = value; }
-    public WireController FrontWire { get => frontWire; set => frontWire = value; }
+    #endregion
 
     private void Start()
     {
-        follow = Utils.GetOrAddComponent<FollowTo>(gameObject);
+        fixedJoint = GetComponent<FixedJoint>();
+        rigid = GetComponent<Rigidbody>();
     }
 
     public void Connect(WireController wire, bool isStart)
     {
-        if (follow)
+        if (isStart)
         {
-            if (isStart)
+            if (isFollow)
             {
-                if (follow)
-                {
-                    follow.Target = wire.startAnchorTemp;
-                    backWire = wire;
-                }
+                ropePosition.position = wire.startRigid.position;
+                wire.startRigid.isKinematic = true;
+                rigid.isKinematic = false;
+
+                if (fixedJoint)
+                    fixedJoint.connectedBody = wire.startRigid;
             }
-            else
+
+            backWire = wire;
+        }
+        else
+        {
+            if (isFollow)
             {
-                if (follow)
-                {
-                    follow.Target = wire.endAnchorPoint;
-                    frontWire = wire;
-                }
+                ropePosition.position = wire.endRigid.position;
+                wire.endRigid.isKinematic = true;
+                rigid.isKinematic = false;
+
+                if (fixedJoint)
+                    fixedJoint.connectedBody = wire.endRigid;
             }
+
+            frontWire = wire;
         }
     }
 
     public void UnConnect()
     {
-        follow.Target = null;
+        fixedJoint.connectedBody = null;
+        rigid.isKinematic = true;
     }
 }
