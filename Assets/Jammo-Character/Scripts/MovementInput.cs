@@ -19,28 +19,23 @@ public class MovementInput : MonoBehaviour {
 	public Animator anim;
 	public float Speed;
 	public float allowPlayerRotation = 0.1f;
-	public Camera cam;
 	public CharacterController controller;
 	public bool isGrounded;
+	public Camera cam;
 
-    [Header("Animation Smoothing")]
-    [Range(0, 1f)]
-    public float HorizontalAnimSmoothTime = 0.2f;
-    [Range(0, 1f)]
-    public float VerticalAnimTime = 0.2f;
-    [Range(0,1f)]
-    public float StartAnimTime = 0.3f;
-    [Range(0, 1f)]
-    public float StopAnimTime = 0.15f;
+    [Header("Animation Smoothing")] 
+	[Range(0, 1f)] public float HorizontalAnimSmoothTime = 0.2f;
+    [Range(0, 1f)] public float VerticalAnimTime = 0.2f;
+    [Range(0, 1f)]  public float StartAnimTime = 0.3f;
+    [Range(0, 1f)] public float StopAnimTime = 0.15f;
 
     public float verticalVel;
     private Vector3 moveVector;
 
-	// Use this for initialization
 	void Start () {
 		anim = this.GetComponent<Animator> ();
-		cam = Camera.main;
 		controller = this.GetComponent<CharacterController> ();
+		cam = Camera.main;
 	}
 	
 	// Update is called once per frame
@@ -58,15 +53,12 @@ public class MovementInput : MonoBehaviour {
         }
         moveVector = new Vector3(0, verticalVel * .2f * Time.deltaTime, 0);
         controller.Move(moveVector);
-
-
     }
 
     void PlayerMoveAndRotation() {
 		InputX = Input.GetAxis ("Horizontal");
 		InputZ = Input.GetAxis ("Vertical");
 
-		var camera = Camera.main;
 		var forward = cam.transform.forward;
 		var right = cam.transform.right;
 
@@ -79,26 +71,33 @@ public class MovementInput : MonoBehaviour {
 		desiredMoveDirection = forward * InputZ + right * InputX;
 
 		if (blockRotationPlayer == false) {
-			transform.rotation = Quaternion.Slerp (transform.rotation, Quaternion.LookRotation (desiredMoveDirection), desiredRotationSpeed);
+			RotatePlayer(CameraSwitcher.isAim);
             controller.Move(desiredMoveDirection * Time.deltaTime * Velocity);
 		}
 	}
 
-    public void LookAt(Vector3 pos)
-    {
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(pos), desiredRotationSpeed);
-    }
 
-    public void RotateToCamera(Transform t)
-    {
+    //public void RotateToCamera(Transform t)
+    //{
+    //    var camera = Camera.main;
+    //    var forward = cam.transform.forward;
+    //    var right = cam.transform.right;
 
-        var camera = Camera.main;
-        var forward = cam.transform.forward;
-        var right = cam.transform.right;
+    //    desiredMoveDirection = forward;
 
-        desiredMoveDirection = forward;
+    //    t.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+    //}
 
-        t.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+	private void RotatePlayer(bool isAim)
+	{
+		if(isAim)
+		{
+
+		}
+		else
+		{
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+		}
     }
 
 	void InputMagnitude() {

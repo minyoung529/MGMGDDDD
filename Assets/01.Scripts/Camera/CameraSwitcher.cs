@@ -9,13 +9,16 @@ public class CameraSwitcher : MonoBehaviour
 
     public static CinemachineVirtualCameraBase activeCamera = null;
 
+    public static bool isAim = false;
+
     public static bool IsActiveCamera(CinemachineVirtualCameraBase cam)
     {
         return cam == activeCamera;
     }
 
-    public static void SwitchCamera(CinemachineVirtualCameraBase cam)
+    public static void SwitchCamera(CinemachineVirtualCameraBase cam, bool aim)
     {
+        isAim = aim;
         cam.Priority = 10;
         activeCamera= cam;
         foreach(CinemachineVirtualCameraBase c in cameras)
