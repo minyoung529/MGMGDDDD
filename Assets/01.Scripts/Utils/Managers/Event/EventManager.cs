@@ -21,7 +21,7 @@ public class EventManager
     {
         if (eventDictionary.ContainsKey(eventName))
         {
-            eventDictionary[eventName] += listener;
+            eventDictionary[eventName] -= listener;
         }
     }
 

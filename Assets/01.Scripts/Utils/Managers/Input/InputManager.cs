@@ -1,90 +1,161 @@
-using System.Collections;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
-/// <summary>
-/// 사용자 Input을 담당하는 함수
-/// </summary>
-public class InputManager
+public class InputManager : MonoSingleton<InputManager>
 {
-    // 행동 - 키코드가 연결된 딕셔너리
-    private static Dictionary<InputAction, KeyCode> keyDict = new Dictionary<InputAction, KeyCode>();
+    #region 키 매핑
+    [SerializeField] private List<InputSave> defaultSave = new List<InputSave>();
+    private static string SAVE_PATH;
+    private const string SAVE_FILE = "/KeyMapping";
+    private static Dictionary<InputAction, InputCode> keyDictionary = new Dictionary<InputAction, InputCode>();
+    #endregion
 
-    // 로드용 클래스
-    public class InputKey
-    {
-        public InputAction inputAction;
-        public KeyCode keycode;
+    #region 이벤트
+    private static Dictionary<KeyCode, Dictionary<InputType, Action<float>>> keyEventDictionary
+        = new Dictionary<KeyCode, Dictionary<InputType, Action<float>>>();
+    private static Dictionary<InputType, Action<float>> scrollEventDictionary
+        = new Dictionary<InputType, Action<float>>();
+    #endregion
+
+    private void Awake() {
+        SAVE_PATH = string.Concat(Application.persistentDataPath, "/Control");
+        LoadKeyMapping();
+        SaveKeyMapping(keyDictionary);
     }
 
-    public void OnStart()
-    {
-        // 로드 & 딕셔너리에 추가
-        //List<InputKey> inputs = GameManager.Instance.SpreadData.GetDatas<InputKey>();
-
-        //foreach (var pair in inputs)
-        //{
-        //    keyDict.Add(pair.inputAction, pair.keycode);
-        //}
+    private void Update() {
+        CheckKeyInput();
+        CheckScrollInput();
     }
 
-    public void Update()
-    {
-        for (int i = 0; i < (int)InputAction.Length; i++)
-        {
-            InputAction action = (InputAction)i;
+    private void LoadKeyMapping() {
+        if(!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) {
+            foreach(InputSave save in defaultSave) {
+                keyDictionary.Add(save.Action, save.Code);
+            }
+            return;
+        }
 
-            // string => Enum Parse
-            //if (GetKeyDown(action))
-            //{
-            //    EventManager<InputType>.TriggerEvent(i, InputType.GetKeyDown);
-            //    EventManager<InputType, InputAction>.TriggerEvent(i, InputType.GetKeyDown, action);
-            //}
-            //else if (GetKey(action))
-            //{
-            //    EventManager<InputType>.TriggerEvent(i, InputType.Getkey);
-            //    EventManager<InputType, InputAction>.TriggerEvent(i, InputType.Getkey, action);
-            //}
-            //else if (GetKeyUp(action))
-            //{
-            //    EventManager<InputType>.TriggerEvent(i, InputType.GetKeyUp);
-            //    EventManager<InputType, InputAction>.TriggerEvent(i, InputType.GetKeyUp, action);
-            //}
-
-            // Else Axis => 
+        string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
+        List<InputSave> inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
+        keyDictionary.Clear();
+        foreach(InputSave save in inputSave) {
+            keyDictionary.Add(save.Action, save.Code);
         }
     }
 
-    // 키를 누르는 중
-    public static bool GetKey(InputAction inputAction)
-    {
-        if (!keyDict.ContainsKey(inputAction))
-            return false;
-
-        return Input.GetKey(keyDict[inputAction]);
+    private void SaveKeyMapping(Dictionary<InputAction, InputCode> keyDictionary) {
+        if (!Directory.Exists(SAVE_PATH)) {
+            Directory.CreateDirectory(SAVE_PATH);
+        }
+        List<InputSave> save = new List<InputSave>();
+        foreach (KeyValuePair<InputAction, InputCode> pair in keyDictionary) {
+            save.Add(new InputSave(pair.Key, pair.Value));
+        }
+        string jsonSave = JsonConvert.SerializeObject(save.ToArray(), Formatting.Indented);
+        File.WriteAllText(string.Concat(SAVE_PATH, SAVE_FILE), jsonSave);
     }
 
-    // 키를 눌렀을 때
-    public static bool GetKeyDown(InputAction inputAction)
-    {
-        if (!keyDict.ContainsKey(inputAction))
-            return false;
-
-        return Input.GetKeyDown(keyDict[inputAction]);
+    public void ChangeKeyMapping(InputAction action, InputCode inputCode) {
+        if(inputCode.keyCode != KeyCode.None) {
+            keyDictionary[action] = inputCode;
+        }
+        SaveKeyMapping(keyDictionary);
     }
 
-    // 키를 눌렀다 뗐을 때
-    public static bool GetKeyUp(InputAction inputAction)
-    {
-        if (!keyDict.ContainsKey(inputAction))
-            return false;
-
-        return Input.GetKeyUp(keyDict[inputAction]);
+    //딕셔너리 돌면서 키 인풋 받기
+    private void CheckKeyInput() {
+        foreach (KeyCode keyCode in keyEventDictionary.Keys) {
+            foreach (InputType inputType in keyEventDictionary[keyCode].Keys) {
+                switch (inputType) {
+                    case InputType.GetKeyDown:
+                        if (Input.GetKeyDown(keyCode))
+                            keyEventDictionary[keyCode][inputType].Invoke(0);
+                            break;
+                    case InputType.GetKey:
+                        if (Input.GetKey(keyCode))
+                            keyEventDictionary[keyCode][inputType].Invoke(0);
+                            break;
+                    case InputType.GetKeyUp:
+                        if (Input.GetKeyUp(keyCode))
+                            keyEventDictionary[keyCode][inputType].Invoke(0);
+                            break;
+                }
+            }
+        }
     }
 
-    // 행동에 연결되는 key를 바꿔주는 함수
-    public static void ChangeKey(InputAction inputAction, KeyCode key)
-    {
-        keyDict[inputAction] = key;
+    //딕셔너리 돌면서 스크롤 인풋 받기
+    private void CheckScrollInput() {
+        float delta = Input.mouseScrollDelta.y;
+        if (delta > 0) {
+            scrollEventDictionary[InputType.ScrollUp].Invoke(delta);
+        }
+        else if (delta < 0) {
+            scrollEventDictionary[InputType.ScrollDown].Invoke(delta);
+        }
+    }
+
+    static public void StartListeningInput(InputAction action, InputType type, Action<float> listener) {
+        InputCode input = keyDictionary[action];
+        if (input.keyCode != KeyCode.None) {
+            KeyCode key = input.keyCode;
+            if (!keyEventDictionary.ContainsKey(key)) {
+                keyEventDictionary.Add(key, new Dictionary<InputType, Action<float>>());
+                if (!keyEventDictionary[key].ContainsKey(type)) {
+                    keyEventDictionary[key].Add(type, listener);
+                    return;
+                }
+            }
+            keyEventDictionary[key][type] += listener;
+        }
+        else if (input.scroll) {
+            if (!scrollEventDictionary.ContainsKey(type)) {
+                scrollEventDictionary.Add(type, listener);
+                return;
+            }
+            scrollEventDictionary[type] += listener;
+        }
+        else {
+            Debug.LogError($"Action : {action} did not mapped any key!");
+        }
+    }
+
+    static public void StopListeningInput(InputAction action, InputType type, Action<float> listener) {
+        InputCode input = keyDictionary[action];
+        if (input.keyCode != KeyCode.None) {
+            KeyCode key = input.keyCode;
+            if (!keyEventDictionary.ContainsKey(key) || !keyEventDictionary[key].ContainsKey(type)) {
+                Debug.LogWarning("You are trying to remove Action that does not existent");
+                return;
+            }
+            keyEventDictionary[key][type] -= listener;
+        }
+        else if (input.scroll) {
+            if (!scrollEventDictionary.ContainsKey(type)) {
+                Debug.LogWarning("You are trying to remove Action that does not existent");
+                return;
+            }
+            scrollEventDictionary[type] -= listener;
+        }
+        else {
+            Debug.LogError($"Action : {action} did not mapped any key!");
+        }
+    }
+
+    /// <param name="pos">마우스 포인터의 레이가 충돌한 지점</param>
+    /// <returns>마우스 포인터의 레이가 충돌 감지 시 true 아니면 false</returns>
+    static public bool GetMouseRayPos(out Vector3 pos) {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Camera.main.farClipPlane, Define.BOTTOM_LAYER)) {
+            pos = hit.point;
+            return true;
+        }
+        pos = Vector3.zero;
+        return false;
     }
 }
