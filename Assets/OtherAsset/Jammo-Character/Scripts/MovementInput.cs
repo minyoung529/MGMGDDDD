@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,14 +23,10 @@ public class MovementInput : MonoBehaviour
     public bool isGrounded;
 
     [Header("Animation Smoothing")]
-    [Range(0, 1f)]
-    public float HorizontalAnimSmoothTime = 0.2f;
-    [Range(0, 1f)]
-    public float VerticalAnimTime = 0.2f;
-    [Range(0, 1f)]
-    public float StartAnimTime = 0.3f;
-    [Range(0, 1f)]
-    public float StopAnimTime = 0.15f;
+    [Range(0, 1f)] public float HorizontalAnimSmoothTime = 0.2f;
+    [Range(0, 1f)] public float VerticalAnimTime = 0.2f;
+    [Range(0, 1f)] public float StartAnimTime = 0.3f;
+    [Range(0, 1f)] public float StopAnimTime = 0.15f;
 
     public float verticalVel;
     private Vector3 moveVector;
@@ -82,6 +77,7 @@ public class MovementInput : MonoBehaviour
 
         if (blockRotationPlayer == false)
         {
+            RotatePlayer(CameraSwitcher.isAim);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
             //rigid.position += desiredMoveDirection.normalized * Time.deltaTime * Velocity;
@@ -94,15 +90,17 @@ public class MovementInput : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(pos), desiredRotationSpeed);
     }
 
-    public void RotateToCamera(Transform t)
+
+    private void RotatePlayer(bool isAim)
     {
-        var camera = Camera.main;
-        var forward = cam.transform.forward;
-        var right = cam.transform.right;
+        if (isAim)
+        {
 
-        desiredMoveDirection = forward;
-
-        t.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+        }
     }
 
     void InputMagnitude()

@@ -170,8 +170,6 @@ public class WireController : MonoBehaviour
             return;
         }
 
-
-
         /// <summary>
         /// Sets the maximum distance from the start anchor point to the end anchor point, based on the number of segments and the separation between them.
         /// </summary>
@@ -201,8 +199,7 @@ public class WireController : MonoBehaviour
     }
     public void AddStart(Vector3 pos)
     {
-
-        if(starAnchorTemp == null)
+        if(startAnchorTemp == null)
         {
             #region unpack prefab
             //When the first segment is created, the prefab is unpacked, to avoid an error that causes references to be lost in play mode.
@@ -210,15 +207,15 @@ public class WireController : MonoBehaviour
                 PrefabUtility.UnpackPrefabInstance(this.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
             #endregion
 
-            starAnchorTemp = Instantiate(startAnchorPoint, pos, Quaternion.identity, transform);
+            startAnchorTemp = Instantiate(startAnchorPoint, pos, Quaternion.identity, transform);
         }
 
         //If you do not use physics, the components are removed to the start anchor point, to improve performance.
         if (!usePhysics)
         {
-            DestroyImmediate(starAnchorTemp.GetComponent<ConfigurableJoint>());
-            DestroyImmediate(starAnchorTemp.GetComponent<Collider>());
-            DestroyImmediate(starAnchorTemp.GetComponent<Rigidbody>());
+            DestroyImmediate(startAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(startAnchorTemp.GetComponent<Collider>());
+            DestroyImmediate(startAnchorTemp.GetComponent<Rigidbody>());
         }
     }
 
