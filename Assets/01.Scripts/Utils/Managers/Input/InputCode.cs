@@ -9,5 +9,5 @@ public struct InputCode
     }
 
     public KeyCode keyCode;
-    public bool scroll;
+    public bool scroll; //false : ScrollDown, true : ScrollUp
 }
