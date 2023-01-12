@@ -8,16 +8,19 @@ public abstract class Pet : MonoBehaviour
     [SerializeField] private bool isSelected = false;
     [SerializeField] private bool isConnected = false;
     [SerializeField] private bool isGet = false;
-    [SerializeField] Transform player;
+    [SerializeField] private Transform player;
 
     public bool IsConnected() { return isConnected; }
     public bool IsSelected() { return isSelected; }
     public bool IsGet() { return isGet; }
-    private bool isMove;
 
+    private Vector3 destination;
     private NavMeshAgent agent;
     private Camera camera;
-    private Vector3 destination;
+    private bool isMove;
+
+    public PetType type;
+    public Color selectColor;
 
     private void Awake()
     {
@@ -47,10 +50,15 @@ public abstract class Pet : MonoBehaviour
         else
         {
             Follow(true);
+            Debug.Log("Follow");
         }
     }
 
-    protected abstract void Skill();
+    protected virtual void Skill()
+    {
+        OnConnected(false);
+        PetManager.instance.OnSelect(false);
+    }
 
     #region SET
 
@@ -67,7 +75,8 @@ public abstract class Pet : MonoBehaviour
     public void OnGetPet(bool isOn)
     {
         isGet = isOn;
-        if(!isOn)
+        isConnected = isOn;
+        if(isOn==false)
         {
             PetManager.instance.DeletePet(this);
         }
@@ -112,9 +121,10 @@ public abstract class Pet : MonoBehaviour
     {
         if(!isFollow)
         {
-            agent.Stop();
+            agent.isStopped = true;
             return;
         }
+        agent.isStopped = false;
         agent.SetDestination(player.transform.position);
     }
 
@@ -124,6 +134,7 @@ public abstract class Pet : MonoBehaviour
     {
         if(collision.collider.CompareTag("Player"))
         {
+            if (IsGet()) return;
             PetManager.instance.AddPet(this);
             OnGetPet(true);
         }
