@@ -101,7 +101,8 @@ public class WireController : MonoBehaviour
     /// </summary>
     public Preset presetJoint;
 
-    private FollowTo startFixedJoint;
+    private FollowTo startFollowTo;
+    private Joint startJoint;
     private Joint endFixedJoint;
 
     public Rigidbody startRigid;
@@ -110,8 +111,9 @@ public class WireController : MonoBehaviour
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
-        startFixedJoint = startAnchorTemp.GetComponent<FollowTo>();
-        endFixedJoint = endAnchorTemp.GetComponent<FixedJoint>();
+        startFollowTo = startAnchorTemp.GetComponent<FollowTo>();
+        endFixedJoint = endAnchorTemp.GetComponent<Joint>();
+        startJoint = startAnchorTemp.GetComponent<Joint>();
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
         endRigid = endAnchorTemp.GetComponent<Rigidbody>();
@@ -435,10 +437,19 @@ public class WireController : MonoBehaviour
 
     /// Custom
     #region Connect
-    public void ConnectStartPoint(Rigidbody rigid)
+    public void ConnectStartPoint(Transform target)
     {
-        if (startFixedJoint)
-            startFixedJoint.Target = rigid.transform;
+        if (startFollowTo && startFollowTo.enabled)
+            startFollowTo.Target = target;
+
+        if (startJoint)
+        {
+            startJoint.transform.position = target.position;
+            startJoint.autoConfigureConnectedAnchor = false;
+            startJoint.autoConfigureConnectedAnchor = true;
+            Debug.Log(target.gameObject.name);
+            startJoint.connectedBody = target.GetComponent<Rigidbody>();
+        }
     }
 
     public void ConnectEndPoint(Rigidbody rigid)

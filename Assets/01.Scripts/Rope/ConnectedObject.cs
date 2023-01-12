@@ -32,7 +32,7 @@ public class ConnectedObject : MonoBehaviour
 
     private void Start()
     {
-        fixedJoint = GetComponent<FixedJoint>();
+        fixedJoint = GetComponent<Joint>();
         rigid = GetComponent<Rigidbody>();
     }
 
@@ -40,29 +40,36 @@ public class ConnectedObject : MonoBehaviour
     {
         if (isStart)
         {
+            // O---
             if (isFollow)
             {
-                ropePosition.position = wire.startRigid.position;
-                wire.startRigid.isKinematic = true;
-                rigid.isKinematic = false;
+                //ropePosition.position = wire.startRigid.position;
+                //wire.startRigid.isKinematic = true;
+                //rigid.isKinematic = false;
 
-                if (fixedJoint)
-                    fixedJoint.connectedBody = wire.startRigid;
+                //if (fixedJoint)
+                //    fixedJoint.connectedBody = wire.startRigid;
             }
 
             backWire = wire;
         }
+        // ---O
         else
         {
             if (isFollow)
             {
-                ropePosition.position = wire.endRigid.position;
-                wire.endRigid.isKinematic = true;
                 rigid.isKinematic = false;
-
-                if (fixedJoint)
-                    fixedJoint.connectedBody = wire.endRigid;
             }
+            else
+            {
+                rigid.isKinematic = true;
+                wire.endRigid.isKinematic = true;
+            }
+
+            ropePosition.position = wire.endRigid.position;
+
+            if (fixedJoint)
+                fixedJoint.connectedBody = wire.endRigid;
 
             frontWire = wire;
         }
@@ -72,5 +79,7 @@ public class ConnectedObject : MonoBehaviour
     {
         fixedJoint.connectedBody = null;
         rigid.isKinematic = true;
+
+        frontWire.endRigid.isKinematic = false;
     }
 }

@@ -6,6 +6,7 @@ public class PlayWalkAnimation : MonoBehaviour
 {
     private Vector3 prevPosition = Vector3.one;
     private Animator animator;
+    private Transform player;
 
     void Start()
     {

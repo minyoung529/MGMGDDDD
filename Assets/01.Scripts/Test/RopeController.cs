@@ -27,8 +27,10 @@ public class RopeController : MonoBehaviour
         playerConnect = Utils.GetOrAddComponent<ConnectedObject>(gameObject);
         rigid = GetComponent<Rigidbody>();
 
-        CreateRope(rigid);
-        playerConnect.Connect(wires[0], true);
+        CreateRope(playerConnect.RopePosition);
+        //playerConnect.Connect(wires[0], true);
+
+        wires[0].ConnectStartPoint(playerConnect.RopePosition);
     }
 
     void Update()
@@ -80,7 +82,7 @@ public class RopeController : MonoBehaviour
     {
         if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {
-            CreateRope(connectedObj.Rigidbody);
+            CreateRope(connectedObj/*.RopePosition*/.transform);
 
             if (pets.Find(x => x == connectedObj) == null)
             {
@@ -115,10 +117,10 @@ public class RopeController : MonoBehaviour
     }
     #endregion
 
-    private void CreateRope(Rigidbody rigid)
+    private void CreateRope(Transform target)
     {
         WireController wire = Instantiate(wirePrefab);
-        wire.ConnectStartPoint(rigid);
+        wire.ConnectStartPoint(target);
         wires.Add(wire);
     }
 }

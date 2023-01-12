@@ -38,17 +38,14 @@ public class MovementInput : MonoBehaviour
 
     private Rigidbody rigid;
 
-    // Use this for initialization
     void Start()
     {
         anim = this.GetComponent<Animator>();
         cam = Camera.main;
-        //controller = this.GetComponent<CharacterController> ();
         rigid = GetComponent<Rigidbody>();
 
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         InputMagnitude();
@@ -87,6 +84,7 @@ public class MovementInput : MonoBehaviour
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
+            //rigid.position += desiredMoveDirection.normalized * Time.deltaTime * Velocity;
             //controller.Move(desiredMoveDirection * Time.deltaTime * Velocity);
         }
     }
@@ -98,7 +96,6 @@ public class MovementInput : MonoBehaviour
 
     public void RotateToCamera(Transform t)
     {
-
         var camera = Camera.main;
         var forward = cam.transform.forward;
         var right = cam.transform.right;
@@ -124,11 +121,13 @@ public class MovementInput : MonoBehaviour
 
         if (Speed > allowPlayerRotation)
         {
-            anim.SetFloat("Blend", Speed, StartAnimTime, Time.deltaTime);
+            if (anim)
+                anim.SetFloat("Blend", Speed, StartAnimTime, Time.deltaTime);
             PlayerMoveAndRotation();
         }
         else if (Speed < allowPlayerRotation)
         {
+            if (anim)
             anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
         }
     }
