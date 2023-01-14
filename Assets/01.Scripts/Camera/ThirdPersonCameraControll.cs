@@ -7,6 +7,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
 {
     [SerializeField] CinemachineFreeLook defaultCamera;
     [SerializeField] CinemachineVirtualCamera aimCamera;
+    [SerializeField] CinemachineVirtualCamera petCamera;
 
     [SerializeField] private float rotCamXAxisSpeed = 5f; // 카메라 x축 회전속도
     [SerializeField] private float rotCamYAxisSpeed = 3f; // 카메라 y축 회전속도
@@ -20,12 +21,14 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private float eulerAngleY; // 마우스 위 / 아래 이동으로 카메라 x축 회전
 
     private bool isAim = false;
+    private bool isPetAim = false;
 
     private void Start()
     {
         CameraSwitcher.Register(defaultCamera);
         CameraSwitcher.Register(aimCamera);
-        CameraSwitcher.SwitchCamera(defaultCamera, false);
+        CameraSwitcher.Register(petCamera);
+        SetDefaultCamera();
     }
 
     private void SetAim(bool aim)
@@ -37,17 +40,45 @@ public class ThirdPersonCameraControll : MonoBehaviour
         }
         else
         {
-            CameraSwitcher.SwitchCamera(defaultCamera, false);
+            SetDefaultCamera();
         }
+    }
+    
+    private void SetPetCamera(bool aim)
+    {
+        MouseCursor.MouserCursorEdit(true, CursorLockMode.None);
+        isPetAim = aim;
+        if (aim)
+        {
+            CameraSwitcher.SwitchCamera(petCamera, true);
+        }
+        else
+        {
+            SetDefaultCamera();
+        }
+    }
+    
+    private void SetDefaultCamera()
+    {
+        isPetAim = isAim = false;
+
+        MouseCursor.MouserCursorEdit(false, CursorLockMode.Locked);
+        CameraSwitcher.SwitchCamera(defaultCamera, false);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
+            if (isAim) return;
+            SetPetCamera(!isPetAim);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (isPetAim) return;
             SetAim(!isAim);
         }
-
+       
         if (isAim)
         {
             UpdateRotate();

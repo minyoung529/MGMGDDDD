@@ -71,7 +71,6 @@ public class PetManager : MonoBehaviour
 
     private void SelectPet(int selectIndex)
     {
-        Debug.Log(selectIndex);   
         OnSelect(true, selectIndex);
         for(int i=0;i<pets.Count;i++)
         {

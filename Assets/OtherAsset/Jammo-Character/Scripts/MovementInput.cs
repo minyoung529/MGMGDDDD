@@ -78,7 +78,6 @@ public class MovementInput : MonoBehaviour
         if (blockRotationPlayer == false)
         {
             RotatePlayer(CameraSwitcher.isAim);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
             //rigid.position += desiredMoveDirection.normalized * Time.deltaTime * Velocity;
             //controller.Move(desiredMoveDirection * Time.deltaTime * Velocity);
@@ -91,11 +90,10 @@ public class MovementInput : MonoBehaviour
     }
 
 
-    private void RotatePlayer(bool isAim)
+    private void RotatePlayer(bool isRotate)
     {
-        if (isAim)
+        if (isRotate)
         {
-
         }
         else
         {

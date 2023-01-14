@@ -22,27 +22,42 @@ public abstract class Pet : MonoBehaviour
     public PetType type;
     public Color selectColor;
 
+    private bool altPress = false;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         camera = Camera.main;
     }
 
+    private void OnEnable()
+    {
+        ResetPet();
+    }
+
     private void Update()
     {
+        // 1. 얻었냐
         if (!IsGet()) return;
+
+        // 2. 연결됐냐
+        // 3. 선택됐냐
         if (IsConnected())
         {
             if (!IsSelected()) return;
-            Follow(false);
+            if (Input.GetKeyDown(KeyCode.LeftAlt)) altPress = !altPress;
 
-            if (Input.GetMouseButtonDown(0))
+            Follow(false);
+            if (altPress)
             {
-                Skill();
-            }
-            if (Input.GetMouseButtonDown(1))
-            {
-                ClickMove();
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    Skill();
+                }
+                if (Input.GetMouseButtonDown(1))
+                {
+                    ClickMove();
+                }
             }
 
             Move();
@@ -50,17 +65,18 @@ public abstract class Pet : MonoBehaviour
         else
         {
             Follow(true);
-            Debug.Log("Follow");
         }
     }
 
-    protected virtual void Skill()
-    {
-        OnConnected(false);
-        PetManager.instance.OnSelect(false);
-    }
-
     #region SET
+
+    protected virtual void ResetPet()
+    {
+        isGet = false;
+        isMove = false;
+        isSelected = false;
+        isConnected = false;
+    }
 
     public void OnConnected(bool isOn)
     {
@@ -75,8 +91,13 @@ public abstract class Pet : MonoBehaviour
     public void OnGetPet(bool isOn)
     {
         isGet = isOn;
-        isConnected = isOn;
-        if(isOn==false)
+        OnConnected(true);
+
+        if (isOn)
+        {
+            PetManager.instance.AddPet(this);
+        }
+        else
         {
             PetManager.instance.DeletePet(this);
         }
@@ -115,11 +136,10 @@ public abstract class Pet : MonoBehaviour
         }
     }
 
-
     // Not Connected State
     private void Follow(bool isFollow)
     {
-        if(!isFollow)
+        if (!isFollow)
         {
             agent.isStopped = true;
             return;
@@ -130,12 +150,17 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
+    protected virtual void Skill()
+    {
+        OnConnected(false);
+        PetManager.instance.OnSelect(false);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Player"))
         {
             if (IsGet()) return;
-            PetManager.instance.AddPet(this);
             OnGetPet(true);
         }
     }
