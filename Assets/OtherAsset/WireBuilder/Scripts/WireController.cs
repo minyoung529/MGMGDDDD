@@ -80,7 +80,7 @@ public class WireController : MonoBehaviour
     [Header("REFERENCES")]
     public TubeRenderer ropeMesh;
     public Transform startAnchorTemp;
-    public Transform firstSegment;
+    public Rigidbody firstSegmentConnectedBody;
     public Transform endAnchorTemp;
     public Transform plugTemp;
 
@@ -152,7 +152,7 @@ public class WireController : MonoBehaviour
             {
                 //Instantiate new segment.
                 Transform newSegment = Instantiate(segment, segments[lastSegment].position + (segments[lastSegment].forward * segmentsSeparation), segments[lastSegment].rotation, transform);
-                newSegment.GetComponent<ConfigurableJoint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
+                newSegment.GetComponent<Joint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
                 segments.Add(newSegment);
             }
             else
@@ -192,7 +192,7 @@ public class WireController : MonoBehaviour
         //If you do not use physics, the components are removed to the start anchor point, to improve performance.
         if (!usePhysics)
         {
-            DestroyImmediate(startAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(startAnchorTemp.GetComponent<Joint>());
             DestroyImmediate(startAnchorTemp.GetComponent<Collider>());
             DestroyImmediate(startAnchorTemp.GetComponent<Rigidbody>());
         }
@@ -213,7 +213,7 @@ public class WireController : MonoBehaviour
         //If you do not use physics, the components are removed to the start anchor point, to improve performance.
         if (!usePhysics)
         {
-            DestroyImmediate(startAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(startAnchorTemp.GetComponent<Joint>());
             DestroyImmediate(startAnchorTemp.GetComponent<Collider>());
             DestroyImmediate(startAnchorTemp.GetComponent<Rigidbody>());
         }
@@ -224,20 +224,20 @@ public class WireController : MonoBehaviour
         #region undo
         undoCount = 0;
         #endregion
-        if (firstSegment == null)
+        if (firstSegmentConnectedBody == null)
         {
 
             if (usePhysics)
             {
-                firstSegment = Instantiate(segment, startAnchorTemp.position, startAnchorTemp.rotation, transform);
-                firstSegment.GetComponent<ConfigurableJoint>().connectedBody = startAnchorTemp.GetComponent<Rigidbody>();
+                firstSegmentConnectedBody = Instantiate(segment, startAnchorTemp.position, startAnchorTemp.rotation, transform).GetComponent<Rigidbody>();
+                firstSegmentConnectedBody.GetComponent<Joint>().connectedBody = startAnchorTemp.GetComponent<Rigidbody>();
             }
             else
             {
-                firstSegment = Instantiate(segmentNoPhysics, startAnchorTemp.position, startAnchorTemp.rotation, transform);
+                firstSegmentConnectedBody = Instantiate(segmentNoPhysics, startAnchorTemp.position, startAnchorTemp.rotation, transform).GetComponent<Rigidbody>();
             }
 
-            segments.Add(firstSegment);
+            segments.Add(firstSegmentConnectedBody.transform);
 
             #region undo
             undoCount++;
@@ -263,7 +263,7 @@ public class WireController : MonoBehaviour
         int lastSegment = segments.Count - 1;
         endAnchorTemp = Instantiate(endAnchorPoint, segments[lastSegment].position + (segments[lastSegment].forward * .0005f), segments[lastSegment].rotation, transform);
         //The ConfigurableJoint is added to the anchor point and anchored with the end segment.
-        endAnchorTemp.GetComponent<ConfigurableJoint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
+        endAnchorTemp.GetComponent<Joint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
 
         if (usePhysics)
         {
@@ -276,7 +276,7 @@ public class WireController : MonoBehaviour
         else
         {
             //If you do not use physics, the components are removed to the end anchor point, to improve performance.
-            DestroyImmediate(endAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(endAnchorTemp.GetComponent<Joint>());
             DestroyImmediate(endAnchorTemp.GetComponent<Collider>());
             DestroyImmediate(endAnchorTemp.GetComponent<Rigidbody>());
         }
@@ -318,10 +318,12 @@ public class WireController : MonoBehaviour
         ///Increasing the radius usually improves the stability of the physics but makes the collisions less accurate in relation to the mesh.
         /// </summary>
         if (usePhysics)
+        {
             foreach (Transform segment in segments)
             {
                 segment.GetComponent<SphereCollider>().radius = segmentsRadius;
             }
+        }
     }
 
     #region Buttons
@@ -334,8 +336,8 @@ public class WireController : MonoBehaviour
         }
 
         //Destroy the start anchor point.
-        if (firstSegment != null)
-            DestroyImmediate(firstSegment.gameObject);
+        if (firstSegmentConnectedBody != null)
+            DestroyImmediate(firstSegmentConnectedBody.gameObject);
 
         //Destroy the start anchor point.
         if (startAnchorTemp != null)
@@ -458,23 +460,38 @@ public class WireController : MonoBehaviour
     #region Connect
     public void ConnectStartPoint(Transform target)
     {
-        if (startFollowTo && startFollowTo.enabled)
+        /*if (startFollowTo && startFollowTo.enabled)
+        {
             startFollowTo.Target = target;
+        }*/
 
         if (startJoint)
         {
             startJoint.transform.position = target.position;
-            startJoint.autoConfigureConnectedAnchor = false;
+            StartCoroutine(Delay());
             startJoint.autoConfigureConnectedAnchor = true;
-            Debug.Log(target.gameObject.name);
             startJoint.connectedBody = target.GetComponent<Rigidbody>();
         }
+    }
+
+    private IEnumerator Delay()
+    {
+        startJoint.autoConfigureConnectedAnchor = false;
+        yield return null;
+        startJoint.autoConfigureConnectedAnchor = true;
+        yield return null;
+        startJoint.connectedAnchor = Vector3.one;
     }
 
     public void ConnectEndPoint(Rigidbody rigid)
     {
         if (endFixedJoint)
+        {
             endFixedJoint.connectedBody = rigid;
+            endFixedJoint.autoConfigureConnectedAnchor = false;
+            endFixedJoint.autoConfigureConnectedAnchor = true;
+            endFixedJoint.connectedBody = rigid;
+        }
     }
     #endregion
 

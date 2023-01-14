@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEditor.PackageManager;
+using UnityEditor.SceneManagement;
 
 public class RopeController : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class RopeController : MonoBehaviour
 
     private float distance = 1000f;
 
-    private Rigidbody rigid;
+    private FixedJoint joint;
 
     [SerializeField]
     private LayerMask conenctedLayer;
@@ -25,12 +26,9 @@ public class RopeController : MonoBehaviour
     void Start()
     {
         playerConnect = Utils.GetOrAddComponent<ConnectedObject>(gameObject);
-        rigid = GetComponent<Rigidbody>();
 
-        CreateRope(playerConnect.RopePosition);
-        //playerConnect.Connect(wires[0], true);
-
-        wires[0].ConnectStartPoint(playerConnect.RopePosition);
+        CreateRope(playerConnect.RopePosition.transform);
+        wires[0].ConnectStartPoint(playerConnect.RopePosition.transform);
     }
 
     void Update()
@@ -89,6 +87,16 @@ public class RopeController : MonoBehaviour
                 pets.Add(connectedObj);
             }
         }
+        else if (1 << connectedObj.gameObject.layer == Define.CONNECTED_OBJECT_LAYER)
+        {
+            joint = gameObject.AddComponent<FixedJoint>();
+            //joint.xMotion = joint.yMotion = joint.zMotion = ConfigurableJointMotion.Locked;
+            //joint.angularXMotion = joint.angularYMotion = joint.angularZMotion = ConfigurableJointMotion.Limited;
+
+            joint.connectedBody = wires[0].firstSegmentConnectedBody.GetComponent<Rigidbody>();
+            wires[0].ConnectStartPoint(transform);
+        }
+
 
         connectedObjs.Add(connectedObj);
         connectedObj?.Connect(wire, false);
@@ -108,6 +116,13 @@ public class RopeController : MonoBehaviour
                 Destroy(wires[index + 1].gameObject);
                 wires.RemoveAt(index + 1);
             }
+        }
+
+        if(joint)
+        {
+            Destroy(joint);
+            wires[0].firstSegmentConnectedBody = wires[0].startRigid;
+            wires[0].ConnectStartPoint(playerConnect.RopePosition.transform);
         }
     }
 
