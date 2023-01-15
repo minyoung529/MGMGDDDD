@@ -18,8 +18,6 @@ public class RopeController : MonoBehaviour
 
     private float distance = 1000f;
 
-    private FixedJoint joint;
-
     [SerializeField]
     private LayerMask conenctedLayer;
 
@@ -27,8 +25,8 @@ public class RopeController : MonoBehaviour
     {
         playerConnect = Utils.GetOrAddComponent<ConnectedObject>(gameObject);
 
-        CreateRope(playerConnect.RopePosition.transform);
-        wires[0].ConnectStartPoint(playerConnect.RopePosition.transform);
+        CreateRope(playerConnect.RopePosRigid);
+        SetFirstPosition();
     }
 
     void Update()
@@ -40,7 +38,7 @@ public class RopeController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            ResetRopes();
+            UnConnect(0);
         }
 
         for (int i = 0; i < 9; i++)
@@ -73,33 +71,31 @@ public class RopeController : MonoBehaviour
         if (obj == playerConnect) return;
         if (connectedObjs.Find(x => x == obj)) return;
 
-        wire.StartCoroutine(wire.TryConnect(obj, OnConnect));
+        if (1 << target.gameObject.layer == Define.PET_LAYER)
+        {
+            wire.StartCoroutine(wire.TryConnect(obj, OnConnect));
+        }
+        else if (1 << target.gameObject.layer == Define.CONNECTED_OBJECT_LAYER)
+        {
+            // 연결되어있는 게 1 이상이면 꼬리가 아니고 머리가 이동
+            wire.StartCoroutine(wire.TryConnect(obj, OnConnect, connectedObjs.Count > 0));
+        }
     }
 
     private void OnConnect(ConnectedObject connectedObj, WireController wire)
     {
         if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {
-            CreateRope(connectedObj/*.RopePosition*/.transform);
-
-            if (pets.Find(x => x == connectedObj) == null)
-            {
-                pets.Add(connectedObj);
-            }
+            ConnectPet(connectedObj);
+            connectedObj?.Connect(wire, false);
         }
+
         else if (1 << connectedObj.gameObject.layer == Define.CONNECTED_OBJECT_LAYER)
         {
-            joint = gameObject.AddComponent<FixedJoint>();
-            //joint.xMotion = joint.yMotion = joint.zMotion = ConfigurableJointMotion.Locked;
-            //joint.angularXMotion = joint.angularYMotion = joint.angularZMotion = ConfigurableJointMotion.Limited;
-
-            joint.connectedBody = wires[0].firstSegmentConnectedBody.GetComponent<Rigidbody>();
-            wires[0].ConnectStartPoint(transform);
+            ConnectObject(connectedObj, wire);
         }
 
-
         connectedObjs.Add(connectedObj);
-        connectedObj?.Connect(wire, false);
     }
 
     #region UnConnect
@@ -118,24 +114,54 @@ public class RopeController : MonoBehaviour
             }
         }
 
-        if(joint)
-        {
-            Destroy(joint);
-            wires[0].firstSegmentConnectedBody = wires[0].startRigid;
-            wires[0].ConnectStartPoint(playerConnect.RopePosition.transform);
-        }
-    }
-
-    private void ResetRopes()
-    {
-        UnConnect(0);
+        SetFirstPosition();
     }
     #endregion
 
-    private void CreateRope(Transform target)
+    private void CreateRope(Rigidbody target = null)
     {
         WireController wire = Instantiate(wirePrefab);
-        wire.ConnectStartPoint(target);
+
+        if (target)
+        {
+            wire.ConnectStartPoint(target);
+        }
         wires.Add(wire);
+    }
+
+    private void SetFirstPosition()
+    {
+        wires[0].ConnectStartPoint(playerConnect.RopePosRigid);
+        wires[0].startRigid.isKinematic = false;
+        wires[0].endRigid.isKinematic = false;
+    }
+
+    private void ConnectPet(ConnectedObject connectedObj)
+    {
+        CreateRope(connectedObj.Rigid);
+
+        if (pets.Find(x => x == connectedObj) == null)
+        {
+            pets.Add(connectedObj);
+        }
+    }
+
+    private void ConnectObject(ConnectedObject connectedObj, WireController wire)
+    {
+        Debug.Log(connectedObjs.Count);
+        Rigidbody ropeRigid;
+
+        if (connectedObjs.Count == 0)
+        {
+            wires[0].ConnectStartPoint(playerConnect.Rigid);
+            ropeRigid = wire.endRigid;
+        }
+        else
+        {
+            ropeRigid = wire.startRigid;
+        }
+
+        ropeRigid.transform.position = (connectedObj.RopePosition.position);
+        ropeRigid.isKinematic = true;
     }
 }

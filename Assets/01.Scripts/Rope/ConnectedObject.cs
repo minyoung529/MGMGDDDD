@@ -15,6 +15,7 @@ public class ConnectedObject : MonoBehaviour
 
     private Joint fixedJoint;
     private Rigidbody rigid;
+    private Rigidbody ropePosRigid;
 
     #region Property
     public Rigidbody Rigid => rigid;
@@ -28,12 +29,14 @@ public class ConnectedObject : MonoBehaviour
             return transform;
         }
     }
+    public Rigidbody RopePosRigid => ropePosRigid;
     #endregion
 
     private void Start()
     {
         fixedJoint = GetComponent<Joint>();
         rigid = GetComponent<Rigidbody>();
+        ropePosRigid = ropePosition.GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -74,7 +77,7 @@ public class ConnectedObject : MonoBehaviour
         else
         {
             rigid.isKinematic = true;
-            wireRigid.isKinematic = true;
+            //wireRigid.isKinematic = true;
         }
     }
 
@@ -83,6 +86,7 @@ public class ConnectedObject : MonoBehaviour
         fixedJoint.connectedBody = null;
         rigid.isKinematic = true;
 
-        frontWire.endRigid.isKinematic = false;
+        if (frontWire)
+            frontWire.endRigid.isKinematic = false;
     }
 }

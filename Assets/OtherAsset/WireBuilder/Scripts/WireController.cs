@@ -101,9 +101,8 @@ public class WireController : MonoBehaviour
     /// </summary>
     public Preset presetJoint;
 
-    private FollowTo startFollowTo;
-    private Joint startJoint;
-    private Joint endFixedJoint;
+    public Joint startJoint;
+    public Joint endJoint;
 
     public Rigidbody startRigid;
     public Rigidbody endRigid;
@@ -111,8 +110,7 @@ public class WireController : MonoBehaviour
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
-        startFollowTo = startAnchorTemp.GetComponent<FollowTo>();
-        endFixedJoint = endAnchorTemp.GetComponent<Joint>();
+        endJoint = endAnchorTemp.GetComponent<Joint>();
         startJoint = startAnchorTemp.GetComponent<Joint>();
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
@@ -199,7 +197,7 @@ public class WireController : MonoBehaviour
     }
     public void AddStart(Vector3 pos)
     {
-        if(startAnchorTemp == null)
+        if (startAnchorTemp == null)
         {
             #region unpack prefab
             //When the first segment is created, the prefab is unpacked, to avoid an error that causes references to be lost in play mode.
@@ -458,59 +456,64 @@ public class WireController : MonoBehaviour
 
     /// Custom
     #region Connect
-    public void ConnectStartPoint(Transform target)
+    public void ConnectStartPoint(Rigidbody rigid, bool isNotMove = false)
     {
-        /*if (startFollowTo && startFollowTo.enabled)
-        {
-            startFollowTo.Target = target;
-        }*/
-
         if (startJoint)
         {
-            startJoint.transform.position = target.position;
-            StartCoroutine(Delay());
+            startJoint.transform.position = rigid.transform.position;
+            StartCoroutine(Delay(startJoint));
             startJoint.autoConfigureConnectedAnchor = true;
-            startJoint.connectedBody = target.GetComponent<Rigidbody>();
+            startJoint.connectedBody = rigid;
         }
     }
 
-    private IEnumerator Delay()
+    // 버그 때문에 어쩔 수 없이 딜레이를 기다림
+    private IEnumerator Delay(Joint joint)
     {
-        startJoint.autoConfigureConnectedAnchor = false;
+        joint.autoConfigureConnectedAnchor = false;
         yield return null;
-        startJoint.autoConfigureConnectedAnchor = true;
+        joint.autoConfigureConnectedAnchor = true;
         yield return null;
-        startJoint.connectedAnchor = Vector3.one;
+        joint.connectedAnchor = Vector3.one;
     }
 
     public void ConnectEndPoint(Rigidbody rigid)
     {
-        if (endFixedJoint)
+        if (endJoint)
         {
-            endFixedJoint.connectedBody = rigid;
-            endFixedJoint.autoConfigureConnectedAnchor = false;
-            endFixedJoint.autoConfigureConnectedAnchor = true;
-            endFixedJoint.connectedBody = rigid;
+            endJoint.transform.position = rigid.transform.position;
+            StartCoroutine(Delay(endJoint));
+            endJoint.autoConfigureConnectedAnchor = true;
+            endJoint.connectedBody = rigid;
         }
     }
     #endregion
 
     #region Animation
-    public IEnumerator TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected)
+    public IEnumerator TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart = false)
     {
         float timer = 5f;
         float speed = 10f;
-        Rigidbody rigid;
-        rigid = endAnchorTemp.GetComponent<Rigidbody>();
+        Joint joint = endJoint;
+        Rigidbody tempRigid = null;
+
+        if (isStart)
+        {
+            joint = startJoint;
+            tempRigid = joint.connectedBody;
+            joint.connectedBody = null;
+        }
+
+        Rigidbody rigid = joint.GetComponent<Rigidbody>();
         rigid.isKinematic = true;
 
         while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 1f)
         {
-            Vector3 dir = (connect.transform.position - endAnchorTemp.position).normalized;
+            Vector3 dir = (connect.transform.position - joint.transform.position).normalized;
             rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);
 
             // 포획 성공
-            if (Vector3.Distance(connect.transform.position, endAnchorTemp.position) < 0.2f)
+            if (Vector3.Distance(connect.transform.position, joint.transform.position) < 0.2f)
             {
                 rigid.isKinematic = false;
                 onConnected.Invoke(connect, this);
@@ -522,6 +525,11 @@ public class WireController : MonoBehaviour
         }
 
         rigid.isKinematic = false;
+
+        if (isStart)
+        {
+            ConnectStartPoint(tempRigid);
+        }
     }
     #endregion
 }
