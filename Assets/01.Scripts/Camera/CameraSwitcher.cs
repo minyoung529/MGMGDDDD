@@ -30,7 +30,6 @@ public class CameraSwitcher : MonoBehaviour
         }
     }
     
-    
     public static void Register(CinemachineVirtualCameraBase cam)
     {
         cameras.Add(cam);
@@ -40,5 +39,4 @@ public class CameraSwitcher : MonoBehaviour
     {
         cameras.Remove(cam);
     }
-
 }

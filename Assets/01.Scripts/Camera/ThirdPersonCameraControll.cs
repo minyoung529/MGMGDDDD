@@ -19,13 +19,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private float eulerAngleX; // 마우스 좌 / 우 이동으로 카메라 y축 회전
     private float eulerAngleY; // 마우스 위 / 아래 이동으로 카메라 x축 회전
 
-    bool isAim = false;
+    private bool isAim = false;
 
-    private void Awake()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
     private void Start()
     {
         CameraSwitcher.Register(defaultCamera);
@@ -48,13 +43,9 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            SetAim(true);
-        }
-        if (Input.GetMouseButtonUp(1))
-        {
-            SetAim(false);
+            SetAim(!isAim);
         }
 
         if (isAim)
