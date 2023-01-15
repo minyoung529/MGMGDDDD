@@ -11,21 +11,30 @@ public class RopeController : MonoBehaviour
     [SerializeField]
     private WireController wirePrefab;
 
-    private List<WireController> wires = new List<WireController>();
+    private List<WireController> petRopes = new List<WireController>();
     private List<ConnectedObject> pets = new List<ConnectedObject>();
     private List<ConnectedObject> connectedObjs = new List<ConnectedObject>();
-    private ConnectedObject playerConnect;
+
+    [SerializeField]
+    private Rigidbody petRopePos;
+    [SerializeField]
+    private Rigidbody playerRopePos;
 
     private float distance = 1000f;
+
+    WireController playerRope;
 
     [SerializeField]
     private LayerMask conenctedLayer;
 
+    private Rigidbody rigid;
+
     void Start()
     {
-        playerConnect = Utils.GetOrAddComponent<ConnectedObject>(gameObject);
+        rigid = GetComponent<Rigidbody>();
+        playerRope = CreateRope(playerRopePos, false);
+        CreateRope(petRopePos);
 
-        CreateRope(playerConnect.RopePosRigid);
         SetFirstPosition();
     }
 
@@ -40,14 +49,6 @@ public class RopeController : MonoBehaviour
         {
             UnConnect(0);
         }
-
-        for (int i = 0; i < 9; i++)
-        {
-            if (Input.GetKeyDown((KeyCode)(int)KeyCode.Alpha1 + i))
-            {
-                UnConnect(i);
-            }
-        }
     }
 
     private void ConnectTarget()
@@ -61,14 +62,13 @@ public class RopeController : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, conenctedLayer))
         {
-            TryConnect(hitInfo.transform, wires.Last());
+            TryConnect(hitInfo.transform, playerRope);
         }
     }
 
     private void TryConnect(Transform target, WireController wire)
     {
         ConnectedObject obj = target.GetComponent<ConnectedObject>();
-        if (obj == playerConnect) return;
         if (connectedObjs.Find(x => x == obj)) return;
 
         if (1 << target.gameObject.layer == Define.PET_LAYER)
@@ -87,7 +87,7 @@ public class RopeController : MonoBehaviour
         if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {
             ConnectPet(connectedObj);
-            connectedObj?.Connect(wire, false);
+            connectedObj?.Connect(petRopes.Last(), false);
         }
 
         else if (1 << connectedObj.gameObject.layer == Define.CONNECTED_OBJECT_LAYER)
@@ -107,10 +107,10 @@ public class RopeController : MonoBehaviour
             connectedObjs.RemoveAt(index);
 
             // 플레이어의 줄은 지우지 않음
-            if (wires.Count > 1)
+            if (petRopes.Count > 1)
             {
-                Destroy(wires[index + 1].gameObject);
-                wires.RemoveAt(index + 1);
+                Destroy(petRopes[index + 1].gameObject);
+                petRopes.RemoveAt(index + 1);
             }
         }
 
@@ -118,7 +118,7 @@ public class RopeController : MonoBehaviour
     }
     #endregion
 
-    private void CreateRope(Rigidbody target = null)
+    private WireController CreateRope(Rigidbody target = null, bool isAdd = true)
     {
         WireController wire = Instantiate(wirePrefab);
 
@@ -126,19 +126,28 @@ public class RopeController : MonoBehaviour
         {
             wire.ConnectStartPoint(target);
         }
-        wires.Add(wire);
+
+        if (isAdd)
+        {
+            petRopes.Add(wire);
+        }
+
+        return wire;
     }
 
     private void SetFirstPosition()
     {
-        wires[0].ConnectStartPoint(playerConnect.RopePosRigid);
-        wires[0].startRigid.isKinematic = false;
-        wires[0].endRigid.isKinematic = false;
+        playerRope.ConnectStartPoint(playerRopePos);
+        playerRope.startRigid.isKinematic = false;
+        playerRope.endRigid.isKinematic = false;
     }
 
     private void ConnectPet(ConnectedObject connectedObj)
     {
-        CreateRope(connectedObj.Rigid);
+        if (pets.Count > 0)
+        {
+            CreateRope(connectedObj.Rigid);
+        }
 
         if (pets.Find(x => x == connectedObj) == null)
         {
@@ -152,7 +161,7 @@ public class RopeController : MonoBehaviour
 
         if (connectedObjs.Count == 0)
         {
-            wires[0].ConnectStartPoint(playerConnect.Rigid);
+            playerRope.ConnectStartPoint(rigid);
             connectedObj.Connect(wire, false);
             ropeRigid = wire.endRigid;
             ropeRigid.isKinematic = true;
