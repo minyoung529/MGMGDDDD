@@ -70,15 +70,7 @@ public class ConnectedObject : MonoBehaviour
             fixedJoint.connectedBody = wireRigid;
         }
 
-        if (isFollow)
-        {
-            rigid.isKinematic = false;
-        }
-        else
-        {
-            rigid.isKinematic = true;
-            //wireRigid.isKinematic = true;
-        }
+        rigid.isKinematic = !isFollow;
     }
 
     public void UnConnect()

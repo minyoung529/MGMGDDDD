@@ -490,7 +490,13 @@ public class WireController : MonoBehaviour
     #endregion
 
     #region Animation
-    public IEnumerator TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart = false)
+
+    public void TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart = false)
+    {
+        StartCoroutine(TryConnectCoroutine(connect, onConnected, isStart));
+    }
+
+    public IEnumerator TryConnectCoroutine(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart)
     {
         float timer = 5f;
         float speed = 10f;

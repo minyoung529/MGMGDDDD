@@ -73,12 +73,12 @@ public class RopeController : MonoBehaviour
 
         if (1 << target.gameObject.layer == Define.PET_LAYER)
         {
-            wire.StartCoroutine(wire.TryConnect(obj, OnConnect));
+            wire.TryConnect(obj, OnConnect);
         }
         else if (1 << target.gameObject.layer == Define.CONNECTED_OBJECT_LAYER)
         {
-            // 연결되어있는 게 1 이상이면 꼬리가 아니고 머리가 이동
-            wire.StartCoroutine(wire.TryConnect(obj, OnConnect, connectedObjs.Count > 0));
+            // 연결되어있는 게 1 이상이면 머리가 이동
+            wire.TryConnect(obj, OnConnect, connectedObjs.Count > 0);
         }
     }
 
@@ -148,20 +148,21 @@ public class RopeController : MonoBehaviour
 
     private void ConnectObject(ConnectedObject connectedObj, WireController wire)
     {
-        Debug.Log(connectedObjs.Count);
         Rigidbody ropeRigid;
 
         if (connectedObjs.Count == 0)
         {
             wires[0].ConnectStartPoint(playerConnect.Rigid);
+            connectedObj.Connect(wire, false);
             ropeRigid = wire.endRigid;
+            ropeRigid.isKinematic = true;
         }
         else
         {
             ropeRigid = wire.startRigid;
+            ropeRigid.isKinematic = true;
         }
 
         ropeRigid.transform.position = (connectedObj.RopePosition.position);
-        ropeRigid.isKinematic = true;
     }
 }
