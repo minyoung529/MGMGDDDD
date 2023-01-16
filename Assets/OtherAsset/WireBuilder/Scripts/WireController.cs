@@ -513,7 +513,7 @@ public class WireController : MonoBehaviour
         Rigidbody rigid = joint.GetComponent<Rigidbody>();
         rigid.isKinematic = true;
 
-        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 1f)
+        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 5f)
         {
             Vector3 dir = (connect.transform.position - joint.transform.position).normalized;
             rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);

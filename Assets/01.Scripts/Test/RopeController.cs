@@ -169,7 +169,8 @@ public class RopeController : MonoBehaviour
         else
         {
             ropeRigid = wire.startRigid;
-            ropeRigid.isKinematic = true;
+            wire.startJoint.connectedBody = connectedObj.Rigid;
+            ropeRigid.isKinematic = false;
         }
 
         ropeRigid.transform.position = (connectedObj.RopePosition.position);
