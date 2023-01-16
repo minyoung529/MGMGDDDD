@@ -27,6 +27,9 @@ public class RopeController : MonoBehaviour
     [SerializeField]
     private LayerMask conenctedLayer;
 
+    [SerializeField]
+    private Collider footCol;
+
     private Rigidbody rigid;
 
     void Start()
@@ -84,6 +87,8 @@ public class RopeController : MonoBehaviour
 
     private void OnConnect(ConnectedObject connectedObj, WireController wire)
     {
+        footCol.gameObject.SetActive(true);
+
         if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {
             ConnectPet(connectedObj);
@@ -114,6 +119,7 @@ public class RopeController : MonoBehaviour
             }
         }
 
+        footCol.gameObject.SetActive(false);
         SetFirstPosition();
     }
     #endregion
@@ -171,6 +177,7 @@ public class RopeController : MonoBehaviour
             ropeRigid = wire.startRigid;
             wire.startJoint.connectedBody = connectedObj.Rigid;
             ropeRigid.isKinematic = false;
+            footCol.gameObject.SetActive(true);
         }
 
         ropeRigid.transform.position = (connectedObj.RopePosition.position);
