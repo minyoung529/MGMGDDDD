@@ -5,24 +5,23 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] private bool isSelected = false;
-    [SerializeField] private bool isConnected = false;
-    [SerializeField] private bool isGet = false;
     [SerializeField] private Transform player;
 
-    public bool IsConnected() { return isConnected; }
-    public bool IsSelected() { return isSelected; }
-    public bool IsGet() { return isGet; }
+    [SerializeField] private bool isGet = false;
+    [SerializeField] private bool isSelected = false;
+    [SerializeField] private bool isConnected = false;
+    [SerializeField] private bool isMove = false;
 
-    private Vector3 destination;
+    public bool IsGet() { return isGet; }
+    public bool IsSelected() { return isSelected; }
+    public bool IsConnected() { return isConnected; }
+
     private NavMeshAgent agent;
+    private Vector3 destination = Vector3.zero;
     private Camera camera;
-    private bool isMove;
 
     public PetType type;
     public Color selectColor;
-
-    private bool altPress = false;
 
     private void Awake()
     {
@@ -45,10 +44,7 @@ public abstract class Pet : MonoBehaviour
         if (IsConnected())
         {
             if (!IsSelected()) return;
-            if (Input.GetKeyDown(KeyCode.LeftAlt)) altPress = !altPress;
-
-            Follow(false);
-            if (altPress)
+            if (PetManager.instance.IsAltPress())
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
@@ -59,12 +55,11 @@ public abstract class Pet : MonoBehaviour
                     ClickMove();
                 }
             }
-
             Move();
         }
         else
         {
-            Follow(true);
+            FollowTarget(true);
         }
     }
 
@@ -81,20 +76,19 @@ public abstract class Pet : MonoBehaviour
     public void OnConnected(bool isOn)
     {
         isConnected = isOn;
+        Follow(!isOn);
     }
-
     public void OnSelected(bool isOn)
     {
         isSelected = isOn;
     }
-
     public void OnGetPet(bool isOn)
     {
         isGet = isOn;
-        OnConnected(true);
 
         if (isOn)
         {
+            OnConnected(true);
             PetManager.instance.AddPet(this);
         }
         else
@@ -113,6 +107,7 @@ public abstract class Pet : MonoBehaviour
         destination = dest;
         isMove = true;
     }
+
     private void ClickMove()
     {
         RaycastHit hit;
@@ -121,6 +116,7 @@ public abstract class Pet : MonoBehaviour
             SetDestination(hit.point);
         }
     }
+
     private void Move()
     {
         if (isMove)
@@ -130,22 +126,35 @@ public abstract class Pet : MonoBehaviour
                 isMove = false;
                 return;
             }
-
             var dir = destination - transform.position;
             transform.position += dir.normalized * Time.deltaTime * 5f;
+        }
+    }
+
+    private void FollowTarget(bool isFollow)
+    {
+        if (isFollow)
+        {
+            agent.SetDestination(player.transform.position);
+        }
+        else
+        {
+            agent.ResetPath();
         }
     }
 
     // Not Connected State
     private void Follow(bool isFollow)
     {
-        if (!isFollow)
+        if (isFollow == false)
         {
             agent.isStopped = true;
-            return;
+            agent.ResetPath();
         }
-        agent.isStopped = false;
-        agent.SetDestination(player.transform.position);
+        else
+        {
+            agent.isStopped = false;
+        }
     }
 
     #endregion
@@ -153,6 +162,7 @@ public abstract class Pet : MonoBehaviour
     protected virtual void Skill()
     {
         OnConnected(false);
+        OnSelected(false);
         PetManager.instance.OnSelect(false);
     }
 

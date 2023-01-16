@@ -5,6 +5,7 @@ using UnityEngine;
 public class OilPet : Pet
 {
     [SerializeField] PhysicMaterial oilPhysic;
+
     private const float fireStayTime = 5.0f;
     private const float oilSkillRadius = 10.0f;
     private bool isFire = false;
@@ -25,7 +26,7 @@ public class OilPet : Pet
 
         Vector3 pos = Vector3.zero;
         Collider[] cols = Physics.OverlapSphere(pos, oilSkillRadius);
-        for(int i=0;i<cols.Length;i++)
+        for (int i = 0; i < cols.Length; i++)
         {
             // static friction
             cols[i].material = oilPhysic;
@@ -57,23 +58,6 @@ public class OilPet : Pet
     //    }
     //}
 
-    private void OnTriggerEnter(Collider other)
-    {
-         if(other.CompareTag("Player"))
-        {
-            Debug.Log("Oil_Enter");
-            other.material = oilPhysic;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Oil_Exit");
-            other.material = null;
-        }
-    }
 
 
 }
