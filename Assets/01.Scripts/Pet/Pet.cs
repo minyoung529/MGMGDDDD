@@ -23,7 +23,7 @@ public abstract class Pet : MonoBehaviour
     public PetType type;
     public Color selectColor;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         camera = Camera.main;
@@ -166,7 +166,7 @@ public abstract class Pet : MonoBehaviour
         PetManager.instance.OnSelect(false);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    protected virtual void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Player"))
         {

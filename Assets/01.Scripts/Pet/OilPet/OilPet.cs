@@ -5,13 +5,21 @@ using DG.Tweening;
 
 public class OilPet : Pet
 {
-   // [SerializeField] PhysicMaterial oilPhysic;
     [SerializeField] GameObject oilSkill;
 
-    private const float fireStayTime = 5.0f;
+    private const float fireStayTime = 10.0f;
 
     private bool isFire = false;
     private bool isSkilling = false;
+
+    private Material mat;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        mat = GetComponent<MeshRenderer>().material;
+    }
 
     protected override void ResetPet()
     {
@@ -37,7 +45,6 @@ public class OilPet : Pet
     }
 
     // OilSkill
-    // ���ϴ� ���� �⸧�� �ѷ� �̲����� ��
     protected override void Skill()
     {
         base.Skill();
@@ -65,26 +72,33 @@ public class OilPet : Pet
     private void FireSkill()
     {
         isFire = true;
+        mat.color = Color.red;
         StartCoroutine(FireStayTime());
     }
 
     IEnumerator FireStayTime()
     {
         yield return new WaitForSeconds(fireStayTime);
+        mat.color = Color.yellow;
         isFire = false;
     }
 
     #endregion
 
 
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if(collision.collider.CompareTag("Fire"))
-    //    {
-    //        FireSkill();
-    //    }
-    //}
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Fire"))
+        {
+            FireSkill();
+        }
+    }
 
 
 }
