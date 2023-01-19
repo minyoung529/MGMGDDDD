@@ -53,6 +53,8 @@ public class PlayerMove : MonoBehaviour
 
     private Camera mainCam;
 
+    [SerializeField] private float distanceToGround = 0;
+
     private void Awake() {
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
@@ -81,6 +83,21 @@ public class PlayerMove : MonoBehaviour
         SetRotate();
         ResetInput();
         Decelerate();
+    }
+
+    private void OnAnimatorIK(int layerIndex) {
+        if (anim) {
+            anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
+            anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
+
+            RaycastHit hit;
+            Ray ray = new Ray(anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
+            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, Define.BOTTOM_LAYER)) {
+                Vector3 footposition = hit.point;
+                footposition.y += distanceToGround;
+                anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
+            }
+        }
     }
 
     private void GetInput(Vector3 input) {
