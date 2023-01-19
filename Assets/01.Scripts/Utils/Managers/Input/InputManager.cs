@@ -11,6 +11,7 @@ public class InputManager : MonoSingleton<InputManager>
     private static string DEFAULT_PATH;
     private const string SAVE_FILE = "/KeyMapping";
     private static Dictionary<InputAction, InputCode> keyBinding = new Dictionary<InputAction, InputCode>();
+    public static Dictionary<InputAction, InputCode> KeyBinding => keyBinding;
     #endregion
 
     #region ¿Ã∫•∆Æ
