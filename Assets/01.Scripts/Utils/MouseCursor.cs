@@ -12,4 +12,9 @@ public class MouseCursor : MonoBehaviour
         Cursor.lockState = isLocked;
         Cursor.visible = isEnable;
     }
+
+    public static void EditCursorSprite(Texture2D tex)
+    {
+        Cursor.SetCursor(tex, Vector3.zero, CursorMode.ForceSoftware);
+    }
 }

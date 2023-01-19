@@ -21,7 +21,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private float eulerAngleY; // 마우스 위 / 아래 이동으로 카메라 x축 회전
 
     private bool isAim = false;
-    private bool isPetAim = false;
+    private static bool isPetAim = false;
 
     private void Start()
     {
@@ -65,6 +65,11 @@ public class ThirdPersonCameraControll : MonoBehaviour
         MouseCursor.MouserCursorEdit(false, CursorLockMode.Locked);
         CameraSwitcher.SwitchCamera(defaultCamera, false);
     }
+    public void SetPet(bool isAlt)
+    {
+        isPetAim = isAlt;
+        SetPetCamera(isPetAim);
+    }
 
     private void Update()
     {
@@ -92,8 +97,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
         CalculateRotation(mouseX, mouseY);
     }
-
-
     public void CalculateRotation(float mouseX, float mouseY)
     {
         eulerAngleY += mouseX * rotCamYAxisSpeed;
@@ -102,7 +105,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, 0);
     }
-
     // 카메라 x축 회전의 경우 회전 범위를 설정
     private float ClampAngle(float angle, float min, float max)
     {

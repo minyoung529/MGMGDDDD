@@ -18,7 +18,7 @@ public abstract class Pet : MonoBehaviour
 
     private NavMeshAgent agent;
     private Vector3 destination = Vector3.zero;
-    private Camera camera;
+    protected Camera camera;
 
     public PetType type;
     public Color selectColor;
@@ -34,7 +34,7 @@ public abstract class Pet : MonoBehaviour
         ResetPet();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         // 1. ¾ò¾ú³Ä
         if (!IsGet()) return;

@@ -7,6 +7,7 @@ public class PetManager : MonoBehaviour
 {
     public static PetManager instance;
 
+    [SerializeField] Texture2D skillCursor;
     public bool IsAltPress() { return altPress; }
     public List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
@@ -42,7 +43,10 @@ public class PetManager : MonoBehaviour
     {
         if (pets.Count == 0) return;
 
-        if (Input.GetKeyDown(KeyCode.LeftAlt)) altPress = !altPress;
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            AltPress(!altPress);
+        }
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0 && !isSwitching)
         {
@@ -113,6 +117,18 @@ public class PetManager : MonoBehaviour
     {
         return pets.FindIndex(e => e == p);
     }
+
+    public void ChangeSkillCursor(bool isDef)
+    {
+        if (isDef) MouseCursor.EditCursorSprite(null);
+        else MouseCursor.EditCursorSprite(skillCursor);
+    }
+    public void AltPress(bool isOn)
+    {
+        altPress = isOn;
+        ChangeSkillCursor(!altPress);
+    }
+
 
     public void AddPet(Pet p)
     {
