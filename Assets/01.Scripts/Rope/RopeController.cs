@@ -43,14 +43,14 @@ public class RopeController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            ConnectTarget();
-        }
-
         if (Input.GetMouseButtonDown(1))
         {
             UnConnect(0);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            ConnectTarget();
         }
     }
 
@@ -87,7 +87,7 @@ public class RopeController : MonoBehaviour
 
     private void OnConnect(ConnectedObject connectedObj, WireController wire)
     {
-        footCol.gameObject.SetActive(true);
+        footCol.gameObject.SetActive(false);
 
         if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {

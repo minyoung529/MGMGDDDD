@@ -79,7 +79,7 @@ public class MovementInput : MonoBehaviour
         
         if (blockRotationPlayer == false)
         {
-            RotatePlayer(CameraSwitcher.isAim);
+            //RotatePlayer(CameraSwitcher.isAim);
 
             if (desiredMoveDirection.magnitude > 0.01f)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);

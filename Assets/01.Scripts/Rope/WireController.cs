@@ -63,7 +63,7 @@ public class WireController : MonoBehaviour
     public float segmentsSeparation = 0.2f;
     [Tooltip("Prevents infinite segments from being instantiated in case of an error in the code.")]
     public int limitMax = 200;
-    private int limit = 0;
+    protected int limit = 0;
     [Tooltip("A higher value improves the stability of the physics.")]
     public float segmentsRadius = 1.5f;
     public float currentDistanceToStartAnchor;
@@ -131,7 +131,7 @@ public class WireController : MonoBehaviour
         ChangeRadius();
     }
 
-    public void GetSegmentsDistance()
+    public virtual void GetSegmentsDistance()
     {
         /// <summary>
         /// Instantiate the segments by checking the distance of the last instantiated segment from the selected position.
@@ -174,7 +174,7 @@ public class WireController : MonoBehaviour
         SetMaxDistance();
     }
 
-    public void AddStar()
+    public virtual void AddStar()
     {
         if (startAnchorTemp == null)
         {
@@ -195,7 +195,7 @@ public class WireController : MonoBehaviour
             DestroyImmediate(startAnchorTemp.GetComponent<Rigidbody>());
         }
     }
-    public void AddStart(Vector3 pos)
+    public virtual void AddStart(Vector3 pos)
     {
         if (startAnchorTemp == null)
         {
@@ -217,7 +217,7 @@ public class WireController : MonoBehaviour
         }
     }
 
-    public void AddSegment()
+    public virtual void AddSegment()
     {
         #region undo
         undoCount = 0;
@@ -255,7 +255,7 @@ public class WireController : MonoBehaviour
         #endregion
     }
 
-    public void AddEnd()
+    public virtual void AddEnd()
     {
         //Adds the final anchor point.
         int lastSegment = segments.Count - 1;
@@ -280,7 +280,7 @@ public class WireController : MonoBehaviour
         }
     }
 
-    public void AddPlug()
+    public virtual void AddPlug()
     {
         //Instances the plug in the selected position.
         plugTemp = Instantiate(plugObjt, selectPosition, plugObjt.transform.rotation, transform);
@@ -296,7 +296,7 @@ public class WireController : MonoBehaviour
     {
         maxDistanceToStarAnchor = segments.Count * segmentsSeparation;
     }
-    public void DistanceBetweenStartAndEnd()
+    public virtual void DistanceBetweenStartAndEnd()
     {
         currentDistanceToStartAnchor = Vector3.Distance(endAnchorTemp.position, startAnchorTemp.position);
 
@@ -309,7 +309,7 @@ public class WireController : MonoBehaviour
         }
     }
 
-    public void ChangeRadius()
+    public virtual void ChangeRadius()
     {
         ///<summary>
         ///Modifies the radius of the sphere colliders of all instantiated segments.
@@ -499,7 +499,7 @@ public class WireController : MonoBehaviour
     public IEnumerator TryConnectCoroutine(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart)
     {
         float timer = 5f;
-        float speed = 10f;
+        float speed = 30f;
         Joint joint = endJoint;
         Rigidbody tempRigid = null;
 
