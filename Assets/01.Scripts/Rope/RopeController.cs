@@ -16,27 +16,22 @@ public class RopeController : MonoBehaviour
     private List<ConnectedObject> connectedObjs = new List<ConnectedObject>();
 
     [SerializeField]
-    private Rigidbody petRopePos;
+    private Rigidbody petRopeRigid;
     [SerializeField]
-    private Rigidbody playerRopePos;
-
-    private float distance = 1000f;
+    private Rigidbody playerRopeRigid;
 
     WireController playerRope;
 
     [SerializeField]
     private LayerMask conenctedLayer;
 
-    [SerializeField]
-    private Collider footCol;
-
     private Rigidbody rigid;
 
     void Start()
     {
         rigid = GetComponent<Rigidbody>();
-        playerRope = CreateRope(playerRopePos, false);
-        CreateRope(petRopePos);
+        playerRope = CreateRope(playerRopeRigid, false);
+        CreateRope(petRopeRigid);
 
         SetFirstPosition();
     }
@@ -63,12 +58,17 @@ public class RopeController : MonoBehaviour
         Vector3 dir = (mousePos - Camera.main.transform.position).normalized;
         Ray ray = new Ray(Camera.main.transform.position, dir);
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, conenctedLayer))
+        // TEST
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 1000f, conenctedLayer))
         {
+            playerRope.gameObject.layer = Define.ROPE_LAYER;
             TryConnect(hitInfo.transform, playerRope);
         }
     }
 
+    /// <summary>
+    /// 연결을 시도하는 함수
+    /// </summary>
     private void TryConnect(Transform target, WireController wire)
     {
         ConnectedObject obj = target.GetComponent<ConnectedObject>();
@@ -76,7 +76,10 @@ public class RopeController : MonoBehaviour
 
         if (1 << target.gameObject.layer == Define.PET_LAYER)
         {
-            wire.TryConnect(obj, OnConnect);
+            if (connectedObjs.Count == 0)
+            {
+                wire.TryConnect(obj, OnConnect);
+            }
         }
         else if (1 << target.gameObject.layer == Define.CONNECTED_OBJECT_LAYER)
         {
@@ -85,10 +88,11 @@ public class RopeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 연결이 되었을 때 호출되는 콜백함수
+    /// </summary>
     private void OnConnect(ConnectedObject connectedObj, WireController wire)
     {
-        footCol.gameObject.SetActive(false);
-
         if (1 << connectedObj.gameObject.layer == Define.PET_LAYER)
         {
             ConnectPet(connectedObj);
@@ -99,8 +103,6 @@ public class RopeController : MonoBehaviour
         {
             ConnectObject(connectedObj, wire);
         }
-
-        connectedObjs.Add(connectedObj);
     }
 
     #region UnConnect
@@ -110,16 +112,8 @@ public class RopeController : MonoBehaviour
         {
             connectedObjs[index].UnConnect();
             connectedObjs.RemoveAt(index);
-
-            // 플레이어의 줄은 지우지 않음
-            if (petRopes.Count > 1)
-            {
-                Destroy(petRopes[index + 1].gameObject);
-                petRopes.RemoveAt(index + 1);
-            }
         }
 
-        footCol.gameObject.SetActive(false);
         SetFirstPosition();
     }
     #endregion
@@ -143,20 +137,23 @@ public class RopeController : MonoBehaviour
 
     private void SetFirstPosition()
     {
-        playerRope.ConnectStartPoint(playerRopePos);
+        playerRope.ConnectStartPoint(playerRopeRigid);
         playerRope.startRigid.isKinematic = false;
         playerRope.endRigid.isKinematic = false;
+        playerRope.startJoint.autoConfigureConnectedAnchor = true;
+
+        playerRope.transform.ChangeAllLayer(Define.ROPE_LAYER);
     }
 
     private void ConnectPet(ConnectedObject connectedObj)
     {
-        if (pets.Count > 0)
-        {
-            CreateRope(connectedObj.Rigid);
-        }
-
         if (pets.Find(x => x == connectedObj) == null)
         {
+            if (pets.Count > 0)
+            {
+                CreateRope(pets.Last().Rigid);
+            }
+
             pets.Add(connectedObj);
         }
     }
@@ -167,19 +164,26 @@ public class RopeController : MonoBehaviour
 
         if (connectedObjs.Count == 0)
         {
-            playerRope.ConnectStartPoint(rigid);
-            connectedObj.Connect(wire, false);
             ropeRigid = wire.endRigid;
-            ropeRigid.isKinematic = true;
+
+            playerRope.ConnectStartPoint(rigid);    // 몸에다 연결
+            connectedObj.Connect(wire, false);      // 물체가 연결
+
+            // TEST
+            wire.startJoint.autoConfigureConnectedAnchor = false;
+            wire.startJoint.connectedAnchor = Vector3.up * 0.6f;
         }
         else
         {
             ropeRigid = wire.startRigid;
-            wire.startJoint.connectedBody = connectedObj.Rigid;
-            ropeRigid.isKinematic = false;
-            footCol.gameObject.SetActive(true);
+            wire.endRigid.isKinematic = true;
+
+            wire.ConnectStartPoint(connectedObj.Rigid); // 로프에 물체를 연결
+            playerRope.transform.ChangeAllLayer(Define.CONNECTED_ROPE_LAYER);
         }
 
-        ropeRigid.transform.position = (connectedObj.RopePosition.position);
+
+        ropeRigid.isKinematic = false;
+        connectedObjs.Add(connectedObj);
     }
 }

@@ -8,9 +8,11 @@ using UnityEngine;
 public class Define
 {
     #region LAYER_MASK
+    public const int ROPE_LAYER                 = 6;
     public const int BOTTOM_LAYER               = 1 << 7;
     public const int PLAYER_LAYER               = 1 << 3;
     public const int PET_LAYER                  = 1 << 8;
     public const int CONNECTED_OBJECT_LAYER     = 1 << 9;
+    public const int CONNECTED_ROPE_LAYER       = 10;
     #endregion
 }

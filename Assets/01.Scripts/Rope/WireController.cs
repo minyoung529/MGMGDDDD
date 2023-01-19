@@ -101,8 +101,8 @@ public class WireController : MonoBehaviour
     /// </summary>
     public Preset presetJoint;
 
-    public Joint startJoint;
-    public Joint endJoint;
+    public ConfigurableJoint startJoint;
+    public ConfigurableJoint endJoint;
 
     public Rigidbody startRigid;
     public Rigidbody endRigid;
@@ -110,8 +110,8 @@ public class WireController : MonoBehaviour
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
-        endJoint = endAnchorTemp.GetComponent<Joint>();
-        startJoint = startAnchorTemp.GetComponent<Joint>();
+        endJoint = endAnchorTemp.GetComponent<ConfigurableJoint>();
+        startJoint = startAnchorTemp.GetComponent<ConfigurableJoint>();
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
         endRigid = endAnchorTemp.GetComponent<Rigidbody>();
@@ -461,20 +461,8 @@ public class WireController : MonoBehaviour
         if (startJoint)
         {
             startJoint.transform.position = rigid.transform.position;
-            StartCoroutine(Delay(startJoint));
-            startJoint.autoConfigureConnectedAnchor = true;
             startJoint.connectedBody = rigid;
         }
-    }
-
-    // 버그 때문에 어쩔 수 없이 딜레이를 기다림
-    private IEnumerator Delay(Joint joint)
-    {
-        joint.autoConfigureConnectedAnchor = false;
-        yield return null;
-        joint.autoConfigureConnectedAnchor = true;
-        yield return null;
-        joint.connectedAnchor = Vector3.one;
     }
 
     public void ConnectEndPoint(Rigidbody rigid)
@@ -482,8 +470,6 @@ public class WireController : MonoBehaviour
         if (endJoint)
         {
             endJoint.transform.position = rigid.transform.position;
-            StartCoroutine(Delay(endJoint));
-            endJoint.autoConfigureConnectedAnchor = true;
             endJoint.connectedBody = rigid;
         }
     }
@@ -498,7 +484,6 @@ public class WireController : MonoBehaviour
 
     public IEnumerator TryConnectCoroutine(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart)
     {
-        float timer = 5f;
         float speed = 30f;
         Joint joint = endJoint;
         Rigidbody tempRigid = null;
@@ -513,7 +498,7 @@ public class WireController : MonoBehaviour
         Rigidbody rigid = joint.GetComponent<Rigidbody>();
         rigid.isKinematic = true;
 
-        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 5f)
+        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 7f) // 로프 범위 + 7까지
         {
             Vector3 dir = (connect.transform.position - joint.transform.position).normalized;
             rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);
@@ -526,13 +511,12 @@ public class WireController : MonoBehaviour
                 yield break;
             }
 
-            timer -= Time.deltaTime;
             yield return null;
         }
 
         rigid.isKinematic = false;
 
-        if (isStart)
+        if (isStart)    // 이전에 있던 물체 연결
         {
             ConnectStartPoint(tempRigid);
         }
