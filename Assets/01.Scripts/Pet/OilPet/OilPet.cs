@@ -7,54 +7,29 @@ public class OilPet : Pet
 {
     [SerializeField] GameObject oilSkill;
 
-    private const float fireStayTime = 10.0f;
+    private const float fireStayTime = 2.0f;
+    private const float fireSkillTime = 10.0f;
+    private const float fireRadius = 5.0f;
 
-    private bool isFire = false;
-    private bool isSkilling = false;
+    private bool isBurn = false;
+    private bool inFire = false;
 
-    private Material mat;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        mat = GetComponent<MeshRenderer>().material;
-    }
-
+    #region Set
     protected override void ResetPet()
     {
         base.ResetPet();
 
-        isFire = false;
-        isSkilling = false;
+        isBurn = false;
+        inFire = false;
     }
+    #endregion
 
-    protected override void Update()
+    #region Skill
+
+    // Active skill
+    protected override void ClickActive()
     {
-        base.Update();
-
-        if (isSkilling)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                ClickSkill();
-                PetManager.instance.AltPress(false);
-            }
-        }
-
-    }
-
-    // OilSkill
-    protected override void Skill()
-    {
-        base.Skill();
-        Debug.Log(gameObject.name + " : Skill");
-        isSkilling = true;
-    }
-
-    private void ClickSkill()
-    {
-        Debug.Log("Click_Skill");
+        base.ClickActive();
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -62,43 +37,90 @@ public class OilPet : Pet
             GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
             oil.transform.DOMoveX(hit.point.x, 3).SetEase(Ease.OutQuad);
             oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad);
-            
-            isSkilling = false;
+
+            IsSkilling = false;
         }
     }
 
-    #region FIRE
-
-    private void FireSkill()
+    // Passive Skill
+    protected override void PassiveSkill()
     {
-        isFire = true;
-        mat.color = Color.red;
-        StartCoroutine(FireStayTime());
+        base.PassiveSkill();
+
+        Debug.Log("Passive Skill On : 활활 타임 시작");
+        isBurn = true;
+        StartCoroutine(FireTime());
     }
 
     IEnumerator FireStayTime()
     {
         yield return new WaitForSeconds(fireStayTime);
-        mat.color = Color.yellow;
-        isFire = false;
+
+        if (inFire)
+        {
+            PassiveSkill();
+        }
+    }
+    IEnumerator FireTime()
+    {
+        StartCoroutine(FireSkill());
+        yield return new WaitForSeconds(fireSkillTime);
+        isBurn = false;
+    }
+    IEnumerator FireSkill()
+    {
+        Debug.Log("활활이 시작");
+        while (true)
+        {
+            if (!isBurn) break;
+
+            yield return new WaitForSeconds(0.01f);
+            Collider[] cols = Physics.OverlapSphere(transform.position, fireRadius, Define.PET_LAYER | Define.PLAYER_LAYER);
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i] != null)
+                {
+                    // cols[i].Fire();
+                }
+            }
+        }
+        Debug.Log("활활이 끝");
+    }
+
+    private void InFire()
+    {
+        Debug.Log("불 : 2초 카운트 시작");
+        inFire = true;
+        StartCoroutine(FireStayTime());
+    }
+    private void OutFire()
+    {
+        Debug.Log("불 : 2초 되기 전에 나감");
+        inFire = false;
+        StopCoroutine(FireStayTime());
     }
 
     #endregion
 
-
-    protected override void OnCollisionEnter(Collision collision)
-    {
-        base.OnCollisionEnter(collision);
-
-    }
+    #region Collider
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Fire"))
         {
-            FireSkill();
+            if (isBurn) return;
+            InFire();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Fire"))
+        {
+            if (isBurn) return;
+            OutFire();
         }
     }
 
+    #endregion
 
 }

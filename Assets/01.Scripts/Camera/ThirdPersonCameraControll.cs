@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class ThirdPersonCameraControll : MonoBehaviour
 {
+    [SerializeField] Texture2D skillCursor;
+
     [SerializeField] CinemachineFreeLook defaultCamera;
-    [SerializeField] CinemachineVirtualCamera aimCamera;
+    [SerializeField] CinemachineVirtualCamera ropeAimCamera;
     [SerializeField] CinemachineVirtualCamera petCamera;
 
     [SerializeField] private float rotCamXAxisSpeed = 5f; // 카메라 x축 회전속도
@@ -20,71 +22,80 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private float eulerAngleX; // 마우스 좌 / 우 이동으로 카메라 y축 회전
     private float eulerAngleY; // 마우스 위 / 아래 이동으로 카메라 x축 회전
 
-    private bool isAim = false;
+    private static bool isRopeAim = false;
     private static bool isPetAim = false;
+
+    public static bool IsRopeAim { get { return isRopeAim; } set { isRopeAim = value; } }
+    public static bool IsPetAim { get { return isPetAim; } set { isPetAim = value; } }
 
     private void Start()
     {
-        CameraSwitcher.Register(defaultCamera);
-        CameraSwitcher.Register(aimCamera);
-        CameraSwitcher.Register(petCamera);
-        SetDefaultCamera();
+        ResetCamera();
     }
 
-    private void SetAim(bool aim)
+    #region Camera Set
+    private void ResetCamera()
     {
-        isAim = aim;
-        if (aim)
-        {
-            CameraSwitcher.SwitchCamera(aimCamera, true);
-        }
-        else
-        {
-            SetDefaultCamera();
-        }
+        CameraSwitcher.UnRegister(defaultCamera);
+        CameraSwitcher.UnRegister(ropeAimCamera);
+        CameraSwitcher.UnRegister(petCamera);
+        CameraSwitcher.Register(defaultCamera);
+        CameraSwitcher.Register(ropeAimCamera);
+        CameraSwitcher.Register(petCamera);
+
+        SetDefault();
     }
-    
-    private void SetPetCamera(bool aim)
+    private void SetDefault()
     {
-        MouseCursor.MouserCursorEdit(true, CursorLockMode.None);
-        isPetAim = aim;
-        if (aim)
-        {
-            CameraSwitcher.SwitchCamera(petCamera, true);
-        }
-        else
-        {
-            SetDefaultCamera();
-        }
-    }
-    
-    private void SetDefaultCamera()
-    {
-        isPetAim = isAim = false;
+        isPetAim = false;
+        isRopeAim = false;
 
         MouseCursor.MouserCursorEdit(false, CursorLockMode.Locked);
-        CameraSwitcher.SwitchCamera(defaultCamera, false);
+        CameraSwitcher.SwitchCamera(defaultCamera);
     }
-    public void SetPet(bool isAlt)
+    private void SetPet()
     {
-        isPetAim = isAlt;
-        SetPetCamera(isPetAim);
+        isPetAim = !isPetAim;
+        if (isPetAim)
+        {
+            MouseCursor.MouserCursorEdit(true, CursorLockMode.None);
+            MouseCursor.EditCursorSprite(skillCursor);
+            CameraSwitcher.SwitchCamera(petCamera);
+        }
+        else
+        {
+            SetDefault();
+        }
     }
+    private void SetRope()
+    {
+        isRopeAim = !isRopeAim;
+        if (isRopeAim)
+        {
+            CameraSwitcher.SwitchCamera(ropeAimCamera);
+        }
+        else
+        {
+            SetDefault();
+        }
+
+    }
+    #endregion
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
-            if (isAim) return;
-            SetPetCamera(!isPetAim);
+            if (isRopeAim) return;
+            SetPet();
         }
         if (Input.GetMouseButtonDown(1))
         {
             if (isPetAim) return;
-            SetAim(!isAim);
+            SetRope();
         }
-       
-        if (isAim)
+
+        if (isRopeAim)
         {
             UpdateRotate();
         }
