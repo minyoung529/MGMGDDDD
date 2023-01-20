@@ -136,11 +136,12 @@ public class MovementInput : MonoBehaviour
         }
     }
 
+    public float jumpforce = 1f;
     private void TestJump()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            rigid.AddForce(Vector3.up * 0.3f, ForceMode.Impulse);
+            rigid.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
         }
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Presets;
 using UnityEditor;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class WireController : MonoBehaviour
 {
@@ -72,6 +74,7 @@ public class WireController : MonoBehaviour
 
     [Header("SPAWNED SEGMENTS")]
     public List<Transform> segments;
+    public List<ConfigurableJoint> jointSegments;
     [HideInInspector]
     [Tooltip("You can delete these references when you are no longer modifying the wire.")]
     public List<int> undoSegments;
@@ -107,6 +110,8 @@ public class WireController : MonoBehaviour
     public Rigidbody startRigid;
     public Rigidbody endRigid;
 
+    private TubeRenderer wireRenderer;
+
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
@@ -115,6 +120,10 @@ public class WireController : MonoBehaviour
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
         endRigid = endAnchorTemp.GetComponent<Rigidbody>();
+
+        wireRenderer = transform.GetComponentInChildren<TubeRenderer>();
+
+        segments.ForEach(x => jointSegments.Add(x.GetComponent<ConfigurableJoint>()));
     }
 
     private void Update()
@@ -485,8 +494,11 @@ public class WireController : MonoBehaviour
     public IEnumerator TryConnectCoroutine(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart)
     {
         float speed = 30f;
+        bool isConnect = false;
         Joint joint = endJoint;
         Rigidbody tempRigid = null;
+
+        SetProjectionDistance(0.05f);
 
         if (isStart)
         {
@@ -506,20 +518,42 @@ public class WireController : MonoBehaviour
             // 포획 성공
             if (Vector3.Distance(connect.transform.position, joint.transform.position) < 0.2f)
             {
-                rigid.isKinematic = false;
                 onConnected.Invoke(connect, this);
-                yield break;
+                isConnect = true;
+                break;
             }
 
             yield return null;
         }
 
+        // reset
         rigid.isKinematic = false;
+        StartCoroutine(DelayDecreaseDistance());
 
-        if (isStart)    // 이전에 있던 물체 연결
+
+        if (!isConnect && isStart)    // 이전에 있던 물체 연결
         {
             ConnectStartPoint(tempRigid);
         }
     }
     #endregion
+
+    private void SetProjectionDistance(float distance)
+    {
+        foreach (ConfigurableJoint joint in jointSegments)
+        {
+            joint.projectionDistance = distance;
+        }
+    }
+
+    private IEnumerator DelayDecreaseDistance()
+    {
+        yield return new WaitForSeconds(1f);
+        SetProjectionDistance(0.012f);
+    }
+
+    public void Active(bool active)
+    {
+        wireRenderer.gameObject.SetActive(active);
+    }
 }

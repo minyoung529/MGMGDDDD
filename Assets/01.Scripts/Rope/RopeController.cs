@@ -10,6 +10,8 @@ public class RopeController : MonoBehaviour
 {
     [SerializeField]
     private WireController wirePrefab;
+    [SerializeField]
+    private ConnectedRope conenctedRope;
 
     private List<WireController> petRopes = new List<WireController>();
     private List<ConnectedObject> pets = new List<ConnectedObject>();
@@ -31,6 +33,9 @@ public class RopeController : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         playerRope = CreateRope(playerRopeRigid, false);
+        conenctedRope = Instantiate(conenctedRope);
+        conenctedRope.UnConnect();
+
         CreateRope(petRopeRigid);
 
         SetFirstPosition();
@@ -138,9 +143,9 @@ public class RopeController : MonoBehaviour
     private void SetFirstPosition()
     {
         playerRope.ConnectStartPoint(playerRopeRigid);
-        playerRope.startRigid.isKinematic = false;
-        playerRope.endRigid.isKinematic = false;
+        playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
+        playerRope.Active(true);
 
         playerRope.transform.ChangeAllLayer(Define.ROPE_LAYER);
     }
@@ -160,12 +165,10 @@ public class RopeController : MonoBehaviour
 
     private void ConnectObject(ConnectedObject connectedObj, WireController wire)
     {
-        Rigidbody ropeRigid;
+        Rigidbody ropeRigid = wire.endRigid;
 
         if (connectedObjs.Count == 0)
         {
-            ropeRigid = wire.endRigid;
-
             playerRope.ConnectStartPoint(rigid);    // 몸에다 연결
             connectedObj.Connect(wire, false);      // 물체가 연결
 
@@ -176,10 +179,11 @@ public class RopeController : MonoBehaviour
         else
         {
             ropeRigid = wire.startRigid;
-            wire.endRigid.isKinematic = true;
 
             wire.ConnectStartPoint(connectedObj.Rigid); // 로프에 물체를 연결
-            playerRope.transform.ChangeAllLayer(Define.CONNECTED_ROPE_LAYER);
+            playerRope.Active(false);
+
+            conenctedRope.Connect(connectedObjs[0].RopePosition, connectedObj.RopePosition);
         }
 
 

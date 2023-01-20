@@ -7,6 +7,9 @@ public class ConnectedObject : MonoBehaviour
     [SerializeField]
     private bool isFollow = true;
 
+    [SerializeField]
+    private Transform ropePosition;
+
     private WireController frontWire = null;
 
     private Joint fixedJoint;
@@ -14,6 +17,14 @@ public class ConnectedObject : MonoBehaviour
 
     #region Property
     public Rigidbody Rigid => rigid;
+    public Transform RopePosition
+    {
+        get
+        {
+            if (ropePosition) return ropePosition;
+            else return transform;
+        }
+    }
     #endregion
 
     private void Start()
