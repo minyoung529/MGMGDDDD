@@ -63,7 +63,7 @@ public class WireController : MonoBehaviour
     public float segmentsSeparation = 0.2f;
     [Tooltip("Prevents infinite segments from being instantiated in case of an error in the code.")]
     public int limitMax = 200;
-    private int limit = 0;
+    protected int limit = 0;
     [Tooltip("A higher value improves the stability of the physics.")]
     public float segmentsRadius = 1.5f;
     public float currentDistanceToStartAnchor;
@@ -80,7 +80,7 @@ public class WireController : MonoBehaviour
     [Header("REFERENCES")]
     public TubeRenderer ropeMesh;
     public Transform startAnchorTemp;
-    public Transform firstSegment;
+    public Rigidbody firstSegmentConnectedBody;
     public Transform endAnchorTemp;
     public Transform plugTemp;
 
@@ -101,9 +101,8 @@ public class WireController : MonoBehaviour
     /// </summary>
     public Preset presetJoint;
 
-    private FollowTo startFollowTo;
-    private Joint startJoint;
-    private Joint endFixedJoint;
+    public ConfigurableJoint startJoint;
+    public ConfigurableJoint endJoint;
 
     public Rigidbody startRigid;
     public Rigidbody endRigid;
@@ -111,9 +110,8 @@ public class WireController : MonoBehaviour
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
-        startFollowTo = startAnchorTemp.GetComponent<FollowTo>();
-        endFixedJoint = endAnchorTemp.GetComponent<Joint>();
-        startJoint = startAnchorTemp.GetComponent<Joint>();
+        endJoint = endAnchorTemp.GetComponent<ConfigurableJoint>();
+        startJoint = startAnchorTemp.GetComponent<ConfigurableJoint>();
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
         endRigid = endAnchorTemp.GetComponent<Rigidbody>();
@@ -133,7 +131,7 @@ public class WireController : MonoBehaviour
         ChangeRadius();
     }
 
-    public void GetSegmentsDistance()
+    public virtual void GetSegmentsDistance()
     {
         /// <summary>
         /// Instantiate the segments by checking the distance of the last instantiated segment from the selected position.
@@ -152,7 +150,7 @@ public class WireController : MonoBehaviour
             {
                 //Instantiate new segment.
                 Transform newSegment = Instantiate(segment, segments[lastSegment].position + (segments[lastSegment].forward * segmentsSeparation), segments[lastSegment].rotation, transform);
-                newSegment.GetComponent<ConfigurableJoint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
+                newSegment.GetComponent<Joint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
                 segments.Add(newSegment);
             }
             else
@@ -176,7 +174,7 @@ public class WireController : MonoBehaviour
         SetMaxDistance();
     }
 
-    public void AddStar()
+    public virtual void AddStar()
     {
         if (startAnchorTemp == null)
         {
@@ -192,14 +190,14 @@ public class WireController : MonoBehaviour
         //If you do not use physics, the components are removed to the start anchor point, to improve performance.
         if (!usePhysics)
         {
-            DestroyImmediate(startAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(startAnchorTemp.GetComponent<Joint>());
             DestroyImmediate(startAnchorTemp.GetComponent<Collider>());
             DestroyImmediate(startAnchorTemp.GetComponent<Rigidbody>());
         }
     }
-    public void AddStart(Vector3 pos)
+    public virtual void AddStart(Vector3 pos)
     {
-        if(startAnchorTemp == null)
+        if (startAnchorTemp == null)
         {
             #region unpack prefab
             //When the first segment is created, the prefab is unpacked, to avoid an error that causes references to be lost in play mode.
@@ -213,31 +211,31 @@ public class WireController : MonoBehaviour
         //If you do not use physics, the components are removed to the start anchor point, to improve performance.
         if (!usePhysics)
         {
-            DestroyImmediate(startAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(startAnchorTemp.GetComponent<Joint>());
             DestroyImmediate(startAnchorTemp.GetComponent<Collider>());
             DestroyImmediate(startAnchorTemp.GetComponent<Rigidbody>());
         }
     }
 
-    public void AddSegment()
+    public virtual void AddSegment()
     {
         #region undo
         undoCount = 0;
         #endregion
-        if (firstSegment == null)
+        if (firstSegmentConnectedBody == null)
         {
 
             if (usePhysics)
             {
-                firstSegment = Instantiate(segment, startAnchorTemp.position, startAnchorTemp.rotation, transform);
-                firstSegment.GetComponent<ConfigurableJoint>().connectedBody = startAnchorTemp.GetComponent<Rigidbody>();
+                firstSegmentConnectedBody = Instantiate(segment, startAnchorTemp.position, startAnchorTemp.rotation, transform).GetComponent<Rigidbody>();
+                firstSegmentConnectedBody.GetComponent<Joint>().connectedBody = startAnchorTemp.GetComponent<Rigidbody>();
             }
             else
             {
-                firstSegment = Instantiate(segmentNoPhysics, startAnchorTemp.position, startAnchorTemp.rotation, transform);
+                firstSegmentConnectedBody = Instantiate(segmentNoPhysics, startAnchorTemp.position, startAnchorTemp.rotation, transform).GetComponent<Rigidbody>();
             }
 
-            segments.Add(firstSegment);
+            segments.Add(firstSegmentConnectedBody.transform);
 
             #region undo
             undoCount++;
@@ -257,13 +255,13 @@ public class WireController : MonoBehaviour
         #endregion
     }
 
-    public void AddEnd()
+    public virtual void AddEnd()
     {
         //Adds the final anchor point.
         int lastSegment = segments.Count - 1;
         endAnchorTemp = Instantiate(endAnchorPoint, segments[lastSegment].position + (segments[lastSegment].forward * .0005f), segments[lastSegment].rotation, transform);
         //The ConfigurableJoint is added to the anchor point and anchored with the end segment.
-        endAnchorTemp.GetComponent<ConfigurableJoint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
+        endAnchorTemp.GetComponent<Joint>().connectedBody = segments[lastSegment].GetComponent<Rigidbody>();
 
         if (usePhysics)
         {
@@ -276,13 +274,13 @@ public class WireController : MonoBehaviour
         else
         {
             //If you do not use physics, the components are removed to the end anchor point, to improve performance.
-            DestroyImmediate(endAnchorTemp.GetComponent<ConfigurableJoint>());
+            DestroyImmediate(endAnchorTemp.GetComponent<Joint>());
             DestroyImmediate(endAnchorTemp.GetComponent<Collider>());
             DestroyImmediate(endAnchorTemp.GetComponent<Rigidbody>());
         }
     }
 
-    public void AddPlug()
+    public virtual void AddPlug()
     {
         //Instances the plug in the selected position.
         plugTemp = Instantiate(plugObjt, selectPosition, plugObjt.transform.rotation, transform);
@@ -298,7 +296,7 @@ public class WireController : MonoBehaviour
     {
         maxDistanceToStarAnchor = segments.Count * segmentsSeparation;
     }
-    public void DistanceBetweenStartAndEnd()
+    public virtual void DistanceBetweenStartAndEnd()
     {
         currentDistanceToStartAnchor = Vector3.Distance(endAnchorTemp.position, startAnchorTemp.position);
 
@@ -311,17 +309,19 @@ public class WireController : MonoBehaviour
         }
     }
 
-    public void ChangeRadius()
+    public virtual void ChangeRadius()
     {
         ///<summary>
         ///Modifies the radius of the sphere colliders of all instantiated segments.
         ///Increasing the radius usually improves the stability of the physics but makes the collisions less accurate in relation to the mesh.
         /// </summary>
         if (usePhysics)
+        {
             foreach (Transform segment in segments)
             {
                 segment.GetComponent<SphereCollider>().radius = segmentsRadius;
             }
+        }
     }
 
     #region Buttons
@@ -334,8 +334,8 @@ public class WireController : MonoBehaviour
         }
 
         //Destroy the start anchor point.
-        if (firstSegment != null)
-            DestroyImmediate(firstSegment.gameObject);
+        if (firstSegmentConnectedBody != null)
+            DestroyImmediate(firstSegmentConnectedBody.gameObject);
 
         //Destroy the start anchor point.
         if (startAnchorTemp != null)
@@ -456,55 +456,70 @@ public class WireController : MonoBehaviour
 
     /// Custom
     #region Connect
-    public void ConnectStartPoint(Transform target)
+    public void ConnectStartPoint(Rigidbody rigid, bool isNotMove = false)
     {
-        if (startFollowTo && startFollowTo.enabled)
-            startFollowTo.Target = target;
-
         if (startJoint)
         {
-            startJoint.transform.position = target.position;
-            startJoint.autoConfigureConnectedAnchor = false;
-            startJoint.autoConfigureConnectedAnchor = true;
-            Debug.Log(target.gameObject.name);
-            startJoint.connectedBody = target.GetComponent<Rigidbody>();
+            startJoint.transform.position = rigid.transform.position;
+            startJoint.connectedBody = rigid;
         }
     }
 
     public void ConnectEndPoint(Rigidbody rigid)
     {
-        if (endFixedJoint)
-            endFixedJoint.connectedBody = rigid;
+        if (endJoint)
+        {
+            endJoint.transform.position = rigid.transform.position;
+            endJoint.connectedBody = rigid;
+        }
     }
     #endregion
 
     #region Animation
-    public IEnumerator TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected)
+
+    public void TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart = false)
     {
-        float timer = 5f;
-        float speed = 10f;
-        Rigidbody rigid;
-        rigid = endAnchorTemp.GetComponent<Rigidbody>();
+        StartCoroutine(TryConnectCoroutine(connect, onConnected, isStart));
+    }
+
+    public IEnumerator TryConnectCoroutine(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart)
+    {
+        float speed = 30f;
+        Joint joint = endJoint;
+        Rigidbody tempRigid = null;
+
+        if (isStart)
+        {
+            joint = startJoint;
+            tempRigid = joint.connectedBody;
+            joint.connectedBody = null;
+        }
+
+        Rigidbody rigid = joint.GetComponent<Rigidbody>();
         rigid.isKinematic = true;
 
-        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 1f)
+        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 7f) // 로프 범위 + 7까지
         {
-            Vector3 dir = (connect.transform.position - endAnchorTemp.position).normalized;
+            Vector3 dir = (connect.transform.position - joint.transform.position).normalized;
             rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);
 
             // 포획 성공
-            if (Vector3.Distance(connect.transform.position, endAnchorTemp.position) < 0.2f)
+            if (Vector3.Distance(connect.transform.position, joint.transform.position) < 0.2f)
             {
                 rigid.isKinematic = false;
                 onConnected.Invoke(connect, this);
                 yield break;
             }
 
-            timer -= Time.deltaTime;
             yield return null;
         }
 
         rigid.isKinematic = false;
+
+        if (isStart)    // 이전에 있던 물체 연결
+        {
+            ConnectStartPoint(tempRigid);
+        }
     }
     #endregion
 }

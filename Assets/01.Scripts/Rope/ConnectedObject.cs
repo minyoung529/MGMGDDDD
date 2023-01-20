@@ -7,27 +7,13 @@ public class ConnectedObject : MonoBehaviour
     [SerializeField]
     private bool isFollow = true;
 
-    [SerializeField]
-    private Transform ropePosition;
-
-    private WireController backWire = null;
     private WireController frontWire = null;
 
     private Joint fixedJoint;
     private Rigidbody rigid;
 
     #region Property
-    public Rigidbody Rigidbody => rigid;
-    public WireController StartWire { get => backWire; set => backWire = value; }
-    public WireController FrontWire { get => frontWire; set => frontWire = value; }
-    public Transform RopePosition
-    {
-        get
-        {
-            if (ropePosition) return ropePosition;
-            return transform;
-        }
-    }
+    public Rigidbody Rigid => rigid;
     #endregion
 
     private void Start()
@@ -36,43 +22,33 @@ public class ConnectedObject : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            rigid.MovePosition(transform.position - transform.forward * 0.5f);
+        }
+    }
+
     public void Connect(WireController wire, bool isStart)
     {
-        if (isStart)
-        {
-            // O---
-            if (isFollow)
-            {
-                //ropePosition.position = wire.startRigid.position;
-                //wire.startRigid.isKinematic = true;
-                //rigid.isKinematic = false;
+        Rigidbody wireRigid = wire.startRigid;
 
-                //if (fixedJoint)
-                //    fixedJoint.connectedBody = wire.startRigid;
-            }
-
-            backWire = wire;
-        }
+        if (!isStart)
         // ---O
-        else
         {
-            if (isFollow)
-            {
-                rigid.isKinematic = false;
-            }
-            else
-            {
-                rigid.isKinematic = true;
-                wire.endRigid.isKinematic = true;
-            }
-
-            ropePosition.position = wire.endRigid.position;
-
-            if (fixedJoint)
-                fixedJoint.connectedBody = wire.endRigid;
-
             frontWire = wire;
+            wireRigid = wire.endRigid;
         }
+
+        rigid.MovePosition(wireRigid.position);
+
+        if (fixedJoint)
+        {
+            fixedJoint.connectedBody = wireRigid;
+        }
+
+        rigid.isKinematic = !isFollow;
     }
 
     public void UnConnect()
@@ -80,6 +56,9 @@ public class ConnectedObject : MonoBehaviour
         fixedJoint.connectedBody = null;
         rigid.isKinematic = true;
 
-        frontWire.endRigid.isKinematic = false;
+        if (frontWire)
+        {
+            frontWire.endRigid.isKinematic = false;
+        }
     }
 }

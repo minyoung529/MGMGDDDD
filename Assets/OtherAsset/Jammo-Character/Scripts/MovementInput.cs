@@ -56,6 +56,8 @@ public class MovementInput : MonoBehaviour
         }
         //moveVector = new Vector3(0, verticalVel * .2f * Time.deltaTime, 0);
         //rigid.velocity = (moveVector);
+
+        TestJump();
     }
 
     void PlayerMoveAndRotation()
@@ -74,13 +76,19 @@ public class MovementInput : MonoBehaviour
         right.Normalize();
 
         desiredMoveDirection = forward * InputZ + right * InputX;
-
+        
         if (blockRotationPlayer == false)
         {
             RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
+
+            if (desiredMoveDirection.magnitude > 0.01f)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+            Vector3 velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
+            velocity.y = rigid.velocity.y;
+            rigid.velocity = velocity;
             //rigid.position += desiredMoveDirection.normalized * Time.deltaTime * Velocity;
-            //controller.Move(desiredMoveDirection * Time.deltaTime * Velocity);
+            //rigid.MovePosition(transform.position + desiredMoveDirection * Time.deltaTime * Velocity);
         }
     }
 
@@ -88,7 +96,6 @@ public class MovementInput : MonoBehaviour
     {
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(pos), desiredRotationSpeed);
     }
-
 
     private void RotatePlayer(bool isRotate)
     {
@@ -102,9 +109,6 @@ public class MovementInput : MonoBehaviour
         InputX = Input.GetAxis("Horizontal");
         InputZ = Input.GetAxis("Vertical");
 
-        //anim.SetFloat ("InputZ", InputZ, VerticalAnimTime, Time.deltaTime * 2f);
-        //anim.SetFloat ("InputX", InputX, HorizontalAnimSmoothTime, Time.deltaTime * 2f);
-
         //Calculate the Input Magnitude
         Speed = new Vector2(InputX, InputZ).sqrMagnitude;
 
@@ -113,13 +117,25 @@ public class MovementInput : MonoBehaviour
         if (Speed > allowPlayerRotation)
         {
             if (anim)
+            {
                 anim.SetFloat("Blend", Speed, StartAnimTime, Time.deltaTime);
+            }
             PlayerMoveAndRotation();
         }
         else if (Speed < allowPlayerRotation)
         {
             if (anim)
-            anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
+            {
+                anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
+            }
+        }
+    }
+
+    private void TestJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            rigid.AddForce(Vector3.up * 0.3f, ForceMode.Impulse);
         }
     }
 }

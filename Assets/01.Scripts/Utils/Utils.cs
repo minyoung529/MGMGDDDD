@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Utils
+public static class Utils
 {
     public static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
     {
@@ -14,5 +15,20 @@ public class Utils
         }
 
         return component;
+    }
+
+    public static void ChangeAllLayer(this Transform transform, int layer)
+    {
+        ChangeLayersRecursively(transform, layer);
+    }
+
+    public static void ChangeLayersRecursively(Transform trans, int layer)
+    {
+        trans.gameObject.layer = layer;
+
+        foreach (Transform child in trans)
+        {
+            ChangeLayersRecursively(child, layer);
+        }
     }
 }

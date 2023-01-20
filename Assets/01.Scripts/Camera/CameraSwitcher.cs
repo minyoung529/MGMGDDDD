@@ -11,8 +11,6 @@ public enum CameraType
 }
 public class CameraSwitcher : MonoBehaviour
 {
-
-
     static List<CinemachineVirtualCameraBase> cameras = new List<CinemachineVirtualCameraBase>();
 
     public static CinemachineVirtualCameraBase activeCamera = null;
@@ -31,7 +29,6 @@ public class CameraSwitcher : MonoBehaviour
             }
         }
     }
-
 
     #region CameraSet
 
