@@ -1,73 +1,52 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using static UnityEditor.PlayerSettings;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class RopeCollider : MonoBehaviour
 {
     private const float ROPE_THICKNESS = 0.075f;
     private Transform fixedObject;
-    private Vector3 originalMid;
-    private Transform character;
+    private Transform mid;
+    new private Collider collider;
 
-    private bool isStay = false;
+    private void Start()
+    {
+        collider = GetComponent<Collider>();
+    }
 
     private void Update()
     {
-        if (isStay)
+        if (fixedObject && mid)
         {
-
+            Connect(fixedObject, mid);
         }
     }
 
-    public void Connect(Transform fixedObj, Vector3 to, bool isFirstConnect = false)
+    public void Connect(Transform from, Transform to, bool isFirstConnect = false)
     {
         if (!gameObject.activeSelf)
+        {
             gameObject.SetActive(true);
+        }
 
         if (isFirstConnect)
         {
-            fixedObject = fixedObj;
-            originalMid = to;
+            fixedObject = from;
+            mid = to;
         }
 
-        SetScale(fixedObj.position, to);
-        SetPosAndRot(fixedObj.position, to);
+        SetScale(from.position, mid.position);
+        SetPosAndRot(from.position, mid.position);
     }
 
     public void UnConnect()
     {
         gameObject.SetActive(false);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == Define.PLAYER_LAYER)
-        {
-            character = collision.transform;
-            isStay = true;
-        }
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.layer == Define.PLAYER_LAYER)
-        {
-            Vector3 pos = collision.transform.position;
-            pos.y = (fixedObject.position.y + originalMid.y) * 0.5f;
-
-            Connect(fixedObject, pos);
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.layer == Define.PLAYER_LAYER)
-        {
-            isStay = false;
-            Connect(fixedObject, originalMid);
-        }
     }
 
     private void SetScale(Vector3 from, Vector3 to)
@@ -84,5 +63,15 @@ public class RopeCollider : MonoBehaviour
 
         transform.position = from + dir * distance * 0.5f;
         transform.forward = dir;
+    }
+
+    public void SetIsTrigger(bool isTrigger)
+    {
+        collider.isTrigger = isTrigger;
+    }
+
+    public void ResetRope()
+    {
+        Connect(fixedObject, mid);
     }
 }

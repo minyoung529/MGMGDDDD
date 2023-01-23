@@ -31,6 +31,12 @@ public static class Utils
             ChangeLayersRecursively(child, layer);
         }
     }
+
+    public static Vector3 GetMid(Vector3 from, Vector3 to)
+    {
+        float dist = Vector3.Distance(from, to);
+        return from + (to - from).normalized * 0.5f * dist; ;
+    }
 }
 
 
