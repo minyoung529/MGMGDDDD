@@ -33,24 +33,10 @@ public class ConnectedObject : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    public void Connect(WireController wire)
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            rigid.MovePosition(transform.position - transform.forward * 0.5f);
-        }
-    }
-
-    public void Connect(WireController wire, bool isStart)
-    {
-        Rigidbody wireRigid = wire.startRigid;
-
-        if (!isStart)
-        // ---O
-        {
-            frontWire = wire;
-            wireRigid = wire.endRigid;
-        }
+        Rigidbody wireRigid = wire.endRigid;
+        frontWire = wire;
 
         rigid.MovePosition(wireRigid.position);
 
@@ -67,6 +53,7 @@ public class ConnectedObject : MonoBehaviour
         fixedJoint.connectedBody = null;
         rigid.isKinematic = true;
 
+        // TODO: MOVE
         if (frontWire)
         {
             frontWire.endRigid.isKinematic = false;

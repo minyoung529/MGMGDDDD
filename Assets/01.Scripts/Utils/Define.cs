@@ -15,4 +15,8 @@ public class Define
     public const int CONNECTED_OBJECT_LAYER     = 1 << 9;
     public const int CONNECTED_ROPE_LAYER       = 10;
     #endregion
+
+    #region ROPE_VALUE
+    public const float MAX_ROPE_DISTANCE = 5f;
+    #endregion
 }
