@@ -528,6 +528,7 @@ public class WireController : MonoBehaviour
 
         // reset
         rigid.isKinematic = false;
+
         StartCoroutine(DelayDecreaseDistance());
 
         if (!isConnect && isStart)    // 이전에 있던 물체 연결

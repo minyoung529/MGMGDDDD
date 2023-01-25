@@ -13,7 +13,7 @@ public class FallTest : MonoBehaviour
 
     void Update()
     {
-        if(transform.position.y < -20f)
+        if(transform.position.y < -100f)
         {
             transform.position = originalPos;
         }

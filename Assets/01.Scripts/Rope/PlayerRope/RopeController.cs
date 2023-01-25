@@ -26,8 +26,8 @@ public class RopeController : MonoBehaviour
 
     private void Start()
     {
-        connectObject = Utils.GetOrAddComponent<ConnectObject>(gameObject);
-        connectPet = Utils.GetOrAddComponent<ConnectPet>(gameObject);
+        connectObject = gameObject.GetOrAddComponent<ConnectObject>();
+        connectPet = gameObject.GetOrAddComponent<ConnectPet>();
 
         playerRope = Instantiate(wirePrefab);
         playerRope.ConnectStartPoint(playerRopeRigid);
@@ -45,6 +45,7 @@ public class RopeController : MonoBehaviour
         {
             connectObject.UnConnect();
             connectPet.UnConnect();
+            SetInitState();
         }
     }
 
@@ -60,6 +61,7 @@ public class RopeController : MonoBehaviour
         else
         {
             connectObject.Connect(target.GetComponent<ConnectedObject>(), hitPoint, wire);
+            playerRope.Active(false);
         }
     }
 

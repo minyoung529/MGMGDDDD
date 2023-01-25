@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -6,42 +7,67 @@ using UnityEngine.TextCore.Text;
 
 public class ConnectedRope : MonoBehaviour
 {
-    private Pair<RopeCollider, RopeCollider> ropePair;
     [SerializeField]
-    private Transform mid;
+    private SlingShot slingShot;
+    private LineRenderer line;
 
-    private RopeDetect ropeDetect;
+    new private BoxCollider collider;
+    private Vector3 mid;
+
+    #region Property
+    public Vector3 Mid { get => mid; set => mid = value; }
+    public Action OnConnect;
+    #endregion
 
     private void Start()
     {
-        RopeCollider[] ropeColliders = GetComponentsInChildren<RopeCollider>();
-        ropeDetect = GetComponent<RopeDetect>();
-
-        ropePair.first = ropeColliders[0];
-        ropePair.second = ropeColliders[1];
-
-        InputManager.StartListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
+        collider = GetComponent<BoxCollider>();
     }
 
-    public void Connect(Transform from, Transform to)
+    private void Update()
     {
-        transform.position = Utils.GetMid(from.position, to.position);
-
-        ropePair.first.Connect(from, mid, true);
-        ropePair.second.Connect(to, mid , true);
-
-        ropeDetect?.SetSize();
+        if (line?.positionCount >= 3)
+        {
+            line?.SetPosition(1, mid);
+        }
     }
 
-    public void UnConnect(InputAction action = InputAction.UnConnect, InputType type = InputType.GetKeyDown, float value = 0f)
+    public void Connect(Vector3 from, Vector3 to, LineRenderer lineRenderer)
     {
-        ropePair.first?.UnConnect();
-        ropePair.second?.UnConnect();
+        line = lineRenderer;
+        SetLine(from, to);
+        SetCollider(from, to);
+
+        transform.position = mid;
+        transform.right = (to - from).normalized;
+
+        OnConnect?.Invoke();
     }
 
-
-    private void OnDestroy()
+    private void OnCollisionEnter(Collision collision)
     {
-        InputManager.StopListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
+        if (Input.GetKey(KeyCode.S))
+        {
+            collider.isTrigger = true;
+        }
+    }
+
+    private void SetLine(Vector3 from, Vector3 to)
+    {
+        mid = Utils.GetMid(from, to);
+
+        line.positionCount = 3;
+        line.SetPosition(0, from);
+        line.SetPosition(1, mid);
+        line.SetPosition(2, to);
+    }
+
+    private void SetCollider(Vector3 from, Vector3 to)
+    {
+        Vector3 size;
+        size.x = Vector3.Distance(from, to);
+        size.y = size.z = line.startWidth;
+
+        collider.size = size;
     }
 }
