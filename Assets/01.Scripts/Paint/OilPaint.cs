@@ -10,31 +10,31 @@ public class OilPaint : MonoBehaviour{
 
     Rigidbody rigid;
     SphereCollider col;
-    MeshRenderer renderer;
+    MeshRenderer render;
 
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody>();
         col = GetComponent<SphereCollider>();
-        renderer = GetComponent<MeshRenderer>();
+        rigid = GetComponent<Rigidbody>();
+        render = GetComponent<MeshRenderer>();
     }
 
     private void OnCollisionEnter(Collision other) {
-        Paintable p = other.collider.GetComponent<Paintable>();
-        if(p != null){
+        if (other.collider.TryGetComponent(out Paintable p)){
             Vector3 pos = other.contacts[0].point;
             PaintManager.instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
         }
+
     }
 
     void SpreadOil()
     {
-        rigid.useGravity= false;
+      //  rigid.useGravity= false;
         col.isTrigger = true;
 
         col.radius = 1.0f;
-        renderer.enabled = false;
+        render.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)

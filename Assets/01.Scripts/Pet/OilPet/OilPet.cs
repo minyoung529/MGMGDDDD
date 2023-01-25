@@ -34,11 +34,10 @@ public class OilPet : Pet
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
+            Vector3 des = (hit.point - transform.position).normalized;
+            GameObject oil = Instantiate(oilSkill, transform.position + des*3f, Quaternion.identity);
             oil.transform.DOMoveX(hit.point.x, 3).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad);
-
-            IsSkilling = false;
+            oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad).OnComplete(()=> IsSkilling = false);
         }
     }
 
@@ -47,7 +46,6 @@ public class OilPet : Pet
     {
         base.PassiveSkill();
 
-        Debug.Log("Passive Skill On : 활활 타임 시작");
         isBurn = true;
         StartCoroutine(FireTime());
     }

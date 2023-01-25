@@ -82,8 +82,8 @@ public class MovementInput : MonoBehaviour
             RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
 
-            if (desiredMoveDirection.magnitude > 0.01f)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+           // if (desiredMoveDirection.magnitude > 0.01f)
+                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
             Vector3 velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
             velocity.y = rigid.velocity.y;
             rigid.velocity = velocity;
