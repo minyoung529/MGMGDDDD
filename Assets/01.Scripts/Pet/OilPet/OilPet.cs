@@ -6,6 +6,7 @@ using DG.Tweening;
 public class OilPet : Pet
 {
     [SerializeField] GameObject oilSkill;
+    [SerializeField] Transform bulletPos;
 
     private const float fireStayTime = 2.0f;
     private const float fireSkillTime = 10.0f;
@@ -13,6 +14,8 @@ public class OilPet : Pet
 
     private bool isBurn = false;
     private bool inFire = false;
+
+    Vector3 waterBallTarget;
 
     #region Set
     protected override void ResetPet()
@@ -34,10 +37,13 @@ public class OilPet : Pet
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            Vector3 des = (hit.point - transform.position).normalized;
-            GameObject oil = Instantiate(oilSkill, transform.position + des*3f, Quaternion.identity);
+            GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
             oil.transform.DOMoveX(hit.point.x, 3).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad).OnComplete(()=> IsSkilling = false);
+            oil.transform.DOMoveZ(hit.point.z, 3).SetEase(Ease.OutQuad);
+            oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad).OnComplete(()=>
+            {
+                IsSkilling = false;
+            });
         }
     }
 

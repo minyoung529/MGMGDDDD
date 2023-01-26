@@ -1,8 +1,9 @@
 using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
-    public Color paintColor;
-    public PhysicMaterial oil;
+    [SerializeField] ParticleSystem splashParticle;
+    [SerializeField] Color paintColor;
+    [SerializeField] PhysicMaterial oil;
     
     public float radius = 0.5f;
     public float strength = 1;
@@ -19,18 +20,22 @@ public class OilPaint : MonoBehaviour{
         render = GetComponent<MeshRenderer>();
     }
 
-    private void OnCollisionEnter(Collision other) {
-        if (other.collider.TryGetComponent(out Paintable p)){
-            Vector3 pos = other.contacts[0].point;
+    private void OnCollisionStay(Collision collision)
+    {
+        Paintable p = collision.collider.GetComponent<Paintable>();
+        if (p != null)
+        {
+            Debug.Log("Paint");
+            Vector3 pos = collision.contacts[0].point;
             PaintManager.instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
         }
-
     }
 
     void SpreadOil()
     {
-      //  rigid.useGravity= false;
+        splashParticle.Play();
+        rigid.useGravity= false;
         col.isTrigger = true;
 
         col.radius = 1.0f;

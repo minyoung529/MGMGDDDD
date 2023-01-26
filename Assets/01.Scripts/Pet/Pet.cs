@@ -6,7 +6,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] private Transform player;
+    [SerializeField] protected Transform player;
 
     [SerializeField] private bool isGet = false;
     [SerializeField] private bool isMove = false;
@@ -72,7 +72,6 @@ public abstract class Pet : MonoBehaviour
         else
         {
             if (IsStop) return;
-            Debug.Log("GO");
             FollowTarget(true);
         }
 
