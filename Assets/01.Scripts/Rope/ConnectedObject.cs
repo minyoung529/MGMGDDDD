@@ -12,7 +12,7 @@ public class ConnectedObject : MonoBehaviour
 
     private WireController frontWire = null;
 
-    private Joint fixedJoint;
+    private Joint joint;
     private Rigidbody rigid;
 
     #region Property
@@ -29,28 +29,48 @@ public class ConnectedObject : MonoBehaviour
 
     private void Start()
     {
-        fixedJoint = GetComponent<Joint>();
-        rigid = GetComponent<Rigidbody>();
+        rigid = gameObject.GetOrAddComponent<Rigidbody>();
+
+        if (!isFollow)
+            rigid.useGravity = false;
+
+        if (isFollow)
+        {
+            joint = GetComponent<Joint>();
+
+            if (!joint)
+            {
+                joint = gameObject.AddComponent<FixedJoint>();
+            }
+        }
     }
 
-    public void Connect(WireController wire)
+    public void Connect(WireController wire, Rigidbody playerRigid = null)
     {
-        Rigidbody wireRigid = wire.endRigid;
-        frontWire = wire;
-
-        rigid.MovePosition(wireRigid.position);
-
-        if (fixedJoint)
-        {
-            fixedJoint.connectedBody = wireRigid;
-        }
-
         rigid.isKinematic = !isFollow;
+
+        if (!isFollow) return;
+
+        if (gameObject.layer == Define.PET_LAYER)
+        {
+            Rigidbody wireRigid = wire.endRigid;
+            frontWire = wire;
+
+            rigid.MovePosition(wireRigid.position);
+
+            joint.connectedBody = wireRigid;
+        }
+        else
+        {
+            joint.connectedBody = playerRigid;
+        }
     }
 
     public void UnConnect()
     {
-        fixedJoint.connectedBody = null;
+        if (!isFollow) return;
+
+        joint.connectedBody = null;
         rigid.isKinematic = true;
 
         // TODO: MOVE

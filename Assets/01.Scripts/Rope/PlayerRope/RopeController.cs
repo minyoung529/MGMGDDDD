@@ -25,15 +25,18 @@ public class RopeController : MonoBehaviour
     private Transform target;
 
     private int connectCnt = 0;
+    private Rigidbody rigid;
 
     #region Property
     public int ConnectCount => connectCnt;
+    public Rigidbody RopeRigid => playerRopeRigid;
     #endregion
 
     private void Start()
     {
         connectObject = gameObject.GetOrAddComponent<ConnectObject>();
         connectPet = gameObject.GetOrAddComponent<ConnectPet>();
+        rigid = GetComponent<Rigidbody>();
 
         playerRope = Instantiate(wirePrefab);
         playerRope.ConnectStartPoint(playerRopeRigid);
@@ -49,9 +52,7 @@ public class RopeController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            connectObject.UnConnect();
-            connectPet.UnConnect();
-            SetInitState();
+            UnConnect();
         }
     }
 
@@ -102,8 +103,16 @@ public class RopeController : MonoBehaviour
         else
         {
             if (connectCnt == 2) return;
-            // 연결되어있는 게 1 이상이면 머리가 이동
-            playerRope.TryConnect(OnConnect, hitPoint/*, true*/);
+
+            if (connectCnt == 1)
+            {
+                OnConnect(playerRope);
+            }
+            else
+            {
+                // 연결되어있는 게 1 이상이면 머리가 이동
+                playerRope.TryConnect(OnConnect, hitPoint/*, true*/);
+            }
         }
     }
 
@@ -118,5 +127,12 @@ public class RopeController : MonoBehaviour
         playerRope.Active(true);
 
         connectCnt = 0;
+    }
+
+    public void UnConnect()
+    {
+        connectObject.UnConnect();
+        connectPet.UnConnect();
+        SetInitState();
     }
 }

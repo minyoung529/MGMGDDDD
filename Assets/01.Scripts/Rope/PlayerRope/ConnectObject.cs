@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ public class ConnectObject : MonoBehaviour
 
     #region Connect Object
     [SerializeField] private ConnectedRope connectedRope;
-    private ConnectObject prevConnectedObj;
+    private List<ConnectedObject> connectedObjs = new List<ConnectedObject>();
     private Vector3 prevHitPoint;
     #endregion
 
@@ -31,7 +32,20 @@ public class ConnectObject : MonoBehaviour
         if (joint)   // 연결이 된 상태
         {
             lineRenderer.SetPosition(0, ropeHand.position);
-            lineRenderer.SetPosition(1, hitPoint);
+
+            if (connectedObjs.Count == 1)
+            {
+                lineRenderer.SetPosition(1, connectedObjs.First().RopePosition.position);
+            }
+            else
+            {
+                lineRenderer.SetPosition(1, hitPoint);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ropeController.UnConnect();
+            }
         }
     }
 
@@ -43,18 +57,16 @@ public class ConnectObject : MonoBehaviour
         if (ropeController.ConnectCount > 0)
         {
             ResetSwing();
-
-            //if (connectedObj)
-            //{
-            //connectedRope.Connect(connectedObj.RopePosition.position, hitPoint, lineRenderer);
-            //}
-            //else
-            //{
             connectedRope.Connect(prevHitPoint, hitPoint, lineRenderer);
-            //}
         }
         else
         {
+            if (connectedObj)
+            {
+                connectedObj.Connect(wire, ropeController.RopeRigid);
+                connectedObjs.Add(connectedObj);
+            }
+
             Swing();
         }
 
@@ -70,7 +82,15 @@ public class ConnectObject : MonoBehaviour
 
         joint.anchor = Vector3.zero;
         joint.autoConfigureConnectedAnchor = false;
-        joint.connectedAnchor = hitPoint;
+
+        if (connectedObjs.Count == 0)
+        {
+            joint.connectedAnchor = hitPoint;
+        }
+        else
+        {
+            joint.connectedBody = connectedObjs.First().Rigid;
+        }
 
         // the distance grapple will try to keep from grapple point. 
         joint.maxDistance = Define.MAX_ROPE_DISTANCE;
@@ -95,5 +115,8 @@ public class ConnectObject : MonoBehaviour
     {
         ResetSwing();
         lineRenderer.positionCount = 0;
+
+        connectedObjs.ForEach(x => x.UnConnect());
+        connectedObjs.Clear();
     }
 }
