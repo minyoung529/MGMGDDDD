@@ -24,6 +24,12 @@ public class RopeController : MonoBehaviour
     private Vector3 hitPoint;
     private Transform target;
 
+    private int connectCnt = 0;
+
+    #region Property
+    public int ConnectCount => connectCnt;
+    #endregion
+
     private void Start()
     {
         connectObject = gameObject.GetOrAddComponent<ConnectObject>();
@@ -62,6 +68,7 @@ public class RopeController : MonoBehaviour
         {
             connectObject.Connect(target.GetComponent<ConnectedObject>(), hitPoint, wire);
             playerRope.Active(false);
+            connectCnt++;
         }
     }
 
@@ -94,6 +101,7 @@ public class RopeController : MonoBehaviour
         }
         else
         {
+            if (connectCnt == 2) return;
             // 연결되어있는 게 1 이상이면 머리가 이동
             playerRope.TryConnect(OnConnect, hitPoint/*, true*/);
         }
@@ -108,5 +116,7 @@ public class RopeController : MonoBehaviour
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
         playerRope.Active(true);
+
+        connectCnt = 0;
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ConnectObject : MonoBehaviour
 {
     [SerializeField] private Transform ropeHand;
-
+    private RopeController ropeController;
     #region Swing Variable
     private Vector3 hitPoint;
     private SpringJoint joint;
@@ -17,13 +17,12 @@ public class ConnectObject : MonoBehaviour
     [SerializeField] private ConnectedRope connectedRope;
     private ConnectObject prevConnectedObj;
     private Vector3 prevHitPoint;
-
-    private int connectCnt = 0;
     #endregion
 
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        ropeController = GetComponent<RopeController>();
         connectedRope = Instantiate(connectedRope);
     }
 
@@ -41,22 +40,21 @@ public class ConnectObject : MonoBehaviour
         lineRenderer.positionCount = 2;
         this.hitPoint = hitPoint;
 
-        if (connectCnt > 0)
+        if (ropeController.ConnectCount > 0)
         {
             ResetSwing();
 
             //if (connectedObj)
             //{
-                //connectedRope.Connect(connectedObj.RopePosition.position, hitPoint, lineRenderer);
+            //connectedRope.Connect(connectedObj.RopePosition.position, hitPoint, lineRenderer);
             //}
             //else
             //{
-                connectedRope.Connect(prevHitPoint, hitPoint, lineRenderer);
+            connectedRope.Connect(prevHitPoint, hitPoint, lineRenderer);
             //}
         }
         else
         {
-            connectCnt++;
             Swing();
         }
 
@@ -96,7 +94,6 @@ public class ConnectObject : MonoBehaviour
     public void UnConnect()
     {
         ResetSwing();
-        connectCnt = 0;
         lineRenderer.positionCount = 0;
     }
 }
