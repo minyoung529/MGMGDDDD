@@ -15,7 +15,14 @@ public class FallTest : MonoBehaviour
     {
         if(transform.position.y < -100f)
         {
-            transform.position = originalPos;
+            SavePoint();
         }
+    }
+
+    [ContextMenu("BACK")]
+    private void SavePoint()
+    {
+        transform.position = originalPos;
+        GetComponent<Rigidbody>().velocity= Vector3.zero;
     }
 }

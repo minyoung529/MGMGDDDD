@@ -46,9 +46,12 @@ public class ConnectedRope : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (Input.GetKey(KeyCode.S))
+        if (collision.gameObject.layer == Define.PLAYER_LAYER)
         {
-            collider.isTrigger = true;
+            if (Input.GetKey(KeyCode.S) && collision.transform.position.y < mid.y)
+            {
+                collider.isTrigger = true;
+            }
         }
     }
 

@@ -76,11 +76,9 @@ public class ConnectObject : MonoBehaviour
 
         // the distance grapple will try to keep from grapple point. 
         joint.maxDistance = Define.MAX_ROPE_DISTANCE;
-        joint.minDistance = 0f;//0.01f;
+        joint.minDistance = 0f;
 
         // customize values as you like
-        //joint.spring = 3.5f;
-        //joint.damper = 4f;
         joint.spring = 30f;
         joint.damper = 10f;
 

@@ -20,6 +20,9 @@ public class SlingShot : MonoBehaviour
 
     private SpringJoint joint;
 
+    [SerializeField]
+    private float flyForce = 5f;
+
     private void Start()
     {
         collider = GetComponent<BoxCollider>();
@@ -70,8 +73,14 @@ public class SlingShot : MonoBehaviour
     private void Fly()
     {
         Rigidbody rigid = character.GetComponent<Rigidbody>();
-        Vector3 dir = (originMid - connectedRope.Mid + Vector3.up * 15f).normalized;
-        rigid.AddForce(dir * 770f, ForceMode.Impulse);
+        float dist = Vector3.Distance(connectedRope.Mid, originMid);
+
+        Vector3 dir = (originMid - connectedRope.Mid).normalized;
+        dir.y = 0.5f * dist;
+        //dir.Normalize();
+
+        Debug.DrawRay(rigid.position, dir * 1000f, Color.red, 7f);
+        rigid.AddForce(flyForce * (dist * 0.2f) * dir, ForceMode.VelocityChange);
     }
 
     private void SetSpringJoint()
@@ -112,7 +121,7 @@ public class SlingShot : MonoBehaviour
     private void ResetRope()
     {
         character = null;
-        collider.isTrigger= false;
+        collider.isTrigger = false;
         connectedRope.Mid = originMid;
         isStay = false;
 

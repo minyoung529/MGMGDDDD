@@ -57,7 +57,7 @@ public class MovementInput : MonoBehaviour
         //moveVector = new Vector3(0, verticalVel * .2f * Time.deltaTime, 0);
         //rigid.velocity = (moveVector);
 
-        //TestJump();
+        TestJump();
     }
 
     void PlayerMoveAndRotation()
