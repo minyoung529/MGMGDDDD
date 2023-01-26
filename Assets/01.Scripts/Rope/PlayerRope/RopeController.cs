@@ -46,17 +46,10 @@ public class RopeController : MonoBehaviour
         SetInitState();
     }
 
-    void Update()
+    private void SetInput()
     {
-        if (cameraController.IsAim && Input.GetMouseButtonDown(0))
-        {
-            ConnectTarget();
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            UnConnect();
-        }
+        InputManager.StartListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
+        InputManager.StartListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
 
     /// <summary>
@@ -64,7 +57,7 @@ public class RopeController : MonoBehaviour
     /// </summary>
     private void OnConnect(WireController wire)
     {
-        cameraController.SetAim(false);
+        cameraController.SetRope();
 
         if (1 << target.gameObject.layer == Define.PET_LAYER)
         {
@@ -78,8 +71,10 @@ public class RopeController : MonoBehaviour
         }
     }
 
-    private void ConnectTarget()
+    private void ConnectTarget(InputAction action, InputType type, float val)
     {
+        if (!ThirdPersonCameraControll.IsRopeAim) return;
+
         Camera camera = GameManager.Instance.MainCam;
         Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
 
@@ -135,10 +130,21 @@ public class RopeController : MonoBehaviour
         connectCnt = 0;
     }
 
-    public void UnConnect()
+    public void UnConnect(InputAction action = InputAction.UnConnect, InputType type = InputType.GetKeyDown, float val = 0f)
     {
         connectObject.UnConnect();
         connectPet.UnConnect();
         SetInitState();
+
+        Vector3 eulerAngles = transform.eulerAngles;
+        eulerAngles.x = 0f;
+
+        transform.eulerAngles = eulerAngles;
+    }
+
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
+        InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
 }

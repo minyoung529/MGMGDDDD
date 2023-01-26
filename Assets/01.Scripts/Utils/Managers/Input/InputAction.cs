@@ -14,5 +14,6 @@ public enum InputAction
     Select_Second_Pet = 11,
     Select_Third_Pet = 12,
     UnConnect = 13,
+    TryConnect = 14,
     Length
 }
