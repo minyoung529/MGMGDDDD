@@ -2,84 +2,113 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] private bool isSelected = false;
-    [SerializeField] private bool isConnected = false;
-    [SerializeField] private bool isGet = false;
     [SerializeField] private Transform player;
 
-    public bool IsConnected() { return isConnected; }
-    public bool IsSelected() { return isSelected; }
-    public bool IsGet() { return isGet; }
+    [SerializeField] private bool isGet = false;
+    [SerializeField] private bool isMove = false;
+    [SerializeField] private bool isStop = false;
+    [SerializeField] private bool isSelected = false;
+    [SerializeField] private bool isConnected = false;
+    [SerializeField] private bool isSkilling = false;
 
-    private Vector3 destination;
-    private NavMeshAgent agent;
-    private Camera camera;
-    private bool isMove;
+    protected Camera camera;
+    protected Rigidbody rigid;
+    protected NavMeshAgent agent;
 
     public PetType type;
     public Color selectColor;
 
-    private void Awake()
+    private Vector3 destination = Vector3.zero;
+
+   public bool IsGet {get { return isGet; } set { isGet = value; }}
+   public bool IsSelected { get { return isSelected; } set { isSelected = value; }}
+   public bool IsConnected { get { return isConnected; } set { isConnected = value; }}
+   public bool IsStop { get { return isStop; } set { isStop = value; }}
+   public bool IsSkilling { get { return isSkilling; } set { isSkilling = value; }}
+
+    protected virtual void Awake()
     {
+        rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+
         camera = Camera.main;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if (!IsGet()) return;
-        if (IsConnected())
+        ResetPet();
+    }
+
+    protected virtual void Update()
+    {
+        // 1. ¾ò¾ú³Ä
+        if (!IsGet) return;
+
+        // 2. ¿¬°áµÆ³Ä
+        // 3. ¼±ÅÃµÆ³Ä
+        if (IsConnected)
         {
-            if (!IsSelected()) return;
-            Follow(false);
-
-            if (Input.GetMouseButtonDown(0))
+            if (!IsSelected) return;
+            if (ThirdPersonCameraControll.IsPetAim)
             {
-                Skill();
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    ActiveSkill();
+                }
+                if (Input.GetMouseButtonDown(1))
+                {
+                    MovePoint();
+                }
             }
-            if (Input.GetMouseButtonDown(1))
-            {
-                ClickMove();
-            }
-
-            Move();
+            ClickMove();
         }
         else
         {
-            Follow(true);
-            Debug.Log("Follow");
+            if (IsStop) return;
+            FollowTarget(true);
         }
-    }
 
-    protected virtual void Skill()
-    {
-        OnConnected(false);
-        PetManager.instance.OnSelect(false);
+        // active skill Áß ÁÂÅ¬¸¯ ½Ã
+        if (isSkilling)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                ClickActive();
+            }
+        }
     }
 
     #region SET
 
-    public void OnConnected(bool isOn)
+    protected virtual void ResetPet()
     {
-        isConnected = isOn;
+        isGet = false;
+        isMove = false;
+        isStop = false;
+        isSelected = false;
+        IsSkilling = false;
+        isConnected = false;
+
+        agent.enabled = true;
     }
 
-    public void OnSelected(bool isOn)
+    public void GetPet(bool isOn)
     {
-        isSelected = isOn;
-    }
+        isGet = true;
+        IsConnected=true;
 
-    public void OnGetPet(bool isOn)
+        FollowTarget(false);
+        PetManager.instance.AddPet(this);
+    }
+    public void LosePet()
     {
-        isGet = isOn;
-        isConnected = isOn;
-        if(isOn==false)
-        {
-            PetManager.instance.DeletePet(this);
-        }
+        isGet = false;
+
+        PetManager.instance.DeletePet(this);
     }
 
     #endregion
@@ -92,7 +121,7 @@ public abstract class Pet : MonoBehaviour
         destination = dest;
         isMove = true;
     }
-    private void ClickMove()
+    private void MovePoint()
     {
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -100,7 +129,7 @@ public abstract class Pet : MonoBehaviour
             SetDestination(hit.point);
         }
     }
-    private void Move()
+    private void ClickMove()
     {
         if (isMove)
         {
@@ -109,34 +138,58 @@ public abstract class Pet : MonoBehaviour
                 isMove = false;
                 return;
             }
-
             var dir = destination - transform.position;
             transform.position += dir.normalized * Time.deltaTime * 5f;
         }
     }
 
-
     // Not Connected State
-    private void Follow(bool isFollow)
+    protected void FollowTarget(bool isFollow)
     {
-        if(!isFollow)
+        if (isFollow)
+        {
+            agent.isStopped = false;
+            agent.SetDestination(player.transform.position);
+        }
+        else
         {
             agent.isStopped = true;
-            return;
+            agent.ResetPath();
         }
-        agent.isStopped = false;
-        agent.SetDestination(player.transform.position);
     }
 
     #endregion
 
-    private void OnCollisionEnter(Collision collision)
+    #region Skill
+    
+    protected virtual void ActiveSkill()
     {
-        if(collision.collider.CompareTag("Player"))
+        Debug.Log(gameObject.name + " : ActiveSkill Ready");
+
+        IsSkilling = true;
+        IsConnected = false;
+        IsSelected = false;
+        FollowTarget(true);
+        PetManager.instance.NotSelectPet();
+    }
+    protected virtual void ClickActive()
+    {
+        Debug.Log(gameObject.name + " : ActiveSkill On");
+    }
+    protected virtual void PassiveSkill()
+    {
+        Debug.Log(gameObject.name + " : PassiveSkill");
+
+    }
+
+    #endregion
+
+    protected virtual void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
         {
-            if (IsGet()) return;
-            PetManager.instance.AddPet(this);
-            OnGetPet(true);
+            if (IsGet) return;
+            GetPet(true);
         }
     }
 

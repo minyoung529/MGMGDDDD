@@ -79,7 +79,8 @@ public class MovementInput : MonoBehaviour
         
         if (blockRotationPlayer == false)
         {
-            //RotatePlayer(CameraSwitcher.isAim);
+            RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
+            rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
 
             if (desiredMoveDirection.magnitude > 0.01f)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
@@ -96,16 +97,10 @@ public class MovementInput : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(pos), desiredRotationSpeed);
     }
 
-    private void RotatePlayer(bool isAim)
+    private void RotatePlayer(bool isRotate)
     {
-        if (isAim)
-        {
-
-        }
-        else
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
-        }
+        if (isRotate) return;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
     }
 
     void InputMagnitude()
