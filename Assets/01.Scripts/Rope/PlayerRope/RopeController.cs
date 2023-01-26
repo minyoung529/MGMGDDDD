@@ -26,6 +26,7 @@ public class RopeController : MonoBehaviour
 
     private int connectCnt = 0;
     private Rigidbody rigid;
+    private ThirdPersonCameraControll cameraController;
 
     #region Property
     public int ConnectCount => connectCnt;
@@ -37,15 +38,17 @@ public class RopeController : MonoBehaviour
         connectObject = gameObject.GetOrAddComponent<ConnectObject>();
         connectPet = gameObject.GetOrAddComponent<ConnectPet>();
         rigid = GetComponent<Rigidbody>();
+        cameraController = GetComponent<ThirdPersonCameraControll>();
 
         playerRope = Instantiate(wirePrefab);
         playerRope.ConnectStartPoint(playerRopeRigid);
 
         SetInitState();
     }
+
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (cameraController.IsAim && Input.GetMouseButtonDown(0))
         {
             ConnectTarget();
         }
@@ -61,6 +64,8 @@ public class RopeController : MonoBehaviour
     /// </summary>
     private void OnConnect(WireController wire)
     {
+        cameraController.SetAim(false);
+
         if (1 << target.gameObject.layer == Define.PET_LAYER)
         {
             connectPet.Connect(target.GetComponent<ConnectedObject>());
@@ -75,15 +80,16 @@ public class RopeController : MonoBehaviour
 
     private void ConnectTarget()
     {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = Camera.main.farClipPlane;
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        Camera camera = GameManager.Instance.MainCam;
+        Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
 
-        Vector3 dir = (mousePos - Camera.main.transform.position).normalized;
-        Ray ray = new Ray(Camera.main.transform.position, dir);
+        Ray ray = camera.ScreenPointToRay(screenCenter);
+
+        Debug.DrawRay(camera.transform.position, ray.direction * 100f, Color.red, 1f);
 
         if (Physics.Raycast(ray, out RaycastHit hitInfo, 1000f, conenctedLayer))
         {
+            Debug.Log(hitInfo.transform.gameObject.name);
             hitPoint = hitInfo.point;
             target = hitInfo.transform;
 

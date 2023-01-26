@@ -13,13 +13,14 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private const float rotationSpeed = 10.0f; // 회전 속도
 
-    private const float limitMinX = -20; // 카메라 y축 회전 범위 (최소)
-    private const float limitMaxX = 20; // 카메라 y축 회전 범위 (최대)
+    private const float limitMinX = -50; // 카메라 y축 회전 범위 (최소)
+    private const float limitMaxX = 50; // 카메라 y축 회전 범위 (최대)
 
     private float eulerAngleX; // 마우스 좌 / 우 이동으로 카메라 y축 회전
     private float eulerAngleY; // 마우스 위 / 아래 이동으로 카메라 x축 회전
 
     private bool isAim = false;
+    public bool IsAim => isAim;
 
     private void Start()
     {
@@ -28,7 +29,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
         CameraSwitcher.SwitchCamera(defaultCamera, false);
     }
 
-    private void SetAim(bool aim)
+    public void SetAim(bool aim)
     {
         isAim = aim;
         if (aim)
@@ -45,7 +46,11 @@ public class ThirdPersonCameraControll : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            SetAim(!isAim);
+            SetAim(true);
+        }
+        else if(Input.GetMouseButtonDown(1))
+        {
+            SetAim(false);
         }
 
         if (isAim)
@@ -61,7 +66,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
         CalculateRotation(mouseX, mouseY);
     }
-
 
     public void CalculateRotation(float mouseX, float mouseY)
     {
