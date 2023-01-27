@@ -29,8 +29,9 @@ public class RopeController : MonoBehaviour
     private ThirdPersonCameraControll cameraController;
 
     #region Property
-    public int ConnectCount => connectCnt;
+    public int ConnectCount { get => connectCnt; set => connectCnt = value; } 
     public Rigidbody RopeRigid => playerRopeRigid;
+    public WireController PlayerRope => playerRope;
     #endregion
 
     private void Start()
@@ -137,7 +138,6 @@ public class RopeController : MonoBehaviour
         Debug.Log("FAlSE");
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
-        playerRope.Active(true);
 
         connectCnt = 0;
     }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering;
+using DG.Tweening;
 
 public class ConnectObject : MonoBehaviour
 {
@@ -47,10 +49,12 @@ public class ConnectObject : MonoBehaviour
         }
     }
 
-    public void Connect(ConnectedObject connectedObj, Vector3 hitPoint, WireController wire)
+    public void Connect(ConnectedObject connectedObj, Vector3 point, WireController wire)
     {
         lineRenderer.positionCount = 2;
-        this.hitPoint = hitPoint;
+
+        prevHitPoint = hitPoint;
+        hitPoint = point;
 
         if (ropeController.ConnectCount > 0)
         {
@@ -66,39 +70,61 @@ public class ConnectObject : MonoBehaviour
 
             Swing();
         }
-
-        prevHitPoint = hitPoint;
     }
 
-    private IEnumerator TryConnect()
+    private  IEnumerator TryConnect()
     {
         tryConnect = true;
-        float distance = 0f;
+
         Vector3 curPos = ropeHand.position;
         Vector3 dir = (hitPoint - ropeHand.position).normalized;
 
-        while (distance < 5f)
+        while (true)
         {
-            Vector3 prevPos = curPos;
-            curPos += dir * Time.deltaTime * 25f;
-            distance = Vector3.Distance(prevPos, curPos);
+            curPos += dir * Time.deltaTime * 35f;
 
             lineRenderer.SetPosition(0, curPos);
 
-            if (Vector3.Distance(curPos, hitPoint) < 1f)
+            if (Vector3.Distance(prevHitPoint, curPos) > 10f)    // Fail
                 break;
+
+            if (Vector3.Distance(curPos, hitPoint) < 1f)    // Success
+            {
+                SuccessConnect();
+                yield break;
+            }
 
             yield return null;
         }
 
-        if (Vector3.Distance(curPos, hitPoint) < 1f)
+        // Fail
+        tryConnect = false;
+        hitPoint = prevHitPoint;
+        --ropeController.ConnectCount;
+    }
+
+    private IEnumerator ResetRope()
+    {
+        float duration = 0.4f;
+        float timer = 0f;
+        Vector3 prevPos, pos;
+        Transform ropeEnd = ropeController.PlayerRope.endJoint.transform;
+        
+        lineRenderer.positionCount = 2;
+
+        while (timer < duration)
         {
-            SuccessConnect();
+            timer += Time.deltaTime;
+            prevPos = Vector3.Lerp(prevHitPoint, ropeHand.position, timer / duration);
+            pos = Vector3.Lerp(hitPoint, ropeEnd.position, timer / duration);
+
+            lineRenderer.SetPosition(0, prevPos);
+            lineRenderer.SetPosition(1, pos);
+
+            yield return null;
         }
-        else
-        {
-            tryConnect = false;
-        }
+
+        ResetData();
     }
 
     private void Swing()
@@ -148,9 +174,19 @@ public class ConnectObject : MonoBehaviour
     public void UnConnect()
     {
         ResetSwing();
-        lineRenderer.positionCount = 0;
+
+        if (ropeController.ConnectCount != 0)
+            StartCoroutine(ResetRope());
 
         connectedObjs.ForEach(x => x.UnConnect());
         connectedObjs.Clear();
+    }
+
+    private void ResetData()
+    {
+        ropeController.PlayerRope.Active(true);
+        lineRenderer.positionCount = 0;
+        prevHitPoint = Vector3.zero;
+        hitPoint = Vector3.zero;
     }
 }
