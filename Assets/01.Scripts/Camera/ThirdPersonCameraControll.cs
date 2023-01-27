@@ -117,10 +117,10 @@ public class ThirdPersonCameraControll : MonoBehaviour
     public void CalculateRotation(float mouseX, float mouseY)
     {
         eulerAngleY += mouseX * rotCamYAxisSpeed;
-        eulerAngleX -= mouseY * rotCamYAxisSpeed;
+        eulerAngleX -= mouseY * rotCamXAxisSpeed;
         eulerAngleX = ClampAngle(eulerAngleX, limitMinX, limitMaxX);
 
-        transform.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, 0);
+        transform.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, transform.rotation.z);
     }
     // 카메라 x축 회전의 경우 회전 범위를 설정
     private float ClampAngle(float angle, float min, float max)

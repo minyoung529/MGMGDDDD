@@ -6,7 +6,6 @@ using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] protected Transform player;
 
     [SerializeField] private bool isGet = false;
     [SerializeField] private bool isMove = false;
@@ -19,6 +18,7 @@ public abstract class Pet : MonoBehaviour
 
     protected Camera camera;
     protected Rigidbody rigid;
+    protected GameObject player;
     protected NavMeshAgent agent;
 
     public PetType type;
@@ -100,8 +100,9 @@ public abstract class Pet : MonoBehaviour
         agent.enabled = true;
     }
 
-    public void GetPet(bool isOn)
+    public void GetPet(GameObject obj)
     {
+        player = obj;
         isGet = true;
         IsConnected=true;
 
@@ -219,7 +220,7 @@ public abstract class Pet : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             if (IsGet) return;
-            GetPet(true);
+            GetPet(collision.gameObject);
         }
     }
 

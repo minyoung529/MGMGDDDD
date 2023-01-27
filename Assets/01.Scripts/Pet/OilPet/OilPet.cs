@@ -6,11 +6,11 @@ using DG.Tweening;
 public class OilPet : Pet
 {
     [SerializeField] GameObject oilSkill;
-    [SerializeField] Transform bulletPos;
+    [SerializeField] GameObject fireBurnParticle;
 
     private const float fireStayTime = 2.0f;
     private const float fireSkillTime = 10.0f;
-    private const float fireRadius = 5.0f;
+    private const float fireRadius = 1.5f;
 
     private bool isBurn = false;
     private bool inFire = false;
@@ -40,7 +40,7 @@ public class OilPet : Pet
             GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
             oil.transform.DOMoveX(hit.point.x, 3).SetEase(Ease.OutQuad);
             oil.transform.DOMoveZ(hit.point.z, 3).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad).OnComplete(()=>
+            oil.transform.DOMoveY(hit.point.y, 3).SetEase(Ease.InQuad).OnComplete(() =>
             {
                 IsSkilling = false;
             });
@@ -53,6 +53,7 @@ public class OilPet : Pet
         base.PassiveSkill();
 
         isBurn = true;
+        fireBurnParticle.SetActive(true);
         StartCoroutine(FireTime());
     }
 
@@ -79,15 +80,21 @@ public class OilPet : Pet
             if (!isBurn) break;
 
             yield return new WaitForSeconds(0.01f);
-            Collider[] cols = Physics.OverlapSphere(transform.position, fireRadius, Define.PET_LAYER | Define.PLAYER_LAYER);
+            Collider[] cols = Physics.OverlapSphere(transform.position, fireRadius);
             for (int i = 0; i < cols.Length; i++)
             {
                 if (cols[i] != null)
                 {
-                    // cols[i].Fire();
+                    Fire fire = cols[i].GetComponent<Fire>();
+                    if(fire != null)
+                    {
+                       // Instantiate(fireBurnParticle, fire.transform.position, Quaternion.identity);
+                        fire.Burn();
+                    }
                 }
             }
         }
+        fireBurnParticle.SetActive(false);
         Debug.Log("활활이 끝");
     }
 
