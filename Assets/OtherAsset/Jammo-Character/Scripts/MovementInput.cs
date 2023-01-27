@@ -79,7 +79,8 @@ public class MovementInput : MonoBehaviour
         
         if (blockRotationPlayer == false)
         {
-            RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
+            if (desiredMoveDirection.sqrMagnitude > 0.01f)
+                RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
 
            // if (desiredMoveDirection.magnitude > 0.01f)

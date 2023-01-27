@@ -13,6 +13,7 @@ public class StickyPet : Pet
 
         rigid.useGravity = true;
         rigid.isKinematic = false;
+        agent.enabled= false;
     }
     #endregion
 
