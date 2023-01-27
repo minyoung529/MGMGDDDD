@@ -72,11 +72,5 @@ public class ConnectedObject : MonoBehaviour
 
         joint.connectedBody = null;
         rigid.isKinematic = true;
-
-        // TODO: MOVE
-        if (frontWire)
-        {
-            frontWire.endRigid.isKinematic = false;
-        }
     }
 }

@@ -465,7 +465,7 @@ public class WireController : MonoBehaviour
 
     /// Custom
     #region Connect
-    public void ConnectStartPoint(Rigidbody rigid, bool isNotMove = false)
+    public void ConnectStartPoint(Rigidbody rigid)
     {
         if (startJoint)
         {
@@ -480,6 +480,7 @@ public class WireController : MonoBehaviour
         {
             endJoint.transform.position = rigid.transform.position;
             endJoint.connectedBody = rigid;
+            endJoint.autoConfigureConnectedAnchor = true;
         }
     }
     #endregion

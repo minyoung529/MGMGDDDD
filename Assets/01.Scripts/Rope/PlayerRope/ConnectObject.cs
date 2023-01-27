@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ public class ConnectObject : MonoBehaviour
     [SerializeField] private ConnectedRope connectedRope;
     private List<ConnectedObject> connectedObjs = new List<ConnectedObject>();
     private Vector3 prevHitPoint;
+
+    bool tryConnect = false;
     #endregion
 
     private void Start()
@@ -29,7 +32,7 @@ public class ConnectObject : MonoBehaviour
 
     private void Update()
     {
-        if (joint)   // 연결이 된 상태
+        if (ropeController.ConnectCount == 1 && !tryConnect)   // 연결이 된 상태
         {
             lineRenderer.SetPosition(0, ropeHand.position);
 
@@ -41,11 +44,6 @@ public class ConnectObject : MonoBehaviour
             {
                 lineRenderer.SetPosition(1, hitPoint);
             }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ropeController.UnConnect();
-            }
         }
     }
 
@@ -56,8 +54,7 @@ public class ConnectObject : MonoBehaviour
 
         if (ropeController.ConnectCount > 0)
         {
-            ResetSwing();
-            connectedRope.Connect(prevHitPoint, hitPoint, lineRenderer);
+            StartCoroutine(TryConnect());
         }
         else
         {
@@ -71,6 +68,37 @@ public class ConnectObject : MonoBehaviour
         }
 
         prevHitPoint = hitPoint;
+    }
+
+    private IEnumerator TryConnect()
+    {
+        tryConnect = true;
+        float distance = 0f;
+        Vector3 curPos = ropeHand.position;
+        Vector3 dir = (hitPoint - ropeHand.position).normalized;
+
+        while (distance < 5f)
+        {
+            Vector3 prevPos = curPos;
+            curPos += dir * Time.deltaTime * 25f;
+            distance = Vector3.Distance(prevPos, curPos);
+
+            lineRenderer.SetPosition(0, curPos);
+
+            if (Vector3.Distance(curPos, hitPoint) < 1f)
+                break;
+
+            yield return null;
+        }
+
+        if (Vector3.Distance(curPos, hitPoint) < 1f)
+        {
+            SuccessConnect();
+        }
+        else
+        {
+            tryConnect = false;
+        }
     }
 
     private void Swing()
@@ -109,6 +137,12 @@ public class ConnectObject : MonoBehaviour
         {
             Destroy(joint);
         }
+    }
+
+    private void SuccessConnect()
+    {
+        ResetSwing();
+        connectedRope.Connect(prevHitPoint, hitPoint, lineRenderer);
     }
 
     public void UnConnect()

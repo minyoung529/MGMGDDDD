@@ -44,12 +44,22 @@ public class RopeController : MonoBehaviour
         playerRope.ConnectStartPoint(playerRopeRigid);
 
         SetInitState();
+        SetInput();
     }
 
     private void SetInput()
     {
-        InputManager.StartListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
-        InputManager.StartListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
+        // ERROR
+        //InputManager.StartListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
+        //InputManager.StartListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+            UnConnect();
+        if (Input.GetMouseButtonDown(0))
+            ConnectTarget();
     }
 
     /// <summary>
@@ -71,9 +81,10 @@ public class RopeController : MonoBehaviour
         }
     }
 
-    private void ConnectTarget(InputAction action, InputType type, float val)
+    private void ConnectTarget(InputAction action = InputAction.TryConnect, InputType type = InputType.GetKeyDown, float val = 0f)
     {
         if (!ThirdPersonCameraControll.IsRopeAim) return;
+        if (type != InputType.GetKeyDown) return;
 
         Camera camera = GameManager.Instance.MainCam;
         Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
@@ -123,6 +134,7 @@ public class RopeController : MonoBehaviour
     private void SetInitState()
     {
         playerRope.ConnectStartPoint(playerRopeRigid);
+        Debug.Log("FAlSE");
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
         playerRope.Active(true);
@@ -144,7 +156,7 @@ public class RopeController : MonoBehaviour
 
     private void OnDestroy()
     {
-        InputManager.StopListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
-        InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
+        //InputManager.StopListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
+        //InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
 }

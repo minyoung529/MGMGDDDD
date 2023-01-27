@@ -41,6 +41,7 @@ public class InputManager : MonoSingleton<InputManager>
             foreach (InputSave save in input_Save) {
                 keyBinding.Add(save.Action, save.Code);
             }
+
             return;
         }
 

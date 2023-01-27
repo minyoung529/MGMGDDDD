@@ -81,6 +81,10 @@ public class ThirdPersonCameraControll : MonoBehaviour
             SetDefault();
         }
 
+        Vector3 eulerAngles = transform.eulerAngles;
+        eulerAngles.x = 0f;
+        transform.eulerAngles = eulerAngles;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
     #endregion
 
