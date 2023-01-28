@@ -12,7 +12,7 @@ public class ConnectObject : MonoBehaviour
     [SerializeField] private Transform ropeHand;
     private RopeController ropeController;
     #region Swing Variable
-    private Vector3 hitPoint;
+    private Transform hitPoint;
     private SpringJoint joint;
     private LineRenderer lineRenderer;
     #endregion
@@ -20,7 +20,7 @@ public class ConnectObject : MonoBehaviour
     #region Connect Object
     [SerializeField] private ConnectedRope connectedRope;
     private List<ConnectedObject> connectedObjs = new List<ConnectedObject>();
-    private Vector3 prevHitPoint;
+    private Transform prevHitPoint;
 
     bool tryConnect = false;
     #endregion
@@ -30,31 +30,42 @@ public class ConnectObject : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         ropeController = GetComponent<RopeController>();
         connectedRope = Instantiate(connectedRope);
+
+        hitPoint = new GameObject("Hit Point").transform;
+        prevHitPoint = new GameObject("Hit Point").transform;
     }
 
     private void Update()
     {
+        if (joint)
+            joint.connectedAnchor = hitPoint.position;
+
         if (ropeController.ConnectCount == 1 && !tryConnect)   // 연결이 된 상태
         {
+            if (lineRenderer.positionCount < 2) return;
+
             lineRenderer.SetPosition(0, ropeHand.position);
 
-            if (connectedObjs.Count == 1)
-            {
-                lineRenderer.SetPosition(1, connectedObjs.First().RopePosition.position);
-            }
-            else
-            {
-                lineRenderer.SetPosition(1, hitPoint);
-            }
+            //if (connectedObjs.Count == 1)
+            //{
+            //    lineRenderer.SetPosition(1, connectedObjs.First().RopePosition.position);
+            //}
+            //else
+            //{
+            lineRenderer.SetPosition(1, hitPoint.position);
+            //}
         }
     }
 
-    public void Connect(ConnectedObject connectedObj, Vector3 point, WireController wire)
+    public void Connect(Transform target, Vector3 point, WireController wire)
     {
+        ConnectedObject connectedObj = target.GetComponent<ConnectedObject>();
         lineRenderer.positionCount = 2;
 
-        prevHitPoint = hitPoint;
-        hitPoint = point;
+        prevHitPoint.SetParent(hitPoint.parent);
+        prevHitPoint.position = hitPoint.position;
+
+        hitPoint.position = point;
 
         if (ropeController.ConnectCount > 0)
         {
@@ -64,7 +75,11 @@ public class ConnectObject : MonoBehaviour
         {
             if (connectedObj)
             {
-                connectedObj.Connect(wire, ropeController.RopeRigid);
+                Transform trn = connectedObj.Connect(wire, ropeController.RopeRigid);
+                hitPoint.SetParent(trn);
+                connectedObj = trn.GetComponent<ConnectedObject>();
+                connectedObj.SetAnchor();
+
                 connectedObjs.Add(connectedObj);
             }
 
@@ -72,12 +87,12 @@ public class ConnectObject : MonoBehaviour
         }
     }
 
-    private  IEnumerator TryConnect()
+    private IEnumerator TryConnect()
     {
         tryConnect = true;
 
         Vector3 curPos = ropeHand.position;
-        Vector3 dir = (hitPoint - ropeHand.position).normalized;
+        Vector3 dir = (hitPoint.position - ropeHand.position).normalized;
 
         while (true)
         {
@@ -85,10 +100,10 @@ public class ConnectObject : MonoBehaviour
 
             lineRenderer.SetPosition(0, curPos);
 
-            if (Vector3.Distance(prevHitPoint, curPos) > 10f)    // Fail
+            if (Vector3.Distance(prevHitPoint.position, curPos) > 10f)    // Fail
                 break;
 
-            if (Vector3.Distance(curPos, hitPoint) < 1f)    // Success
+            if (Vector3.Distance(curPos, hitPoint.position) < 1f)    // Success
             {
                 SuccessConnect();
                 yield break;
@@ -109,14 +124,14 @@ public class ConnectObject : MonoBehaviour
         float timer = 0f;
         Vector3 prevPos, pos;
         Transform ropeEnd = ropeController.PlayerRope.endJoint.transform;
-        
+
         lineRenderer.positionCount = 2;
 
         while (timer < duration)
         {
             timer += Time.deltaTime;
-            prevPos = Vector3.Lerp(prevHitPoint, ropeHand.position, timer / duration);
-            pos = Vector3.Lerp(hitPoint, ropeEnd.position, timer / duration);
+            prevPos = Vector3.Lerp(prevHitPoint.position, ropeHand.position, timer / duration);
+            pos = Vector3.Lerp(hitPoint.position, ropeEnd.position, timer / duration);
 
             lineRenderer.SetPosition(0, prevPos);
             lineRenderer.SetPosition(1, pos);
@@ -137,14 +152,6 @@ public class ConnectObject : MonoBehaviour
         joint.anchor = Vector3.zero;
         joint.autoConfigureConnectedAnchor = false;
 
-        if (connectedObjs.Count == 0)
-        {
-            joint.connectedAnchor = hitPoint;
-        }
-        else
-        {
-            joint.connectedBody = connectedObjs.First().Rigid;
-        }
 
         // the distance grapple will try to keep from grapple point. 
         joint.maxDistance = Define.MAX_ROPE_DISTANCE;
@@ -168,7 +175,7 @@ public class ConnectObject : MonoBehaviour
     private void SuccessConnect()
     {
         ResetSwing();
-        connectedRope.Connect(prevHitPoint, hitPoint, lineRenderer);
+        connectedRope.Connect(prevHitPoint.position, hitPoint.position, lineRenderer);
     }
 
     public void UnConnect()
@@ -186,7 +193,7 @@ public class ConnectObject : MonoBehaviour
     {
         ropeController.PlayerRope.Active(true);
         lineRenderer.positionCount = 0;
-        prevHitPoint = Vector3.zero;
-        hitPoint = Vector3.zero;
+        prevHitPoint.SetParent(null);
+        hitPoint.SetParent(null);
     }
 }

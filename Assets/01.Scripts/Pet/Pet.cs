@@ -97,7 +97,8 @@ public abstract class Pet : MonoBehaviour
         IsConnected = false;
         IsCoolTime = false;
 
-        agent.enabled = true;
+        ////////////////////////////////// юс╫ц╥н FALSE ////////////////////////////////////
+        agent.enabled = false;
     }
 
     public void GetPet(GameObject obj)
@@ -145,7 +146,7 @@ public abstract class Pet : MonoBehaviour
                 return;
             }
             var dir = destination - transform.position;
-            transform.position += dir.normalized * Time.deltaTime * 5f;
+            rigid.position += dir.normalized * Time.deltaTime * 5f;
         }
     }
 
@@ -220,7 +221,7 @@ public abstract class Pet : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             if (IsGet) return;
-            GetPet(collision.gameObject);
+            //GetPet(collision.gameObject);
         }
     }
 

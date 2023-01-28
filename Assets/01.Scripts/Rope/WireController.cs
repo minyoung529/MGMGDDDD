@@ -467,7 +467,7 @@ public class WireController : MonoBehaviour
     #region Connect
     public void ConnectStartPoint(Rigidbody rigid)
     {
-        if (startJoint)
+        if (startJoint) 
         {
             startJoint.transform.position = rigid.transform.position;
             startJoint.connectedBody = rigid;

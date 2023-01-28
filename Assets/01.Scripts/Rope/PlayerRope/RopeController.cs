@@ -70,13 +70,13 @@ public class RopeController : MonoBehaviour
     {
         cameraController.SetRope();
 
-        if (1 << target.gameObject.layer == Define.PET_LAYER)
+        if (target.gameObject.layer == Define.PET_LAYER)
         {
             connectPet.Connect(target.GetComponent<ConnectedObject>());
         }
         else
         {
-            connectObject.Connect(target.GetComponent<ConnectedObject>(), hitPoint, wire);
+            connectObject.Connect(target.transform, hitPoint, wire);
             playerRope.Active(false);
             connectCnt++;
         }
@@ -90,11 +90,7 @@ public class RopeController : MonoBehaviour
         Camera camera = GameManager.Instance.MainCam;
         Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
 
-        Ray ray = camera.ScreenPointToRay(screenCenter);
-
-        Debug.DrawRay(camera.transform.position, ray.direction * 100f, Color.red, 1f);
-
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 1000f, conenctedLayer))
+        if (Physics.Raycast(camera.ScreenPointToRay(screenCenter), out RaycastHit hitInfo, 1000f, conenctedLayer))
         {
             Debug.Log(hitInfo.transform.gameObject.name);
             hitPoint = hitInfo.point;
@@ -109,11 +105,11 @@ public class RopeController : MonoBehaviour
     /// </summary>
     private void TryConnect()
     {
-        if (1 << target.gameObject.layer == Define.PET_LAYER)
+        if (1 << target.gameObject.layer == Define.PET_LAYER )
         {
             playerRope.TryConnect(OnConnect, hitPoint);
         }
-        else
+        else 
         {
             if (connectCnt == 2) return;
 

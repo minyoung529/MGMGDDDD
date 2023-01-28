@@ -10,21 +10,29 @@ public class ConnectPet : MonoBehaviour
 {
     [SerializeField]
     private WireController wirePrefab;
+    [SerializeField]
+    private LineRope lineRopePrefab;
 
-    private List<WireController> petRopes = new List<WireController>();
-    private List<ConnectedObject> pets = new List<ConnectedObject>();
+    WireController startPetRope;
+    private List<LineRope> petRopes = new List<LineRope>();
+    private List<ConnectedObject> connectedObjs = new List<ConnectedObject>();
+    private List<Pet> pets = new List<Pet>();
 
     [SerializeField]
     private Rigidbody petRopeRigid;
 
     void Start()
     {
-        CreateRope(petRopeRigid);
+        startPetRope = Instantiate(wirePrefab);
+        startPetRope.ConnectStartPoint(petRopeRigid);
     }
 
     public void UnConnect()
     {
-        pets.ForEach(x => x.UnConnect());
+        connectedObjs.ForEach(x => x.UnConnect());
+        pets.ForEach(x => x.IsSelected = false);
+
+        connectedObjs.Clear();
         pets.Clear();
 
         for (int i = 1; i < petRopes.Count; i++)
@@ -32,17 +40,17 @@ public class ConnectPet : MonoBehaviour
             Destroy(petRopes[i].gameObject);
         }
 
-        petRopes.RemoveRange(1, petRopes.Count - 1);
+        if (petRopes.Count > 1)
+        {
+            petRopes.RemoveRange(1, petRopes.Count - 1);
+        }
+        startPetRope.Active(true);
     }
 
-    private WireController CreateRope(Rigidbody target = null)
+    private LineRope CreateRope(Transform t1, Transform t2)
     {
-        WireController wire = Instantiate(wirePrefab);
-
-        if (target)
-        {
-            wire.ConnectStartPoint(target);
-        }
+        LineRope wire = Instantiate(lineRopePrefab);
+        wire.SetTarget(t1, t2);
 
         petRopes.Add(wire);
 
@@ -51,15 +59,23 @@ public class ConnectPet : MonoBehaviour
 
     public void Connect(ConnectedObject connectedObj)
     {
-        if (pets.Find(x => x == connectedObj) == null)  // 같은 펫이 아니면
+        if (connectedObjs.Find(x => x == connectedObj) == null)  // 같은 펫이 아니면
         {
-            if (pets.Count > 0)
+            if (connectedObjs.Count > 0)
             {
-                CreateRope(pets.Last().Rigid);
+                CreateRope(connectedObjs.Last().transform, connectedObj.transform);
+                connectedObj.Connect(null, connectedObjs.Last().Rigid);
+            }
+            else
+            {
+                CreateRope(petRopeRigid.transform, connectedObj.transform);
+                connectedObj.Connect(null, petRopeRigid);
             }
 
-            connectedObj.Connect(petRopes.Last());
-            pets.Add(connectedObj);
+            pets.Add(connectedObj.GetComponent<Pet>());
+            pets.Last().IsSelected = true;
+            startPetRope.Active(false);
+            connectedObjs.Add(connectedObj);
         }
     }
 }
