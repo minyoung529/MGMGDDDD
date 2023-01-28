@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,7 +42,8 @@ public class PlayerMove : MonoBehaviour
     #endregion
 
     #region 상태 관련 변수
-    private bool  isInputLock = false;
+    private bool isInputLock = false;
+    private bool isCanJump = true;
     #endregion
 
     #region 애니메이션 관련 변수
@@ -53,6 +55,7 @@ public class PlayerMove : MonoBehaviour
     private int jumpHash = Animator.StringToHash("jump");
     private int horizontalHash = Animator.StringToHash("horizontal");
     private int verticalHash = Animator.StringToHash("vertical");
+    private int landingHash = Animator.StringToHash("landing");
     #endregion
 
     private Camera mainCam;
@@ -135,7 +138,9 @@ public class PlayerMove : MonoBehaviour
         else {
             curSpeed = maxSpeed;
         }
-        rigid.velocity = inputDir * curSpeed;
+        Vector3 dir = inputDir * curSpeed;
+        dir.y = rigid.velocity.y;
+        rigid.velocity = dir;
         beforeInput = inputDir;
     }
 
@@ -143,12 +148,13 @@ public class PlayerMove : MonoBehaviour
         if(inputTimer <= 0) {
             if(anim.GetBool(sprintHash)) {
                 anim.SetTrigger(stopHash);
-                LockInput(0.125f);
+                LockInput(0.1f);
             }
             anim.SetBool(sprintHash, false);
             anim.SetBool(walkHash, false);
             inputDir = Vector3.zero;
             beforeInput = Vector3.zero;
+            maxSpeed = walkSpeed;
             return;
         }
         inputTimer -= Time.deltaTime;
@@ -164,7 +170,9 @@ public class PlayerMove : MonoBehaviour
 
     private void Decelerate() {
         if (inputDir.sqrMagnitude > 0) return;
-        rigid.velocity = Vector3.MoveTowards(rigid.velocity, Vector3.zero, decelPower);
+        Vector3 dir = Vector3.MoveTowards(rigid.velocity, Vector3.zero, decelPower);
+        dir.y = rigid.velocity.y;
+        rigid.velocity = dir;
         if (curSpeed > 0)
             curSpeed -= decelPower * Time.deltaTime;
         else
@@ -185,8 +193,23 @@ public class PlayerMove : MonoBehaviour
     }
 
     private void Jump(InputAction action, InputType type, float value) {
+        if (!isCanJump) return;
+        isCanJump = false;
         anim.SetTrigger(jumpHash);
-        rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+    }
+
+    public void JumpEvent() {
+        rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
+        StartCoroutine(landingCoroutine());
+    }
+
+    private IEnumerator landingCoroutine() {
+        yield return new WaitForSeconds(0.1f);
+        while(!Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.5f, Define.BOTTOM_LAYER)) {
+            yield return null;
+        }
+        isCanJump = true;
+        anim.SetTrigger(landingHash);
     }
 
     public void LockInput(float time) {
