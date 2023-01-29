@@ -1,20 +1,36 @@
 using DG.Tweening;
+using UnityEditor.SceneManagement;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 public class StickyPet : Pet
 {
     private float moveSpeed = 1f;
+    private bool isStopGear = false;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+    }
 
     #region Set
     protected override void ResetPet()
     {
         base.ResetPet();
 
-        rigid.useGravity = true;
+        rigid.useGravity = false;
         rigid.isKinematic = false;
         agent.enabled= false;
     }
+
+    public override void AppearPet()
+    {
+        base.AppearPet();
+
+        rigid.useGravity = true;
+    }
+
     #endregion
 
     #region Skill
@@ -35,11 +51,22 @@ public class StickyPet : Pet
     {
         IsStop = true;
         agent.enabled = false;
-        rigid.useGravity= false;
-        rigid.isKinematic = true;
 
         transform.DOKill();
-        transform.DOMove(hit.point, moveSpeed);
+        transform.DOScale(new Vector3(1.5f , 1.5f, 1.5f), 1f);
+        transform.DOMove(hit.point, moveSpeed).OnComplete(()=>
+        {
+            //transform.SetParent(hit.transform);
+
+            //rigid.useGravity= false;
+            rigid.isKinematic = true;
+            rigid.detectCollisions = true;
+            
+            HingeJoint joint = hit.collider.gameObject.AddComponent<HingeJoint>();
+            hit.rigidbody.isKinematic = true;
+            joint.connectedBody = rigid;
+        });
+        
     }
 
     // Passive Skill
@@ -54,13 +81,18 @@ public class StickyPet : Pet
     }
     #endregion
 
+
     protected override void OnCollisionEnter(Collision collision)
     {
         base.OnCollisionEnter(collision);
-
         if(collision.gameObject.TryGetComponent(out Sticky s))
         {
             PassiveSkill(collision);
         }
+    }
+
+
+    private void OnCollisionExit(Collision collision)
+    {
     }
 }

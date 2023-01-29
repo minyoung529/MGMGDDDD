@@ -10,6 +10,7 @@ public class GearRotation : MonoBehaviour
     public void OnGear()
     {
         isRotate = true;
+
         StartCoroutine(RotateGear());
     }
     public void StopGear()
@@ -20,16 +21,37 @@ public class GearRotation : MonoBehaviour
 
     IEnumerator RotateGear()
     {
-        while(isRotate)
+        while (isRotate)
         {
             yield return new WaitForSeconds(0.1f);
             transform.Rotate(new Vector3(0, 1, 0));
+            if (transform.GetChild(0).position.y <= transform.position.y)
+            {
+                AppearSticky();
+            }
+
         }
+    }
+
+    private void AppearSticky()
+    {
+        Pet pet = transform.GetChild(0).GetComponent<Pet>();
+        if(pet != null)
+        {
+              pet.AppearPet();
+              transform.GetChild(0).SetParent(null);
+        }
+
+    }
+
+    private void Start()
+    {
+        //OnGear();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.CompareTag("Finish"))
+        if (collision.collider.CompareTag("Finish"))
         {
             if (isRotate) return;
 

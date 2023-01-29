@@ -85,6 +85,15 @@ public abstract class Pet : MonoBehaviour
         }
     }
 
+    public void Connected()
+    {
+        IsConnected = true;
+
+        agent.enabled = true;
+        rigid.useGravity = true;
+        rigid.isKinematic = false;
+    }
+
     #region SET
 
     protected virtual void ResetPet()
@@ -101,15 +110,21 @@ public abstract class Pet : MonoBehaviour
         agent.enabled = false;
     }
 
+    public virtual void AppearPet()
+    {
+
+    }
+
     public void GetPet(GameObject obj)
     {
         player = obj;
         isGet = true;
-        IsConnected=true;
+        Connected();
 
         FollowTarget(false);
         PetManager.instance.AddPet(this);
     }
+
     public void LosePet()
     {
         isGet = false;
