@@ -104,7 +104,7 @@ public class WireController : MonoBehaviour
     /// </summary>
     public Preset presetJoint;
 
-    public ConfigurableJoint startJoint;
+    public FixedJoint startJoint;
     public ConfigurableJoint endJoint;
 
     public Rigidbody startRigid;
@@ -116,7 +116,7 @@ public class WireController : MonoBehaviour
     {
         mousePossHelper.gameObject.SetActive(false);
         endJoint = endAnchorTemp.GetComponent<ConfigurableJoint>();
-        startJoint = startAnchorTemp.GetComponent<ConfigurableJoint>();
+        startJoint = startAnchorTemp.GetComponent<FixedJoint>();
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
         endRigid = endAnchorTemp.GetComponent<Rigidbody>();
@@ -467,7 +467,7 @@ public class WireController : MonoBehaviour
     #region Connect
     public void ConnectStartPoint(Rigidbody rigid)
     {
-        if (startJoint)
+        if (startJoint) 
         {
             startJoint.transform.position = rigid.transform.position;
             startJoint.connectedBody = rigid;

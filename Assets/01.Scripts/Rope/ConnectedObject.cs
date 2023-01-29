@@ -6,11 +6,11 @@ public class ConnectedObject : MonoBehaviour
 {
     [SerializeField]
     private bool isFollow = true;
+    [SerializeField]
+    private bool isChild = false;
 
     [SerializeField]
     private Transform ropePosition;
-
-    private WireController frontWire = null;
 
     private Joint joint;
     private Rigidbody rigid;
@@ -29,12 +29,15 @@ public class ConnectedObject : MonoBehaviour
 
     private void Start()
     {
+        if (isChild) return;
+
         rigid = gameObject.GetOrAddComponent<Rigidbody>();
 
         if (!isFollow)
+        {
             rigid.useGravity = false;
-
-        if (isFollow)
+        }
+        else
         {
             joint = GetComponent<Joint>();
 
@@ -45,25 +48,33 @@ public class ConnectedObject : MonoBehaviour
         }
     }
 
-    public void Connect(WireController wire, Rigidbody playerRigid = null)
+    public Transform Connect(WireController wire, Rigidbody playerRigid = null)
     {
-        rigid.isKinematic = !isFollow;
-
-        if (!isFollow) return;
-
-        if (gameObject.layer == Define.PET_LAYER)
+        if (isChild)
         {
-            Rigidbody wireRigid = wire.endRigid;
-            frontWire = wire;
+            Transform connected = transform;
 
-            rigid.MovePosition(wireRigid.position);
+            while (connected.parent != null)
+            {
+                connected = connected.parent;
+            }
 
-            joint.connectedBody = wireRigid;
+            connected.GetComponent<ConnectedObject>().Connect(wire, playerRigid);
+            return connected;
         }
         else
         {
+            rigid.isKinematic = !isFollow;
+
+            if (!isFollow) return transform;
+
             joint.connectedBody = playerRigid;
+            joint.autoConfigureConnectedAnchor = false;
+
+            SetAnchor();
         }
+
+        return transform;
     }
 
     public void UnConnect()
@@ -72,5 +83,15 @@ public class ConnectedObject : MonoBehaviour
 
         joint.connectedBody = null;
         rigid.isKinematic = true;
+    }
+
+    public void SetAnchor()
+    {
+        Transform hitPoint = transform.Find("Hit Point");
+
+        if (hitPoint)
+        {
+            joint.anchor = hitPoint.localPosition;
+        }
     }
 }

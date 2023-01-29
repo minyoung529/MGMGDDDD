@@ -106,7 +106,8 @@ public abstract class Pet : MonoBehaviour
         IsConnected = false;
         IsCoolTime = false;
 
-        agent.enabled = true;
+        ////////////////////////////////// юс╫ц╥н FALSE ////////////////////////////////////
+        agent.enabled = false;
     }
 
     public virtual void AppearPet()
@@ -154,13 +155,14 @@ public abstract class Pet : MonoBehaviour
     {
         if (isMove)
         {
-            if (Vector3.Distance(destination, transform.position) <= 0.1f)
+            if (Vector3.Distance(destination, transform.position) <= 0.6f)
             {
+                Debug.Log("DEST");
                 isMove = false;
                 return;
             }
             var dir = destination - transform.position;
-            transform.position += dir.normalized * Time.deltaTime * 5f;
+            rigid.position += dir.normalized * Time.deltaTime * 5f;
         }
     }
 
@@ -175,6 +177,7 @@ public abstract class Pet : MonoBehaviour
         else
         {
             agent.isStopped = true;
+            agent.velocity = Vector3.zero;
             agent.ResetPath();
         }
     }
@@ -187,7 +190,7 @@ public abstract class Pet : MonoBehaviour
     {
         Debug.Log(gameObject.name + " : ActiveSkill Ready");
 
-        IsSkilling = true;
+        IsSkilling = true; 
         IsConnected = false;
         IsSelected = false;
         FollowTarget(true);
@@ -235,7 +238,7 @@ public abstract class Pet : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             if (IsGet) return;
-            GetPet(collision.gameObject);
+            //GetPet(collision.gameObject);
         }
     }
 
