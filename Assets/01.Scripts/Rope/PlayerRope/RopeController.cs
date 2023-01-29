@@ -82,10 +82,9 @@ public class RopeController : MonoBehaviour
         }
     }
 
-    private void ConnectTarget(InputAction action = InputAction.TryConnect, InputType type = InputType.GetKeyDown, float val = 0f)
+    private void ConnectTarget()
     {
         if (!ThirdPersonCameraControll.IsRopeAim) return;
-        if (type != InputType.GetKeyDown) return;
 
         Camera camera = GameManager.Instance.MainCam;
         Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
@@ -137,7 +136,7 @@ public class RopeController : MonoBehaviour
         connectCnt = 0;
     }
 
-    public void UnConnect(InputAction action = InputAction.UnConnect, InputType type = InputType.GetKeyDown, float val = 0f)
+    public void UnConnect()
     {
         connectObject.UnConnect();
         connectPet.UnConnect();

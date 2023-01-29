@@ -14,6 +14,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] private float rotCamXAxisSpeed = 5f; // 카메라 x축 회전속도
     [SerializeField] private float rotCamYAxisSpeed = 3f; // 카메라 y축 회전속도
 
+    [SerializeField] private Canvas crosshair;
+
     private const float rotationSpeed = 10.0f; // 회전 속도
 
     private const float limitMinX = -80; // 카메라 y축 회전 범위 (최소)
@@ -31,6 +33,9 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private void Start()
     {
         ResetCamera();
+
+        crosshair = Instantiate(crosshair);
+        crosshair.gameObject.SetActive(false);
     }
 
     #region Camera Set
@@ -85,6 +90,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
             SetDefault();
             SetResetPos();
         }
+
+        crosshair.gameObject.SetActive(isRopeAim);
     }
     #endregion
 

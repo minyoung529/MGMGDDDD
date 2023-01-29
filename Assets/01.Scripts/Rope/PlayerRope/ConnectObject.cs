@@ -89,6 +89,8 @@ public class ConnectObject : MonoBehaviour
 
     private IEnumerator TryConnect()
     {
+        ResetSwing();
+
         tryConnect = true;
 
         Vector3 curPos = ropeHand.position;
@@ -96,11 +98,11 @@ public class ConnectObject : MonoBehaviour
 
         while (true)
         {
-            curPos += dir * Time.deltaTime * 35f;
+            curPos += dir * Time.deltaTime * 20f;
 
             lineRenderer.SetPosition(0, curPos);
 
-            if (Vector3.Distance(prevHitPoint.position, curPos) > 10f)    // Fail
+            if (Vector3.Distance(prevHitPoint.position, curPos) > 15f)    // Fail
                 break;
 
             if (Vector3.Distance(curPos, hitPoint.position) < 1f)    // Success
@@ -113,6 +115,7 @@ public class ConnectObject : MonoBehaviour
         }
 
         // Fail
+        Swing();
         tryConnect = false;
         hitPoint = prevHitPoint;
         --ropeController.ConnectCount;
@@ -152,7 +155,6 @@ public class ConnectObject : MonoBehaviour
         joint.anchor = Vector3.zero;
         joint.autoConfigureConnectedAnchor = false;
 
-
         // the distance grapple will try to keep from grapple point. 
         joint.maxDistance = Define.MAX_ROPE_DISTANCE;
         joint.minDistance = 0f;
@@ -174,7 +176,6 @@ public class ConnectObject : MonoBehaviour
 
     private void SuccessConnect()
     {
-        ResetSwing();
         connectedRope.Connect(prevHitPoint.position, hitPoint.position, lineRenderer);
     }
 
@@ -195,5 +196,6 @@ public class ConnectObject : MonoBehaviour
         lineRenderer.positionCount = 0;
         prevHitPoint.SetParent(null);
         hitPoint.SetParent(null);
+        tryConnect = false;
     }
 }

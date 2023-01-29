@@ -88,7 +88,8 @@ public class PlayerMove : MonoBehaviour
     private void Update() {
         SetRotate();
         ResetInput();
-        Decelerate();
+        // ------------- 감속이 줄에 매달려있을 때도 작용이 된다 -------------
+        //Decelerate();
     }
 
     private void OnAnimatorIK(int layerIndex) {
@@ -199,11 +200,11 @@ public class PlayerMove : MonoBehaviour
     }
 
     public void JumpEvent() {
-        rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
-        StartCoroutine(landingCoroutine());
+        rigid.AddForce(Vector3.up * jumpPower * rigid.mass, ForceMode.Force);
+        StartCoroutine(LandingCoroutine());
     }
 
-    private IEnumerator landingCoroutine() {
+    private IEnumerator LandingCoroutine() {
         yield return new WaitForSeconds(0.1f);
         while(!Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.5f, Define.BOTTOM_LAYER)) {
             yield return null;
