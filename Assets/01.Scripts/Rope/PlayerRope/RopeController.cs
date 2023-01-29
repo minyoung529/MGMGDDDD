@@ -131,7 +131,6 @@ public class RopeController : MonoBehaviour
     private void SetInitState()
     {
         playerRope.ConnectStartPoint(playerRopeRigid);
-        Debug.Log("FAlSE");
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
 

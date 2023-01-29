@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor.PackageManager;
 using UnityEditor.SceneManagement;
+using System;
 
 public class ConnectPet : MonoBehaviour
 {
@@ -72,8 +73,18 @@ public class ConnectPet : MonoBehaviour
                 connectedObj.Connect(null, petRopeRigid);
             }
 
-            pets.Add(connectedObj.GetComponent<Pet>());
-            pets.Last().IsSelected = true;
+            Pet pet = connectedObj.GetComponent<Pet>();
+            pets.Add(pet);
+
+            try
+            {
+                pet.GetPet(transform.gameObject);
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"PET CONNECT ERROR : {e.Message}");
+            }
+
             startPetRope.Active(false);
             connectedObjs.Add(connectedObj);
         }

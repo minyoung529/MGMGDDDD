@@ -31,7 +31,7 @@ public class LineRope : MonoBehaviour
 
     #region Detect
     [SerializeField] LayerMask collMask;
-    public List<Vector3> ropePositions { get; set; } = new List<Vector3>();
+    public List<Vector3> positions { get; set; } = new List<Vector3>();
 
     bool isPhysicsUpdate = true;
     #endregion
@@ -57,7 +57,7 @@ public class LineRope : MonoBehaviour
             SetFixedValue();
 
             DetectCollisionEnter();
-            if (ropePositions.Count > 2) DetectCollisionExits();
+            if (positions.Count > 2) DetectCollisionExits();
         }
     }
 
@@ -75,44 +75,64 @@ public class LineRope : MonoBehaviour
 
         lineRenderer.positionCount = 2;
         state = LineState.Transform;
-        ropePositions.Clear();
+        positions.Clear();
 
         handle = t1;
         target = t2;
 
-        ropePositions.Add(target.position);
-        ropePositions.Add(handle.position);
+        positions.Add(target.position);
+        positions.Add(handle.position);
     }
 
     #region Rope Detect
     private void DetectCollisionEnter()
     {
-        if (Physics.Linecast(handle.position, ropePositions[ropePositions.Count - 2], out RaycastHit hit, collMask))
+        List<Pair<int, Vector3>> hits = new();
+
+        // 너무 비효율적인 코드....................... 일단 해보자..
+        for (int i = 0; i < positions.Count - 1; i++)
         {
-            AddPosToRope(hit.point);
+            if (Physics.Linecast(positions[i], positions[i + 1], out RaycastHit hit, collMask))
+            {
+                if (Vector3.Distance(hit.point, positions[i]) < 0.01f || Vector3.Distance(hit.point, positions[i + 1]) < 0.01f)
+                    continue;
+
+                hits.Add(new Pair<int, Vector3>(i, hit.point));
+            }
+        }
+
+        for (int i = 0; i < hits.Count; i++)
+        {
+            positions.Insert(hits[i].first + i + 1, hits[i].second);
         }
     }
 
     private void DetectCollisionExits()
     {
-        if (!Physics.Linecast(handle.position, ropePositions[ropePositions.Count - 3], collMask))
-        {
-            ropePositions.RemoveAt(ropePositions.Count - 2);
-        }
-    }
+        List<int> indexes = new();
 
-    private void AddPosToRope(Vector3 _pos)
-    {
-        ropePositions.Insert(Count - 2, _pos);
+        // 너무 비효율적인 코드....................... 일단 해보자..
+        for (int i = 0; i < positions.Count - 2; i++)
+        {
+            if (!Physics.Linecast(positions[i], positions[i + 2], out RaycastHit hit, collMask))
+            {
+                indexes.Add(i);
+            }
+        }
+
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            positions.RemoveAt(indexes[i] - i);
+        }
     }
 
     private void UpdateRopePositions()
     {
-        ropePositions[0] = target.position;
-        ropePositions[ropePositions.Count - 1] = handle.position;
+        positions[0] = target.position;
+        positions[positions.Count - 1] = handle.position;
 
-        lineRenderer.positionCount = ropePositions.Count;
-        lineRenderer.SetPositions(ropePositions.ToArray());
+        lineRenderer.positionCount = positions.Count;
+        lineRenderer.SetPositions(positions.ToArray());
     }
 
     private void SetFixedValue()

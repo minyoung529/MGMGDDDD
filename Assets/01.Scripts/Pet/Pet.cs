@@ -140,8 +140,9 @@ public abstract class Pet : MonoBehaviour
     {
         if (isMove)
         {
-            if (Vector3.Distance(destination, transform.position) <= 0.1f)
+            if (Vector3.Distance(destination, transform.position) <= 0.6f)
             {
+                Debug.Log("DEST");
                 isMove = false;
                 return;
             }
@@ -161,6 +162,7 @@ public abstract class Pet : MonoBehaviour
         else
         {
             agent.isStopped = true;
+            agent.velocity = Vector3.zero;
             agent.ResetPath();
         }
     }
@@ -173,7 +175,7 @@ public abstract class Pet : MonoBehaviour
     {
         Debug.Log(gameObject.name + " : ActiveSkill Ready");
 
-        IsSkilling = true;
+        IsSkilling = true; 
         IsConnected = false;
         IsSelected = false;
         FollowTarget(true);
