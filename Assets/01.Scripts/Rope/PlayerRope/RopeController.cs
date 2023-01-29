@@ -133,7 +133,7 @@ public class RopeController : MonoBehaviour
     /// Reset Rope to first
     /// </summary>
     private void SetInitState()
-    {
+    { 
         playerRope.ConnectStartPoint(playerRopeRigid);
         Debug.Log("FAlSE");
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
