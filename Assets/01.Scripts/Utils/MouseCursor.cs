@@ -14,6 +14,6 @@ public class MouseCursor : MonoBehaviour
     }
     public static void EditCursorSprite(Texture2D tex)
     {
-        Cursor.SetCursor(tex, Vector3.zero, CursorMode.ForceSoftware);
+        //Cursor.SetCursor(tex, Vector3.zero, CursorMode.ForceSoftware);
     }
 }

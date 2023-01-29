@@ -6,7 +6,6 @@ using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] private Transform player;
 
     [SerializeField] private bool isGet = false;
     [SerializeField] private bool isMove = false;
@@ -14,9 +13,12 @@ public abstract class Pet : MonoBehaviour
     [SerializeField] private bool isSelected = false;
     [SerializeField] private bool isConnected = false;
     [SerializeField] private bool isSkilling = false;
+    [SerializeField] private bool isCoolTime = false;
+    [SerializeField] private float coolTime = 10.0f;
 
     protected Camera camera;
     protected Rigidbody rigid;
+    protected GameObject player;
     protected NavMeshAgent agent;
 
     public PetType type;
@@ -29,6 +31,7 @@ public abstract class Pet : MonoBehaviour
    public bool IsConnected { get { return isConnected; } set { isConnected = value; }}
    public bool IsStop { get { return isStop; } set { isStop = value; }}
    public bool IsSkilling { get { return isSkilling; } set { isSkilling = value; }}
+   public bool IsCoolTime { get { return isCoolTime; } set { isCoolTime = value; } }
 
     protected virtual void Awake()
     {
@@ -86,18 +89,20 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ResetPet()
     {
-        isGet = false;
+        IsGet = false;
         isMove = false;
-        isStop = false;
-        isSelected = false;
+        IsStop = false;
+        IsSelected = false;
         IsSkilling = false;
-        isConnected = false;
+        IsConnected = false;
+        IsCoolTime = false;
 
         agent.enabled = true;
     }
 
-    public void GetPet(bool isOn)
+    public void GetPet(GameObject obj)
     {
+        player = obj;
         isGet = true;
         IsConnected=true;
 
@@ -120,6 +125,7 @@ public abstract class Pet : MonoBehaviour
     {
         destination = dest;
         isMove = true;
+        rigid.velocity = Vector3.zero;
     }
     private void MovePoint()
     {
@@ -176,10 +182,35 @@ public abstract class Pet : MonoBehaviour
     {
         Debug.Log(gameObject.name + " : ActiveSkill On");
     }
+    protected virtual void PassiveSkill(Collision collision)
+    {
+        if (IsCoolTime)
+        {
+            Debug.Log(gameObject.name + " : Nope Passive CoolTime");
+            return;
+        }
+        Debug.Log(gameObject.name + " : PassiveSkill");
+    }
     protected virtual void PassiveSkill()
     {
+        if (IsCoolTime)
+        {
+            Debug.Log(gameObject.name + " : Nope Passive CoolTime");
+            return;
+        }
         Debug.Log(gameObject.name + " : PassiveSkill");
+        CoolTime();
+    }
 
+    protected void CoolTime()
+    {
+        IsCoolTime = true;
+        StartCoroutine(StartCool());
+    }
+    private IEnumerator StartCool()
+    {
+        yield return new WaitForSeconds(coolTime);
+        IsCoolTime = false;
     }
 
     #endregion
@@ -189,7 +220,7 @@ public abstract class Pet : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             if (IsGet) return;
-            GetPet(true);
+            GetPet(collision.gameObject);
         }
     }
 

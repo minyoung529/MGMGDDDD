@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class StickyPet : Pet
 {
@@ -12,6 +13,7 @@ public class StickyPet : Pet
 
         rigid.useGravity = true;
         rigid.isKinematic = false;
+        agent.enabled= false;
     }
     #endregion
 
@@ -41,11 +43,24 @@ public class StickyPet : Pet
     }
 
     // Passive Skill
-    protected override void PassiveSkill()
+    protected override void PassiveSkill(Collision collision)
     {
-        base.PassiveSkill();
+        base.PassiveSkill(collision);
 
-
+        if (IsCoolTime) return;
+        collision.gameObject.GetComponent<Sticky>().SetSticky();
+        collision.transform.SetParent(transform);
+        CoolTime();
     }
     #endregion
+
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+
+        if(collision.gameObject.TryGetComponent(out Sticky s))
+        {
+            PassiveSkill(collision);
+        }
+    }
 }

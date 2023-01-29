@@ -76,14 +76,15 @@ public class MovementInput : MonoBehaviour
         right.Normalize();
 
         desiredMoveDirection = forward * InputZ + right * InputX;
-        
+
         if (blockRotationPlayer == false)
         {
-            RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
+            if (desiredMoveDirection.sqrMagnitude > 0.01f)
+                RotatePlayer(ThirdPersonCameraControll.IsRopeAim || ThirdPersonCameraControll.IsPetAim);
             rigid.velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
 
-            if (desiredMoveDirection.magnitude > 0.01f)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+            // if (desiredMoveDirection.magnitude > 0.01f)
+            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
             Vector3 velocity = desiredMoveDirection.normalized * Time.deltaTime * Velocity;
             velocity.y = rigid.velocity.y;
             rigid.velocity = velocity;
@@ -131,11 +132,12 @@ public class MovementInput : MonoBehaviour
         }
     }
 
+    public float jumpforce = 1f;
     private void TestJump()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            rigid.AddForce(Vector3.up * 0.3f, ForceMode.Impulse);
+            rigid.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
         }
     }
 }

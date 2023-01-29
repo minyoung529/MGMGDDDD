@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Presets;
 using UnityEditor;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class WireController : MonoBehaviour
 {
@@ -72,6 +74,7 @@ public class WireController : MonoBehaviour
 
     [Header("SPAWNED SEGMENTS")]
     public List<Transform> segments;
+    public List<ConfigurableJoint> jointSegments;
     [HideInInspector]
     [Tooltip("You can delete these references when you are no longer modifying the wire.")]
     public List<int> undoSegments;
@@ -107,6 +110,8 @@ public class WireController : MonoBehaviour
     public Rigidbody startRigid;
     public Rigidbody endRigid;
 
+    private TubeRenderer wireRenderer;
+
     private void Awake()
     {
         mousePossHelper.gameObject.SetActive(false);
@@ -115,6 +120,10 @@ public class WireController : MonoBehaviour
 
         startRigid = startAnchorTemp.GetComponent<Rigidbody>();
         endRigid = endAnchorTemp.GetComponent<Rigidbody>();
+
+        wireRenderer = transform.GetComponentInChildren<TubeRenderer>();
+
+        segments.ForEach(x => jointSegments.Add(x.GetComponent<ConfigurableJoint>()));
     }
 
     private void Update()
@@ -456,7 +465,7 @@ public class WireController : MonoBehaviour
 
     /// Custom
     #region Connect
-    public void ConnectStartPoint(Rigidbody rigid, bool isNotMove = false)
+    public void ConnectStartPoint(Rigidbody rigid)
     {
         if (startJoint)
         {
@@ -471,22 +480,26 @@ public class WireController : MonoBehaviour
         {
             endJoint.transform.position = rigid.transform.position;
             endJoint.connectedBody = rigid;
+            endJoint.autoConfigureConnectedAnchor = true;
         }
     }
     #endregion
 
     #region Animation
 
-    public void TryConnect(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart = false)
+    public void TryConnect(Action<WireController> onConnected, Vector3 hitPoint, bool isStart = false)
     {
-        StartCoroutine(TryConnectCoroutine(connect, onConnected, isStart));
+        StartCoroutine(TryConnectCoroutine(onConnected, hitPoint, isStart));
     }
 
-    public IEnumerator TryConnectCoroutine(ConnectedObject connect, Action<ConnectedObject, WireController> onConnected, bool isStart)
+    public IEnumerator TryConnectCoroutine(Action<WireController> onConnected, Vector3 hitPoint, bool isStart)
     {
         float speed = 30f;
+        bool isConnect = false;
         Joint joint = endJoint;
         Rigidbody tempRigid = null;
+
+        SetProjectionDistance(0.05f);
 
         if (isStart)
         {
@@ -500,26 +513,48 @@ public class WireController : MonoBehaviour
 
         while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 7f) // 로프 범위 + 7까지
         {
-            Vector3 dir = (connect.transform.position - joint.transform.position).normalized;
+            Vector3 dir = (hitPoint - joint.transform.position).normalized;
             rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);
 
             // 포획 성공
-            if (Vector3.Distance(connect.transform.position, joint.transform.position) < 0.2f)
+            if (Vector3.Distance(hitPoint, joint.transform.position) < 0.2f)
             {
-                rigid.isKinematic = false;
-                onConnected.Invoke(connect, this);
-                yield break;
+                onConnected.Invoke(this);
+                isConnect = true;
+                break;
             }
 
             yield return null;
         }
 
+        // reset
         rigid.isKinematic = false;
 
-        if (isStart)    // 이전에 있던 물체 연결
+        StartCoroutine(DelayDecreaseDistance());
+
+        if (!isConnect && isStart)    // 이전에 있던 물체 연결
         {
             ConnectStartPoint(tempRigid);
         }
     }
     #endregion
+
+    private void SetProjectionDistance(float distance)
+    {
+        foreach (ConfigurableJoint joint in jointSegments)
+        {
+            joint.projectionDistance = distance;
+        }
+    }
+
+    private IEnumerator DelayDecreaseDistance()
+    {
+        yield return new WaitForSeconds(1f);
+        SetProjectionDistance(0.012f);
+    }
+
+    public void Active(bool active)
+    {
+        wireRenderer.gameObject.SetActive(active);
+    }
 }
