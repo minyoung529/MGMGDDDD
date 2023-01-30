@@ -85,7 +85,7 @@ public class PlayerMove : MonoBehaviour
         InputManager.StartListeningInput(InputAction.Jump, InputType.GetKeyDown, Jump);
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         SetRotate();
         ResetInput();
         // ------------- 감속이 줄에 매달려있을 때도 작용이 된다 -------------
