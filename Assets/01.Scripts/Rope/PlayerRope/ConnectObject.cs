@@ -30,6 +30,7 @@ public class ConnectObject : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         ropeController = GetComponent<RopeController>();
         connectedRope = Instantiate(connectedRope);
+        connectedRope.gameObject.SetActive(false);
 
         hitPoint = new GameObject("Hit Point").transform;
         prevHitPoint = new GameObject("Hit Point").transform;
@@ -127,13 +128,23 @@ public class ConnectObject : MonoBehaviour
         float timer = 0f;
         Vector3 prevPos, pos;
         Transform ropeEnd = ropeController.PlayerRope.endJoint.transform;
+        int ropeCnt = ropeController.ConnectCount = 0;
 
         lineRenderer.positionCount = 2;
 
         while (timer < duration)
         {
             timer += Time.deltaTime;
-            prevPos = Vector3.Lerp(prevHitPoint.position, ropeHand.position, timer / duration);
+
+            if (ropeCnt == 2)
+            {
+                prevPos = Vector3.Lerp(prevHitPoint.position, ropeHand.position, timer / duration);
+            }
+            else
+            {
+                prevPos = ropeHand.position;
+            }
+
             pos = Vector3.Lerp(hitPoint.position, ropeEnd.position, timer / duration);
 
             lineRenderer.SetPosition(0, prevPos);
@@ -153,16 +164,25 @@ public class ConnectObject : MonoBehaviour
         }
 
         joint.anchor = Vector3.zero;
+        joint.connectedAnchor = hitPoint.position;
         joint.autoConfigureConnectedAnchor = false;
 
         // the distance grapple will try to keep from grapple point. 
-        joint.maxDistance = Define.MAX_ROPE_DISTANCE;
+        joint.maxDistance = 5f;
         joint.minDistance = 0f;
 
         // customize values as you like
-        joint.spring = 30f;
+        //joint.spring = 30f;
+        joint.spring = 10f;
         joint.damper = 10f;
 
+        joint.massScale = 1f;
+        StartCoroutine(SetDelayMassScale());
+    }
+
+    private IEnumerator SetDelayMassScale()
+    {
+        yield return null;
         joint.massScale = 98f;
     }
 
@@ -176,6 +196,7 @@ public class ConnectObject : MonoBehaviour
 
     private void SuccessConnect()
     {
+        connectedRope.gameObject.SetActive(true);
         connectedRope.Connect(prevHitPoint.position, hitPoint.position, lineRenderer);
     }
 
@@ -192,6 +213,7 @@ public class ConnectObject : MonoBehaviour
 
     private void ResetData()
     {
+        connectedRope.gameObject.SetActive(false);
         ropeController.PlayerRope.Active(true);
         lineRenderer.positionCount = 0;
         prevHitPoint.SetParent(null);

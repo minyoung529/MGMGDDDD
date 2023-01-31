@@ -19,7 +19,9 @@ public class ConnectedRope : MonoBehaviour
     public Action OnConnect;
     #endregion
 
-    private void Start()
+    public static bool IsSlingShot = false;
+
+    private void Awake()
     {
         collider = GetComponent<BoxCollider>();
     }
@@ -50,6 +52,7 @@ public class ConnectedRope : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.S) && collision.transform.position.y < mid.y)
             {
+                IsSlingShot = true;
                 collider.isTrigger = true;
             }
         }
@@ -67,6 +70,8 @@ public class ConnectedRope : MonoBehaviour
 
     private void SetCollider(Vector3 from, Vector3 to)
     {
+        if (!collider) return;
+
         Vector3 size;
         size.x = Vector3.Distance(from, to);
         size.y = size.z = line.startWidth;

@@ -33,14 +33,7 @@ public class ConnectedObject : MonoBehaviour
     {
         if (isChild)
         {
-            ConnectedObject connected = this;
-
-            while (connected.isChild)
-            {
-                connected = connected.transform.parent.GetComponent<ConnectedObject>();
-            }
-            parent = connected;
-
+            FindParent();
             return;
         }
 
@@ -70,7 +63,6 @@ public class ConnectedObject : MonoBehaviour
         }
         else
         {
-            Debug.Log("CONNECT");
             rigid.isKinematic = !isFollow;
 
             if (!isFollow) return transform;
@@ -95,10 +87,26 @@ public class ConnectedObject : MonoBehaviour
     public void SetAnchor()
     {
         Transform hitPoint = transform.Find("Hit Point");
+        if (!joint) return;
 
-        if (hitPoint)
+        if (ropePosition)
+        {
+            joint.anchor = ropePosition.localPosition;
+        }
+        else if (hitPoint)
         {
             joint.anchor = hitPoint.localPosition;
         }
+    }
+
+    private void FindParent()
+    {
+        ConnectedObject connected = this;
+
+        while (connected.isChild)
+        {
+            connected = connected.transform.parent.GetComponent<ConnectedObject>();
+        }
+        parent = connected;
     }
 }

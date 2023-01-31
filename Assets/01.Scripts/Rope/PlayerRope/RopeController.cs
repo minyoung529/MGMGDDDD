@@ -29,7 +29,7 @@ public class RopeController : MonoBehaviour
     private ThirdPersonCameraControll cameraController;
 
     #region Property
-    public int ConnectCount { get => connectCnt; set => connectCnt = value; } 
+    public int ConnectCount { get => connectCnt; set => connectCnt = value; }
     public Rigidbody RopeRigid => playerRopeRigid;
     public WireController PlayerRope => playerRope;
     #endregion
@@ -104,22 +104,19 @@ public class RopeController : MonoBehaviour
     /// </summary>
     private void TryConnect()
     {
-        if (1 << target.gameObject.layer == Define.PET_LAYER )
+        if (1 << target.gameObject.layer == Define.PET_LAYER)
         {
             playerRope.TryConnect(OnConnect, hitPoint);
         }
-        else 
+        else
         {
-            if (connectCnt == 2) return;
-
-            if (connectCnt == 1)
+            if (connectCnt == 0)
             {
-                OnConnect(playerRope);
+                playerRope.TryConnect(OnConnect, hitPoint);
             }
             else
             {
-                // 연결되어있는 게 1 이상이면 머리가 이동
-                playerRope.TryConnect(OnConnect, hitPoint/*, true*/);
+                OnConnect(playerRope);
             }
         }
     }
@@ -153,4 +150,14 @@ public class RopeController : MonoBehaviour
         //InputManager.StopListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
         //InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
+
+    #region Debug
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(RopeRigid.position, Define.MAX_ROPE_DISTANCE);
+    }
+
+    #endregion
 }

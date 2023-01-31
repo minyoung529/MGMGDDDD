@@ -467,7 +467,7 @@ public class WireController : MonoBehaviour
     #region Connect
     public void ConnectStartPoint(Rigidbody rigid)
     {
-        if (startJoint) 
+        if (startJoint)
         {
             startJoint.transform.position = rigid.transform.position;
             startJoint.connectedBody = rigid;
@@ -487,40 +487,33 @@ public class WireController : MonoBehaviour
 
     #region Animation
 
-    public void TryConnect(Action<WireController> onConnected, Vector3 hitPoint, bool isStart = false)
+    public void TryConnect(Action<WireController> onConnected, Vector3 hitPoint)
     {
-        StartCoroutine(TryConnectCoroutine(onConnected, hitPoint, isStart));
+        StartCoroutine(TryConnectCoroutine(onConnected, hitPoint));
     }
 
-    public IEnumerator TryConnectCoroutine(Action<WireController> onConnected, Vector3 hitPoint, bool isStart)
+    public IEnumerator TryConnectCoroutine(Action<WireController> onConnected, Vector3 hitPoint)
     {
         float speed = 30f;
-        bool isConnect = false;
-        Joint joint = endJoint;
-        Rigidbody tempRigid = null;
 
         SetProjectionDistance(0.05f);
 
-        if (isStart)
+        endRigid.isKinematic = startRigid.isKinematic = true;
+
+        while (Vector3.Distance(startRigid.position, endRigid.position) < Define.MAX_ROPE_DISTANCE) // 로프 범위 + 7까지
         {
-            joint = startJoint;
-            tempRigid = joint.connectedBody;
-            joint.connectedBody = null;
-        }
+            if (Input.GetKeyDown(KeyCode.F)) // c
+                break;
 
-        Rigidbody rigid = joint.GetComponent<Rigidbody>();
-        rigid.isKinematic = true;
+            Vector3 dir = (hitPoint - endRigid.position).normalized;
+            endRigid.position += dir * speed * Time.deltaTime;
 
-        while (currentDistanceToStartAnchor < maxDistanceToStarAnchor + 7f) // 로프 범위 + 7까지
-        {
-            Vector3 dir = (hitPoint - joint.transform.position).normalized;
-            rigid.MovePosition(rigid.position + dir * speed * Time.deltaTime);
-
+            Debug.Log(Vector3.Distance(hitPoint, endRigid.transform.position));
             // 포획 성공
-            if (Vector3.Distance(hitPoint, joint.transform.position) < 0.2f)
+            if (Vector3.Distance(hitPoint, endRigid.transform.position) < 0.2f)
             {
                 onConnected.Invoke(this);
-                isConnect = true;
+                Debug.Log("Success");
                 break;
             }
 
@@ -528,14 +521,8 @@ public class WireController : MonoBehaviour
         }
 
         // reset
-        rigid.isKinematic = false;
-
-        StartCoroutine(DelayDecreaseDistance());
-
-        if (!isConnect && isStart)    // 이전에 있던 물체 연결
-        {
-            ConnectStartPoint(tempRigid);
-        }
+        endRigid.isKinematic = startRigid.isKinematic = false;
+        SetProjectionDistance(0.012f);
     }
     #endregion
 
