@@ -152,12 +152,12 @@ public class RopeController : MonoBehaviour
     }
 
     #region Debug
-
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(RopeRigid.position, Define.MAX_ROPE_DISTANCE);
+        Color gizmoColor = Color.red;
+        gizmoColor.a = 0.4f;
+        Gizmos.color = gizmoColor;
+        Gizmos.DrawSphere(RopeRigid.position, Define.MAX_ROPE_DISTANCE);
     }
-
     #endregion
 }

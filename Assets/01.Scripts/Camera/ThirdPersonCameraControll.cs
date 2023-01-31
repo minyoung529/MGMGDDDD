@@ -141,7 +141,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
         targetPos.y = Mathf.Clamp(targetPos.y, targetMinMax.first*3f, targetMinMax.second * 3f);
         lookTarget.localPosition = targetPos;
 
-        transform.rotation = Quaternion.Euler(/*eulerAngleX*/transform.rotation.x, eulerAngleY, transform.rotation.z);
+        transform.rotation = Quaternion.Euler(eulerAngleX/*transform.rotation.x*/, eulerAngleY, transform.rotation.z);
     }
     // 카메라 x축 회전의 경우 회전 범위를 설정
     private float ClampAngle(float angle, float min, float max)
