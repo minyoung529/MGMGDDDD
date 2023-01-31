@@ -45,6 +45,11 @@ public static class Utils
         float dist = Vector3.Distance(from, to);
         return from + (to - from).normalized * 0.5f * dist; ;
     }
+
+    public static Vector3 MultiplyVec(this Vector3 thisVec, Vector3 vector)
+    {
+        return new Vector3(thisVec.x * vector.x, thisVec.y * vector.y, thisVec.z * vector.z);
+    }
 }
 
 

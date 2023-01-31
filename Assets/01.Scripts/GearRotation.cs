@@ -54,8 +54,11 @@ public class GearRotation : MonoBehaviour
         if (collision.collider.CompareTag("Finish"))
         {
             if (isRotate) return;
-            OnGear();
+
+            Rigidbody rigid = GetComponent<Rigidbody>();
+            rigid.constraints ^= RigidbodyConstraints.FreezeRotationY;
+            // OnGear();
+            // 임시로 막아놓았습니다
         }
     }
-
 }

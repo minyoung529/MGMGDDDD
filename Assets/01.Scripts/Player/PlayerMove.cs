@@ -15,6 +15,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float rotateTime = 1;
     [SerializeField] private float accelPower = 10;
     [SerializeField] private float decelPower = 10;
+    [SerializeField] private LayerMask landingLayer;
     private float maxSpeed = 0;
     private float curSpeed = 0;
 
@@ -85,10 +86,11 @@ public class PlayerMove : MonoBehaviour
         InputManager.StartListeningInput(InputAction.Jump, InputType.GetKeyDown, Jump);
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         SetRotate();
         ResetInput();
-        Decelerate();
+        // ------------- 감속이 줄에 매달려있을 때도 작용이 된다 -------------
+        //Decelerate();
     }
 
     private void OnAnimatorIK(int layerIndex) {
@@ -194,18 +196,20 @@ public class PlayerMove : MonoBehaviour
 
     private void Jump(InputAction action, InputType type, float value) {
         if (!isCanJump) return;
+        if (ConnectedRope.IsSlingShot) return; // 새총 하고 있으면 점프 XX
+
         isCanJump = false;
         anim.SetTrigger(jumpHash);
     }
 
     public void JumpEvent() {
-        rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
-        StartCoroutine(landingCoroutine());
+        rigid.AddForce(Vector3.up * jumpPower * rigid.mass, ForceMode.Force);
+        StartCoroutine(LandingCoroutine());
     }
 
-    private IEnumerator landingCoroutine() {
+    private IEnumerator LandingCoroutine() {
         yield return new WaitForSeconds(0.1f);
-        while(!Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.5f, Define.BOTTOM_LAYER)) {
+        while(!Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.5f, landingLayer)) {
             yield return null;
         }
         isCanJump = true;

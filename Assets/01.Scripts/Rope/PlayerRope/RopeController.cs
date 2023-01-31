@@ -29,7 +29,7 @@ public class RopeController : MonoBehaviour
     private ThirdPersonCameraControll cameraController;
 
     #region Property
-    public int ConnectCount { get => connectCnt; set => connectCnt = value; } 
+    public int ConnectCount { get => connectCnt; set => connectCnt = value; }
     public Rigidbody RopeRigid => playerRopeRigid;
     public WireController PlayerRope => playerRope;
     #endregion
@@ -70,31 +70,26 @@ public class RopeController : MonoBehaviour
     {
         cameraController.SetRope();
 
-        if (1 << target.gameObject.layer == Define.PET_LAYER)
+        if (target.gameObject.layer == Define.PET_LAYER)
         {
             connectPet.Connect(target.GetComponent<ConnectedObject>());
         }
         else
         {
-            connectObject.Connect(target.GetComponent<ConnectedObject>(), hitPoint, wire);
+            connectObject.Connect(target.transform, hitPoint, wire);
             playerRope.Active(false);
             connectCnt++;
         }
     }
 
-    private void ConnectTarget(InputAction action = InputAction.TryConnect, InputType type = InputType.GetKeyDown, float val = 0f)
+    private void ConnectTarget()
     {
         if (!ThirdPersonCameraControll.IsRopeAim) return;
-        if (type != InputType.GetKeyDown) return;
 
         Camera camera = GameManager.Instance.MainCam;
         Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
 
-        Ray ray = camera.ScreenPointToRay(screenCenter);
-
-        Debug.DrawRay(camera.transform.position, ray.direction * 100f, Color.red, 1f);
-
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 1000f, conenctedLayer))
+        if (Physics.Raycast(camera.ScreenPointToRay(screenCenter), out RaycastHit hitInfo, 1000f, conenctedLayer))
         {
             Debug.Log(hitInfo.transform.gameObject.name);
             hitPoint = hitInfo.point;
@@ -115,16 +110,13 @@ public class RopeController : MonoBehaviour
         }
         else
         {
-            if (connectCnt == 2) return;
-
-            if (connectCnt == 1)
+            if (connectCnt == 0)
             {
-                OnConnect(playerRope);
+                playerRope.TryConnect(OnConnect, hitPoint);
             }
             else
             {
-                // 연결되어있는 게 1 이상이면 머리가 이동
-                playerRope.TryConnect(OnConnect, hitPoint/*, true*/);
+                OnConnect(playerRope);
             }
         }
     }
@@ -135,14 +127,13 @@ public class RopeController : MonoBehaviour
     private void SetInitState()
     {
         playerRope.ConnectStartPoint(playerRopeRigid);
-        Debug.Log("FAlSE");
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
 
         connectCnt = 0;
     }
 
-    public void UnConnect(InputAction action = InputAction.UnConnect, InputType type = InputType.GetKeyDown, float val = 0f)
+    public void UnConnect()
     {
         connectObject.UnConnect();
         connectPet.UnConnect();
@@ -159,4 +150,14 @@ public class RopeController : MonoBehaviour
         //InputManager.StopListeningInput(InputAction.UnConnect, InputType.GetKeyDown, UnConnect);
         //InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
+
+    #region Debug
+    private void OnDrawGizmos()
+    {
+        Color gizmoColor = Color.red;
+        gizmoColor.a = 0.4f;
+        Gizmos.color = gizmoColor;
+        Gizmos.DrawSphere(RopeRigid.position, Define.MAX_ROPE_DISTANCE);
+    }
+    #endregion
 }

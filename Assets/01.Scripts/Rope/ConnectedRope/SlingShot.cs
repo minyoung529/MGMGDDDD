@@ -1,6 +1,8 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -23,7 +25,7 @@ public class SlingShot : MonoBehaviour
     [SerializeField]
     private float flyForce = 5f;
 
-    private void Start()
+    private void Awake()
     {
         collider = GetComponent<BoxCollider>();
         connectedRope = GetComponent<ConnectedRope>();
@@ -38,7 +40,12 @@ public class SlingShot : MonoBehaviour
 
             if (isForward == IsForward())
             {
-                if (Vector3.Distance(character.position, originMid) > 1.2f)
+                Vector3 characterpos = character.position;
+                Vector3 mid = originMid;
+
+                characterpos.y = mid.y = 0f;
+
+                if (Vector3.Distance(characterpos, mid) > 1f)
                 {
                     ResetRope();
                 }
@@ -74,13 +81,22 @@ public class SlingShot : MonoBehaviour
     {
         Rigidbody rigid = character.GetComponent<Rigidbody>();
         float dist = Vector3.Distance(connectedRope.Mid, originMid);
-
         Vector3 dir = (originMid - connectedRope.Mid).normalized;
-        dir.y = 0.5f * dist;
-        //dir.Normalize();
 
-        Debug.DrawRay(rigid.position, dir * 1000f, Color.red, 7f);
-        rigid.AddForce(flyForce * (dist * 0.2f) * dir, ForceMode.VelocityChange);
+        dist = Mathf.Clamp(dist * 10f, 3f, 30f);
+
+        Vector3 velocity = GetVelocity(character.transform.position, character.transform.position + dir * dist, 70f);
+        rigid.velocity = velocity;
+        //Vector3[] path =
+        //{
+        //    character.position, 
+        //    character.position + character.forward * 5f + Vector3.up * 10f,
+        //    character.position + character.forward * 10f
+        //};
+
+        //character.transform.DOPath(path, 2f, PathType.CubicBezier, PathMode.Full3D);
+
+        Destroy(joint);
     }
 
     private void SetSpringJoint()
@@ -89,7 +105,7 @@ public class SlingShot : MonoBehaviour
 
         joint = character.GetOrAddComponent<SpringJoint>();
 
-        joint.connectedAnchor = Vector3.zero;
+        joint.anchor = Vector3.zero;
         joint.autoConfigureConnectedAnchor = false;
         joint.connectedAnchor = originMid;
 
@@ -103,7 +119,7 @@ public class SlingShot : MonoBehaviour
         joint.massScale = 98f;
     }
 
-    #region
+    #region Calculate
     private void CalculateMid()
     {
         Vector3 pos = character.position;
@@ -118,8 +134,33 @@ public class SlingShot : MonoBehaviour
         return Vector3.Dot(originMidFwd, (character.position - originMid)) > 0f;
     }
 
+    Vector3 GetVelocity(Vector3 currentPos, Vector3 targetPos, float initialAngle)
+    {
+        float gravity = Physics.gravity.magnitude;
+        float angle = initialAngle * Mathf.Deg2Rad;
+
+        Vector3 planarTarget = new Vector3(targetPos.x, 0, targetPos.z);
+        Vector3 planarPosition = new Vector3(currentPos.x, 0, currentPos.z);
+
+        float distance = Vector3.Distance(planarTarget, planarPosition);
+        float yOffset = currentPos.y - targetPos.y;
+
+        float initialVelocity = (1 / Mathf.Cos(angle)) * Mathf.Sqrt((0.5f * gravity * Mathf.Pow(distance, 2)) / (distance * Mathf.Tan(angle) + yOffset));
+
+        Vector3 velocity = new Vector3(0f, initialVelocity * Mathf.Sin(angle), initialVelocity * Mathf.Cos(angle));
+
+        float angleBetweenObjects = Vector3.Angle(Vector3.forward, planarTarget - planarPosition) * (targetPos.x > currentPos.x ? 1 : -1);
+        Vector3 finalVelocity = Quaternion.AngleAxis(angleBetweenObjects, Vector3.up) * velocity;
+
+        return finalVelocity;
+    }
+    #endregion
+
     private void ResetRope()
     {
+        Debug.Log("Reset");
+
+        ConnectedRope.IsSlingShot = false;
         character = null;
         collider.isTrigger = false;
         connectedRope.Mid = originMid;
@@ -127,5 +168,4 @@ public class SlingShot : MonoBehaviour
 
         Destroy(joint);
     }
-    #endregion
 }
