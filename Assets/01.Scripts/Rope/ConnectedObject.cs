@@ -7,58 +7,70 @@ public class ConnectedObject : MonoBehaviour
     [SerializeField]
     private bool isFollow = true;
 
+    [SerializeField]
+    private Transform ropePosition;
+
     private WireController frontWire = null;
 
-    private Joint fixedJoint;
+    private Joint joint;
     private Rigidbody rigid;
 
     #region Property
     public Rigidbody Rigid => rigid;
+    public Transform RopePosition
+    {
+        get
+        {
+            if (ropePosition) return ropePosition;
+            else return transform;
+        }
+    }
     #endregion
 
     private void Start()
     {
-        fixedJoint = GetComponent<Joint>();
-        rigid = GetComponent<Rigidbody>();
-    }
+        rigid = gameObject.GetOrAddComponent<Rigidbody>();
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (!isFollow)
+            rigid.useGravity = false;
+
+        if (isFollow)
         {
-            rigid.MovePosition(transform.position - transform.forward * 0.5f);
+            joint = GetComponent<Joint>();
+
+            if (!joint)
+            {
+                joint = gameObject.AddComponent<FixedJoint>();
+            }
         }
     }
 
-    public void Connect(WireController wire, bool isStart)
+    public void Connect(WireController wire, Rigidbody playerRigid = null)
     {
-        Rigidbody wireRigid = wire.startRigid;
-
-        if (!isStart)
-        // ---O
-        {
-            frontWire = wire;
-            wireRigid = wire.endRigid;
-        }
-
-        rigid.MovePosition(wireRigid.position);
-
-        if (fixedJoint)
-        {
-            fixedJoint.connectedBody = wireRigid;
-        }
-
         rigid.isKinematic = !isFollow;
+
+        if (!isFollow) return;
+
+        if (gameObject.layer == Define.PET_LAYER)
+        {
+            Rigidbody wireRigid = wire.endRigid;
+            frontWire = wire;
+
+            rigid.MovePosition(wireRigid.position);
+
+            joint.connectedBody = wireRigid;
+        }
+        else
+        {
+            joint.connectedBody = playerRigid;
+        }
     }
 
     public void UnConnect()
     {
-        fixedJoint.connectedBody = null;
-        rigid.isKinematic = true;
+        if (!isFollow) return;
 
-        if (frontWire)
-        {
-            frontWire.endRigid.isKinematic = false;
-        }
+        joint.connectedBody = null;
+        rigid.isKinematic = true;
     }
 }
