@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct InputInfo
 {
     public InputInfo(InputType type, KeyCode code) {

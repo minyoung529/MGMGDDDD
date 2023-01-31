@@ -10,15 +10,15 @@ public class InputManager : MonoSingleton<InputManager>
     private static string SAVE_PATH;
     private static string DEFAULT_PATH;
     private const string SAVE_FILE = "/KeyMapping";
-    private static Dictionary<InputAction, InputCode> keyBinding = new Dictionary<InputAction, InputCode>();
-    public static Dictionary<InputAction, InputCode> KeyBinding => keyBinding;
+    private static Dictionary<InputAction, InputInfo[]> keyBinding = new Dictionary<InputAction, InputInfo[]>();
+    public static Dictionary<InputAction, InputInfo[]> KeyBinding => keyBinding;
+    [SerializeField] private List<InputSave> inputSave = new List<InputSave>();
     #endregion
 
     #region 이벤트
-    private static Dictionary<KeyCode, Dictionary<InputType, Action<InputAction, InputType, float>>> keyEventDictionary
-        = new Dictionary<KeyCode, Dictionary<InputType, Action<InputAction, InputType, float>>>();
-    private static Dictionary<InputType, Action<InputAction, InputType, float>> scrollEventDictionary
-        = new Dictionary<InputType, Action<InputAction, InputType, float>>();
+    private static Dictionary<InputAction, Action<float>> eventDictionary
+        = new Dictionary<InputAction, Action<float>>();
+    private static Dictionary<Action<float>, float> executeList = new Dictionary<Action<float>, float>();
     #endregion
 
     private void Awake() {
@@ -36,160 +36,114 @@ public class InputManager : MonoSingleton<InputManager>
     }
 
     private void LoadKeyMapping() {
-        if(!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) { //세이브 파일 없으면 디폴트 값 가져옴
-            string json_Save = File.ReadAllText(string.Concat(DEFAULT_PATH));
-            List<InputSave> input_Save = JsonConvert.DeserializeObject<List<InputSave>>(json_Save);
-            foreach (InputSave save in input_Save) {
-                keyBinding.Add(save.Action, save.Code);
-            }
-            return;
+        //if(!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) { //세이브 파일 없으면 디폴트 값 가져옴
+        //    string json_Save = File.ReadAllText(string.Concat(DEFAULT_PATH));
+        //    List<InputSave> input_Save = JsonConvert.DeserializeObject<List<InputSave>>(json_Save);
+        //    foreach (InputSave save in input_Save) {
+        //        keyBinding.Add(save.Action, save.Code);
+        //    }
+        //    return;
+        // }
+        if (!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) {
+            string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
+            inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
+            keyBinding.Clear();
         }
-
-        string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
-        List<InputSave> inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
-        keyBinding.Clear();
-        foreach(InputSave save in inputSave) {
+        foreach (InputSave save in inputSave) {
             keyBinding.Add(save.Action, save.Code);
         }
     }
 
-    private void SaveKeyMapping(Dictionary<InputAction, InputCode> keyDictionary) {
+    private void SaveKeyMapping(Dictionary<InputAction, InputInfo[]> keyDictionary) {
         if (!Directory.Exists(SAVE_PATH)) {
             Directory.CreateDirectory(SAVE_PATH);
         }
         List<InputSave> save = new List<InputSave>();
-        foreach (KeyValuePair<InputAction, InputCode> pair in keyDictionary) {
+        foreach (KeyValuePair<InputAction, InputInfo[]> pair in keyDictionary) {
             save.Add(new InputSave(pair.Key, pair.Value));
         }
         string jsonSave = JsonConvert.SerializeObject(save.ToArray(), Formatting.Indented);
         File.WriteAllText(string.Concat(SAVE_PATH, SAVE_FILE), jsonSave);
     }
 
-    public void ChangeKeyMapping(InputAction action, InputCode inputCode) {
-        if(inputCode.keyCode != KeyCode.None) {
-            keyBinding[action] = inputCode;
-        }
+    public void ChangeKeyMapping(InputAction action, InputInfo[] inputInfo) {
+        keyBinding[action] = inputInfo;
         SaveKeyMapping(keyBinding);
     }
 
     private void CheckInput() {
-        foreach (KeyValuePair<InputAction, InputCode> item in keyBinding) {
-            if (item.Value.keyCode != KeyCode.None) {
-                CheckKeycodeInput(item.Key, item.Value.keyCode);
-                continue;
-            }
-            CheckScrollInput(item.Key, item.Value.scroll);
-        }
-    }
-
-    private void CheckKeycodeInput(InputAction action, KeyCode keyCode) {
-        if (!keyEventDictionary.ContainsKey(keyCode)) return;
-        foreach (InputType inputType in keyEventDictionary[keyCode].Keys) {
-            switch (inputType) {
-                case InputType.GetKeyDown:
-                    if (Input.GetKeyDown(keyCode))
-                        keyEventDictionary[keyCode][inputType].Invoke(action, inputType, 0);
+        executeList.Clear();
+        foreach (InputAction action in eventDictionary.Keys) {
+            InputInfo[] infos = keyBinding[action];
+            if (infos == null) continue;
+            bool result = true;
+            float param = 0;
+            for (int keyIndex = 0; keyIndex < infos.Length; keyIndex++) {
+                object value = CheckInputType(infos[keyIndex]);
+                if (infos[keyIndex].inputType <= InputType.GetKeyUp) {
+                    if (!(bool)value) {
+                        result = false;
+                        break;
+                    }
+                }
+                else if (infos[keyIndex].inputType <= InputType.ScrollDown) {
+                    if ((float)value == 0) {
+                        result = false;
+                        break;
+                    }
+                    param = (float)value;
+                }
+                else {
+                    Debug.LogError("입력의 방식이 특정되지 않았습니다");
+                    result = false;
                     break;
-                case InputType.GetKey:
-                    if (Input.GetKey(keyCode))
-                        keyEventDictionary[keyCode][inputType].Invoke(action, inputType, 0);
-                    break;
-                case InputType.GetKeyUp:
-                    if (Input.GetKeyUp(keyCode))
-                        keyEventDictionary[keyCode][inputType].Invoke(action, inputType, 0);
-                    break;
-            }
-        }
-    }
-
-    private void CheckScrollInput(InputAction action, bool scroll) {
-        InputType type = scroll ? InputType.ScrollUp : InputType.ScrollDown;
-        if (!scrollEventDictionary.ContainsKey(type)) return;
-        float delta = Input.mouseScrollDelta.y;
-        if (type == InputType.ScrollUp && delta > 0) {
-            scrollEventDictionary[type].Invoke(action, type, delta);
-
-        }
-        else if (type == InputType.ScrollDown && delta < 0) {
-            scrollEventDictionary[type].Invoke(action, type, delta);
-        }
-    }
-
-    static public void StartListeningInput(InputAction action, InputType type, Action<InputAction, InputType, float> listener) {
-        InputCode input = keyBinding[action];
-        if (input.keyCode != KeyCode.None) { //키코드 입력이 바인딩 된 경우
-            KeyCode key = input.keyCode;
-            if (!keyEventDictionary.ContainsKey(key)) {
-                keyEventDictionary.Add(key, new Dictionary<InputType, Action<InputAction, InputType, float>>());
-                if (!keyEventDictionary[key].ContainsKey(type)) {
-                    keyEventDictionary[key].Add(type, listener);
-                    return;
                 }
             }
-            keyEventDictionary[key][type] += listener;
-            return;
+            if(result) {
+                executeList.Add(eventDictionary[action], param);
+            }
         }
-        if (input.scroll) { //스크롤 업 입력이 바인딩 된 경우
-            if (type != InputType.ScrollUp) { // 키 바인딩과 입력 방식 동일성 검사
-                Debug.LogError("You are trying to register ScrollEvent that different KeyBinding between Action");
-                return;
-            }
-            if (!scrollEventDictionary.ContainsKey(type)) {
-                scrollEventDictionary.Add(type, listener);
-                return;
-            }
-            scrollEventDictionary[type] += listener;
-        }
-        else { //스크롤 다운 입력이 바인딩 된 경우
-            if (type != InputType.ScrollDown) { // 키 바인딩과 입력 방식 동일성 검사
-                Debug.LogError("You are trying to register ScrollEvent that different KeyBinding between Action");
-                return;
-            }
-            if (!scrollEventDictionary.ContainsKey(type)) {
-                scrollEventDictionary.Add(type, listener);
-                return;
-            }
-            scrollEventDictionary[type] += listener;
+        foreach(KeyValuePair<Action<float>, float> item in executeList) {
+            item.Key.Invoke(item.Value);
         }
     }
 
-    static public void StopListeningInput(InputAction action, InputType type, Action<InputAction, InputType, float> listener) {
-        InputCode input = keyBinding[action];
-        if (input.keyCode != KeyCode.None) { //키코드 입력이 바인딩 된 경우
-            KeyCode key = input.keyCode;
-            if (!keyEventDictionary.ContainsKey(key) || !keyEventDictionary[key].ContainsKey(type)) {
-                Debug.LogWarning("You are trying to remove Action that does not existent");
-                return;
-            }
-            keyEventDictionary[key][type] -= listener;
-            return;
-        }
-        //이벤트 등록 과정에서 키 바인딩과 타입의 동일 여부를 이미 판단했기 때문에 등록 해제 과정에서는 해주지 않음
-        if (input.scroll) { //스크롤 업 입력이 바인딩 된 경우
-            if (!scrollEventDictionary.ContainsKey(type)) {
-                Debug.LogWarning("You are trying to remove Action that does not existent");
-                return;
-            }
-            scrollEventDictionary[type] -= listener;
-        }
-        else { //스크롤 다운 입력이 바인딩 된 경우
-            if (!scrollEventDictionary.ContainsKey(type)) {
-                Debug.LogWarning("You are trying to remove Action that does not existent");
-                return;
-            }
-            scrollEventDictionary[type] -= listener;
+     private object CheckInputType(InputInfo inputInfo) {
+        switch (inputInfo.inputType) {
+            case InputType.GetKeyDown:
+                return Input.GetKeyDown(inputInfo.keyCode);
+            case InputType.GetKey:
+                return Input.GetKey(inputInfo.keyCode);
+            case InputType.GetKeyUp:
+                return Input.GetKeyUp(inputInfo.keyCode);
+            case InputType.ScrollUp:
+                if (Input.mouseScrollDelta.y > 0)
+                    return Input.mouseScrollDelta.y;
+                return 0;
+            case InputType.ScrollDown:
+                if (Input.mouseScrollDelta.y < 0)
+                    return Input.mouseScrollDelta.y;
+                return 0;
+            default:
+                return 0;
         }
     }
 
-    /// <returns>마우스 포인터의 레이가 충돌 감지 시 true 아니면 false</returns>
-    static public bool GetMouseRayPos(Vector3 mousePos, out Vector3 hitPoint) {
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Camera.main.farClipPlane, Define.BOTTOM_LAYER)) {
-            hitPoint = hit.point;
-            return true;
+    static public void StartListeningInput(InputAction action, Action<float> listener) {
+        if(eventDictionary.ContainsKey(action)) {
+            eventDictionary[action] += listener;
         }
-        hitPoint = Vector3.zero;
-        return false;
+        else {
+            eventDictionary.Add(action, listener);
+        }
+    }
+
+    static public void StopListeningInput(InputAction action, Action<float> listener) {
+        if (eventDictionary.ContainsKey(action)) {
+            eventDictionary[action] -= listener;
+            if(eventDictionary[action] == null) {
+                eventDictionary.Remove(action);
+            }
+        }
     }
 }

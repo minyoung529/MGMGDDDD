@@ -76,13 +76,13 @@ public class PlayerMove : MonoBehaviour
     }
 
     private void StartListen() {
-        InputManager.StartListeningInput(InputAction.Move_Forward, InputType.GetKey, (action, type, value) => GetInput(Forward));
-        InputManager.StartListeningInput(InputAction.Back, InputType.GetKey, (action, type, value) => GetInput(-Forward));
-        InputManager.StartListeningInput(InputAction.Move_Right, InputType.GetKey, (action, type, value) => GetInput(Right));
-        InputManager.StartListeningInput(InputAction.Move_Left, InputType.GetKey, (action, type, value) => GetInput(-Right));
-        InputManager.StartListeningInput(InputAction.Zoom, InputType.GetKeyDown, Zoom);
-        InputManager.StartListeningInput(InputAction.Sprint, InputType.GetKeyDown, Sprint);
-        InputManager.StartListeningInput(InputAction.Jump, InputType.GetKeyDown, Jump);
+        InputManager.StartListeningInput(InputAction.Move_Forward, (value) => GetInput(Forward));
+        InputManager.StartListeningInput(InputAction.Back, (value) => GetInput(-Forward));
+        InputManager.StartListeningInput(InputAction.Move_Right, (value) => GetInput(Right));
+        InputManager.StartListeningInput(InputAction.Move_Left, (value) => GetInput(-Right));
+        InputManager.StartListeningInput(InputAction.Zoom, Zoom);
+        InputManager.StartListeningInput(InputAction.Sprint, Sprint);
+        InputManager.StartListeningInput(InputAction.Jump, Jump);
     }
 
     private void Update() {
@@ -179,20 +179,20 @@ public class PlayerMove : MonoBehaviour
             curSpeed = 0;
     }
 
-    private void Sprint(InputAction action, InputType type, float value) {
+    private void Sprint(float value) {
         if (isInputLock || anim.GetBool(zoomHash)) return;
         anim.SetBool(sprintHash, !anim.GetBool(sprintHash));
         maxSpeed = anim.GetBool(sprintHash) ? sprintSpeed : walkSpeed;
     }
 
-    private void Zoom(InputAction action, InputType type, float value) {
+    private void Zoom(float value) {
         if (isInputLock) return;
         maxSpeed = zoomMoveSpeed;
         anim.SetBool(sprintHash, false);
         anim.SetBool(zoomHash, !anim.GetBool(zoomHash));
     }
 
-    private void Jump(InputAction action, InputType type, float value) {
+    private void Jump(float value) {
         if (!isCanJump) return;
         isCanJump = false;
         anim.SetTrigger(jumpHash);

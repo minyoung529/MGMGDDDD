@@ -1,8 +1,9 @@
 public enum InputType
 {
+    None = 0,
     GetKeyDown,
-    GetKeyUp,
     GetKey,
+    GetKeyUp,
     ScrollUp,
     ScrollDown,
 }
