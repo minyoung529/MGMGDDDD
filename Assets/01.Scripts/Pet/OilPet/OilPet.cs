@@ -8,15 +8,12 @@ public class OilPet : Pet
     [SerializeField] GameObject oilSkill;
     [SerializeField] GameObject fireBurnParticle;
 
-    private const float fireStayTime = 2.0f;
-    private const float fireSkillTime = 10.0f;
-    private const float fireRadius = 1.5f;
+    private const float fireStayTime = Define.ICE_MELTING_TIME;
+    private const float fireSkillTime = Define.BURN_TIME;
+    private const float fireRadius = Define.FIRE_RADIUS;
 
     private bool isBurn = false;
     private bool inFire = false;
-
-    Vector3 waterBallTarget;
-
 
     #region Set
     protected override void ResetPet()
@@ -33,49 +30,49 @@ public class OilPet : Pet
     // Active skill
     protected override void ClickActive()
     {
+        if (!IsSkilling) return;
         base.ClickActive();
 
+        isSkilling = false;
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
+            GameObject oil = CreateOil();
+
             oil.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
             oil.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
+            oil.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(()=>
             {
-                IsSkilling = false;
+                CoolTime(Define.ACTIVE_COOLTIME_TYPE);
             });
         }
+    }
+    private GameObject CreateOil()
+    {
+        GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
+        return oil;
     }
 
     // Passive Skill
     protected override void PassiveSkill()
     {
+        if (IsPassiveCoolTime) return;
         base.PassiveSkill();
 
-        isBurn = true;
-        fireBurnParticle.SetActive(true);
         StartCoroutine(FireTime());
     }
 
-    IEnumerator FireStayTime()
-    {
-        yield return new WaitForSeconds(fireStayTime);
-
-        if (inFire)
-        {
-            PassiveSkill();
-        }
-    }
     IEnumerator FireTime()
     {
+        isBurn = true;
+        CoolTime(Define.PASSIVE_COOLTIME_TYPE);
         StartCoroutine(FireSkill());
         yield return new WaitForSeconds(fireSkillTime);
         isBurn = false;
     }
-
     IEnumerator FireSkill()
     {
+        fireBurnParticle.SetActive(true);
         while (true)
         {
             if (!isBurn) break;
@@ -105,6 +102,15 @@ public class OilPet : Pet
     {
         inFire = false;
         StopCoroutine(FireStayTime());
+    }
+    IEnumerator FireStayTime()
+    {
+        yield return new WaitForSeconds(fireStayTime);
+
+        if (inFire)
+        {
+            PassiveSkill();
+        }
     }
 
     #endregion
