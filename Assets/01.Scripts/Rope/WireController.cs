@@ -508,7 +508,6 @@ public class WireController : MonoBehaviour
             Vector3 dir = (hitPoint - endRigid.position).normalized;
             endRigid.position += dir * speed * Time.deltaTime;
 
-            Debug.Log(Vector3.Distance(hitPoint, endRigid.transform.position));
             // Æ÷È¹ ¼º°ø
             if (Vector3.Distance(hitPoint, endRigid.transform.position) < 0.2f)
             {
