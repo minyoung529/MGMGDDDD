@@ -50,10 +50,6 @@ public class MovementInput : MonoBehaviour
         {
             verticalVel -= 0;
         }
-        else
-        {
-            verticalVel -= 1;
-        }
         //moveVector = new Vector3(0, verticalVel * .2f * Time.deltaTime, 0);
         //rigid.velocity = (moveVector);
 
