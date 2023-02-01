@@ -125,7 +125,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     {
         eulerAngleY += mouseX * rotCamYAxisSpeed;
         eulerAngleX -= mouseY * rotCamXAxisSpeed;
-        eulerAngleX = ClampAngle(eulerAngleX, limitMinX, limitMaxX);
+       // eulerAngleX = ClampAngle(eulerAngleX, limitMinX, limitMaxX);
 
         transform.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, transform.rotation.z);
     }

@@ -151,7 +151,6 @@ public abstract class Pet : MonoBehaviour
     {
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
 
-        Debug.Log("Click_Move");
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
@@ -167,7 +166,8 @@ public abstract class Pet : MonoBehaviour
             return;
         }
         var dir = destination - transform.position;
-        rigid.position += dir.normalized * Time.deltaTime * 5f;
+        dir.y = 0;
+        transform.position += dir.normalized * Time.deltaTime * 5f;
     }
 
     // Not Connected State
@@ -199,14 +199,14 @@ public abstract class Pet : MonoBehaviour
 
         isSkilling = true;
         isConnected = false;
-        isSelected = false;
         FollowTarget(true);
-        PetManager.Instance.NotSelectPet();
     }
     protected virtual void ClickActive()
     {
-        if (!IsSkilling) return;
+        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
 
+        isSelected = false;
+        PetManager.Instance.NotSelectPet();
         Debug.Log(gameObject.name + " : ActiveSkill On");
     }
 

@@ -30,7 +30,7 @@ public class OilPet : Pet
     // Active skill
     protected override void ClickActive()
     {
-        if (!IsSkilling) return;
+        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
         base.ClickActive();
 
         isSkilling = false;

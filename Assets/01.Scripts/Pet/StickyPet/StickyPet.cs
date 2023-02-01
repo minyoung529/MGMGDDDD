@@ -7,7 +7,6 @@ public class StickyPet : Pet
 {
     private float moveSpeed = 1f;
 
-
     #region Set
     protected override void ResetPet()
     {
@@ -33,7 +32,7 @@ public class StickyPet : Pet
     protected override void ClickActive()
     {
         base.ClickActive();
-        if (!IsSkilling) return;
+        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -61,7 +60,7 @@ public class StickyPet : Pet
     {
         base.PassiveSkill(collision);
 
-        if (IsPassiveCoolTime) return;
+        if (IsPassiveCoolTime || IsSkilling) return;
         collision.gameObject.GetComponent<Sticky>().SetSticky();
 
         StickySkill(collision.gameObject);
@@ -71,12 +70,15 @@ public class StickyPet : Pet
     private void StickySkill(GameObject obj)
     {
         Rigidbody rb = obj.GetComponent<Rigidbody>();
-        if (rb == null) obj.AddComponent<Rigidbody>();
+        if (rb == null) rb = obj.AddComponent<Rigidbody>();
 
-        rb.isKinematic = true;
+        rb.isKinematic = false;
         rb.detectCollisions = true;
+        rb.useGravity = false;
+        rigid.isKinematic = true;
+        rigid.detectCollisions = true;
 
-        FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+        FixedJoint joint = transform.gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = rb;
     }
 

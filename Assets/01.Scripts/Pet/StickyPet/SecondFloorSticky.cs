@@ -11,7 +11,15 @@ public class SecondFloorSticky : MonoBehaviour
     {
         if (collision.collider.CompareTag("Gear"))
         {
-            Debug.Log("Gear");
+            StopGear();
+        }
+    }
+
+    private void StopGear()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1f))
+        {
             EventManager.TriggerEvent(EventName.StopGear, dic);
             enabled = false;
         }

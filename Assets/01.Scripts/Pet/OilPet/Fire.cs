@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -5,9 +6,9 @@ using UnityEngine;
 
 public class Fire : MonoBehaviour
 {
-    float burningTime = 3f;
     bool isBurn = false;
     bool isOtherBurn = false;
+    float burningTime = 3f;
 
     Material mat;
 
@@ -39,7 +40,10 @@ public class Fire : MonoBehaviour
         {
             isBurn = true;
             mat.color = Color.red;
-            Destroy(gameObject, 2f);
+
+            // Ice
+            IceMelting ice = transform.GetComponent<IceMelting>();
+            if (ice != null) ice.IceMelt();
         }
     }
 
