@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ConnectedObject : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class ConnectedObject : MonoBehaviour
     private bool isFollow = true;
     [SerializeField]
     private bool isChild = false;
+    private ConnectedObject parent;
 
     [SerializeField]
     private Transform ropePosition;
@@ -29,7 +31,11 @@ public class ConnectedObject : MonoBehaviour
 
     private void Start()
     {
-        if (isChild) return;
+        if (isChild)
+        {
+            FindParent();
+            return;
+        }
 
         rigid = gameObject.GetOrAddComponent<Rigidbody>();
 
@@ -52,15 +58,8 @@ public class ConnectedObject : MonoBehaviour
     {
         if (isChild)
         {
-            Transform connected = transform;
-
-            while (connected.parent != null)
-            {
-                connected = connected.parent;
-            }
-
-            connected.GetComponent<ConnectedObject>().Connect(wire, playerRigid);
-            return connected;
+            parent.Connect(wire, playerRigid);
+            return parent.transform;
         }
         else
         {
@@ -88,10 +87,26 @@ public class ConnectedObject : MonoBehaviour
     public void SetAnchor()
     {
         Transform hitPoint = transform.Find("Hit Point");
+        if (!joint) return;
 
-        if (hitPoint)
+        if (ropePosition)
+        {
+            joint.anchor = ropePosition.localPosition;
+        }
+        else if (hitPoint)
         {
             joint.anchor = hitPoint.localPosition;
         }
+    }
+
+    private void FindParent()
+    {
+        ConnectedObject connected = this;
+
+        while (connected.isChild)
+        {
+            connected = connected.transform.parent.GetComponent<ConnectedObject>();
+        }
+        parent = connected;
     }
 }

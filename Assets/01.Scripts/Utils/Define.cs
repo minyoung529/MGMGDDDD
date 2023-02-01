@@ -17,7 +17,7 @@ public class Define
     #endregion
 
     #region ROPE_VALUE
-    public const float MAX_ROPE_DISTANCE = 5f;
+    public const float MAX_ROPE_DISTANCE = 15f;
     #endregion
 
     #region PET_VALUE
