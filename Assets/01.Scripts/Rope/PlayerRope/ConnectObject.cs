@@ -25,15 +25,12 @@ public class ConnectObject : MonoBehaviour
     bool tryConnect = false;
     #endregion
 
-    private PlayerMove movement;
-
     public static bool IsSwing = false;
 
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         ropeController = GetComponent<RopeController>();
-        movement = GetComponent<PlayerMove>();
         connectedRope = Instantiate(connectedRope);
         connectedRope.gameObject.SetActive(false);
 
@@ -163,8 +160,6 @@ public class ConnectObject : MonoBehaviour
 
     private void Swing()
     {
-        if (!LadderObject.IsLadder)
-            movement.IsDecelerate = false;
         IsSwing = true;
 
         if (joint == null)
@@ -202,7 +197,6 @@ public class ConnectObject : MonoBehaviour
         if (joint)
         {
             Destroy(joint);
-            movement.IsDecelerate = true;
         }
     }
 
