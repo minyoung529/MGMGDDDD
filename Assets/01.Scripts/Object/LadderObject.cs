@@ -34,10 +34,7 @@ public class LadderObject : MonoBehaviour
 
         movement ??= rigid.GetComponent<PlayerMove>();
 
-        if (ConnectObject.IsSwing)
-        {
-            movement.IsDecelerate = false;
-        }
+        movement.IsDecelerate = false;
 
         rigid.useGravity = true;
         isLadder = false;
@@ -55,6 +52,5 @@ public class LadderObject : MonoBehaviour
         isLadder = true;
         rigid.transform.forward = -transform.right;
         movement.IsDecelerate = true;
-
     }
 }

@@ -49,7 +49,7 @@ public class PlayerMove : MonoBehaviour
     #region 상태 관련 변수
     private bool isInputLock = false;
     private bool isCanJump = true;
-    private bool canDecelerate = true;
+    private bool canDecelerate = false;
     public bool IsDecelerate { get => canDecelerate; set => canDecelerate = value; }
     #endregion
 

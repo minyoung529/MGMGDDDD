@@ -82,6 +82,7 @@ public class SlingShot : MonoBehaviour
         Rigidbody rigid = character.GetComponent<Rigidbody>();
         float dist = Vector3.Distance(connectedRope.Mid, originMid);
         Vector3 dir = (originMid - connectedRope.Mid).normalized;
+        dir.y = 0f;
 
         dist = Mathf.Clamp(dist * 10f, 3f, 30f);
 
@@ -103,6 +104,7 @@ public class SlingShot : MonoBehaviour
     {
         if (!character) return;
 
+        Debug.Log("ADD");
         joint = character.GetOrAddComponent<SpringJoint>();
 
         joint.anchor = Vector3.zero;
