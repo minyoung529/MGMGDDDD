@@ -13,5 +13,7 @@ public enum InputAction
 	Select_First_Pet = 10,
 	Select_Second_Pet = 11,
 	Select_Third_Pet = 12,
-	Length = 13
+	Active_Skill = 13,
+	Click_Move_Pet = 14,
+	Length = 15
 }

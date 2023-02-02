@@ -214,6 +214,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (inputDir.sqrMagnitude <= 0) return;
         if (LadderObject.IsLadder) return;
+        if (ThirdPersonCameraControll.IsPetAim) return;
 
         if (!anim.GetBool(zoomHash))
             transform.forward = Vector3.RotateTowards(transform.forward, inputDir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
