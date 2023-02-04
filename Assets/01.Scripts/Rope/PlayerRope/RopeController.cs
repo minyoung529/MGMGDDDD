@@ -152,13 +152,11 @@ public class RopeController : MonoBehaviour
         //InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
 
-    #region Debug
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Color gizmoColor = Color.red;
         gizmoColor.a = 0.4f;
         Gizmos.color = gizmoColor;
         Gizmos.DrawSphere(RopeRigid.position, Define.MAX_ROPE_DISTANCE);
     }
-    #endregion
 }
