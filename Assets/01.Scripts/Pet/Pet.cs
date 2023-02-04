@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Pet : MonoBehaviour
 {
@@ -14,12 +13,10 @@ public abstract class Pet : MonoBehaviour
     [SerializeField] protected bool isStop = false;
     [SerializeField] protected bool isSkilling = false;
     [SerializeField] protected bool isSelected = false;
-    [SerializeField] protected bool isConnected = false;
     [SerializeField] protected bool isActiveCoolTime = false;
     [SerializeField] protected bool isPassiveCoolTime = false;
     public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
     public bool IsGet { get { return isGet; } }
-    public bool IsConnected { get { return isConnected; } }
     public bool IsStop { get { return isStop; } }
     public bool IsSkilling { get { return isSkilling; } }
     public bool IsActiveCoolTime { get { return isActiveCoolTime; } }
@@ -58,31 +55,21 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void Update()
     {
-        // 1. 얻었냐
-        if (!IsGet) return;
+        if (!ThirdPersonCameraControll.IsPetAim) return;
+        if (!IsGet || !IsSelected) return;
 
-        // 2. 연결됐냐
-        if (!IsConnected)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            FollowTarget(true);
+            ActiveSkill();
         }
-        else
+        if (!isSkilling && Input.GetMouseButtonDown(0))
         {
-            // 3. 선택됐냐
-            if (!IsSelected) return;
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                ActiveSkill();
-            }
-            if (Input.GetMouseButtonDown(1))
-            {
-                MovePoint();
-            }
-            ClickMove();
+            MovePoint();
         }
+        ClickMove();
 
         // active skill 중 좌클릭 시
-        if (Input.GetMouseButtonDown(0))
+        if (isSkilling && Input.GetMouseButtonDown(0))
         {
             ClickActive();
         }
@@ -97,7 +84,6 @@ public abstract class Pet : MonoBehaviour
         isStop = false;
         isSelected = false;
         isSkilling = false;
-        isConnected = false;
         isActiveCoolTime = false;
         isPassiveCoolTime = false;
 
@@ -112,8 +98,6 @@ public abstract class Pet : MonoBehaviour
 
     public void Connected()
     {
-        isConnected = true;
-
         agent.enabled = true;
         rigid.useGravity = true;
         rigid.isKinematic = false;
@@ -123,7 +107,7 @@ public abstract class Pet : MonoBehaviour
     {
         player = obj;
         isGet = true;
-        
+
         StartListen();
         Connected();
         FollowTarget(false);
@@ -193,12 +177,12 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ActiveSkill()
     {
+        isSkilling = false;
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsActiveCoolTime) return;
 
         Debug.Log(gameObject.name + " : ActiveSkill Ready");
 
         isSkilling = true;
-        isConnected = false;
         FollowTarget(true);
     }
     protected virtual void ClickActive()
@@ -214,13 +198,11 @@ public abstract class Pet : MonoBehaviour
     {
         if (IsPassiveCoolTime) return;
 
-        Debug.Log(gameObject.name + " : PassiveSkill");
     }
     protected virtual void PassiveSkill()
     {
         if (IsPassiveCoolTime) return;
 
-        Debug.Log(gameObject.name + " : PassiveSkill");
     }
 
     protected void CoolTime(string str)

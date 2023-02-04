@@ -49,8 +49,9 @@ public class OilPet : Pet
     }
     private GameObject CreateOil()
     {
-        GameObject oil = Instantiate(oilSkill, transform.position, Quaternion.identity);
-        return oil;
+        OilPaint oil = Instantiate(oilSkill, transform.position, Quaternion.identity).GetComponent<OilPaint>();
+        if (isBurn) oil.SetBurn();
+        return oil.gameObject;
     }
 
     // Passive Skill

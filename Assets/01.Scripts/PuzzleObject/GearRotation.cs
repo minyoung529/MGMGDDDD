@@ -8,30 +8,18 @@ public class GearRotation : MonoBehaviour
     float rotSpeed = 1.0f;
     [SerializeField] bool isRotate = false;
 
-    private void Awake()
-    {
-        EventManager.StartListening(EventName.StopGear, StopGear);
-    }
-    private void OnDestroy()
-    {
-        EventManager.StopListening(EventName.StopGear, StopGear);
-    }
 
     public void OnGear()
     {
         isRotate = true;
         StartCoroutine(RotateGear());
     }
-    public void StopGear(Dictionary<string, object> dic)
+    public void StopGear()
     {
         isRotate = false;
         StopCoroutine(RotateGear());
     }
 
-    private void Start()
-    {
-        if (!isFirst) OnGear();
-    }
 
     IEnumerator RotateGear()
     {

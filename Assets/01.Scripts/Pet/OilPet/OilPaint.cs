@@ -45,11 +45,9 @@ public class OilPaint : MonoBehaviour{
 
     private void SpreadOil()
     {
-        if(fireParticle.isPlaying) fireParticle.Stop();
+        if(splashParticle.isPlaying) fireParticle.Stop();
 
-        splashParticle.Play();
         col.isTrigger = true;
-
         col.radius = 1.0f;
         meshRender.enabled = false;
     }
@@ -81,10 +79,9 @@ public class OilPaint : MonoBehaviour{
     {
         Fire[] fires = collision.collider.GetComponents<Fire>();
 
-        Vector3 firePos = collision.contacts[0].point;
         foreach (Fire f in fires)
         {
-            f.Burn();
+            if(isBurn) f.Burn();
         }
     }
 

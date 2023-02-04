@@ -44,8 +44,9 @@ public class Lever : MonoBehaviour
 
     private void SetLever()
     {
-        OnLever.AddListener(DebugOnLever);
-        OffLever.AddListener(DebugOffLever);
+        // µð¹ö±ë
+       //OnLever.AddListener(DebugOnLever);
+       //OffLever.AddListener(DebugOffLever);
 
         // ÇÊ¼ö
         handle = transform.GetChild(0);
