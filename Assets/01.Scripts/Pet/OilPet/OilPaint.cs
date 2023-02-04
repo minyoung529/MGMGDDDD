@@ -72,6 +72,7 @@ public class OilPaint : MonoBehaviour{
         Vector3 pos = collision.contacts[0].point;
         foreach (Paintable p in paints)
         {
+            Debug.Log("PAINT => " + collision.gameObject.name);
             PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
         }

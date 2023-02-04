@@ -16,6 +16,11 @@ public class Define
     public const int CONNECTED_ROPE_LAYER       = 10;
     #endregion
 
+    #region TAG
+    public const string PLAYER_TAG = "Player";
+    public const string OIL_BULLET_TAG = "OilBullet";
+    #endregion
+
     #region ROPE_VALUE
     public const float MAX_ROPE_DISTANCE = 15f;
     #endregion
