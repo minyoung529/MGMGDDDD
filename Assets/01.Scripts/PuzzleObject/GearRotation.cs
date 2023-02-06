@@ -5,12 +5,14 @@ using UnityEngine;
 public class GearRotation : MonoBehaviour
 {
     [SerializeField] bool isFirst = true;
-    float rotSpeed = 1.0f;
     [SerializeField] bool isRotate = false;
+    [SerializeField] bool isOil = false;
+    float rotSpeed = 1.0f;
 
 
     public void OnGear()
     {
+        if (!isOil) return;
         isRotate = true;
         StartCoroutine(RotateGear());
     }
@@ -52,14 +54,10 @@ public class GearRotation : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Finish"))
+        if (collision.collider.CompareTag("OilBullet"))
         {
             if (isRotate || !isFirst) return;
-
-           // Rigidbody rigid = GetComponent<Rigidbody>();
-            //rigid.constraints ^= RigidbodyConstraints.FreezeRotationY;
-            OnGear();
-            // 임시로 막아놓았습니다
+            isOil = true;
         }
     }
 }

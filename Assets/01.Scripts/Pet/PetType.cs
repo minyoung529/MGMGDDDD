@@ -6,5 +6,6 @@ public enum PetType
 {
     NONE,
     OIL,
-    STICKY
+    STICKY,
+    FIRE
 }
