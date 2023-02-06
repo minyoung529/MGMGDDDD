@@ -35,8 +35,13 @@ public class UnMovedObject : MonoBehaviour
     {
         if (other.CompareTag(Define.OIL_BULLET_TAG))
         {
+            rigid.velocity = Vector3.zero;
+            rigid.angularVelocity = Vector3.zero;
+            rigid.ResetCenterOfMass();
+            rigid.ResetInertiaTensor();
             rigid.constraints = 0;
             rigid.mass = mass;
+            calcDistance = false;
         }
     }
 

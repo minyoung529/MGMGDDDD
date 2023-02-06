@@ -50,7 +50,6 @@ public class PlayerMove : MonoBehaviour
     private bool isInputLock = false;
     private bool isCanJump = true;
     private bool canDecelerate = false;
-    public bool IsDecelerate { get => canDecelerate; set => canDecelerate = value; }
     #endregion
 
     #region 애니메이션 관련 변수
@@ -100,8 +99,7 @@ public class PlayerMove : MonoBehaviour
         SetRotate();
         ResetInput();
         // ------------- 감속이 줄에 매달려있을 때도 작용이 된다 -------------
-        if (canDecelerate)
-            Decelerate();
+        Decelerate();
     }
 
     private void OnAnimatorIK(int layerIndex)
