@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class IceMelting : MonoBehaviour
 {
+    //  [SerializeField] GameObject bridge;
+
+    [SerializeField] private bool inObj = false;
     private bool melting = false;
+    private Rigidbody inObjRigid;
+    private Collider inObjCollider;
 
     private float meltReadyTime = 3.0f;
 
@@ -19,15 +24,24 @@ public class IceMelting : MonoBehaviour
         }
     }
 
-    private void IceMelt()
+    public void IceMelt()
     {
-        Rigidbody rb = transform.GetChild(0).GetComponent<Rigidbody>();
-        transform.GetChild(0).SetParent(null);
-
+        if(inObj)
+        {
+            inObjRigid = transform.GetChild(0).GetComponent<Rigidbody>();
+            inObjCollider = transform.GetChild(0).GetComponent<Collider>();
+            transform.GetChild(0).SetParent(null);
+            inObjCollider.enabled = true;
+        }
+        
         transform.DOScaleY(0f, 1.9f).OnComplete(() =>
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
+            if(inObj)
+            {
+                inObjRigid.isKinematic = false;
+                inObjRigid.useGravity = true;
+            }
+            //bridge.transform.DOScaleZ(15f, 1f);
         });
         Destroy(gameObject, 2f);
     }
@@ -46,7 +60,7 @@ public class IceMelting : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        Fire fire = collision.collider.GetComponent<Fire>();
+        Fire fire = collision.collider.GetComponent<Fire>();    
         if (fire != null)
         {
             if (fire.IsBurn && melting)

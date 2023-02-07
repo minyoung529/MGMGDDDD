@@ -50,7 +50,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     }
     private void SetDefault()
     {
-        MouseCursor.MouserCursorEdit(false, CursorLockMode.Locked);
+        MouseCursor.MouseCursorEdit(false, CursorLockMode.Locked);
         CameraSwitcher.SwitchCamera(defaultCamera);
     }
     public void SetPet()

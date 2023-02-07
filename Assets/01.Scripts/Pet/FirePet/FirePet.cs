@@ -14,7 +14,6 @@ public class FirePet : Pet
     }
     #endregion
 
-
     #region Skill
 
     // Active skill
@@ -29,11 +28,16 @@ public class FirePet : Pet
         {
             GameObject fireBall = CreateOil();
 
-            fireBall.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
-            fireBall.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            fireBall.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
+            //fireBall.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
+            //fireBall.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
+            //fireBall.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
+            //{
+            //    CoolTime();
+            //});
+
+            fireBall.transform.DOMove(hit.point, 1f).OnComplete(() =>
             {
-                CoolTime(Define.ACTIVE_COOLTIME_TYPE);
+                CoolTime();
             });
         }
     }
@@ -42,11 +46,6 @@ public class FirePet : Pet
         FireBall fire = Instantiate(fireBall, transform.position, Quaternion.identity).GetComponent<FireBall>();
         return fire.gameObject;
     }
-
-
-    #endregion
-
-    #region Collider
 
 
     #endregion

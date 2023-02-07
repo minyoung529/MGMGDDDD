@@ -75,15 +75,5 @@ public class OilPaint : MonoBehaviour{
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        Fire[] fires = collision.collider.GetComponents<Fire>();
-
-        foreach (Fire f in fires)
-        {
-            if(isBurn) f.Burn();
-        }
-    }
-
     #endregion
 }

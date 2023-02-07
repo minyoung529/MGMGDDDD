@@ -22,9 +22,6 @@ public class Define
 
     #region PET_VALUE
 
-    public const string ACTIVE_COOLTIME_TYPE = "ACTIVE";
-    public const string PASSIVE_COOLTIME_TYPE = "PASSIVE";
-
     public const float ICE_MELTING_TIME = 3f;
     public const float BURN_TIME = 10f;
     public const float FIRE_RADIUS = 1.5f;

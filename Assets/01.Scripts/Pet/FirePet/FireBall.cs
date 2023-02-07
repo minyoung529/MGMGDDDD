@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class FireBall : MonoBehaviour
 {
@@ -25,36 +26,41 @@ public class FireBall : MonoBehaviour
 
     private void ResetBullet()
     {
-        col.radius = 0.5f;
-        col.isTrigger = false;
         meshRender.enabled = true;
     }
 
-    private void SpreadOil()
+    private void Burning(Fire fire)
     {
-        if (splashParticle.isPlaying) splashParticle.Stop();
-
-        col.isTrigger = true;
-        col.radius = 1.0f;
         meshRender.enabled = false;
+
+        transform.SetParent(fire.transform);
+        fire.Burn();
     }
+
 
     #region Collider
 
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.collider.CompareTag("Fire")) return;
+
         Fire[] fires = collision.collider.GetComponents<Fire>();
-        if(fires.Length> 0 )
+        if (fires.Length > 0)
         {
-            Destroy(gameObject, 0.2f);
+            Burning(fires[0]);
+            return;
         }
-        foreach (Fire f in fires)
+        IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
+        foreach(IceMelting ice in ices)
         {
-            f.Burn();
-            
+            ice.IceMelt();
         }
+
+        Destroy(gameObject, 0.1f);
     }
+
+
 
     #endregion
 }

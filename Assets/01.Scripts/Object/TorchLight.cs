@@ -9,6 +9,8 @@ public class TorchLight : MonoBehaviour
     private void Awake()
     {
         fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
+
+        OffLight();
     }
 
     public void OnLight()
@@ -19,5 +21,15 @@ public class TorchLight : MonoBehaviour
     public void OffLight()
     {
         fireParticle.Stop();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        FireBall fire = other.GetComponent<FireBall>();
+        if(fire !=null)
+        {
+            Destroy(fire.gameObject);
+            OnLight();
+        }
     }
 }

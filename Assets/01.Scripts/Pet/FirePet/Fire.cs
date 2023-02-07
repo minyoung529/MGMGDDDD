@@ -25,12 +25,11 @@ public class Fire : MonoBehaviour
 
     public void Burn()
     {
-        Debug.Log("Burning");
         mat.color = Color.red;
         isBurn = true;
     }
 
-    public void StopBurn()
+    public void StopBurn()  
     {
         mat.color = defaultColor;
         isBurn = false;

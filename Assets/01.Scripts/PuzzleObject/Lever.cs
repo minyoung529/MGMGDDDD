@@ -27,8 +27,11 @@ public class Lever : MonoBehaviour
     public LayerMask playerLayer;
 
     private Transform handle;
+    private bool ice = false;
+    private bool isNear = false;
     private bool toggle = false;
-    private float nearRadius = 1f;
+
+    private float nearRadius = 0.8f;
 
     private void Start()
     {
@@ -56,9 +59,7 @@ public class Lever : MonoBehaviour
     // 상호작용 가능한 범위인가 체크하는 함수
     private bool NearPlayer()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, playerLayer);
-
-        if (colliders.Length > 0) return true;
+        if (isNear) return true;
         return false;
     }
 #endregion
@@ -96,12 +97,12 @@ public class Lever : MonoBehaviour
     private void OnRotateLever()
     {
         handle.DOKill();
-        handle.DORotate(new Vector3(0f, 0f, -45f), 1f);
+        handle.DOLocalRotate(new Vector3(0f, 0f, -45f), 1f);
     }
     private void OffRotateLever()
     {
         handle.DOKill();
-        handle.DORotate(new Vector3(0f, 0f, 45f), 1f);
+        handle.DOLocalRotate(new Vector3(0f, 0f, 45f), 1f);
     }
 #endregion
 
@@ -114,5 +115,20 @@ public class Lever : MonoBehaviour
     {
         Debug.Log("Off Lever");
     }
-#endregion
+    #endregion
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player"))
+        {
+            isNear = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.CompareTag("Player"))
+        {
+            isNear = false;
+        }
+    }
 }
