@@ -26,19 +26,22 @@ public class Lever : MonoBehaviour
     public UnityEvent OffLever;
     public LayerMask playerLayer;
 
+    private InteractOilObject interactOil;
+
     private Transform handle;
     private bool toggle = false;
     private float nearRadius = 1f;
 
     private void Start()
     {
+        interactOil = GetComponent<InteractOilObject>();
         SetLever();
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (NearPlayer()) ToggleEvent();
+            if (NearPlayer() && (!interactOil || (interactOil && !interactOil.IsRust))) ToggleEvent();
         }
     }
 
@@ -60,14 +63,14 @@ public class Lever : MonoBehaviour
         if (colliders.Length > 0) return true;
         return false;
     }
-#endregion
+    #endregion
 
     #region Event
     // Event Toggle
     private void ToggleEvent()
     {
         toggle = !toggle;
-        if(toggle)
+        if (toggle)
         {
             EventStart();
         }
@@ -102,7 +105,7 @@ public class Lever : MonoBehaviour
         handle.DOKill();
         handle.DORotate(new Vector3(0f, 0f, 45f), 1f);
     }
-#endregion
+    #endregion
 
     #region Debug
     public void DebugOnLever()
@@ -113,5 +116,5 @@ public class Lever : MonoBehaviour
     {
         Debug.Log("Off Lever");
     }
-#endregion
+    #endregion
 }

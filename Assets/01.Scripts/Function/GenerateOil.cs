@@ -15,16 +15,13 @@ public class GenerateOil : MonoBehaviour
         oilObject.gameObject.SetActive(false);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void Generate()
     {
-        if (collision.transform.CompareTag(Define.OIL_BULLET_TAG))
-        {
-            oilObject.gameObject.SetActive(true);
-            oilObject.transform.localScale = Vector3.zero;
-            oilObject.transform.DOScale(scale, 1f);
+        oilObject.gameObject.SetActive(true);
+        oilObject.transform.localScale = Vector3.zero;
+        oilObject.transform.DOScale(scale, 1f);
 
-            SpringJoint joint = oilObject.GetComponent<SpringJoint>();
-            joint.connectedBody = GetComponent<Rigidbody>();
-        }
+        SpringJoint joint = oilObject.GetComponent<SpringJoint>();
+        joint.connectedBody = GetComponent<Rigidbody>();
     }
 }

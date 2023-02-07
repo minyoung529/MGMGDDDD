@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class OilPaint : MonoBehaviour{
+public class OilPaint : MonoBehaviour
+{
 
     [SerializeField] Color paintColor;
     [SerializeField] PhysicMaterial oil;
@@ -45,7 +46,7 @@ public class OilPaint : MonoBehaviour{
 
     private void SpreadOil()
     {
-        if(fireParticle.isPlaying) fireParticle.Stop();
+        if (fireParticle.isPlaying) fireParticle.Stop();
 
         splashParticle.Play();
         col.isTrigger = true;
@@ -76,6 +77,9 @@ public class OilPaint : MonoBehaviour{
             PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
         }
+
+        //if (paints == null)
+        //    SpreadOil();
     }
 
     private void OnCollisionEnter(Collision collision)

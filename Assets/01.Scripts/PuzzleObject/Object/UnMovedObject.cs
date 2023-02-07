@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(InteractOilObject))]
 public class UnMovedObject : MonoBehaviour
 {
     private Rigidbody rigid;
@@ -31,18 +32,15 @@ public class UnMovedObject : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnEnterOil()
     {
-        if (other.CompareTag(Define.OIL_BULLET_TAG))
-        {
-            rigid.velocity = Vector3.zero;
-            rigid.angularVelocity = Vector3.zero;
-            rigid.ResetCenterOfMass();
-            rigid.ResetInertiaTensor();
-            rigid.constraints = 0;
-            rigid.mass = mass;
-            calcDistance = false;
-        }
+        rigid.velocity = Vector3.zero;
+        rigid.angularVelocity = Vector3.zero;
+        rigid.ResetCenterOfMass();
+        rigid.ResetInertiaTensor();
+        rigid.constraints = 0;
+        rigid.mass = mass;
+        calcDistance = false;
     }
 
     private void StopMoving()
