@@ -3,12 +3,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 public class CubePuzzle : MonoBehaviour
 {
     private Action OnSuccess;
     private bool isSuccess = false;
     [SerializeField] private Renderer bottomRenderer;
+
+    private Rigidbody cubeRigid;
 
     private void Start()
     {
@@ -19,10 +22,11 @@ public class CubePuzzle : MonoBehaviour
     {
         if (isSuccess) return;
 
-        if (other.CompareTag("CubePuzzle") &&
-            other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
+        if (other.CompareTag("CubePuzzle") /*&&
+            other.transform.GetSiblingIndex() == transform.GetSiblingIndex()*/)
         {
             OnSuccess?.Invoke();
+            cubeRigid = other.attachedRigidbody;
             MoveCubeToCenter(other.transform);
             isSuccess = true;
         }
@@ -30,7 +34,13 @@ public class CubePuzzle : MonoBehaviour
 
     public void ResetPuzzle()
     {
+        if (!isSuccess) return;
+
         isSuccess = false;
+        bottomRenderer.material.SetColor("_EmissionColor", Color.black);
+        cubeRigid.GetComponent<FallTest>().SavePoint();
+
+        cubeRigid.constraints ^= RigidbodyConstraints.FreezePosition;
     }
 
     #region SUCCESS
@@ -41,13 +51,16 @@ public class CubePuzzle : MonoBehaviour
 
     private void MoveCubeToCenter(Transform cube)
     {
-        Vector3 center = cube.transform.position;
-        center.x = bottomRenderer.transform.position.x;
-        center.z = bottomRenderer.transform.position.z;
+        cubeRigid.constraints = RigidbodyConstraints.FreezeAll;
+
+        Vector3 center = bottomRenderer.transform.position;
+        center.y = bottomRenderer.transform.position.y;
 
         cube.DOMove(center, 0.5f);
+        cube.DORotate(Vector3.up * -90f, 0.5f);
     }
     #endregion
+
     public void ListeningOnSuccess(Action action, bool listen = true)
     {
         if (listen)
@@ -58,5 +71,11 @@ public class CubePuzzle : MonoBehaviour
         {
             OnSuccess -= action;
         }
+    }
+
+    public void ConnectCube(Transform cube)
+    {
+        cube.position += Vector3.up * 5f;
+        cube.DOMoveY(cube.position.y - 5f, 1f).SetEase(Ease.InExpo).OnComplete(() => MoveCubeToCenter(cube));
     }
 }

@@ -7,6 +7,8 @@ public class CubePuzzleController : MonoBehaviour
     [SerializeField]
     private int cubeCount = 9;
     private int successCnt = 0;
+    [SerializeField]
+    private int solvedPuzzleCount = 0;
 
     List<CubePuzzle> cubePuzzles = new List<CubePuzzle>();
 
@@ -32,8 +34,8 @@ public class CubePuzzleController : MonoBehaviour
 
     }
 
-    private void ResetPuzzle()
+    public void ResetPuzzle()
     {
-        successCnt = 0;
+        successCnt = solvedPuzzleCount;
     }
 }
