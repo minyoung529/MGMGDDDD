@@ -12,12 +12,13 @@ public class UnMovedObject : MonoBehaviour
     private Vector3 prevDistacne;
 
     private bool calcDistance = true;
+    private RigidbodyConstraints originalConstraints;
 
     private void Start()
     {
         rigid = GetComponent<Rigidbody>();
         rigid.mass = 150;
-
+        originalConstraints = rigid.constraints;
         prevDistacne = transform.position;
     }
 
@@ -38,7 +39,7 @@ public class UnMovedObject : MonoBehaviour
         rigid.angularVelocity = Vector3.zero;
         rigid.ResetCenterOfMass();
         rigid.ResetInertiaTensor();
-        rigid.constraints = 0;
+        rigid.constraints = originalConstraints;
         rigid.mass = mass;
         calcDistance = false;
     }
