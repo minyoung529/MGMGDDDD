@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class InputManager : MonoSingleton<InputManager>
+public class InputManager : MonoBehaviour
 {
     #region 키 매핑
     private static string SAVE_PATH;
-    private static string DEFAULT_PATH;
     private const string SAVE_FILE = "/KeyMapping";
     private static Dictionary<InputAction, InputInfo[]> keyBinding = new Dictionary<InputAction, InputInfo[]>();
     public static Dictionary<InputAction, InputInfo[]> KeyBinding => keyBinding;
@@ -16,14 +15,12 @@ public class InputManager : MonoSingleton<InputManager>
     #endregion
 
     #region 이벤트
-    private static Dictionary<InputAction, Action<float>> eventDictionary
-        = new Dictionary<InputAction, Action<float>>();
-    private static Dictionary<Action<float>, float> executeList = new Dictionary<Action<float>, float>();
+    private static Dictionary<InputAction, Action<InputAction, float>> eventDictionary
+        = new Dictionary<InputAction, Action<InputAction, float>>();
     #endregion
 
     private void Awake() {
         SAVE_PATH = string.Concat(Application.persistentDataPath, "/Control");
-        DEFAULT_PATH = string.Concat(Application.dataPath, "/KeyBinding/default.txt");
         LoadKeyMapping();
     }
 
@@ -36,14 +33,6 @@ public class InputManager : MonoSingleton<InputManager>
     }
 
     private void LoadKeyMapping() {
-        //if(!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) { //세이브 파일 없으면 디폴트 값 가져옴
-        //    string json_Save = File.ReadAllText(string.Concat(DEFAULT_PATH));
-        //    List<InputSave> input_Save = JsonConvert.DeserializeObject<List<InputSave>>(json_Save);
-        //    foreach (InputSave save in input_Save) {
-        //        keyBinding.Add(save.Action, save.Code);
-        //    }
-        //    return;
-        // }
         if (!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) {
             string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
             inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
@@ -72,7 +61,6 @@ public class InputManager : MonoSingleton<InputManager>
     }
 
     private void CheckInput() {
-        executeList.Clear();
         foreach (InputAction action in eventDictionary.Keys) {
             InputInfo[] infos = keyBinding[action];
             if (infos == null) continue;
@@ -100,11 +88,8 @@ public class InputManager : MonoSingleton<InputManager>
                 }
             }
             if(result) {
-                executeList.Add(eventDictionary[action], param);
+                eventDictionary[action].Invoke(action, param);
             }
-        }
-        foreach(KeyValuePair<Action<float>, float> item in executeList) {
-            item.Key.Invoke(item.Value);
         }
     }
 
@@ -129,7 +114,7 @@ public class InputManager : MonoSingleton<InputManager>
         }
     }
 
-    static public void StartListeningInput(InputAction action, Action<float> listener) {
+    static public void StartListeningInput(InputAction action, Action<InputAction, float> listener) {
         if(eventDictionary.ContainsKey(action)) {
             eventDictionary[action] += listener;
         }
@@ -138,7 +123,7 @@ public class InputManager : MonoSingleton<InputManager>
         }
     }
 
-    static public void StopListeningInput(InputAction action, Action<float> listener) {
+    static public void StopListeningInput(InputAction action, Action<InputAction, float> listener) {
         if (eventDictionary.ContainsKey(action)) {
             eventDictionary[action] -= listener;
             if(eventDictionary[action] == null) {
