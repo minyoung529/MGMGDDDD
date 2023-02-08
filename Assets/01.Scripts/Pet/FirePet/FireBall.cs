@@ -52,9 +52,9 @@ public class FireBall : MonoBehaviour
             return;
         }
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
-        foreach(IceMelting ice in ices)
+        foreach (IceMelting ice in ices)
         {
-            ice.IceMelt();
+            ice.Melt();
         }
 
         Destroy(gameObject, 0.1f);
