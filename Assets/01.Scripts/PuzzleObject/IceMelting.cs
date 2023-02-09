@@ -6,6 +6,7 @@ using UnityEngine;
 public class IceMelting : MonoBehaviour
 {
     [SerializeField] private bool inObj = false;
+    [SerializeField] private ParticleSystem waterParticle;
     private bool melting = false;
     private float meltReadyTime = 3.0f;
 
@@ -57,6 +58,8 @@ public class IceMelting : MonoBehaviour
     public void IceMelt()
     {
         transform.DOScaleY(0f, 1.9f);
+        waterParticle.Play();
+        waterParticle.transform.DOScaleY(0f, 1.9f);
         Destroy(gameObject, 2f);
     }
 
@@ -72,6 +75,10 @@ public class IceMelting : MonoBehaviour
             inObjRigid.isKinematic = false;
             inObjRigid.useGravity = true;
         });
+
+        waterParticle.Play();
+        waterParticle.transform.DOScaleY(0f, 1.9f);
+
         Destroy(gameObject, 2f);
     }
 

@@ -22,7 +22,7 @@ public class TorchManager : MonoSingleton<TorchManager>
     private bool isClear = false;
     private bool[] puzzleClear = new bool[MAX_TORCH];
 
-    private void Awake()
+    private void Start()
     {
         ResetPuzzle();
     }
