@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ConnectedObject : MonoBehaviour
 {
     [SerializeField]
     private bool isFollow = true;
+    [SerializeField]
+    private bool isChild = false;
+    private ConnectedObject parent;
 
     [SerializeField]
     private Transform ropePosition;
 
-    private WireController frontWire = null;
-
-    private Joint fixedJoint;
+    private Joint joint;
     private Rigidbody rigid;
 
     #region Property
@@ -29,34 +31,82 @@ public class ConnectedObject : MonoBehaviour
 
     private void Start()
     {
-        fixedJoint = GetComponent<Joint>();
-        rigid = GetComponent<Rigidbody>();
-    }
-
-    public void Connect(WireController wire)
-    {
-        Rigidbody wireRigid = wire.endRigid;
-        frontWire = wire;
-
-        rigid.MovePosition(wireRigid.position);
-
-        if (fixedJoint)
+        if (isChild)
         {
-            fixedJoint.connectedBody = wireRigid;
+            FindParent();
+            return;
         }
 
-        rigid.isKinematic = !isFollow;
+        rigid = gameObject.GetOrAddComponent<Rigidbody>();
+
+        if (!isFollow)
+        {
+            rigid.useGravity = false;
+        }
+        else
+        {
+            joint = GetComponent<Joint>();
+
+            if (!joint)
+            {
+                joint = gameObject.AddComponent<FixedJoint>();
+            }
+        }
+    }
+
+    public Transform Connect(WireController wire, Rigidbody playerRigid = null)
+    {
+        if (isChild)
+        {
+            parent.Connect(wire, playerRigid);
+            return parent.transform;
+        }
+        else
+        {
+            rigid.isKinematic = !isFollow;
+
+            if (!isFollow) return transform;
+
+            joint.connectedBody = playerRigid;
+            joint.autoConfigureConnectedAnchor = false;
+
+            SetAnchor();
+        }
+
+        return transform;
     }
 
     public void UnConnect()
     {
-        fixedJoint.connectedBody = null;
-        rigid.isKinematic = true;
+        if (!isFollow) return;
 
-        // TODO: MOVE
-        if (frontWire)
+        joint.connectedBody = null;
+        rigid.isKinematic = true;
+    }
+
+    public void SetAnchor()
+    {
+        Transform hitPoint = transform.Find("Hit Point");
+        if (!joint) return;
+
+        if (ropePosition)
         {
-            frontWire.endRigid.isKinematic = false;
+            joint.anchor = ropePosition.localPosition;
         }
+        else if (hitPoint)
+        {
+            joint.anchor = hitPoint.localPosition;
+        }
+    }
+
+    private void FindParent()
+    {
+        ConnectedObject connected = this;
+
+        while (connected.isChild)
+        {
+            connected = connected.transform.parent.GetComponent<ConnectedObject>();
+        }
+        parent = connected;
     }
 }

@@ -1,60 +1,56 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PetManager : MonoBehaviour
+public class PetManager : MonoSingleton<PetManager>
 {
-    public static PetManager instance;
-
     public List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
 
     private Color selectDefaultColor = Color.white;
 
     private int petIndex = 0; // Æê °³¼ö
+    private int selectIndex = 0;
 
     private bool isSelect = false;
-
-    private int selectIndex = 0;
     private bool isSwitching = false;
+    public bool IsSelecting{ get { return isSelect; } }
+    public bool IsSwitching { get { return isSwitching; } }
 
     private void Awake()
     {
-        instance = this;
-        ResetPetSetting();
+        ResetPetManager();
     }
-
-    private void ResetPetSetting()
-    {
-        pets.Clear();
-        petIndex = 0;
-        isSelect= false;
-        for (int i = 0; i < 3; i++)
-        {
-            petInvens[i].gameObject.SetActive(false);
-        }
-    }
-
     private void Update()
     {
         if (pets.Count == 0) return;
-       
+
         if (Input.GetAxis("Mouse ScrollWheel") > 0 && !isSwitching)
         {
-            selectIndex++;
-            if (selectIndex >= pets.Count) selectIndex = 0;
-            StartCoroutine(SwitchDelay(selectIndex));
+            SwitchPet(1);
         }
-
         if (Input.GetAxis("Mouse ScrollWheel") < 0 && !isSwitching)
         {
-            selectIndex--;
-            if (selectIndex < 0) selectIndex = pets.Count - 1;
-            StartCoroutine(SwitchDelay(selectIndex));
+            SwitchPet(-1);
         }
     }
 
+    #region SwitchPet
+    public int GetPetIndex(Pet p)
+    {
+        return pets.FindIndex(e => e == p);
+    }
+    private void SwitchPet(int addIndex)
+    {
+        selectIndex += addIndex;
+
+        if (selectIndex >= pets.Count) selectIndex = 0;
+        else if (selectIndex < 0) selectIndex = pets.Count - 1;
+
+        StartCoroutine(SwitchDelay(selectIndex));
+    }
     private IEnumerator SwitchDelay(int newIndex)
     {
         isSwitching = true;
@@ -62,62 +58,93 @@ public class PetManager : MonoBehaviour
         if (!isSelect)
         {
             SelectPet(0);
-            yield return new WaitForSeconds(0.3f);
         }
-        SelectPet(newIndex);
+        else
+        {
+            SelectPet(newIndex);
+        }
+
         yield return new WaitForSeconds(0.3f);
         isSwitching = false;
     }
+    #endregion
 
-    private void SelectPet(int selectIndex)
+    #region SELECT
+
+    public void SelectPet(int selectIndex)
     {
-        Debug.Log(selectIndex);   
-        OnSelect(true, selectIndex);
+        isSelect = true;
+        OnSelectPetUI(selectIndex);
+
         for(int i=0;i<pets.Count;i++)
         {
-            pets[i].OnSelected(false);
+            pets[i].IsSelected=false;
         }
-        pets[selectIndex].OnSelected(true);
+        pets[selectIndex].IsSelected=true;
+    }
+    public void NotSelectPet()
+    {
+        isSelect = false;
+        OffSelectPetUI();
+
+        for(int i=0;i<pets.Count;i++)
+        {
+            pets[i].IsSelected = false;
+        }
     }
 
-    public void OnSelect(bool isOn, int index)
-    {
-        isSelect = isOn;
-        if(isOn) SelectedPetUI(true, index);
-    }
-    public void OnSelect(bool isOn)
-    {
-        isSelect = isOn;
-        if(!isOn) SelectedPetUI(false, 0);
-    }
+    #endregion
 
-    private void SelectedPetUI(bool isOn, int index)
+    #region Set
+    private void ResetPetManager()
     {
+        pets.Clear();
+
+        selectIndex = 0;
+        petIndex = 0;
+        isSelect = false;
+        isSwitching = false;
+
         for (int i = 0; i < 3; i++)
         {
-            if (petInvens[i].gameObject.activeSelf) petInvens[i].color = selectDefaultColor;
+            petInvens[i].gameObject.SetActive(false);
         }
-        if(isOn)  petInvens[index].color = pets[index].selectColor;
-    }
-
-
-    public int GetPetIndex(Pet p)
-    {
-        return pets.FindIndex(e => e == p);
     }
 
     public void AddPet(Pet p)
     {
         pets.Add(p);
         ++petIndex;
-        petInvens[petIndex - 1].gameObject.SetActive(true);
+        ActivePetUI(petIndex - 1);
     }
-
     public void DeletePet(Pet p)
     {
         pets.Remove(p);
-        petInvens[--petIndex].gameObject.SetActive(false);
+        DisablePetUI(--petIndex);
+    }
+    #endregion
+
+    #region SelectUI
+    private void OnSelectPetUI(int index)
+    {
+        OffSelectPetUI();
+        petInvens[index].color = pets[index].selectColor;
+    }
+    private void OffSelectPetUI()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (petInvens[i].gameObject.activeSelf) petInvens[i].color = selectDefaultColor;
+        }
     }
 
-
+    private void ActivePetUI(int index)
+    {
+        petInvens[index].gameObject.SetActive(true);
+    }
+    private void DisablePetUI(int index)
+    {
+        petInvens[index].gameObject.SetActive(false);
+    }
+    #endregion
 }
