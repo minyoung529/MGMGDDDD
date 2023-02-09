@@ -59,7 +59,14 @@ public class FireBall : MonoBehaviour
 
         Destroy(gameObject, 0.1f);
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("OilBullet"))
+        {
+            Fire f = other.gameObject.AddComponent<Fire>();
+            Burning(f);
+        }
+    }
 
 
     #endregion

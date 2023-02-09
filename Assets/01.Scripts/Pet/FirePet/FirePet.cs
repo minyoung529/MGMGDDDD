@@ -34,8 +34,8 @@ public class FirePet : Pet
             //{
             //    CoolTime();
             //});
-
-            fireBall.transform.DOMove(hit.point, 1f).OnComplete(() =>
+            Vector3 point = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            fireBall.transform.DOMove(point, 1f).OnComplete(() =>
             {
                 CoolTime();
             });

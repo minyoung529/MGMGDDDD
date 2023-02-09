@@ -11,27 +11,27 @@ public class Fire : MonoBehaviour
     float burningTime = 3f;
     float burningReadyTime = 2f;
 
-    Material mat;
-    Color defaultColor;
+   // Material mat;
+   // Color defaultColor;
 
     public bool IsBurn { get { return isBurn; } }
 
     private void Awake()
     {
-        mat = GetComponent<MeshRenderer>().material;
-        defaultColor = mat.color;
+    //    mat = GetComponent<MeshRenderer>().material;
+    //    defaultColor = mat.color;
         isBurn = false;
     }
 
     public void Burn()
     {
-        mat.color = Color.red;
+  //      mat.color = Color.red;
         isBurn = true;
     }
 
     public void StopBurn()  
     {
-        mat.color = defaultColor;
+  //      mat.color = defaultColor;
         isBurn = false;
     }
 
@@ -43,14 +43,12 @@ public class Fire : MonoBehaviour
 
     public void StayFire()
     {
-        Debug.Log("InFire");
         isReadyBurn = true;
         StartCoroutine(StayInFire());
     }
     private void ExitInFire()
     {
         if (isBurn) return;
-        Debug.Log("ExitFire");
         isReadyBurn = false;
         StopCoroutine(StayInFire());
     }
@@ -67,36 +65,61 @@ public class Fire : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        Fire fire = other.GetComponent<Fire>();
-        if(fire != null )
+        IceMelting[] ices = other.GetComponents<IceMelting>();
+        foreach (IceMelting ice in ices)
         {
-            fire.StayFire();
+            ice.Melt();
         }
     }
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
-        Fire fire = other.GetComponent<Fire>();
-        if( fire != null )
+        IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
+        foreach (IceMelting ice in ices)
         {
-            fire.ExitInFire();
+            ice.Melt();
         }
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        Fire fire = collision.collider.GetComponent<Fire>();
-        if (fire != null)
-        {
-            fire.StayFire();
-        }
-    }
-    private void OnCollisionExit(Collision collision)
-    {
-        Fire fire = collision.collider.GetComponent<Fire>();
-        if (fire != null)
-        {
-            fire.ExitInFire();
-        }
-    }
+
+    //}  private void OnTriggerEnter(Collider other)
+    //{
+    //    Fire fire = other.GetComponent<Fire>();
+    //    if(fire != null )
+    //    {
+    //        fire.StayFire();
+    //    }
+
+    //    IceMelting[] ices = other.GetComponents<IceMelting>();
+    //    foreach (IceMelting ice in ices)
+    //    {
+    //        ice.Melt();
+    //    }
+    //}
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    Fire fire = other.GetComponent<Fire>();
+    //    if( fire != null )
+    //    {
+    //        fire.ExitInFire();
+    //    }
+    //}
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    Fire fire = collision.collider.GetComponent<Fire>();
+    //    if (fire != null)
+    //    {
+    //        fire.StayFire();
+    //    }
+
+        
+    //}
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    Fire fire = collision.collider.GetComponent<Fire>();
+    //    if (fire != null)
+    //    {
+    //        fire.ExitInFire();
+    //    }
+    //}
 }

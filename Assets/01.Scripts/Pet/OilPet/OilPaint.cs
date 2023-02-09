@@ -1,7 +1,8 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
-
+    [SerializeField] GameObject waterHole;
     [SerializeField] Color paintColor;
     [SerializeField] PhysicMaterial oil;
     [SerializeField] ParticleSystem fireParticle;
@@ -35,6 +36,7 @@ public class OilPaint : MonoBehaviour{
         fireParticle.Stop();
         col.isTrigger = false;
         meshRender.enabled = true;
+        waterHole.SetActive(false);
     }
 
     public void SetBurn()
@@ -50,6 +52,7 @@ public class OilPaint : MonoBehaviour{
         col.isTrigger = true;
         col.radius = 1.0f;
         meshRender.enabled = false;
+        waterHole.SetActive(true);
     }
 
     #region Collider
@@ -70,6 +73,8 @@ public class OilPaint : MonoBehaviour{
         Vector3 pos = collision.contacts[0].point;
         foreach (Paintable p in paints)
         {
+            Debug.Log("Paint");
+            transform.DOKill();
             PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
         }

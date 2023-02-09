@@ -41,10 +41,15 @@ public class OilPet : Pet
 
             oil.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
             oil.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(()=>
+            oil.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
             {
                 CoolTime();
             });
+            //Vector3 point = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            //oil.transform.DOMove(point, 1).SetEase(Ease.InQuad).OnComplete(() =>
+            //{
+            //    CoolTime();
+            //});
         }
     }
     private GameObject CreateOil()
