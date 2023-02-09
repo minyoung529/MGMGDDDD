@@ -68,7 +68,7 @@ public class RopeController : MonoBehaviour
     /// </summary>
     private void OnConnect(WireController wire)
     {
-        cameraController.SetRope();
+        cameraController.SetPet();
 
         if (target.gameObject.layer == Define.PET_LAYER)
         {
@@ -84,7 +84,7 @@ public class RopeController : MonoBehaviour
 
     private void ConnectTarget()
     {
-        if (!ThirdPersonCameraControll.IsRopeAim) return;
+        if (!ThirdPersonCameraControll.IsPetAim) return;
         if (connectCnt >= 2) return;
 
         Camera camera = GameManager.Instance.MainCam;

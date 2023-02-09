@@ -1,7 +1,6 @@
 using UnityEngine;
 
-public class OilPaint : MonoBehaviour
-{
+public class OilPaint : MonoBehaviour{
 
     [SerializeField] Color paintColor;
     [SerializeField] PhysicMaterial oil;
@@ -46,11 +45,9 @@ public class OilPaint : MonoBehaviour
 
     private void SpreadOil()
     {
-        if (fireParticle.isPlaying) fireParticle.Stop();
+        if(splashParticle.isPlaying) fireParticle.Stop();
 
-        splashParticle.Play();
         col.isTrigger = true;
-
         col.radius = 1.0f;
         meshRender.enabled = false;
     }
@@ -73,23 +70,8 @@ public class OilPaint : MonoBehaviour
         Vector3 pos = collision.contacts[0].point;
         foreach (Paintable p in paints)
         {
-            Debug.Log("PAINT => " + collision.gameObject.name);
             PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
-        }
-
-        //if (paints == null)
-        //    SpreadOil();
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Fire[] fires = collision.collider.GetComponents<Fire>();
-
-        Vector3 firePos = collision.contacts[0].point;
-        foreach (Fire f in fires)
-        {
-            f.Burn();
         }
     }
 
