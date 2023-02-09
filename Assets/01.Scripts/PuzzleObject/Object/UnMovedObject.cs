@@ -6,7 +6,7 @@ using UnityEngine;
 public class UnMovedObject : MonoBehaviour
 {
     private Rigidbody rigid;
-    [SerializeField] private float mass = 30f;
+     private float mass;
 
     private float moveDistance = 0f;
     private Vector3 prevDistacne;
@@ -17,6 +17,7 @@ public class UnMovedObject : MonoBehaviour
     private void Start()
     {
         rigid = GetComponent<Rigidbody>();
+        mass = rigid.mass;
         rigid.mass = 150;
         originalConstraints = rigid.constraints;
         prevDistacne = transform.position;
