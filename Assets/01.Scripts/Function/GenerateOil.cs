@@ -22,6 +22,10 @@ public class GenerateOil : MonoBehaviour
         oilObject.transform.DOScale(scale, 1f);
 
         SpringJoint joint = oilObject.GetComponent<SpringJoint>();
-        joint.connectedBody = GetComponent<Rigidbody>();
+
+        if (joint)
+        {
+            joint.connectedBody = GetComponent<Rigidbody>();
+        }
     }
 }

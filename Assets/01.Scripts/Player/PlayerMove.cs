@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    #region 속력, 방향 관련 변수
+    #region ???, ???? ???? ????
     private Rigidbody rigid;
 
     [SerializeField] private float walkSpeed = 10;
@@ -46,13 +46,13 @@ public class PlayerMove : MonoBehaviour
     }
     #endregion
 
-    #region 상태 관련 변수
+    #region ???? ???? ????
     private bool isInputLock = false;
     private bool isCanJump = true;
     private bool canDecelerate = false;
     #endregion
 
-    #region 애니메이션 관련 변수
+    #region ??????? ???? ????
     private Animator anim;
     private int stopHash = Animator.StringToHash("stop");
     private int walkHash = Animator.StringToHash("walk");
@@ -98,7 +98,7 @@ public class PlayerMove : MonoBehaviour
     {
         SetRotate();
         ResetInput();
-        // ------------- 감속이 줄에 매달려있을 때도 작용이 된다 -------------
+        // ------------- ?????? ??? ???????? ???? ????? ??? -------------
         Decelerate();
     }
 
@@ -106,7 +106,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (anim)
         {
-            //발 IK 위치 연산
+            //?? IK ??? ????
             anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
             anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
 
@@ -137,7 +137,7 @@ public class PlayerMove : MonoBehaviour
         if (isInputLock) return;
 
         #region Ladder Input
-        // 나중에 구조 바꾸자...
+        // ????? ???? ?????...
         if (LadderObject.IsLadder)
         {
             switch (action)
@@ -237,6 +237,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Sprint(InputAction action, InputType type, float value)
     {
+        Debug.Log("UJ");
         if (isInputLock || anim.GetBool(zoomHash)) return;
         anim.SetBool(sprintHash, !anim.GetBool(sprintHash));
         maxSpeed = anim.GetBool(sprintHash) ? sprintSpeed : walkSpeed;
@@ -253,7 +254,7 @@ public class PlayerMove : MonoBehaviour
     private void Jump(InputAction action, InputType type, float value)
     {
         if (!isCanJump) return;
-        if (ConnectedRope.IsSlingShot) return; // 새총 하고 있으면 점프 XX
+        if (ConnectedRope.IsSlingShot) return; // ???? ??? ?????? ???? XX
 
         isCanJump = false;
         anim.SetTrigger(jumpHash);

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    // Test 때문에 Serializefield 해놓은 거임
+    // Test ?????? Serializefield ????? ????
 
     #region CheckList
     [SerializeField] protected bool isGet = false;
@@ -73,7 +73,7 @@ public abstract class Pet : MonoBehaviour
         }
         ClickMove();
 
-        // active skill 중 좌클릭 시
+        // active skill ?? ????? ??
         if (isSkilling && Input.GetMouseButtonDown(0))
         {
             ClickActive();
@@ -90,7 +90,7 @@ public abstract class Pet : MonoBehaviour
         isSkilling = false;
         isCoolTime = false;
 
-        ////////////////////////////////// 임시로 FALSE ////////////////////////////////////
+        ////////////////////////////////// ????? FALSE ////////////////////////////////////
         agent.enabled = false;
     }
 

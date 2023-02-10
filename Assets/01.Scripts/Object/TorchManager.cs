@@ -9,7 +9,7 @@ public class TorchManager : MonoSingleton<TorchManager>
     private const int CHANGE_TORCH = 1;
     private TorchPuzzle[] torchs = new TorchPuzzle[MAX_TORCH];
 
-    // ∆€¡Ò 
+    // ???? 
     private int[][] puzzle =
     {
         new int[] {0, 4},
@@ -18,7 +18,7 @@ public class TorchManager : MonoSingleton<TorchManager>
         new int[] {3, 3},
         new int[] {4, 4},
     };
-    // ∆€¡Ò ¡∂∞« »Æ¿Œ
+    // ???? ???? ???
     private bool isClear = false;
     private bool[] puzzleClear = new bool[MAX_TORCH];
 

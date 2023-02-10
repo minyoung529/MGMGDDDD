@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class InputManager : MonoSingleton<InputManager>
 {
-    #region 키 매핑
+    #region ? ????
     private static string SAVE_PATH;
     private static string DEFAULT_PATH;
     private const string SAVE_FILE = "/KeyMapping";
@@ -14,7 +14,7 @@ public class InputManager : MonoSingleton<InputManager>
     public static Dictionary<InputAction, InputCode> KeyBinding => keyBinding;
     #endregion
 
-    #region 이벤트
+    #region ????
     private static Dictionary<KeyCode, Dictionary<InputType, Action<InputAction, InputType, float>>> keyEventDictionary
         = new Dictionary<KeyCode, Dictionary<InputType, Action<InputAction, InputType, float>>>();
     private static Dictionary<InputType, Action<InputAction, InputType, float>> scrollEventDictionary
@@ -36,7 +36,7 @@ public class InputManager : MonoSingleton<InputManager>
     }
 
     private void LoadKeyMapping() {
-        if(!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) { //세이브 파일 없으면 디폴트 값 가져옴
+        if(!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) { //????? ???? ?????? ????? ?? ??????
             string json_Save = File.ReadAllText(string.Concat(DEFAULT_PATH));
             List<InputSave> input_Save = JsonConvert.DeserializeObject<List<InputSave>>(json_Save);
             foreach (InputSave save in input_Save) {
@@ -118,7 +118,7 @@ public class InputManager : MonoSingleton<InputManager>
 
     static public void StartListeningInput(InputAction action, InputType type, Action<InputAction, InputType, float> listener) {
         InputCode input = keyBinding[action];
-        if (input.keyCode != KeyCode.None) { //키코드 입력이 바인딩 된 경우
+        if (input.keyCode != KeyCode.None) { //???? ????? ?????? ?? ???
             KeyCode key = input.keyCode;
             if (!keyEventDictionary.ContainsKey(key)) {
                 keyEventDictionary.Add(key, new Dictionary<InputType, Action<InputAction, InputType, float>>());
@@ -130,8 +130,8 @@ public class InputManager : MonoSingleton<InputManager>
             keyEventDictionary[key][type] += listener;
             return;
         }
-        if (input.scroll) { //스크롤 업 입력이 바인딩 된 경우
-            if (type != InputType.ScrollUp) { // 키 바인딩과 입력 방식 동일성 검사
+        if (input.scroll) { //????? ?? ????? ?????? ?? ???
+            if (type != InputType.ScrollUp) { // ? ???????? ??? ??? ????? ???
                 Debug.LogError("You are trying to register ScrollEvent that different KeyBinding between Action");
                 return;
             }
@@ -141,8 +141,8 @@ public class InputManager : MonoSingleton<InputManager>
             }
             scrollEventDictionary[type] += listener;
         }
-        else { //스크롤 다운 입력이 바인딩 된 경우
-            if (type != InputType.ScrollDown) { // 키 바인딩과 입력 방식 동일성 검사
+        else { //????? ??? ????? ?????? ?? ???
+            if (type != InputType.ScrollDown) { // ? ???????? ??? ??? ????? ???
                 Debug.LogError("You are trying to register ScrollEvent that different KeyBinding between Action");
                 return;
             }
@@ -156,7 +156,7 @@ public class InputManager : MonoSingleton<InputManager>
 
     static public void StopListeningInput(InputAction action, InputType type, Action<InputAction, InputType, float> listener) {
         InputCode input = keyBinding[action];
-        if (input.keyCode != KeyCode.None) { //키코드 입력이 바인딩 된 경우
+        if (input.keyCode != KeyCode.None) { //???? ????? ?????? ?? ???
             KeyCode key = input.keyCode;
             if (!keyEventDictionary.ContainsKey(key) || !keyEventDictionary[key].ContainsKey(type)) {
                 Debug.LogWarning("You are trying to remove Action that does not existent");
@@ -165,15 +165,15 @@ public class InputManager : MonoSingleton<InputManager>
             keyEventDictionary[key][type] -= listener;
             return;
         }
-        //이벤트 등록 과정에서 키 바인딩과 타입의 동일 여부를 이미 판단했기 때문에 등록 해제 과정에서는 해주지 않음
-        if (input.scroll) { //스크롤 업 입력이 바인딩 된 경우
+        //???? ??? ???????? ? ???????? ????? ???? ?????? ??? ?????? ?????? ??? ???? ?????????? ?????? ????
+        if (input.scroll) { //????? ?? ????? ?????? ?? ???
             if (!scrollEventDictionary.ContainsKey(type)) {
                 Debug.LogWarning("You are trying to remove Action that does not existent");
                 return;
             }
             scrollEventDictionary[type] -= listener;
         }
-        else { //스크롤 다운 입력이 바인딩 된 경우
+        else { //????? ??? ????? ?????? ?? ???
             if (!scrollEventDictionary.ContainsKey(type)) {
                 Debug.LogWarning("You are trying to remove Action that does not existent");
                 return;
@@ -182,7 +182,7 @@ public class InputManager : MonoSingleton<InputManager>
         }
     }
 
-    /// <returns>마우스 포인터의 레이가 충돌 감지 시 true 아니면 false</returns>
+    /// <returns>????J ???????? ????? ??? ???? ?? true ???? false</returns>
     static public bool GetMouseRayPos(Vector3 mousePos, out Vector3 hitPoint) {
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;

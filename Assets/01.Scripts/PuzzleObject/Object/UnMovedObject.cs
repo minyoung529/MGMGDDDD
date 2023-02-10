@@ -50,7 +50,7 @@ public class UnMovedObject : MonoBehaviour
         calcDistance = false;
         rigid.constraints = RigidbodyConstraints.FreezeAll;
 
-        // 이때 무슨 소리 
+        // ??? ???? ??? 
     }
 
     private void CalcDistance()
