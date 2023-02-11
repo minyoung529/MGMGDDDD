@@ -23,17 +23,20 @@ public class InteractOilObject : MonoBehaviour
         if (gameObject.CompareTag(Define.OIL_BULLET_TAG))
         {
             isRust = false;
+            Debug.Log("ON");
             OnEnterOil.Invoke();
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!isRust) return;
         Rust(collision.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!isRust) return;
         Rust(other.gameObject);
     }
 }
