@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,6 +23,7 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     [SerializeField] protected float activeCoolTime = 3.0f;
+    [SerializeField] protected float followDistance = 10.0f;
 
     protected Camera camera;
     protected Rigidbody rigid;
@@ -60,7 +62,7 @@ public abstract class Pet : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ActiveSkill();
-           
+
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -121,6 +123,24 @@ public abstract class Pet : MonoBehaviour
 
     #region MOVE
 
+    private IEnumerator CheckFollowDistance()
+    {
+        while (!isFollowing)
+        {
+            yield return new WaitForSeconds(0.01f);
+            if (FollowDistance())
+            {
+                StartFollow();
+                yield return null;
+            }
+        }
+    }
+
+    private bool FollowDistance()
+    {
+        return Vector3.Distance(transform.position, player.transform.position) >= followDistance;
+    }
+
     // Connected State
     private void SetDestination(Vector3 dest)
     {
@@ -170,7 +190,10 @@ public abstract class Pet : MonoBehaviour
         isFollowing = false;
         agent.isStopped = true;
         agent.ResetPath();
+
+        StartCoroutine(CheckFollowDistance());
     }
+
 
     #endregion
 
