@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 상수 매니저
+/// ??? ?????
 /// </summary>
 public class Define
 {
@@ -14,6 +14,11 @@ public class Define
     public const int PET_LAYER                  = 8;
     public const int CONNECTED_OBJECT_LAYER     = 9;
     public const int CONNECTED_ROPE_LAYER       = 10;
+    #endregion
+
+    #region TAG
+    public const string PLAYER_TAG = "Player";
+    public const string OIL_BULLET_TAG = "OilBullet";
     #endregion
 
     #region ROPE_VALUE

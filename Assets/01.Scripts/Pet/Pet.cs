@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    // Test ¶§¹®¿¡ Serializefield ÇØ³õÀº °ÅÀÓ
+    // Test ?????? Serializefield ????? ????
 
     #region CheckList
     [SerializeField] protected bool isGet = false;
@@ -73,7 +73,7 @@ public abstract class Pet : MonoBehaviour
         }
         ClickMove();
 
-        // active skill Áß ÁÂÅ¬¸¯ ½Ã
+        // active skill ï¿½ï¿½ ï¿½ï¿½Å¬ï¿½ï¿½ ï¿½ï¿½
         //if (isSkilling && Input.GetMouseButtonDown(0))
         //{
         //    ClickActive();
@@ -90,7 +90,7 @@ public abstract class Pet : MonoBehaviour
         isSkilling = false;
         isCoolTime = false;
 
-        ////////////////////////////////// ÀÓ½Ã·Î FALSE ////////////////////////////////////
+        ////////////////////////////////// ????? FALSE ////////////////////////////////////
         agent.enabled = false;
     }
 

@@ -9,7 +9,7 @@ public class TorchManager : MonoSingleton<TorchManager>
     private const int MAX_TORCH = 5;
     public TorchPuzzle[] torchs = new TorchPuzzle[MAX_TORCH];
 
-    // ÆÛÁñ 
+    // ï¿½ï¿½ï¿½ï¿½ 
     private int[,] puzzle =
         new int[MAX_TORCH, 2]
     {
@@ -19,11 +19,11 @@ public class TorchManager : MonoSingleton<TorchManager>
         {3, 3},
         {4, 4},
     };
-    // ÆÛÁñ Á¶°Ç È®ÀÎ
+    // ???? ???? ???
     private bool isClear = false;
     private bool[] puzzleClear = new bool[MAX_TORCH] { false, false, false, false, false };
 
-    private void Awake()
+    private void Start()
     {
         torchs = transform.GetComponentsInChildren<TorchPuzzle>();
     }

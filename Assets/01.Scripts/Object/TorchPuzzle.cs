@@ -5,7 +5,8 @@ using UnityEngine;
 public class TorchPuzzle : TorchLight
 {
     [SerializeField] int index;
-
+    [SerializeField] private ParticleSystem shortParticle;
+    
     public void Lighting()
     {
         if (IsOn) OffLight();
@@ -16,6 +17,7 @@ public class TorchPuzzle : TorchLight
     {
         base.FireCollision();
         
+        shortParticle.Play();
         TorchManager.Instance.LightOn(index);
     }
 }

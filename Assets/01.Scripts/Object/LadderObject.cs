@@ -6,7 +6,6 @@ public class LadderObject : MonoBehaviour
 {
     private static bool isLadder = false;
     public static bool IsLadder => isLadder;
-    private PlayerMove movement;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -32,10 +31,6 @@ public class LadderObject : MonoBehaviour
     {
         if (rigid.gameObject.layer != Define.PLAYER_LAYER) return;
 
-        movement ??= rigid.GetComponent<PlayerMove>();
-
-        movement.IsDecelerate = false;
-
         rigid.useGravity = true;
         isLadder = false;
     }
@@ -44,12 +39,9 @@ public class LadderObject : MonoBehaviour
     {
         if (rigid.gameObject.layer != Define.PLAYER_LAYER) return;
 
-        movement ??= rigid.GetComponent<PlayerMove>();
-
         rigid.useGravity = false;
         rigid.velocity = Vector3.zero;
         isLadder = true;
         rigid.transform.forward = -transform.right;
-        movement.IsDecelerate = true;
     }
 }

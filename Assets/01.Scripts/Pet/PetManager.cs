@@ -12,7 +12,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private Color selectDefaultColor = Color.white;
 
-    private int petIndex = 0; // Æê °³¼ö
+    private int petIndex = 0; // ?? ????
     private int selectIndex = 0;
 
     private bool isSelect = false;

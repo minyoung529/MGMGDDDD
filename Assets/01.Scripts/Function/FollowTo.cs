@@ -23,13 +23,14 @@ public class FollowTo : MonoBehaviour
     {
         if (target)
         {
+            Vector3 targetpos = Vector3.MoveTowards(movedTransform.position, target.position, Time.deltaTime);
             if (rigid)
             {
-                rigid.MovePosition(target.position);
+                rigid.MovePosition(targetpos);
             }
             else
             {
-                movedTransform.position = target.position;
+                movedTransform.position = targetpos;
             }
         }
     }
