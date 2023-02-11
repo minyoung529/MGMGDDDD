@@ -60,7 +60,7 @@ public class ConnectPet : MonoBehaviour
 
     public void Connect(ConnectedObject connectedObj)
     {
-        if (connectedObjs.Find(x => x == connectedObj) == null)  // 같은 펫이 아니면
+        if (connectedObjs.Find(x => x == connectedObj) == null)  // ???? ???? ????
         {
             if (connectedObjs.Count > 0)
             {

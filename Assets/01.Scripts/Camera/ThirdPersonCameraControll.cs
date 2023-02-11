@@ -8,29 +8,25 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] Texture2D skillCursor;
 
     [SerializeField] CinemachineFreeLook defaultCamera;
-    [SerializeField] CinemachineVirtualCamera ropeAimCamera;
-    [SerializeField] CinemachineVirtualCamera petCamera;
+    [SerializeField] CinemachineVirtualCamera petAimCamera;
 
-    [SerializeField] private float rotCamXAxisSpeed = 5f; // 카메라 x축 회전속도
-    [SerializeField] private float rotCamYAxisSpeed = 3f; // 카메라 y축 회전속도
+    [SerializeField] private float rotCamXAxisSpeed = 5f; // ???? x?? ??????
+    [SerializeField] private float rotCamYAxisSpeed = 3f; // ???? y?? ??????
 
     [SerializeField] private Canvas crosshair;
     [SerializeField] private Transform lookTarget;
     [SerializeField] private Transform followTarget;
     private Animator animator;
 
-    private const float rotationSpeed = 10.0f; // 회전 속도
+    private const float rotationSpeed = 10.0f; // ??? ???
 
-    private const float limitMinX = -70; // 카메라 y축 회전 범위 (최소)
-    private const float limitMaxX = 70; // 카메라 y축 회전 범위 (최대)
+    private const float limitMinX = -80; // ???? y?? ??? ???? (???)
+    private const float limitMaxX = 80; // ???? y?? ??? ???? (???)
 
-    private float eulerAngleX; // 마우스 좌 / 우 이동으로 카메라 y축 회전
-    private float eulerAngleY; // 마우스 위 / 아래 이동으로 카메라 x축 회전
+    private float eulerAngleX; // ????J ?? / ?? ??????? ???? y?? ???
+    private float eulerAngleY; // ????J ?? / ??? ??????? ???? x?? ???
 
-    private static bool isRopeAim = false;
     private static bool isPetAim = false;
-
-    public static bool IsRopeAim { get { return isRopeAim; } set { isRopeAim = value; } }
     public static bool IsPetAim { get { return isPetAim; } set { isPetAim = value; } }
 
     private void Start()
@@ -46,43 +42,24 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private void ResetCamera()
     {
         CameraSwitcher.UnRegister(defaultCamera);
-        CameraSwitcher.UnRegister(ropeAimCamera);
-        CameraSwitcher.UnRegister(petCamera);
+        CameraSwitcher.UnRegister(petAimCamera);
         CameraSwitcher.Register(defaultCamera);
-        CameraSwitcher.Register(ropeAimCamera);
-        CameraSwitcher.Register(petCamera);
+        CameraSwitcher.Register(petAimCamera);
 
         SetDefault();
     }
     private void SetDefault()
     {
-        isPetAim = false;
-        isRopeAim = false;
-
-        MouseCursor.MouserCursorEdit(false, CursorLockMode.Locked);
+        MouseCursor.MouseCursorEdit(false, CursorLockMode.Locked);
         CameraSwitcher.SwitchCamera(defaultCamera);
     }
-    private void SetPet()
+    public void SetPet()
     {
         isPetAim = !isPetAim;
+
         if (isPetAim)
         {
-            MouseCursor.MouserCursorEdit(true, CursorLockMode.None);
-            MouseCursor.EditCursorSprite(skillCursor);
-            CameraSwitcher.SwitchCamera(petCamera);
-        }
-        else
-        {
-            SetDefault();
-        }
-    }
-    public void SetRope()
-    {
-        isRopeAim = !isRopeAim;
-
-        if (isRopeAim)
-        {
-            CameraSwitcher.SwitchCamera(ropeAimCamera);
+            CameraSwitcher.SwitchCamera(petAimCamera);
             eulerAngleX = transform.eulerAngles.x;
             eulerAngleY = transform.eulerAngles.y;
 
@@ -95,27 +72,19 @@ public class ThirdPersonCameraControll : MonoBehaviour
             SetResetPos();
         }
 
-        crosshair.gameObject.SetActive(isRopeAim);
+        crosshair.gameObject.SetActive(isPetAim);
     }
     #endregion
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
-        {
-            if (isRopeAim) return;
-            SetPet();
-        }
         if (Input.GetMouseButtonDown(1))
         {
-            if (isPetAim) return;
-            SetRope();
+            SetPet();
         }
 
-        if (isRopeAim)
-        {
-            UpdateRotate();
-        }
+        if(IsPetAim) UpdateRotate();
+
     }
 
     private void UpdateRotate()
@@ -140,19 +109,9 @@ public class ThirdPersonCameraControll : MonoBehaviour
         transform.rotation = Quaternion.Euler(transform.rotation.x, eulerAngleY, transform.rotation.z);
         followTarget.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, transform.rotation.z);
     }
-    // 카메라 x축 회전의 경우 회전 범위를 설정
+    // ???? x?? ????? ??? ??? ?????? ????
     private float ClampAngle(float angle, float min, float max)
     {
-        if (angle < -360)
-        {
-            angle += 360;
-        }
-
-        if (angle > 360)
-        {
-            angle -= 360;
-        }
-
         return Mathf.Clamp(angle, min, max);
     }
 

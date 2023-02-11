@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 상수 매니저
+/// ??? ?????
 /// </summary>
 public class Define
 {
@@ -16,7 +16,20 @@ public class Define
     public const int CONNECTED_ROPE_LAYER       = 10;
     #endregion
 
+    #region TAG
+    public const string PLAYER_TAG = "Player";
+    public const string OIL_BULLET_TAG = "OilBullet";
+    #endregion
+
     #region ROPE_VALUE
     public const float MAX_ROPE_DISTANCE = 15f;
+    #endregion
+
+    #region PET_VALUE
+
+    public const float ICE_MELTING_TIME = 3f;
+    public const float BURN_TIME = 10f;
+    public const float FIRE_RADIUS = 1.5f;
+
     #endregion
 }

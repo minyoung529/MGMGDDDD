@@ -6,13 +6,6 @@ using UnityEngine;
 public class StickyPet : Pet
 {
     private float moveSpeed = 1f;
-    private bool isStopGear = false;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-    }
 
     #region Set
     protected override void ResetPet()
@@ -34,65 +27,51 @@ public class StickyPet : Pet
     #endregion
 
     #region Skill
+
     // Active Skill
     protected override void ClickActive()
     {
         base.ClickActive();
+        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            StickySkill(hit);
-
-            IsSkilling = false;
+            isSkilling = false;
+            MoveActiveSkill(hit);
         }
     }
-    private void StickySkill(RaycastHit hit)
+    private void MoveActiveSkill(RaycastHit hit)
     {
-        IsStop = true;
         agent.enabled = false;
 
         transform.DOKill();
         transform.DOScale(new Vector3(1.5f , 1.5f, 1.5f), 1f);
         transform.DOMove(hit.point, moveSpeed).OnComplete(()=>
         {
-            //transform.SetParent(hit.transform);
-
-            //rigid.useGravity= false;
-            rigid.isKinematic = true;
-            rigid.detectCollisions = true;
-            
-            HingeJoint joint = hit.collider.gameObject.AddComponent<HingeJoint>();
-            hit.rigidbody.isKinematic = true;
-            joint.connectedBody = rigid;
+            StickySkill(hit.collider.gameObject);
+            CoolTime();
         });
-        
     }
 
-    // Passive Skill
-    protected override void PassiveSkill(Collision collision)
+    private void StickySkill(GameObject obj)
     {
-        base.PassiveSkill(collision);
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb == null) rb = obj.AddComponent<Rigidbody>();
 
-        if (IsCoolTime) return;
-        collision.gameObject.GetComponent<Sticky>().SetSticky();
-        collision.transform.SetParent(transform);
-        CoolTime();
+        rb.isKinematic = false;
+        rb.detectCollisions = true;
+        rb.useGravity = false;
+        rigid.isKinematic = true;
+        rigid.detectCollisions = true;
+
+        FixedJoint joint = transform.gameObject.AddComponent<FixedJoint>();
+        joint.connectedBody = rb;
     }
+
+
     #endregion
 
 
-    protected override void OnCollisionEnter(Collision collision)
-    {
-        base.OnCollisionEnter(collision);
-        if(collision.gameObject.TryGetComponent(out Sticky s))
-        {
-            PassiveSkill(collision);
-        }
-    }
 
-
-    private void OnCollisionExit(Collision collision)
-    {
-    }
 }

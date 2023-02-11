@@ -64,11 +64,11 @@ public class RopeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 연결이 되었을 때 호출되는 콜백함수
+    /// ?????? ????? ?? ????? ??????
     /// </summary>
     private void OnConnect(WireController wire)
     {
-        cameraController.SetRope();
+        cameraController.SetPet();
 
         if (target.gameObject.layer == Define.PET_LAYER)
         {
@@ -84,7 +84,8 @@ public class RopeController : MonoBehaviour
 
     private void ConnectTarget()
     {
-        if (!ThirdPersonCameraControll.IsRopeAim) return;
+        if (!ThirdPersonCameraControll.IsPetAim) return;
+        if (connectCnt >= 2) return;
 
         Camera camera = GameManager.Instance.MainCam;
         Vector3 screenCenter = new Vector3(camera.pixelWidth * 0.5f, camera.pixelHeight * 0.5f);
@@ -100,7 +101,7 @@ public class RopeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 연결을 시도하는 함수
+    /// ?????? ?o???? ???
     /// </summary>
     private void TryConnect()
     {
@@ -125,7 +126,7 @@ public class RopeController : MonoBehaviour
     /// Reset Rope to first
     /// </summary>
     private void SetInitState()
-    {
+    { 
         playerRope.ConnectStartPoint(playerRopeRigid);
         playerRope.startRigid.isKinematic = playerRope.endRigid.isKinematic = false;
         playerRope.startJoint.autoConfigureConnectedAnchor = true;
@@ -151,13 +152,11 @@ public class RopeController : MonoBehaviour
         //InputManager.StopListeningInput(InputAction.TryConnect, InputType.GetKeyDown, ConnectTarget);
     }
 
-    #region Debug
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Color gizmoColor = Color.red;
         gizmoColor.a = 0.4f;
         Gizmos.color = gizmoColor;
         Gizmos.DrawSphere(RopeRigid.position, Define.MAX_ROPE_DISTANCE);
     }
-    #endregion
 }

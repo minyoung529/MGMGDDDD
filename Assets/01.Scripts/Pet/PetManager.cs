@@ -4,31 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PetManager : MonoBehaviour
+public class PetManager : MonoSingleton<PetManager>
 {
-    public static PetManager instance;
-
-
     public List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
 
     private Color selectDefaultColor = Color.white;
 
-    private int petIndex = 0; // Æê °³¼ö
+    private int petIndex = 0; // ?? ????
     private int selectIndex = 0;
 
     private bool isSelect = false;
     private bool isSwitching = false;
-    public bool IsSelecting() { return isSelect; }
-    public bool IsSwitching() { return isSwitching; }
+    public bool IsSelecting{ get { return isSelect; } }
+    public bool IsSwitching { get { return isSwitching; } }
 
     private void Awake()
     {
-        instance = this;
-
         ResetPetManager();
     }
-
     private void Update()
     {
         if (pets.Count == 0) return;
@@ -99,6 +93,37 @@ public class PetManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Set
+    private void ResetPetManager()
+    {
+        pets.Clear();
+
+        selectIndex = 0;
+        petIndex = 0;
+        isSelect = false;
+        isSwitching = false;
+
+        for (int i = 0; i < 3; i++)
+        {
+            petInvens[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void AddPet(Pet p)
+    {
+        pets.Add(p);
+        ++petIndex;
+        ActivePetUI(petIndex - 1);
+    }
+    public void DeletePet(Pet p)
+    {
+        pets.Remove(p);
+        DisablePetUI(--petIndex);
+    }
+    #endregion
+
     #region SelectUI
     private void OnSelectPetUI(int index)
     {
@@ -112,32 +137,14 @@ public class PetManager : MonoBehaviour
             if (petInvens[i].gameObject.activeSelf) petInvens[i].color = selectDefaultColor;
         }
     }
-    #endregion
 
-    #endregion
-
-    #region Set
-    private void ResetPetManager()
+    private void ActivePetUI(int index)
     {
-        pets.Clear();
-        petIndex = 0;
-        isSelect = false;
-        for (int i = 0; i < 3; i++)
-        {
-            petInvens[i].gameObject.SetActive(false);
-        }
+        petInvens[index].gameObject.SetActive(true);
     }
-
-    public void AddPet(Pet p)
+    private void DisablePetUI(int index)
     {
-        pets.Add(p);
-        ++petIndex;
-        petInvens[petIndex - 1].gameObject.SetActive(true);
-    }
-    public void DeletePet(Pet p)
-    {
-        pets.Remove(p);
-        petInvens[--petIndex].gameObject.SetActive(false);
+        petInvens[index].gameObject.SetActive(false);
     }
     #endregion
 }

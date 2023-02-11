@@ -89,7 +89,7 @@ public class LineRope : MonoBehaviour
     {
         List<Pair<int, Vector3>> hits = new();
 
-        // 너무 비효율적인 코드....................... 일단 해보자..
+        // ??? ????????? ???....................... ??? ?????..
         for (int i = 0; i < positions.Count - 1; i++)
         {
             if (Physics.Linecast(positions[i], positions[i + 1], out RaycastHit hit, collMask))
@@ -111,7 +111,7 @@ public class LineRope : MonoBehaviour
     {
         List<int> indexes = new();
 
-        // 너무 비효율적인 코드....................... 일단 해보자..
+        // ??? ????????? ???....................... ??? ?????..
         for (int i = 0; i < positions.Count - 2; i++)
         {
             if (!Physics.Linecast(positions[i], positions[i + 2], out RaycastHit hit, collMask))
