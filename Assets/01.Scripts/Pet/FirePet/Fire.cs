@@ -11,27 +11,20 @@ public class Fire : MonoBehaviour
     float burningTime = 3f;
     float burningReadyTime = 2f;
 
-   // Material mat;
-   // Color defaultColor;
-
     public bool IsBurn { get { return isBurn; } }
 
     private void Awake()
     {
-    //    mat = GetComponent<MeshRenderer>().material;
-    //    defaultColor = mat.color;
         isBurn = false;
     }
 
     public void Burn()
     {
-  //      mat.color = Color.red;
         isBurn = true;
     }
 
     public void StopBurn()  
     {
-  //      mat.color = defaultColor;
         isBurn = false;
     }
 

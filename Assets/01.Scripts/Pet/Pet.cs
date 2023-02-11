@@ -21,8 +21,7 @@ public abstract class Pet : MonoBehaviour
     public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
     #endregion
 
-    [SerializeField] protected float passiveCoolTime = 10.0f;
-    [SerializeField] protected float activeCoolTime = 10.0f;
+    [SerializeField] protected float activeCoolTime = 3.0f;
 
     protected Camera camera;
     protected Rigidbody rigid;
@@ -58,26 +57,27 @@ public abstract class Pet : MonoBehaviour
 
         if (!ThirdPersonCameraControll.IsPetAim) return;
         if (!IsSelected) return;
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetMouseButtonDown(0))
         {
             ActiveSkill();
+           
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
             StartFollow();
         }
 
-        if (!isSkilling && Input.GetMouseButtonDown(0))
+        if (!isSkilling && Input.GetMouseButtonDown(1))
         {
             MovePoint();
         }
         ClickMove();
 
         // active skill Áß ÁÂÅ¬¸¯ ½Ã
-        if (isSkilling && Input.GetMouseButtonDown(0))
-        {
-            ClickActive();
-        }
+        //if (isSkilling && Input.GetMouseButtonDown(0))
+        //{
+        //    ClickActive();
+        //}
     }
 
     #region SET
@@ -180,22 +180,24 @@ public abstract class Pet : MonoBehaviour
     {
         isSkilling = false;
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
-
         Debug.Log(gameObject.name + " : ActiveSkill Ready");
 
         isSkilling = true;
+        ClickActive();
     }
     protected virtual void ClickActive()
     {
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
+        isSkilling = false;
+        SkillDelay();
 
-        isSelected = false;
-        PetManager.Instance.NotSelectPet();
+        // isSelected = false;
+        // PetManager.Instance.NotSelectPet();
         Debug.Log(gameObject.name + " : ActiveSkill On");
     }
 
 
-    protected void CoolTime()
+    protected void SkillDelay()
     {
         isCoolTime = true;
         StartCoroutine(StartCool(activeCoolTime));

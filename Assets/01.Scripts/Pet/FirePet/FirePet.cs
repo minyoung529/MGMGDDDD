@@ -22,23 +22,13 @@ public class FirePet : Pet
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
         base.ClickActive();
 
-        isSkilling = false;
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
             GameObject fireBall = CreateOil();
 
-            //fireBall.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
-            //fireBall.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            //fireBall.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
-            //{
-            //    CoolTime();
-            //});
             Vector3 point = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            fireBall.transform.DOMove(point, 1f).OnComplete(() =>
-            {
-                CoolTime();
-            });
+            fireBall.transform.DOMove(point, 1f);
         }
     }
     private GameObject CreateOil()

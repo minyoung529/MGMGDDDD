@@ -33,7 +33,6 @@ public class OilPet : Pet
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
         base.ClickActive();
 
-        isSkilling = false;
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {

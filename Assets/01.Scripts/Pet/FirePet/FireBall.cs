@@ -48,6 +48,7 @@ public class FireBall : MonoBehaviour
         Fire[] fires = collision.collider.GetComponents<Fire>();
         if (fires.Length > 0)
         {
+            Debug.Log("Fire");
             Burning(fires[0]);
             return;
         }
@@ -65,7 +66,7 @@ public class FireBall : MonoBehaviour
         {
             OilPaint oil = other.GetComponent<OilPaint>();
             oil.SetBurn();
-        gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 

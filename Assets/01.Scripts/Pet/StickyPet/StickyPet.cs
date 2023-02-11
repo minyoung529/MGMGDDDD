@@ -50,7 +50,7 @@ public class StickyPet : Pet
         transform.DOMove(hit.point, moveSpeed).OnComplete(()=>
         {
             StickySkill(hit.collider.gameObject);
-            CoolTime();
+            SkillDelay();
         });
     }
 

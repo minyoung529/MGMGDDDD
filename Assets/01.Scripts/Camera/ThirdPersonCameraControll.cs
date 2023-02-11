@@ -78,7 +78,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             SetPet();
         }
