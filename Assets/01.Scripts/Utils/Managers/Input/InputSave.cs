@@ -5,13 +5,14 @@ using UnityEngine;
 [Serializable]
 public struct InputSave
 {
-    public InputSave(InputAction action, InputCode code) {
+    public InputSave(InputAction action, InputInfo[] code) {
         this.action = action;
         this.code = code;
     }
 
     [SerializeField] private InputAction action;
     public InputAction Action => action;
-    [SerializeField] private InputCode code;
-    public InputCode Code => code;
+
+    [SerializeField] private InputInfo[] code;
+    public InputInfo[] Code => code;
 }

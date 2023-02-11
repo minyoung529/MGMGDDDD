@@ -5,63 +5,56 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    #region ???, ???? ???? ????
+    #region 속력, 방향 관련 변수
     private Rigidbody rigid;
-
-    [SerializeField] private float walkSpeed = 10;
-    [SerializeField] private float sprintSpeed = 10;
     [SerializeField] private float zoomMoveSpeed = 10;
-    [SerializeField] private float jumpPower = 10;
-    [SerializeField] private float rotateTime = 1;
-    [SerializeField] private float accelPower = 10;
-    [SerializeField] private float decelPower = 10;
-    [SerializeField] private LayerMask landingLayer;
-    private float maxSpeed = 0;
+    [SerializeField] private const float rotateTime = 2f;
+
     private float curSpeed = 0;
-
+    public float CurSpeed => curSpeed;
     private Vector3 inputDir;
-    private Vector3 beforeInput = Vector3.zero;
-    private float inputDeadTime = 0.05f;
-    private float inputTimer = 0;
-
     private Vector3 forward;
-    private Vector3 Forward
+    public Vector3 Forward
     {
         get
         {
             forward = mainCam.transform.forward;
             forward.y = 0;
+            forward = forward.normalized;
             return forward;
         }
     }
     private Vector3 right;
-    private Vector3 Right
+    public Vector3 Right
     {
         get
         {
             right = mainCam.transform.right;
             right.y = 0;
+            right = right.normalized;
             return right;
         }
     }
     #endregion
 
-    #region ???? ???? ????
-    private bool isInputLock = false;
-    private bool isCanJump = true;
-    private bool canDecelerate = false;
+    #region 상태 관련 변수
+    [SerializeField] private List<MoveState> stateList;
+    private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
+    [SerializeField] private MoveState curState;
+
+    public bool isInputLock = false;
+    public bool IsDecelerate;
+
+    [SerializeField] private LayerMask groundLayer;
     #endregion
 
-    #region ??????? ???? ????
+    #region 애니메이션 관련 변수
     private Animator anim;
-    private int stopHash = Animator.StringToHash("stop");
-    private int walkHash = Animator.StringToHash("walk");
-    private int sprintHash = Animator.StringToHash("sprint");
-    private int zoomHash = Animator.StringToHash("zoom");
-    private int jumpHash = Animator.StringToHash("jump");
-    private int horizontalHash = Animator.StringToHash("horizontal");
-    private int verticalHash = Animator.StringToHash("vertical");
-    private int landingHash = Animator.StringToHash("landing");
+    public Animator Anim => anim;
+    private int hash_iStateNum = Animator.StringToHash("iStateNum");
+    private int hash_tStateChange = Animator.StringToHash("tStateChange");
+    private int hash_fVertical = Animator.StringToHash("fVertical");
+    private int hash_fHorizontal = Animator.StringToHash("fHorizontal");
     #endregion
 
     private Camera mainCam;
@@ -75,73 +68,39 @@ public class PlayerMove : MonoBehaviour
 
         mainCam = Camera.main;
 
-        maxSpeed = walkSpeed;
-    }
-
-    private void Start()
-    {
         StartListen();
+        SetStateDictionary();
     }
 
-    private void StartListen()
-    {
-        InputManager.StartListeningInput(InputAction.Move_Forward, InputType.GetKey, (action, type, value) => GetInput(Forward, action));
-        InputManager.StartListeningInput(InputAction.Back, InputType.GetKey, (action, type, value) => GetInput(-Forward, action));
-        InputManager.StartListeningInput(InputAction.Move_Right, InputType.GetKey, (action, type, value) => GetInput(Right, action));
-        InputManager.StartListeningInput(InputAction.Move_Left, InputType.GetKey, (action, type, value) => GetInput(-Right, action));
-        InputManager.StartListeningInput(InputAction.Zoom, InputType.GetKeyDown, Zoom);
-        InputManager.StartListeningInput(InputAction.Sprint, InputType.GetKeyDown, Sprint);
-        InputManager.StartListeningInput(InputAction.Jump, InputType.GetKeyDown, Jump);
-    }
-
-    private void FixedUpdate()
-    {
-        SetRotate();
-        ResetInput();
-        // ------------- ?????? ??? ???????? ???? ????? ??? -------------
-        Decelerate();
-    }
-
-    private void OnAnimatorIK(int layerIndex)
-    {
-        if (anim)
-        {
-            //?? IK ??? ????
-            anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
-            anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
-
-            RaycastHit hit;
-            Ray ray = new Ray(anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
-            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, Define.BOTTOM_LAYER))
-            {
-                Vector3 footposition = hit.point;
-                footposition.y += distanceToGround;
-                anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
-            }
-
-            anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
-            anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
-
-            ray = new Ray(anim.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
-            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, Define.BOTTOM_LAYER))
-            {
-                Vector3 footposition = hit.point;
-                footposition.y += distanceToGround;
-                anim.SetIKPosition(AvatarIKGoal.RightFoot, footposition);
-            }
+    private void SetStateDictionary() {
+        foreach(MoveState item in stateList) {
+            stateDictionary.Add(item.StateName, item);
         }
     }
 
-    private void GetInput(Vector3 input, InputAction action)
-    {
+    private void StartListen() {
+        InputManager.StartListeningInput(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
+        InputManager.StartListeningInput(InputAction.Back, (action, value) => GetInput(action, -Forward));
+        InputManager.StartListeningInput(InputAction.Move_Right, (action, value) => GetInput(action, Right));
+        InputManager.StartListeningInput(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
+        InputManager.StartListeningInput(InputAction.Zoom, (action, value) => {
+            if (curState.StateName != StateName.Zoom)
+                ChangeState(StateName.Zoom);
+            else
+                ChangeState(StateName.DefaultMove);
+            });
+        InputManager.StartListeningInput(InputAction.Jump, (action, value) => {
+            if(CheckOnGround())
+                ChangeState(StateName.Jump);
+        });
+    }
+    private void GetInput(InputAction action, Vector3 input) {
         if (isInputLock) return;
 
-        #region Ladder Input
-        // ????? ???? ?????...
-        if (LadderObject.IsLadder)
-        {
-            switch (action)
-            {
+        /*#region Ladder Input
+        // 나중에 구조 바꾸자...
+        if (LadderObject.IsLadder) {
+            switch (action) {
                 case InputAction.Move_Forward:
                     input = transform.up;
                     break;
@@ -156,125 +115,113 @@ public class PlayerMove : MonoBehaviour
                     break;
             }
         }
-        #endregion
+        #endregion*/
 
         inputDir += input;
         inputDir = inputDir.normalized;
-        inputTimer = inputDeadTime;
-        anim.SetBool(walkHash, true);
-        Accelerate();
-
-        if (!anim.GetBool(zoomHash)) return;
-        anim.SetFloat(horizontalHash, Vector3.Dot(right, inputDir) * curSpeed);
-        anim.SetFloat(verticalHash, Vector3.Dot(forward, inputDir) * curSpeed);
     }
 
-    private void Accelerate()
-    {
-        if (Vector3.Dot(inputDir, beforeInput) < 0) curSpeed = 0;
-        if (curSpeed < maxSpeed)
-        {
-            curSpeed += accelPower * Time.deltaTime;
-        }
-        else
-        {
-            curSpeed = maxSpeed;
-        }
-        Vector3 dir = inputDir * curSpeed;
-
-        if (!LadderObject.IsLadder)
-            dir.y = rigid.velocity.y;
-
-        rigid.velocity = dir;
-        beforeInput = inputDir;
+    private void Update() {
+        SendInput();
     }
 
-    private void ResetInput()
+    private void SendInput() {
+        curState.OnInput(inputDir);
+        anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, inputDir));
+        anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, inputDir));
+        inputDir = Vector3.zero;
+    }
+
+    private void OnAnimatorIK(int layerIndex)
     {
-        if (inputTimer <= 0)
+        if (anim)
         {
-            if (anim.GetBool(sprintHash))
+            //발 IK 위치 연산
+            anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
+            anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
+
+            RaycastHit hit;
+            Ray ray = new Ray(anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
+            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER))
             {
-                anim.SetTrigger(stopHash);
-                LockInput(0.1f);
+                Vector3 footposition = hit.point;
+                footposition.y += distanceToGround;
+                anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
             }
-            anim.SetBool(sprintHash, false);
-            anim.SetBool(walkHash, false);
-            inputDir = Vector3.zero;
-            beforeInput = Vector3.zero;
-            maxSpeed = walkSpeed;
+
+            anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
+            anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
+
+            ray = new Ray(anim.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER))
+            {
+                Vector3 footposition = hit.point;
+                footposition.y += distanceToGround;
+                anim.SetIKPosition(AvatarIKGoal.RightFoot, footposition);
+            }
+        }
+    }
+
+    public void ChangeState(StateName state) {
+        MoveState targetState;
+        if(!stateDictionary.TryGetValue(state, out targetState)) {
+            Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
             return;
         }
-        inputTimer -= Time.deltaTime;
+        curState.OnStateEnd(() => {
+            curState = targetState;
+            anim.SetInteger(hash_iStateNum, (int)state);
+            anim.SetTrigger(hash_tStateChange);
+            curState.OnStateStart();
+        });
     }
 
-    private void SetRotate()
-    {
-        if (inputDir.sqrMagnitude <= 0) return;
-        if (LadderObject.IsLadder) return;
-        if (ThirdPersonCameraControll.IsPetAim) return;
-
-        if (!anim.GetBool(zoomHash))
-            transform.forward = Vector3.RotateTowards(transform.forward, inputDir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
-        else
-            transform.forward = Vector3.RotateTowards(transform.forward, Forward, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
-    }
-
-    private void Decelerate()
-    {
-        if (inputDir.sqrMagnitude > 0) return;
-        Vector3 dir = Vector3.MoveTowards(rigid.velocity, Vector3.zero, decelPower);
-
-        if (!LadderObject.IsLadder)
-            dir.y = rigid.velocity.y;
-
-        rigid.velocity = dir;
-        if (curSpeed > 0)
-            curSpeed -= decelPower * Time.deltaTime;
-        else
-            curSpeed = 0;
-    }
-
-    private void Sprint(InputAction action, InputType type, float value)
-    {
-        Debug.Log("UJ");
-        if (isInputLock || anim.GetBool(zoomHash)) return;
-        anim.SetBool(sprintHash, !anim.GetBool(sprintHash));
-        maxSpeed = anim.GetBool(sprintHash) ? sprintSpeed : walkSpeed;
-    }
-
-    private void Zoom(InputAction action, InputType type, float value)
-    {
-        if (isInputLock) return;
-        maxSpeed = zoomMoveSpeed;
-        anim.SetBool(sprintHash, false);
-        anim.SetBool(zoomHash, !anim.GetBool(zoomHash));
-    }
-
-    private void Jump(InputAction action, InputType type, float value)
-    {
-        if (!isCanJump) return;
-        if (ConnectedRope.IsSlingShot) return; // ???? ??? ?????? ???? XX
-
-        isCanJump = false;
-        anim.SetTrigger(jumpHash);
-    }
-
-    public void JumpEvent()
-    {
-        rigid.AddForce(Vector3.up * jumpPower * rigid.mass, ForceMode.Force);
-        StartCoroutine(LandingCoroutine());
-    }
-
-    private IEnumerator LandingCoroutine()
-    {
-        yield return new WaitForSeconds(0.1f);
-        while (!Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.5f, landingLayer))
-        {
-            yield return null;
+    public void Accelerate(Vector3 inputDir, float accel = 2f, float brakeTime = 0.5f, float maxSpeed = 2f) {
+        curSpeed += accel * Time.deltaTime;
+        if (curSpeed > maxSpeed) {
+            curSpeed = Mathf.MoveTowards(curSpeed, maxSpeed, curSpeed / brakeTime * Time.deltaTime);
+            if(curSpeed < maxSpeed) {
+                curSpeed = maxSpeed;
+            }
         }
-        isCanJump = true;
-        anim.SetTrigger(landingHash);
+        Vector3 dir = inputDir * curSpeed;
+        dir.y = rigid.velocity.y;
+        rigid.velocity = dir;
+    }
+
+    public void Decelerate (float brakeTime = 0.5f) {
+        curSpeed = Mathf.MoveTowards(curSpeed, 0, curSpeed / brakeTime * Time.deltaTime);
+        if (curSpeed < 0) {
+            curSpeed = 0;
+        }
+        Vector3 dir = inputDir * curSpeed;
+        dir.y = rigid.velocity.y;
+        rigid.velocity = dir;
+    }
+    public void SetRotate(Vector3 dir) {
+        if (inputDir.sqrMagnitude <= 0) return;
+        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
+    }
+    public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {
+        if (inputDir.sqrMagnitude <= 0) return;
+        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
+    }
+
+    public bool CheckOnGround() {
+        RaycastHit hit;
+        if (Physics.BoxCast(transform.position + Vector3.up * 0.15f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.2f, groundLayer)) {
+            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.5f) return true;
+        }
+        return false;
+    }
+
+    public void JumpEvent() {
+        JumpState jump = (JumpState)curState;
+        jump?.Jump();
+    }
+
+    public void LandingEvent() {
+        ChangeState(StateName.DefaultMove);
     }
 
     public void LockInput(float time)
