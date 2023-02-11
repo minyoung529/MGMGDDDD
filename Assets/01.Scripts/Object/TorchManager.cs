@@ -26,10 +26,6 @@ public class TorchManager : MonoSingleton<TorchManager>
     private void Start()
     {
         torchs = transform.GetComponentsInChildren<TorchPuzzle>();
-    }
-
-    private void Start()
-    {
         ResetPuzzle();
     }
 
