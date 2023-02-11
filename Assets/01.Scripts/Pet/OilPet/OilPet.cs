@@ -39,17 +39,8 @@ public class OilPet : Pet
         {
             GameObject oil = CreateOil();
 
-            oil.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
-            {
-                CoolTime();
-            });
-            //Vector3 point = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            //oil.transform.DOMove(point, 1).SetEase(Ease.InQuad).OnComplete(() =>
-            //{
-            //    CoolTime();
-            //});
+            Vector3 dir = (hit.point - transform.position);
+            oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
         }
     }
     private GameObject CreateOil()

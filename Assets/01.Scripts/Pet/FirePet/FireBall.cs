@@ -63,8 +63,9 @@ public class FireBall : MonoBehaviour
     {
         if (other.CompareTag("OilBullet"))
         {
-            Fire f = other.gameObject.AddComponent<Fire>();
-            Burning(f);
+            OilPaint oil = other.GetComponent<OilPaint>();
+            oil.SetBurn();
+        gameObject.SetActive(false);
         }
     }
 

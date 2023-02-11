@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 1373286439784764602}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -0.46, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1373286440200625290}
   - {fileID: 8762105978361509953}
@@ -4943,6 +4943,7 @@ GameObject:
   - component: {fileID: 3503917110362162990}
   - component: {fileID: 3503917110362162977}
   - component: {fileID: 3503917110362162986}
+  - component: {fileID: 5907852688200957482}
   m_Layer: 0
   m_Name: OilBullet
   m_TagString: OilBullet
@@ -4960,7 +4961,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1373286439784764597}
   - {fileID: 4679759169174377889}
@@ -5026,7 +5027,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3503917110362162976}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -5043,11 +5044,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d9a9f2d7f016d54cba27574f11ab6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterHole: {fileID: 6875261554253856300}
   paintColor: {r: 1, g: 0.93905693, b: 0, a: 0.31764707}
   oil: {fileID: 13400000, guid: a1cabb50fc1f8404e86215dffbddbec0, type: 2}
   fireParticle: {fileID: 1373286439784764596}
   splashParticle: {fileID: 6978768369142360861}
+  scaleUp: 1
   radius: 1
   strength: 1
   hardness: 1
@@ -5067,6 +5068,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &5907852688200957482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3503917110362162976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76db16eb96c75e8468e4f626079f452b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Intensity: 1
+  Mass: 1
+  stiffness: 1
+  damping: 0.75
 --- !u!1 &6875261554253856300
 GameObject:
   m_ObjectHideFlags: 0
@@ -5232,11 +5249,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3667645344633002872, guid: 0ad2f89ebfc50bd43a76aea980f28b22, type: 3}
+      propertyPath: stopAction
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6158695464145843301, guid: 0ad2f89ebfc50bd43a76aea980f28b22, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7051161264409095752, guid: 0ad2f89ebfc50bd43a76aea980f28b22, type: 3}
       propertyPath: m_Name
       value: Splash
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6158695464145843301, guid: 0ad2f89ebfc50bd43a76aea980f28b22, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0ad2f89ebfc50bd43a76aea980f28b22, type: 3}
 --- !u!4 &4679759169174377889 stripped
 Transform:
