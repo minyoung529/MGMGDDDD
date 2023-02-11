@@ -14,7 +14,7 @@ public class {0} : MonoBehaviour
 
     public void Introduce()
     {{
-        Debug.Log($""{{_name}} 이고 {{_type}} 입니다."");
+        Debug.Log($""{{_name}} ??? {{_type}} ????."");
     }}
 }}";
 }

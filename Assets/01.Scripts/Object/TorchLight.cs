@@ -13,7 +13,6 @@ public class TorchLight : MonoBehaviour
     private void Awake()
     {
         fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
-
         OffLight();
     }
 

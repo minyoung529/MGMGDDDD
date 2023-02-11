@@ -29,7 +29,7 @@ public class Item : MonoBehaviour
     }
 
     #region Boolean
-    // 상호작용 가능한 범위인가 체크하는 함수
+    // ?????? ?????? ??????? u???? ???
     private bool NearPlayer()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, playerLayer);

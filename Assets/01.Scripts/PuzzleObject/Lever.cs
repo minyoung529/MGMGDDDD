@@ -9,22 +9,24 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 /// <summary>
-/// 레버
-/// 1. 가까이 가면 상호작용 F가 가능하게 한다.
-/// 2. 상호작용 시
-///    - 레버 회전
-///    - 이벤트 실행
-/// 3. 반대로 다시 상호작용 시
-///    - 레버 반대로 회전
-///    - 이벤트 종료
+/// ????
+/// 1. ?????? ???? ?????? F?? ??????? ???.
+/// 2. ?????? ??
+///    - ???? ???
+///    - ???? ????
+/// 3. ???? ??? ?????? ??
+///    - ???? ???? ???
+///    - ???? ????
 /// </summary>
 public class Lever : MonoBehaviour
 {
-    [Header("레버를 ON쪽으로 당겼을 때")]
+    [Header("?????? ON?????? ????? ??")]
     public UnityEvent OnLever;
-    [Header("레버를 OFF쪽으로 당겼을 때")]
+    [Header("?????? OFF?????? ????? ??")]
     public UnityEvent OffLever;
     public LayerMask playerLayer;
+
+    private InteractOilObject interactOil;
 
     private Transform handle;
     private bool ice = false;
@@ -35,41 +37,42 @@ public class Lever : MonoBehaviour
 
     private void Start()
     {
+        interactOil = GetComponent<InteractOilObject>();
         SetLever();
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (NearPlayer()) ToggleEvent();
+            if (NearPlayer() && (!interactOil || (interactOil && !interactOil.IsRust))) ToggleEvent();
         }
     }
 
     private void SetLever()
     {
-        // 디버깅
+        // ?????
        //OnLever.AddListener(DebugOnLever);
        //OffLever.AddListener(DebugOffLever);
 
-        // 필수
+        // ???
         handle = transform.GetChild(0);
     }
 
     #region Boolean
-    // 상호작용 가능한 범위인가 체크하는 함수
+    // ?????? ?????? ??????? u???? ???
     private bool NearPlayer()
     {
         if (isNear) return true;
         return false;
     }
-#endregion
+    #endregion
 
     #region Event
     // Event Toggle
     private void ToggleEvent()
     {
         toggle = !toggle;
-        if(toggle)
+        if (toggle)
         {
             EventStart();
         }
@@ -79,13 +82,13 @@ public class Lever : MonoBehaviour
         }
     }
 
-    // 이벤트 시작
+    // ???? ????
     private void EventStart()
     {
         OnRotateLever();
         OnLever.Invoke();
     }
-    // 이벤트 종료
+    // ???? ????
     private void EventStop()
     {
         OffRotateLever();
@@ -104,7 +107,7 @@ public class Lever : MonoBehaviour
         handle.DOKill();
         handle.DOLocalRotate(new Vector3(0f, 0f, 45f), 1f);
     }
-#endregion
+    #endregion
 
     #region Debug
     public void DebugOnLever()

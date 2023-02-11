@@ -64,7 +64,7 @@ public class RopeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 연결이 되었을 때 호출되는 콜백함수
+    /// ?????? ????? ?? ????? ??????
     /// </summary>
     private void OnConnect(WireController wire)
     {
@@ -101,7 +101,7 @@ public class RopeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 연결을 시도하는 함수
+    /// ?????? ?o???? ???
     /// </summary>
     private void TryConnect()
     {

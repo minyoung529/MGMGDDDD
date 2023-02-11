@@ -500,7 +500,7 @@ public class WireController : MonoBehaviour
 
         endRigid.isKinematic = startRigid.isKinematic = true;
 
-        while (Vector3.Distance(startRigid.position, endRigid.position) < Define.MAX_ROPE_DISTANCE) // 로프 범위 + 7까지
+        while (Vector3.Distance(startRigid.position, endRigid.position) < Define.MAX_ROPE_DISTANCE) // ???? ???? + 7????
         {
             if (Input.GetKeyDown(KeyCode.F)) // c
                 break;
@@ -508,7 +508,7 @@ public class WireController : MonoBehaviour
             Vector3 dir = (hitPoint - endRigid.position).normalized;
             endRigid.position += dir * speed * Time.deltaTime;
 
-            // 포획 성공
+            // ??? ????
             if (Vector3.Distance(hitPoint, endRigid.transform.position) < 0.2f)
             {
                 onConnected.Invoke(this);
