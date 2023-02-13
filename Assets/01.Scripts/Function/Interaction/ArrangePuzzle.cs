@@ -29,8 +29,6 @@ public class ArrangePuzzle : MonoBehaviour
 
         Collider[] cols = Physics.OverlapSphere(transform.position, distance, layerMask);
 
-        Debug.Log(cols.Length);
-
         for (int i = 0; i < cols.Length; i++)
         {
             if (cols[i].gameObject == targetObject)
