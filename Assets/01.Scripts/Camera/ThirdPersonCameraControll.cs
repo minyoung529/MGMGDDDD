@@ -8,7 +8,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] Texture2D skillCursor;
 
     [SerializeField] CinemachineFreeLook defaultCamera;
-    [SerializeField] CinemachineVirtualCamera petAimCamera;
+    [SerializeField] CinemachineFreeLook petAimCamera;
 
     [SerializeField] private float rotCamXAxisSpeed = 5f; // ???? x?? ??????
     [SerializeField] private float rotCamYAxisSpeed = 3f; // ???? y?? ??????
@@ -18,7 +18,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] private Transform followTarget;
     private Animator animator;
 
-    private const float rotationSpeed = 10.0f; // ??? ???
+    private const float rotationSpeed = 15.0f; // ??? ???
 
     private const float limitMinX = -80; // ???? y?? ??? ???? (???)
     private const float limitMaxX = 80; // ???? y?? ??? ???? (???)
@@ -83,16 +83,23 @@ public class ThirdPersonCameraControll : MonoBehaviour
             SetPet();
         }
 
-        if(IsPetAim) UpdateRotate();
 
+    }
+
+    private void FixedUpdate()
+    {
+        if(IsPetAim) UpdateRotate();
     }
 
     private void UpdateRotate()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        float yAim = Camera.main.transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.deltaTime);
 
-        CalculateRotation(mouseX, mouseY);
+        //float mouseX = Input.GetAxis("Mouse X");
+        //float mouseY = Input.GetAxis("Mouse Y");
+
+        //CalculateRotation(mouseX, mouseY);
     }
 
     private void OnAnimatorIK(int layerIndex)
