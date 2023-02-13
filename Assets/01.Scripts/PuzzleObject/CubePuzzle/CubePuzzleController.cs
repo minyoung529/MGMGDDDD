@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CubePuzzleController : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class CubePuzzleController : MonoBehaviour
     private int solvedPuzzleCount = 0;
 
     List<CubePuzzle> cubePuzzles = new List<CubePuzzle>();
+
+    [SerializeField]
+    private UnityEvent OnSolvePuzzle;
 
     void Start()
     {
@@ -31,7 +35,7 @@ public class CubePuzzleController : MonoBehaviour
 
     private void SolvePuzzle()
     {
-
+        OnSolvePuzzle?.Invoke();
     }
 
     public void ResetPuzzle()

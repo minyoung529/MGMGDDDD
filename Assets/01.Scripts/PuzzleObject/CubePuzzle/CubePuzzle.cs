@@ -22,8 +22,8 @@ public class CubePuzzle : MonoBehaviour
     {
         if (isSuccess) return;
 
-        if (other.CompareTag("CubePuzzle") /*&&
-            other.transform.GetSiblingIndex() == transform.GetSiblingIndex()*/)
+        if (other.CompareTag("CubePuzzle")&&
+            other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
         {
             OnSuccess?.Invoke();
             cubeRigid = other.attachedRigidbody;
