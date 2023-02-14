@@ -1,33 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Pet : MonoBehaviour
 {
-    // Test ¶§¹®¿¡ Serializefield ÇØ³õÀº °ÅÀÓ
+    // Test ?????? Serializefield ????? ????
 
     #region CheckList
     [SerializeField] protected bool isGet = false;
     [SerializeField] protected bool isMove = false;
-    [SerializeField] protected bool isStop = false;
     [SerializeField] protected bool isSkilling = false;
     [SerializeField] protected bool isSelected = false;
-    [SerializeField] protected bool isConnected = false;
-    [SerializeField] protected bool isActiveCoolTime = false;
-    [SerializeField] protected bool isPassiveCoolTime = false;
-    public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
+    [SerializeField] protected bool isFollowing = true;
+    [SerializeField] protected bool isCoolTime = false;
     public bool IsGet { get { return isGet; } }
-    public bool IsConnected { get { return isConnected; } }
-    public bool IsStop { get { return isStop; } }
     public bool IsSkilling { get { return isSkilling; } }
-    public bool IsActiveCoolTime { get { return isActiveCoolTime; } }
-    public bool IsPassiveCoolTime { get { return isPassiveCoolTime; } }
+    public bool IsFollowing { get { return isFollowing; } }
+    public bool IsCoolTime { get { return isCoolTime; } }
+    public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
     #endregion
 
-    [SerializeField] protected float passiveCoolTime = 10.0f;
-    [SerializeField] protected float activeCoolTime = 10.0f;
+    [SerializeField] protected float activeCoolTime = 3.0f;
+    [SerializeField] protected float followDistance = 10.0f;
 
     protected Camera camera;
     protected Rigidbody rigid;
@@ -58,34 +54,31 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void Update()
     {
-        // 1. ¾ò¾ú³Ä
         if (!IsGet) return;
+        FollowTarget();
+        ClickMove();
 
-        // 2. ¿¬°áµÆ³Ä
-        if (!IsConnected)
-        {
-            FollowTarget(true);
-        }
-        else
-        {
-            // 3. ¼±ÅÃµÆ³Ä
-            if (!IsSelected) return;
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                ActiveSkill();
-            }
-            if (Input.GetMouseButtonDown(1))
-            {
-                MovePoint();
-            }
-            ClickMove();
-        }
-
-        // active skill Áß ÁÂÅ¬¸¯ ½Ã
+        if (!ThirdPersonCameraControll.IsPetAim) return;
+        if (!IsSelected) return;
         if (Input.GetMouseButtonDown(0))
         {
-            ClickActive();
+            ActiveSkill();
         }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StartFollow();
+        }
+
+        if (!isSkilling && Input.GetMouseButtonDown(1))
+        {
+            MovePoint();
+        }
+
+        // active skill ï¿½ï¿½ ï¿½ï¿½Å¬ï¿½ï¿½ ï¿½ï¿½
+        //if (isSkilling && Input.GetMouseButtonDown(0))
+        //{
+        //    ClickActive();
+        //}
     }
 
     #region SET
@@ -94,14 +87,11 @@ public abstract class Pet : MonoBehaviour
     {
         isGet = false;
         isMove = false;
-        isStop = false;
         isSelected = false;
         isSkilling = false;
-        isConnected = false;
-        isActiveCoolTime = false;
-        isPassiveCoolTime = false;
+        isCoolTime = false;
 
-        ////////////////////////////////// ÀÓ½Ã·Î FALSE ////////////////////////////////////
+        ////////////////////////////////// ????? FALSE ////////////////////////////////////
         agent.enabled = false;
     }
 
@@ -110,23 +100,16 @@ public abstract class Pet : MonoBehaviour
 
     }
 
-    public void Connected()
-    {
-        isConnected = true;
-
-        agent.enabled = true;
-        rigid.useGravity = true;
-        rigid.isKinematic = false;
-    }
-
     public void GetPet(GameObject obj)
     {
         player = obj;
         isGet = true;
-        
+        agent.enabled = true;
+        rigid.useGravity = true;
+        rigid.isKinematic = false;
+
         StartListen();
-        Connected();
-        FollowTarget(false);
+        StartFollow();
         PetManager.Instance.AddPet(this);
     }
     public void LosePet()
@@ -139,9 +122,28 @@ public abstract class Pet : MonoBehaviour
 
     #region MOVE
 
+    private IEnumerator CheckFollowDistance()
+    {
+        while (!isFollowing)
+        {
+            yield return new WaitForSeconds(0.01f);
+            if (FollowDistance())
+            {
+                StartFollow();
+                yield return null;
+            }
+        }
+    }
+
+    private bool FollowDistance()
+    {
+        return Vector3.Distance(transform.position, player.transform.position) >= followDistance;
+    }
+
     // Connected State
     private void SetDestination(Vector3 dest)
     {
+        StopFollow();
         destination = dest;
         isMove = true;
         rigid.velocity = Vector3.zero;
@@ -171,21 +173,26 @@ public abstract class Pet : MonoBehaviour
     }
 
     // Not Connected State
-    protected void FollowTarget(bool isFollow)
+    protected void FollowTarget()
     {
-        if (IsStop) return;
-        if (isFollow)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(player.transform.position);
-        }
-        else
-        {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
-            agent.ResetPath();
-        }
+        if (!isFollowing) return;
+        agent.SetDestination(player.transform.position);
     }
+    private void StartFollow()
+    {
+        isFollowing = true;
+        agent.isStopped = false;
+        agent.SetDestination(player.transform.position);
+    }
+    private void StopFollow()
+    {
+        isFollowing = false;
+        agent.isStopped = true;
+        agent.ResetPath();
+
+        StartCoroutine(CheckFollowDistance());
+    }
+
 
     #endregion
 
@@ -193,71 +200,36 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ActiveSkill()
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsActiveCoolTime) return;
-
+        isSkilling = false;
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
         Debug.Log(gameObject.name + " : ActiveSkill Ready");
 
         isSkilling = true;
-        isConnected = false;
-        FollowTarget(true);
+        ClickActive();
     }
     protected virtual void ClickActive()
     {
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
+        isSkilling = false;
+        SkillDelay();
 
-        isSelected = false;
-        PetManager.Instance.NotSelectPet();
+        // isSelected = false;
+        // PetManager.Instance.NotSelectPet();
         Debug.Log(gameObject.name + " : ActiveSkill On");
     }
 
-    protected virtual void PassiveSkill(Collision collision)
-    {
-        if (IsPassiveCoolTime) return;
 
-        Debug.Log(gameObject.name + " : PassiveSkill");
-    }
-    protected virtual void PassiveSkill()
+    protected void SkillDelay()
     {
-        if (IsPassiveCoolTime) return;
-
-        Debug.Log(gameObject.name + " : PassiveSkill");
+        isCoolTime = true;
+        StartCoroutine(StartCool(activeCoolTime));
     }
-
-    protected void CoolTime(string str)
-    {
-        if (str == Define.ACTIVE_COOLTIME_TYPE)
-        {
-            isActiveCoolTime = true;
-            StartCoroutine(StartCool(str, activeCoolTime));
-        }
-        else if (str == Define.PASSIVE_COOLTIME_TYPE)
-        {
-            isPassiveCoolTime = true;
-            StartCoroutine(StartCool(str, passiveCoolTime));
-        }
-    }
-    private IEnumerator StartCool(string str, float t)
+    private IEnumerator StartCool(float t)
     {
         yield return new WaitForSeconds(t);
-        if (str == Define.ACTIVE_COOLTIME_TYPE)
-        {
-            isActiveCoolTime = false;
-        }
-        else if (str == Define.PASSIVE_COOLTIME_TYPE)
-        {
-            isPassiveCoolTime = false;
-        }
+        isCoolTime = false;
     }
 
     #endregion
-
-    protected virtual void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            if (IsGet) return;
-            GetPet(collision.gameObject);
-        }
-    }
 
 }

@@ -64,11 +64,11 @@ public class RopeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 연결이 되었을 때 호출되는 콜백함수
+    /// ?????? ????? ?? ????? ??????
     /// </summary>
     private void OnConnect(WireController wire)
     {
-        cameraController.SetRope();
+        cameraController.SetPet();
 
         if (target.gameObject.layer == Define.PET_LAYER)
         {
@@ -84,7 +84,7 @@ public class RopeController : MonoBehaviour
 
     private void ConnectTarget()
     {
-        if (!ThirdPersonCameraControll.IsRopeAim) return;
+        if (!ThirdPersonCameraControll.IsPetAim) return;
         if (connectCnt >= 2) return;
 
         Camera camera = GameManager.Instance.MainCam;
@@ -101,7 +101,7 @@ public class RopeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 연결을 시도하는 함수
+    /// ?????? ?o???? ???
     /// </summary>
     private void TryConnect()
     {

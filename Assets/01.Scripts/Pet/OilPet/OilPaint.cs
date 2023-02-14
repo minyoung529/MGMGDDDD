@@ -1,3 +1,5 @@
+using DG.Tweening;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
@@ -8,33 +10,35 @@ public class OilPaint : MonoBehaviour{
     [SerializeField] ParticleSystem splashParticle;
 
     private Rigidbody rigid;
-    private SphereCollider col;
-    private MeshRenderer meshRender;
+
+    private Vector3 defaultScale;
 
     private bool isBurn = false;
+    public float scaleUp = 1.5f;
+
     public float radius = 0.5f;
     public float strength = 1;
     public float hardness = 1;
 
     private void OnEnable()
     {
+        defaultScale = transform.localScale;
         ResetBullet();
     }
 
     private void Awake()
     {
-        col = GetComponent<SphereCollider>();
         rigid = GetComponent<Rigidbody>();
-        meshRender = GetComponent<MeshRenderer>();
     }
 
     private void ResetBullet()
     {
+        transform.localScale = defaultScale;
+
         isBurn = false;
-        col.radius = 0.5f;
         fireParticle.Stop();
-        col.isTrigger = false;
-        meshRender.enabled = true;
+
+        rigid.useGravity = false;
     }
 
     public void SetBurn()
@@ -45,46 +49,50 @@ public class OilPaint : MonoBehaviour{
 
     private void SpreadOil()
     {
-        if(fireParticle.isPlaying) fireParticle.Stop();
-
+        if(splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
-        col.isTrigger = true;
 
-        col.radius = 1.0f;
-        meshRender.enabled = false;
+        rigid.velocity = Vector3.zero;
+        transform.DOScale(defaultScale + new Vector3(scaleUp, scaleUp, scaleUp), 1f);
     }
 
     #region Collider
 
     private void OnTriggerEnter(Collider other)
     {
-        other.material = oil;
+       if(!other.CompareTag("OilPet")) SpreadOil();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(isBurn)
+        {
+            OilPaint[] oils = other.GetComponents<OilPaint>();
+
+            foreach (OilPaint o in oils)
+            {
+                if (o.isBurn) continue;
+                transform.DOKill();
+                o.SetBurn();
+            }
+        }
+        
     }
     private void OnTriggerExit(Collider other)
     {
         other.material = null;
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         Paintable[] paints = collision.collider.GetComponents<Paintable>();
 
         Vector3 pos = collision.contacts[0].point;
         foreach (Paintable p in paints)
         {
+            transform.DOKill();
             PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
             SpreadOil();
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Fire[] fires = collision.collider.GetComponents<Fire>();
-
-        Vector3 firePos = collision.contacts[0].point;
-        foreach (Fire f in fires)
-        {
-            f.Burn();
         }
     }
 

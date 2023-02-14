@@ -33,10 +33,10 @@ public class SpreadSheetLoader : EditorWindow
 
     private void AddEvent(VisualElement ui)
     {
-        //버튼 입력과 텍스트 필드 가져오고
+        //??? ????? ???? ??? ????????
         Button loadBtn = ui.Q<Button>("btn-load");
         TextField txtUrl = ui.Q<TextField>("txt-url");
-        txtUrl.SetValueWithoutNotify(_DocumentID); //초기값으로 기본 문서 아이디 셋팅
+        txtUrl.SetValueWithoutNotify(_DocumentID); //??????? ?? ???? ????? ????
 
         //loadBtn.RegisterCallback<ClickEvent>(evt =>
         //{
@@ -58,7 +58,7 @@ public class SpreadSheetLoader : EditorWindow
 
         txtUrl.RegisterCallback<ChangeEvent<string>>(evt =>
         {
-            _DocumentID = evt.newValue; // 변경된 값으로 문서값 갱신
+            _DocumentID = evt.newValue; // ????? ?????? ?????? ????
         });  
     }
 
@@ -71,18 +71,18 @@ public class SpreadSheetLoader : EditorWindow
 
         if(www.result == UnityWebRequest.Result.ConnectionError || www.responseCode != 200)
         {
-            statusLbl.text += $"{sheetID} : 불러오기 중 오류 발생";
+            statusLbl.text += $"{sheetID} : ??????? ?? ???? ???";
             rootVisualElement.Q("popup").AddToClassList("off");
             yield break;
         }
 
         string fileText = www.downloadHandler.text;
-        statusLbl.text = $"{sheetID} : 로딩 완료. 텍스트 데이터 파싱 시작";
-        yield return null; //텍스트가 ui에 그려질 시간 확보
+        statusLbl.text = $"{sheetID} : ???? ???. ???? ?????? ??? ????";
+        yield return null; //?????? ui?? ????? ???? ???
 
         string[] lines = fileText.Split("\n");
 
-        //첫번째 줄은 헤더니까 빼고 읽어
+        //u???? ???? ?????? ???? ????
         int lineNum = 1;
         try
         {
@@ -94,8 +94,8 @@ public class SpreadSheetLoader : EditorWindow
         }
         catch (Exception e)
         {
-            statusLbl.text += $"\n {sheetID} : 텍스트 파싱중 오류 발생 : 올바르지 않은 값";
-            statusLbl.text += $"\n {sheetID} : {lineNum} 라인에서 오류";
+            statusLbl.text += $"\n {sheetID} : ???? ????? ???? ??? : ?u???? ???? ??";
+            statusLbl.text += $"\n {sheetID} : {lineNum} ???????? ????";
             statusLbl.text += $"\n{e.Message}";
             
             yield break;
@@ -104,7 +104,7 @@ public class SpreadSheetLoader : EditorWindow
             rootVisualElement.Q("popup").AddToClassList("off");
         }
 
-        statusLbl.text += $"\n {sheetID} 로부터 {lineNum-1} 개의 파일이 성공적으로 작성완료";
+        statusLbl.text += $"\n {sheetID} ?????? {lineNum-1} ???? ?????? ?????????? ??????";
     }
 
     private void CreateSourceCode(string name, string className, string type)

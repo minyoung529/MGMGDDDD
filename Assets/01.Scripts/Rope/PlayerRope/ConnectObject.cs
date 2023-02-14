@@ -43,7 +43,7 @@ public class ConnectObject : MonoBehaviour
         if (joint)
             joint.connectedAnchor = hitPoint.position;
 
-        if (ropeController.ConnectCount == 1 && !tryConnect)   // 연결이 된 상태
+        if (ropeController.ConnectCount == 1 && !tryConnect)   // ?????? ?? ????
         {
             if (lineRenderer.positionCount < 2) return;
 

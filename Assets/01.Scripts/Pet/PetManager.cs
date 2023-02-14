@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,13 +12,16 @@ public class PetManager : MonoSingleton<PetManager>
 
     private Color selectDefaultColor = Color.white;
 
-    private int petIndex = 0; // Æê °³¼ö
+    private int petIndex = 0; // ?? ????
     private int selectIndex = 0;
 
     private bool isSelect = false;
     private bool isSwitching = false;
-    public bool IsSelecting{ get { return isSelect; } }
+    public bool IsSelecting { get { return isSelect; } }
     public bool IsSwitching { get { return isSwitching; } }
+
+    private Vector3 scaleUp = new Vector3(1.33f, 1.33f, 1.33f);
+    private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
 
     private void Awake()
     {
@@ -76,18 +80,18 @@ public class PetManager : MonoSingleton<PetManager>
         isSelect = true;
         OnSelectPetUI(selectIndex);
 
-        for(int i=0;i<pets.Count;i++)
+        for (int i = 0; i < pets.Count; i++)
         {
-            pets[i].IsSelected=false;
+            pets[i].IsSelected = false;
         }
-        pets[selectIndex].IsSelected=true;
+        pets[selectIndex].IsSelected = true;
     }
     public void NotSelectPet()
     {
         isSelect = false;
         OffSelectPetUI();
 
-        for(int i=0;i<pets.Count;i++)
+        for (int i = 0; i < pets.Count; i++)
         {
             pets[i].IsSelected = false;
         }
@@ -107,6 +111,7 @@ public class PetManager : MonoSingleton<PetManager>
 
         for (int i = 0; i < 3; i++)
         {
+            petInvens[i].transform.localScale = defaultScale;
             petInvens[i].gameObject.SetActive(false);
         }
     }
@@ -128,13 +133,18 @@ public class PetManager : MonoSingleton<PetManager>
     private void OnSelectPetUI(int index)
     {
         OffSelectPetUI();
+        petInvens[index].transform.DOScale(scaleUp, 1f);
         petInvens[index].color = pets[index].selectColor;
     }
     private void OffSelectPetUI()
     {
         for (int i = 0; i < 3; i++)
         {
-            if (petInvens[i].gameObject.activeSelf) petInvens[i].color = selectDefaultColor;
+            if (petInvens[i].gameObject.activeSelf)
+            {
+                if (pets[i].IsSelected) petInvens[i].transform.DOScale(defaultScale, 1f);
+                petInvens[i].color = selectDefaultColor;
+            }
         }
     }
 

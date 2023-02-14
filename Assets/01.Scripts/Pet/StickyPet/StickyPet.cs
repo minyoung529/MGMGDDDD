@@ -43,7 +43,6 @@ public class StickyPet : Pet
     }
     private void MoveActiveSkill(RaycastHit hit)
     {
-        isStop = true;
         agent.enabled = false;
 
         transform.DOKill();
@@ -51,20 +50,8 @@ public class StickyPet : Pet
         transform.DOMove(hit.point, moveSpeed).OnComplete(()=>
         {
             StickySkill(hit.collider.gameObject);
-            CoolTime(Define.ACTIVE_COOLTIME_TYPE);
+            SkillDelay();
         });
-    }
-
-    // Passive Skill
-    protected override void PassiveSkill(Collision collision)
-    {
-        base.PassiveSkill(collision);
-
-        if (IsPassiveCoolTime || IsSkilling) return;
-        collision.gameObject.GetComponent<Sticky>().SetSticky();
-
-        StickySkill(collision.gameObject);
-        CoolTime(Define.PASSIVE_COOLTIME_TYPE);
     }
 
     private void StickySkill(GameObject obj)
@@ -86,14 +73,5 @@ public class StickyPet : Pet
     #endregion
 
 
-    protected override void OnCollisionEnter(Collision collision)
-    {
-        base.OnCollisionEnter(collision);
-
-        if(collision.gameObject.TryGetComponent(out Sticky s))
-        {
-            PassiveSkill(collision);
-        }
-    }
 
 }
