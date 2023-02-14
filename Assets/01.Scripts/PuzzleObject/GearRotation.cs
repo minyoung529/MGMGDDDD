@@ -60,4 +60,13 @@ public class GearRotation : MonoBehaviour
             isOil = true;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("OilBullet"))
+        {
+            if (isRotate || !isFirst) return;
+            isOil = true;
+        }
+    }
 }

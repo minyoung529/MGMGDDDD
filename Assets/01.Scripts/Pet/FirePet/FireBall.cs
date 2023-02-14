@@ -43,7 +43,7 @@ public class FireBall : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Fire")) return;
+        if (collision.collider.CompareTag("FirePet")) return;
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
         if (fires.Length > 0)
@@ -59,7 +59,15 @@ public class FireBall : MonoBehaviour
 
         Destroy(gameObject, 0.1f);
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("OilBullet"))
+        {
+            OilPaint oil = other.GetComponent<OilPaint>();
+            oil.SetBurn();
+            gameObject.SetActive(false);
+        }
+    }
 
 
     #endregion

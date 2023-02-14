@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Drawing;
 
 public class OilPet : Pet
 {
@@ -33,23 +34,21 @@ public class OilPet : Pet
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
         base.ClickActive();
 
-        isSkilling = false;
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
             GameObject oil = CreateOil();
 
-            oil.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            oil.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(()=>
-            {
-                CoolTime();
-            });
+            Vector3 dir = (hit.point - transform.position) + (Vector3.up*1.3f);
+            dir.y = 0;
+            oil.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.OutQuad);
+            oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
         }
     }
     private GameObject CreateOil()
     {
-        OilPaint oil = Instantiate(oilSkill, transform.position, Quaternion.identity).GetComponent<OilPaint>();
+        Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
+        OilPaint oil = Instantiate(oilSkill, spawnPoint, Quaternion.identity).GetComponent<OilPaint>();
         if (isBurn) oil.SetBurn();
         return oil.gameObject;
     }

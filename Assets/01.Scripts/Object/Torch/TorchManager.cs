@@ -5,25 +5,27 @@ using UnityEngine;
 public class TorchManager : MonoSingleton<TorchManager>
 {
     private int torchCnt = 0;
-    private const int MAX_TORCH = 5;
     private const int CHANGE_TORCH = 1;
-    private TorchPuzzle[] torchs = new TorchPuzzle[MAX_TORCH];
+    private const int MAX_TORCH = 5;
+    public TorchPuzzle[] torchs = new TorchPuzzle[MAX_TORCH];
 
-    // ???? 
-    private int[][] puzzle =
+    // ���� 
+    private int[,] puzzle =
+        new int[MAX_TORCH, 2]
     {
-        new int[] {0, 4},
-        new int[] {1, 1},
-        new int[] {2, 3},
-        new int[] {3, 3},
-        new int[] {4, 4},
+        {0, 4},
+        {1, 1},
+        {2, 3},
+        {3, 3},
+        {4, 4},
     };
     // ???? ???? ???
     private bool isClear = false;
-    private bool[] puzzleClear = new bool[MAX_TORCH];
+    private bool[] puzzleClear = new bool[MAX_TORCH] { false, false, false, false, false };
 
     private void Start()
     {
+        torchs = transform.GetComponentsInChildren<TorchPuzzle>();
         ResetPuzzle();
     }
 
@@ -31,10 +33,9 @@ public class TorchManager : MonoSingleton<TorchManager>
     {
         isClear = false;
         torchCnt = 0;
-        for (int i = 0; i < puzzleClear.Length; i++)
+        for (int i = 0; i < MAX_TORCH; i++)
         {
             puzzleClear[i] = false;
-            torchs[i] = transform.GetChild(i).GetComponent<TorchPuzzle>();
             torchs[i].OffLight();
         }
     }
@@ -43,10 +44,10 @@ public class TorchManager : MonoSingleton<TorchManager>
     {
         for (int i = 0; i < CHANGE_TORCH; i++)
         {
-            torchs[puzzle[index][i]].Lighting();
+            torchs[puzzle[index, i]].Lighting();
 
-            puzzleClear[puzzle[index][i]] = !puzzleClear[puzzle[index][i]];
-            if (puzzleClear[puzzle[index][i]]) OnLight();
+            puzzleClear[puzzle[index, i]] = !puzzleClear[puzzle[index, i]];
+            if (puzzleClear[puzzle[index, i]]) OnLight();
             else OffLight();
 
         }

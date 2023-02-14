@@ -22,28 +22,21 @@ public class FirePet : Pet
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
         base.ClickActive();
 
-        isSkilling = false;
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            GameObject fireBall = CreateOil();
+            GameObject fireBall = CreateFire();
 
-            //fireBall.transform.DOMoveX(hit.point.x, 1).SetEase(Ease.OutQuad);
-            //fireBall.transform.DOMoveZ(hit.point.z, 1).SetEase(Ease.OutQuad);
-            //fireBall.transform.DOMoveY(hit.point.y, 1).SetEase(Ease.InQuad).OnComplete(() =>
-            //{
-            //    CoolTime();
-            //});
-
-            fireBall.transform.DOMove(hit.point, 1f).OnComplete(() =>
-            {
-                CoolTime();
-            });
+            Vector3 point = (hit.point - transform.position) + (Vector3.up * 1.3f);
+            point.y = 0;
+            fireBall.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.OutQuad);
+            fireBall.GetComponent<Rigidbody>().AddForce(point, ForceMode.Impulse);
         }
     }
-    private GameObject CreateOil()
+    private GameObject CreateFire()
     {
-        FireBall fire = Instantiate(fireBall, transform.position, Quaternion.identity).GetComponent<FireBall>();
+        Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y+0.1f, transform.position.z);
+        FireBall fire = Instantiate(fireBall, spawnPoint, Quaternion.identity).GetComponent<FireBall>();
         return fire.gameObject;
     }
 
