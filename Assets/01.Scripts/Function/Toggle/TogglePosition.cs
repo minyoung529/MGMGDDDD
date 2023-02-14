@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class TogglePosition : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class TogglePosition : MonoBehaviour
     [SerializeField] private Vector3 targetPos;
     private Vector3 originalPos;
     private bool isOpen = false;
+
+    [SerializeField] private UnityEvent OnOpen;
 
     private void Start()
     {
@@ -41,6 +44,8 @@ public class TogglePosition : MonoBehaviour
     {
         transform.DOKill();
         transform.DOMove(originalPos + targetPos, duration);
+
+        OnOpen?.Invoke();
     }
 
     public void Close()

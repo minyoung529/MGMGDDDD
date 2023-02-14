@@ -22,8 +22,8 @@ public class CubePuzzle : MonoBehaviour
     {
         if (isSuccess) return;
 
-        if (other.CompareTag("CubePuzzle") /*&&
-            other.transform.GetSiblingIndex() == transform.GetSiblingIndex()*/)
+        if (other.CompareTag("CubePuzzle")&&
+            other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
         {
             OnSuccess?.Invoke();
             cubeRigid = other.attachedRigidbody;
@@ -47,6 +47,13 @@ public class CubePuzzle : MonoBehaviour
     private void LightBottom()
     {
         bottomRenderer.material.SetColor("_EmissionColor", Color.cyan * 5f);
+        //StartCoroutine(Delay());
+    }
+
+    private IEnumerator Delay()
+    {
+        yield return null;
+        bottomRenderer.material.SetColor("_BaseColor", Color.black);
     }
 
     private void MoveCubeToCenter(Transform cube)
@@ -57,7 +64,7 @@ public class CubePuzzle : MonoBehaviour
         center.y = bottomRenderer.transform.position.y;
 
         cube.DOMove(center, 0.5f);
-        cube.DORotate(Vector3.up * -90f, 0.5f);
+        cube.DORotate(Vector3.zero, 0.5f);
     }
     #endregion
 

@@ -40,6 +40,7 @@ public class UnMovedObject : MonoBehaviour
         rigid.angularVelocity = Vector3.zero;
         rigid.ResetCenterOfMass();
         rigid.ResetInertiaTensor();
+        rigid.constraints = RigidbodyConstraints.None;
         rigid.constraints = originalConstraints;
         rigid.mass = mass;
         calcDistance = false;

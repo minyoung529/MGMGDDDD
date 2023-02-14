@@ -2,11 +2,13 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class IceMelting : MonoBehaviour
 {
     [SerializeField] private bool inObj = false;
-    [SerializeField] private ParticleSystem waterParticle;
+    [SerializeField]
+    private UnityEvent OnMeltIce;
     private bool melting = false;
     private float meltReadyTime = 3.0f;
 
@@ -57,9 +59,8 @@ public class IceMelting : MonoBehaviour
 
     public void IceMelt()
     {
+        OnMeltIce?.Invoke();
         transform.DOScaleY(0f, 1.9f);
-        waterParticle.Play();
-        waterParticle.transform.DOScaleY(0f, 1.9f);
         Destroy(gameObject, 2f);
     }
 
@@ -76,8 +77,7 @@ public class IceMelting : MonoBehaviour
             inObjRigid.useGravity = true;
         });
 
-        waterParticle.Play();
-        waterParticle.transform.DOScaleY(0f, 1.9f);
+        OnMeltIce?.Invoke();
 
         Destroy(gameObject, 2f);
     }

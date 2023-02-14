@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,8 +22,8 @@ public abstract class Pet : MonoBehaviour
     public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
     #endregion
 
-    [SerializeField] protected float passiveCoolTime = 10.0f;
-    [SerializeField] protected float activeCoolTime = 10.0f;
+    [SerializeField] protected float activeCoolTime = 3.0f;
+    [SerializeField] protected float followDistance = 10.0f;
 
     protected Camera camera;
     protected Rigidbody rigid;
@@ -55,10 +56,11 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsGet) return;
         FollowTarget();
+        ClickMove();
 
         if (!ThirdPersonCameraControll.IsPetAim) return;
         if (!IsSelected) return;
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetMouseButtonDown(0))
         {
             ActiveSkill();
         }
@@ -67,17 +69,16 @@ public abstract class Pet : MonoBehaviour
             StartFollow();
         }
 
-        if (!isSkilling && Input.GetMouseButtonDown(0))
+        if (!isSkilling && Input.GetMouseButtonDown(1))
         {
             MovePoint();
         }
-        ClickMove();
 
-        // active skill ?? ????? ??
-        if (isSkilling && Input.GetMouseButtonDown(0))
-        {
-            ClickActive();
-        }
+        // active skill �� ��Ŭ�� ��
+        //if (isSkilling && Input.GetMouseButtonDown(0))
+        //{
+        //    ClickActive();
+        //}
     }
 
     #region SET
@@ -120,6 +121,24 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     #region MOVE
+
+    private IEnumerator CheckFollowDistance()
+    {
+        while (!isFollowing)
+        {
+            yield return new WaitForSeconds(0.01f);
+            if (FollowDistance())
+            {
+                StartFollow();
+                yield return null;
+            }
+        }
+    }
+
+    private bool FollowDistance()
+    {
+        return Vector3.Distance(transform.position, player.transform.position) >= followDistance;
+    }
 
     // Connected State
     private void SetDestination(Vector3 dest)
@@ -170,7 +189,10 @@ public abstract class Pet : MonoBehaviour
         isFollowing = false;
         agent.isStopped = true;
         agent.ResetPath();
+
+        StartCoroutine(CheckFollowDistance());
     }
+
 
     #endregion
 
@@ -180,22 +202,24 @@ public abstract class Pet : MonoBehaviour
     {
         isSkilling = false;
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
-
         Debug.Log(gameObject.name + " : ActiveSkill Ready");
 
         isSkilling = true;
+        ClickActive();
     }
     protected virtual void ClickActive()
     {
         if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
+        isSkilling = false;
+        SkillDelay();
 
-        isSelected = false;
-        PetManager.Instance.NotSelectPet();
+        // isSelected = false;
+        // PetManager.Instance.NotSelectPet();
         Debug.Log(gameObject.name + " : ActiveSkill On");
     }
 
 
-    protected void CoolTime()
+    protected void SkillDelay()
     {
         isCoolTime = true;
         StartCoroutine(StartCool(activeCoolTime));
@@ -207,14 +231,5 @@ public abstract class Pet : MonoBehaviour
     }
 
     #endregion
-
-    protected virtual void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            if (IsGet) return;
-            GetPet(collision.gameObject);
-        }
-    }
 
 }
