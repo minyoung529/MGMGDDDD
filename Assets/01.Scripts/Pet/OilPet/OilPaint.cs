@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ public class OilPaint : MonoBehaviour{
     private Vector3 defaultScale;
 
     private bool isBurn = false;
+    private bool isSpread = false;
     public float scaleUp = 1.5f;
 
     public float radius = 0.5f;
@@ -38,6 +40,7 @@ public class OilPaint : MonoBehaviour{
         transform.localScale = defaultScale;
 
         isBurn = false;
+        isSpread= false;
         fireParticle.Stop();
 
         rigid.useGravity = false;
@@ -49,20 +52,33 @@ public class OilPaint : MonoBehaviour{
         fireParticle.Play();
     }
 
-    private void SpreadOil()
+    private void SpreadOil(Transform parent, Vector3 pos)
     {
-        if(splashParticle.isPlaying) splashParticle.Stop();
+        if (isSpread) return;
+        isSpread = true;
+
+        if (splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
 
+        rigid.isKinematic = true;
+        rigid.detectCollisions = true;
         rigid.velocity = Vector3.zero;
-        transform.DOScale(defaultScale + new Vector3(scaleUp, scaleUp, scaleUp), 1f);
+
+        transform.SetParent(parent);
+        StartCoroutine(DestroyObj());
+    }
+
+    private IEnumerator DestroyObj()
+    {
+        yield return new WaitForSeconds(10f);
+        gameObject.SetActive(false);
     }
 
     #region Collider
 
     private void OnTriggerEnter(Collider other)
     {
-       if(!other.CompareTag("OilPet")) SpreadOil();
+       if(!other.CompareTag("OilPet")) SpreadOil(other.transform, transform.position);
     }
 
     private void OnTriggerStay(Collider other)
@@ -85,18 +101,18 @@ public class OilPaint : MonoBehaviour{
         other.material = null;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        Paintable[] paints = collision.collider.GetComponents<Paintable>();
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    Paintable[] paints = collision.collider.GetComponents<Paintable>();
 
-        Vector3 pos = collision.contacts[0].point;
-        foreach (Paintable p in paints)
-        {
-            transform.DOKill();
-            PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
-            SpreadOil();
-        }
-    }
+    //    Vector3 pos = collision.contacts[0].point;
+    //    foreach (Paintable p in paints)
+    //    {
+    //        transform.DOKill();
+    //     //   PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
+    //        SpreadOil();
+    //    }
+    //}
 
     #endregion
 }
