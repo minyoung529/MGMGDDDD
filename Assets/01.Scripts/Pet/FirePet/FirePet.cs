@@ -25,15 +25,18 @@ public class FirePet : Pet
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            GameObject fireBall = CreateOil();
+            GameObject fireBall = CreateFire();
 
-            Vector3 point = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            fireBall.transform.DOMove(point, 1f);
+            Vector3 point = (hit.point - transform.position) + (Vector3.up * 1.3f);
+            point.y = 0;
+            fireBall.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.OutQuad);
+            fireBall.GetComponent<Rigidbody>().AddForce(point, ForceMode.Impulse);
         }
     }
-    private GameObject CreateOil()
+    private GameObject CreateFire()
     {
-        FireBall fire = Instantiate(fireBall, transform.position, Quaternion.identity).GetComponent<FireBall>();
+        Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y+0.1f, transform.position.z);
+        FireBall fire = Instantiate(fireBall, spawnPoint, Quaternion.identity).GetComponent<FireBall>();
         return fire.gameObject;
     }
 

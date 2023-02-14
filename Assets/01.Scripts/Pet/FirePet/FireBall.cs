@@ -43,12 +43,11 @@ public class FireBall : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Fire")) return;
+        if (collision.collider.CompareTag("FirePet")) return;
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
         if (fires.Length > 0)
         {
-            Debug.Log("Fire");
             Burning(fires[0]);
             return;
         }

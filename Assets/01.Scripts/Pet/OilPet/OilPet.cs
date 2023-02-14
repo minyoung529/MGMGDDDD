@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Drawing;
 
 public class OilPet : Pet
 {
@@ -38,13 +39,16 @@ public class OilPet : Pet
         {
             GameObject oil = CreateOil();
 
-            Vector3 dir = (hit.point - transform.position);
+            Vector3 dir = (hit.point - transform.position) + (Vector3.up*1.3f);
+            dir.y = 0;
+            oil.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.OutQuad);
             oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
         }
     }
     private GameObject CreateOil()
     {
-        OilPaint oil = Instantiate(oilSkill, transform.position, Quaternion.identity).GetComponent<OilPaint>();
+        Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
+        OilPaint oil = Instantiate(oilSkill, spawnPoint, Quaternion.identity).GetComponent<OilPaint>();
         if (isBurn) oil.SetBurn();
         return oil.gameObject;
     }

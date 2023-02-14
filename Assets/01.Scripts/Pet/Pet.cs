@@ -56,13 +56,13 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsGet) return;
         FollowTarget();
+        ClickMove();
 
         if (!ThirdPersonCameraControll.IsPetAim) return;
         if (!IsSelected) return;
         if (Input.GetMouseButtonDown(0))
         {
             ActiveSkill();
-
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -73,7 +73,6 @@ public abstract class Pet : MonoBehaviour
         {
             MovePoint();
         }
-        ClickMove();
 
         // active skill �� ��Ŭ�� ��
         //if (isSkilling && Input.GetMouseButtonDown(0))
@@ -232,14 +231,5 @@ public abstract class Pet : MonoBehaviour
     }
 
     #endregion
-
-    protected virtual void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            if (IsGet) return;
-            GetPet(collision.gameObject);
-        }
-    }
 
 }

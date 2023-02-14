@@ -18,7 +18,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] private Transform followTarget;
     private Animator animator;
 
-    private const float rotationSpeed = 15.0f; // ??? ???
+    private const float rotationSpeed = 20.0f; // ??? ???
 
     private const float limitMinX = -80; // ???? y?? ??? ???? (???)
     private const float limitMaxX = 80; // ???? y?? ??? ???? (???)
@@ -82,8 +82,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
         {
             SetPet();
         }
-
-
     }
 
     private void FixedUpdate()
@@ -93,11 +91,11 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void UpdateRotate()
     {
-        float yAim = Camera.main.transform.rotation.eulerAngles.y;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.deltaTime);
+       float yAim = Camera.main.transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.fixedDeltaTime);
 
-        //float mouseX = Input.GetAxis("Mouse X");
-        //float mouseY = Input.GetAxis("Mouse Y");
+       // float mouseX = Input.GetAxis("Mouse X");
+       // float mouseY = Input.GetAxis("Mouse Y");
 
         //CalculateRotation(mouseX, mouseY);
     }
