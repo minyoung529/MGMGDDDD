@@ -10,6 +10,7 @@ public class OilPaint : MonoBehaviour{
     [SerializeField] ParticleSystem splashParticle;
 
     private Rigidbody rigid;
+    private MeshRenderer mesh;
 
     private Vector3 defaultScale;
 
@@ -29,6 +30,7 @@ public class OilPaint : MonoBehaviour{
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
+        mesh= GetComponent<MeshRenderer>();
     }
 
     private void ResetBullet()

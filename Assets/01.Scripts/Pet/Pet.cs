@@ -24,6 +24,7 @@ public abstract class Pet : MonoBehaviour
 
     [SerializeField] protected float activeCoolTime = 3.0f;
     [SerializeField] protected float followDistance = 10.0f;
+    [SerializeField] protected float followSpeed = 7.0f;
 
     protected Camera camera;
     protected Rigidbody rigid;
@@ -43,8 +44,9 @@ public abstract class Pet : MonoBehaviour
 
     private void StartListen()
     {
-        //InputManager.StartListeningInput(InputAction.Active_Skill, InputType.GetKeyDown, ActiveSkill);
-        //InputManager.StartListeningInput(InputAction.Click_Move_Pet, InputType.GetKeyDown, MovePoint);
+        InputManager.StartListeningInput(InputAction.Pet_Skill, ActiveSkill);
+        InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
+        InputManager.StartListeningInput(InputAction.Pet_Follow, StartFollow);
     }
 
     private void OnEnable()
@@ -60,25 +62,6 @@ public abstract class Pet : MonoBehaviour
 
         if (!ThirdPersonCameraControll.IsPetAim) return;
         if (!IsSelected) return;
-        if (Input.GetMouseButtonDown(0))
-        {
-            ActiveSkill();
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            StartFollow();
-        }
-
-        if (!isSkilling && Input.GetMouseButtonDown(1))
-        {
-            MovePoint();
-        }
-
-        // active skill �� ��Ŭ�� ��
-        //if (isSkilling && Input.GetMouseButtonDown(0))
-        //{
-        //    ClickActive();
-        //}
     }
 
     #region SET
@@ -93,6 +76,7 @@ public abstract class Pet : MonoBehaviour
 
         ////////////////////////////////// ????? FALSE ////////////////////////////////////
         agent.enabled = false;
+        agent.speed = followSpeed;
     }
 
     public virtual void AppearPet()
@@ -149,9 +133,10 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
     }
 
-    private void MovePoint()
+       
+    private void MovePoint(InputAction inputAction, float value)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || isSkilling) return;
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -178,6 +163,13 @@ public abstract class Pet : MonoBehaviour
         if (!isFollowing) return;
         agent.SetDestination(player.transform.position);
     }
+    
+    private void StartFollow(InputAction inputAction, float value)
+    {
+        isFollowing = true;
+        agent.isStopped = false;
+        agent.SetDestination(player.transform.position);
+    }
     private void StartFollow()
     {
         isFollowing = true;
@@ -198,7 +190,7 @@ public abstract class Pet : MonoBehaviour
 
     #region Skill
 
-    protected virtual void ActiveSkill()
+    protected virtual void ActiveSkill(InputAction inputAction, float value)
     {
         isSkilling = false;
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
@@ -231,5 +223,12 @@ public abstract class Pet : MonoBehaviour
     }
 
     #endregion
+
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.Pet_Skill, ActiveSkill);
+        InputManager.StopListeningInput(InputAction.Pet_Move, MovePoint);
+        InputManager.StopListeningInput(InputAction.Pet_Follow, StartFollow);
+    }
 
 }

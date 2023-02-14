@@ -6,22 +6,33 @@ public class GetPet : MonoBehaviour
 {
     public LayerMask petLayer;
     private float nearRadius = 2f;
-
-    private void Update()
+    private void Start()
     {
-        
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, petLayer);
-            if (colliders.Length <= 0) return;
+        StartListen();
+    }
 
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                Pet p = colliders[i].GetComponent<Pet>();
-                if (p == null) continue;
-                if (IsMine(p)) continue;
-                p.GetPet(gameObject);
-            }
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.Interaction, Get);
+    }
+
+    private void StartListen()
+    {
+        InputManager.StartListeningInput(InputAction.Interaction, Get);
+    }
+
+
+    private void Get(InputAction inputAction, float value)
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, petLayer);
+        if (colliders.Length <= 0) return;
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Pet p = colliders[i].GetComponent<Pet>();
+            if (p == null) continue;
+            if (IsMine(p)) continue;
+            p.GetPet(gameObject);
         }
     }
 
