@@ -8,8 +8,8 @@ using UnityEngine.Events;
 public class IceMelting : MonoBehaviour
 {
     [SerializeField] private bool inObj = false;
-    [SerializeField]
-    private UnityEvent OnMeltIce;
+    [SerializeField] private float meltTime = 3.8f;
+    [SerializeField] private UnityEvent OnMeltIce;
     private bool melting = false;
     private float meltReadyTime = 3.0f;
 
@@ -62,7 +62,7 @@ public class IceMelting : MonoBehaviour
     public void IceMelt()
     {
         OnMeltIce?.Invoke();
-        transform.DOScaleY(0f, 1.9f);
+        transform.DOScaleY(0f, meltTime);
         Destroy(gameObject, 2f);
     }
 

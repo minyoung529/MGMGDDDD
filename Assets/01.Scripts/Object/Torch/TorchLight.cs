@@ -43,6 +43,12 @@ public class TorchLight : MonoBehaviour
 
         //fireParticle.Stop();
     }
+    public void Lighting()
+    {
+        Debug.Log(IsOn);
+        if (IsOn) OffLight();
+        else OnLight();
+    }
 
     protected virtual void FireCollision()
     {
