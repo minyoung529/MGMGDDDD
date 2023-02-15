@@ -27,9 +27,9 @@ public class IceMelting : MonoBehaviour
 
     private void SetIce()
     {
-        inObjCollider = transform.GetChild(0).GetComponent<Collider>();
+        inObjCollider = transform.GetChild(1).GetComponent<Collider>();
         inObjCollider.enabled = false;
-        inObjRigid = transform.GetChild(0).GetComponent<Rigidbody>();
+        inObjRigid = transform.GetChild(1).GetComponent<Rigidbody>();
         inObjRigid.isKinematic = true;
         inObjRigid.useGravity = false;
     } 
@@ -66,8 +66,8 @@ public class IceMelting : MonoBehaviour
 
     public void IceMeltInObj()
     {
-        inObjCollider = transform.GetChild(0).GetComponent<Collider>();
-        inObjRigid = transform.GetChild(0).GetComponent<Rigidbody>();
+        inObjCollider = transform.GetChild(1).GetComponent<Collider>();
+        inObjRigid = transform.GetChild(1).GetComponent<Rigidbody>();
         inObjRigid.transform.SetParent(null);
         inObjCollider.enabled = true;
 
