@@ -15,16 +15,10 @@ public class TorchPuzzle : TorchLight
         base.Awake();
         torchM = GetComponentInParent<TorchManager>();
     }
-    public void Lighting()
-    {
-        if (IsOn) OffLight();
-        else OnLight();
-    }
+    
 
     protected override void FireCollision()
     {
-        base.FireCollision();
-
         shortParticle.Play();
         torchM.LightOn(index);
     }
