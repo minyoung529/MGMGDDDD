@@ -28,9 +28,9 @@ public class RenderSettingController
         fogDensity = RenderSettings.fogDensity;
     }
 
-    public void OriginalRenderSetting(float duration)
+    public static void OriginalRenderSetting(float duration)
     {
-        SetAmbiendLight(ambientLight, duration);
+        SetAmbientLight(ambientLight, duration);
         SetReflectionIntensity(reflectionIntensity, duration);
         SetFogColor(fogColor, duration);
         SetFogDensity(fogDensity, duration);
@@ -38,28 +38,34 @@ public class RenderSettingController
         RenderSettings.fog = fog;
     }
 
-    public static void SetAmbiendLight(Color ambiendLight, float duration)
+    public static Color SetAmbientLight(Color ambiendLight, float duration)
     {
         DOTween.To(() => RenderSettings.ambientLight, x => RenderSettings.ambientLight = x, ambiendLight, duration);
+        return RenderSettings.ambientLight;
     }
 
-    public static void SetReflectionIntensity(float reflectionIntensity, float duration)
+    public static float SetReflectionIntensity(float reflectionIntensity, float duration)
     {
         DOTween.To(() => RenderSettings.reflectionIntensity, x => RenderSettings.reflectionIntensity = x, reflectionIntensity, duration);
+        return RenderSettings.reflectionIntensity;
     }
 
-    public static void SetFogColor(Color fogColor, float duration)
+    public static Color SetFogColor(Color fogColor, float duration)
     {
         DOTween.To(() => RenderSettings.fogColor, x => RenderSettings.fogColor = x, fogColor, duration);
+        return RenderSettings.fogColor;
     }
 
-    public static void SetFogDensity(float fogDensity, float duration)
+    public static float SetFogDensity(float fogDensity, float duration)
     {
         DOTween.To(() => RenderSettings.fogDensity, x => RenderSettings.fogDensity = x, fogDensity, duration);
+        return RenderSettings.fogDensity;
     }
 
-    public static void Setfog(bool fog)
+    public static bool Setfog(bool fog)
     {
+        bool temp = RenderSettings.fog;
         RenderSettings.fog = fog;
+        return temp;
     }
 }
