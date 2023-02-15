@@ -26,6 +26,7 @@ public class BushObject : MonoBehaviour
     {
         isBurning = true;
 
+        light.gameObject.SetActive(true);
         float intensity = light.intensity;
         light.intensity = 0f;
         light.DOIntensity(intensity, 1f);

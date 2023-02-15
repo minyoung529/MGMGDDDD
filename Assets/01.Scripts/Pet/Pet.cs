@@ -163,7 +163,7 @@ public abstract class Pet : MonoBehaviour
         if (!isFollowing) return;
 
         agent.SetDestination(player.transform.position);
-        //LookAtPlayer();
+        LookAtPlayer();
     }
 
     protected void LookAtPlayer()
