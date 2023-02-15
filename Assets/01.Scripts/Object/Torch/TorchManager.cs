@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class TorchManager : MonoSingleton<TorchManager>
+public class TorchManager : MonoBehaviour
 {
+    // Clear Func
+    public UnityEvent clearFunc;
+
     private int torchCnt = 0;
     private const int CHANGE_TORCH = 1;
     private const int MAX_TORCH = 5;
@@ -73,11 +77,17 @@ public class TorchManager : MonoSingleton<TorchManager>
     private void ClearPuzzle()
     {
         isClear = true;
+        clearFunc.Invoke();
     }
 
     public void LeverCheck()
     {
         if (!isClear) return;
+    }
+
+    public void OpenDoor(GameObject obj)
+    {
         Debug.Log("Clear");
+        obj.SetActive(false);
     }
 }

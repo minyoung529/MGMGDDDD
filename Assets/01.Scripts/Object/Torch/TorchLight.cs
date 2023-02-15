@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Events;
+using static UnityEngine.ParticleSystem;
 
 public class TorchLight : MonoBehaviour
 {
@@ -10,27 +12,42 @@ public class TorchLight : MonoBehaviour
 
     public bool IsOn { get { return isOn; } }
 
-    private void Awake()
+    [SerializeField]
+    private UnityEvent OnLighted;
+
+    ParticleSystem[] particles;
+
+    protected virtual void Awake()
     {
         fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
+        particles= GetComponentsInChildren<ParticleSystem>();
         OffLight();
     }
 
     public void OnLight()
     {
         isOn = true;
-        fireParticle.Play();
+
+        foreach (ParticleSystem p in particles)
+            p.Play();
+
+        //fireParticle.Play();
     }
 
     public void OffLight()
     {
+        foreach (ParticleSystem p in particles)
+            p.Stop();
+
         isOn = false;
-        fireParticle.Stop();
+
+        //fireParticle.Stop();
     }
 
     protected virtual void FireCollision()
     {
-
+        OnLight();
+        OnLighted?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)

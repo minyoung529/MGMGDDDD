@@ -196,6 +196,8 @@ public class PlayerMove : MonoBehaviour
         }
         Vector3 dir = inputDir * curSpeed;
         dir.y = rigid.velocity.y;
+
+        if (dir.sqrMagnitude < 0.01f) return;
         rigid.velocity = dir;
     }
     public void SetRotate(Vector3 dir) {
@@ -216,8 +218,12 @@ public class PlayerMove : MonoBehaviour
     }
 
     public void JumpEvent() {
-        JumpState jump = (JumpState)curState;
-        jump?.Jump();
+        
+        if(curState is JumpState)
+        {
+            JumpState jump = (JumpState)curState;
+            jump?.Jump();
+        }
     }
 
     public void LandingEvent() {

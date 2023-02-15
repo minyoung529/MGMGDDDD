@@ -50,7 +50,7 @@ public class PushObject : MonoBehaviour
         else
         {
             animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
-            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand,  0);
+            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0);
         }
     }
 }

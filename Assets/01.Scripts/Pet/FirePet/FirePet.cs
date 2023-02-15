@@ -27,10 +27,11 @@ public class FirePet : Pet
         {
             GameObject fireBall = CreateFire();
 
-            Vector3 point = (hit.point - transform.position) + (Vector3.up * 1.3f);
-            point.y = 0;
-            fireBall.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.OutQuad);
-            fireBall.GetComponent<Rigidbody>().AddForce(point, ForceMode.Impulse);
+            Vector3 dir = (hit.point - transform.position) + (Vector3.up * 1.3f);
+            dir.y = 0;
+
+            fireBall.transform.DOMoveY(hit.point.y, 1.5f).SetEase(Ease.OutQuad);
+            fireBall.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
         }
     }
     private GameObject CreateFire()
