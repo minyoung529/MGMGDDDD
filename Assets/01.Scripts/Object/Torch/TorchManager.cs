@@ -13,17 +13,13 @@ public class TorchManager : MonoBehaviour
     private const int MAX_TORCH = 5;
     public TorchPuzzle[] torchs = new TorchPuzzle[MAX_TORCH];
 
-    // ���� 
-    private int[,] puzzle =
-        new int[MAX_TORCH, 2]
-    {
-        {0, 4},
-        {1, 1},
-        {2, 3},
-        {3, 3},
-        {4, 4},
-    };
-    // ???? ???? ???
+    public List<int> firstTorch;
+    public List<int> twoTorch;
+    public List<int> threeTorch;
+    public List<int> fourTorch;
+    public List<int> fiveTorch;
+    public Dictionary<int, List<int>> puzzle = new Dictionary<int, List<int>>();
+
     private bool isClear = false;
     private bool[] puzzleClear = new bool[MAX_TORCH] { false, false, false, false, false };
 
@@ -35,6 +31,8 @@ public class TorchManager : MonoBehaviour
 
     private void ResetPuzzle()
     {
+        SetPuzzleMap();
+
         isClear = false;
         torchCnt = 0;
         for (int i = 0; i < MAX_TORCH; i++)
@@ -43,15 +41,25 @@ public class TorchManager : MonoBehaviour
             torchs[i].OffLight();
         }
     }
+    private void SetPuzzleMap()
+    {
+        puzzle.Clear();
+
+        puzzle.Add(0, firstTorch);
+        puzzle.Add(1, twoTorch);
+        puzzle.Add(2, threeTorch);
+        puzzle.Add(3, fourTorch);
+        puzzle.Add(4, fiveTorch);
+    }
 
     public void LightOn(int index)
     {
-        for (int i = 0; i < CHANGE_TORCH; i++)
+        for (int i = 0; i < puzzle[index].Count; i++)
         {
-            torchs[puzzle[index, i]].Lighting();
+            torchs[puzzle[index][i]].Lighting();
 
-            puzzleClear[puzzle[index, i]] = !puzzleClear[puzzle[index, i]];
-            if (puzzleClear[puzzle[index, i]]) OnLight();
+            puzzleClear[puzzle[index][i]] = !puzzleClear[puzzle[index][i]];
+            if (puzzleClear[puzzle[index][i]]) OnLight();
             else OffLight();
 
         }
