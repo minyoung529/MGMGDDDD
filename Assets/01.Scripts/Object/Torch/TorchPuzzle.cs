@@ -14,6 +14,12 @@ public class TorchPuzzle : TorchLight
     [SerializeField]
     private UnityEvent OnLighting;
 
+    private TorchManager torchM;
+
+    private void Awake()
+    {
+        torchM = GetComponentInParent<TorchManager>();
+    }
     public void Lighting()
     {
         if (IsOn) OffLight();
@@ -28,7 +34,7 @@ public class TorchPuzzle : TorchLight
 
         if (puzzleTorch)
         {
-            TorchManager.Instance.LightOn(index);
+            torchM.LightOn(index);
         }
         else
         {

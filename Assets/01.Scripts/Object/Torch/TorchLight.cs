@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class TorchLight : MonoBehaviour
 {
-    ParticleSystem fireParticle;
+    [SerializeField] ParticleSystem fireParticle;
     private bool isOn = false;
 
     public bool IsOn { get { return isOn; } }
 
     private void Awake()
     {
-        fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
         OffLight();
     }
 
