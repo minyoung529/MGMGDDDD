@@ -82,6 +82,7 @@ public class TorchManager : MonoBehaviour
         }
     }
 
+    [ContextMenu("Clear")]
     private void ClearPuzzle()
     {
         isClear = true;

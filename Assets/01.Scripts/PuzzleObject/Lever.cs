@@ -57,6 +57,7 @@ public class Lever : MonoBehaviour
 
     #region Event
     // Event Toggle
+    [ContextMenu("Lever")]
     private void ToggleEvent()
     {
         toggle = !toggle;
