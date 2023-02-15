@@ -22,7 +22,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public Vector3 GetMousePos()
     {
-        Ray ray = MainCam.ScreenPointToRay(UnityEngine.Input.mousePosition);
+        Ray ray = MainCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, MainCam.farClipPlane, Define.BOTTOM_LAYER))
         {
@@ -31,6 +31,20 @@ public class GameManager : MonoSingleton<GameManager>
             mouse.y = 0;
             return mouse;
         }
+        return Vector3.zero;
+    }
+
+    public Vector3 GetCameraHit()
+    {
+        Ray ray = MainCam.ViewportPointToRay(Vector2.one * 0.5f);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, MainCam.farClipPlane))
+        {
+            Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
+            return hit.point;
+        }
+
         return Vector3.zero;
     }
 }

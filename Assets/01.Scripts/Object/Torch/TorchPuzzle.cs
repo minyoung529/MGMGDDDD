@@ -16,8 +16,9 @@ public class TorchPuzzle : TorchLight
 
     private TorchManager torchM;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         torchM = GetComponentInParent<TorchManager>();
     }
     public void Lighting()

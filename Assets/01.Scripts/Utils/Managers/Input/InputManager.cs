@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -61,7 +62,12 @@ public class InputManager : MonoBehaviour
     }
 
     private void CheckInput() {
-        foreach (InputAction action in eventDictionary.Keys) {
+
+        List<InputAction> keys= eventDictionary.Keys.ToList();
+
+        for(int i = 0; i < keys.Count; i++)
+        {
+            InputAction action = keys[i];
             InputInfo[] infos = keyBinding[action];
             if (infos == null) continue;
             bool result = true;

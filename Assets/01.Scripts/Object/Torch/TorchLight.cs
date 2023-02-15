@@ -13,11 +13,11 @@ public class TorchLight : MonoBehaviour
     public bool IsOn { get { return isOn; } }
 
     [SerializeField]
-    private UnityEvent OnLighting;
+    private UnityEvent OnLighted;
 
     ParticleSystem[] particles;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
         particles= GetComponentsInChildren<ParticleSystem>();
@@ -31,7 +31,6 @@ public class TorchLight : MonoBehaviour
         foreach (ParticleSystem p in particles)
             p.Play();
 
-        Debug.Log(particles.Length);
         //fireParticle.Play();
     }
 
@@ -41,7 +40,6 @@ public class TorchLight : MonoBehaviour
             p.Stop();
 
         isOn = false;
-        Debug.Log(particles.Length);
 
         //fireParticle.Stop();
     }
@@ -49,7 +47,7 @@ public class TorchLight : MonoBehaviour
     protected virtual void FireCollision()
     {
         OnLight();
-        OnLighting?.Invoke();
+        OnLighted?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)

@@ -133,7 +133,7 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
     }
 
-       
+
     private void MovePoint(InputAction inputAction, float value)
     {
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || isSkilling) return;
@@ -161,9 +161,27 @@ public abstract class Pet : MonoBehaviour
     protected void FollowTarget()
     {
         if (!isFollowing) return;
+
         agent.SetDestination(player.transform.position);
+        //LookAtPlayer();
     }
-    
+
+    protected void LookAtPlayer()
+    {
+        Quaternion targetRot = transform.rotation;
+
+        if (ThirdPersonCameraControll.IsPetAim)
+        {
+            targetRot = Quaternion.LookRotation((GameManager.Instance.GetCameraHit() - transform.position), Vector3.up);
+        }
+        else
+        {
+            targetRot = Quaternion.LookRotation((player.transform.position - transform.position), Vector3.up);
+        }
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
+    }
+
     private void StartFollow(InputAction inputAction, float value)
     {
         isFollowing = true;
