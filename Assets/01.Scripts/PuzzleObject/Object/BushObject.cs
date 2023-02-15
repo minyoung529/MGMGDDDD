@@ -10,8 +10,14 @@ public class BushObject : MonoBehaviour
     [SerializeField] private ParticleSystem[] fires;
 
     [SerializeField] new private Light light;
+    new private Collider collider;
 
     private bool isBurning = false;
+
+    private void Start()
+    {
+        collider = GetComponent<Collider>();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -52,6 +58,7 @@ public class BushObject : MonoBehaviour
         light.DOIntensity(0f, 0.5f).OnComplete(() => light.gameObject.SetActive(false));
         isBurning = false;
 
-        Destroy(gameObject);
+        collider.enabled = false;
+        Destroy(gameObject, 0.5f);
     }
 }

@@ -18,7 +18,7 @@ public class UnMovedObject : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         mass = rigid.mass;
-        rigid.mass = 150;
+        rigid.mass = 230;
         originalConstraints = rigid.constraints;
         prevDistacne = transform.position;
     }
