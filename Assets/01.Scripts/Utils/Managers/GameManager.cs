@@ -15,6 +15,11 @@ public class GameManager : MonoSingleton<GameManager>
         MainCam = Camera.main;
     }
 
+    private void Start()
+    {
+        RenderSettingController.Start();
+    }
+
     public Vector3 GetMousePos()
     {
         Ray ray = MainCam.ScreenPointToRay(UnityEngine.Input.mousePosition);
