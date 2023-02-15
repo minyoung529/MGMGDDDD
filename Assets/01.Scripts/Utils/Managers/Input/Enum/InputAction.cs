@@ -15,6 +15,6 @@ public enum InputAction
     Select_Third_Pet = 12,
     Pet_Move = 13,
     Pet_Skill = 14,
-    Pet_Cut = 15,
+    Pet_Follow = 15,
     Interaction = 16
 }

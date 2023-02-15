@@ -8,6 +8,18 @@ public class TorchPuzzle : TorchLight
     [SerializeField] int index;
     [SerializeField] private ParticleSystem shortParticle;
 
+    [SerializeField]
+    private bool puzzleTorch = true;
+
+    [SerializeField]
+    private UnityEvent OnLighting;
+
+    private TorchManager torchM;
+
+    private void Awake()
+    {
+        torchM = GetComponentInParent<TorchManager>();
+    }
     public void Lighting()
     {
         if (IsOn) OffLight();
@@ -20,6 +32,13 @@ public class TorchPuzzle : TorchLight
 
         shortParticle.Play();
 
-            TorchManager.Instance.LightOn(index);
+        if (puzzleTorch)
+        {
+            torchM.LightOn(index);
+        }
+        else
+        {
+            OnLighting?.Invoke();
+        }
     }
 }

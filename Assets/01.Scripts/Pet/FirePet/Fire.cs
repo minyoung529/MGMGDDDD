@@ -6,9 +6,11 @@ using UnityEngine;
 
 public class Fire : MonoBehaviour
 {
+    [SerializeField] bool isDestroyType = false;
+
     bool isReadyBurn = false;
     bool isBurn = false;
-    float burningTime = 3f;
+    float burningTime = 2f;
     float burningReadyTime = 2f;
 
     public bool IsBurn { get { return isBurn; } }
@@ -21,6 +23,7 @@ public class Fire : MonoBehaviour
     public void Burn()
     {
         isBurn = true;
+        if (isDestroyType) DestroyBurn();
     }
 
     public void StopBurn()  
@@ -30,7 +33,6 @@ public class Fire : MonoBehaviour
 
     public void DestroyBurn()
     {
-        Burn();
         Destroy(gameObject, burningTime);
     }
 
