@@ -60,7 +60,8 @@ public class Lever : MonoBehaviour
     [ContextMenu("Lever")]
     private void ToggleEvent()
     {
-        toggle = !toggle;
+        if (toggle) return;
+        toggle = true;
         if (toggle)
         {
             EventStart();
@@ -70,6 +71,19 @@ public class Lever : MonoBehaviour
             EventStop();
         }
     }
+    
+    //private void ToggleEvent()
+    //{
+    //    toggle = !toggle;
+    //    if (toggle)
+    //    {
+    //        EventStart();
+    //    }
+    //    else
+    //    {
+    //        EventStop();
+    //    }
+    //}
 
     // ???? ????
     private void EventStart()

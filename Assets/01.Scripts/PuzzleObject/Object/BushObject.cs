@@ -27,6 +27,14 @@ public class BushObject : MonoBehaviour
             StartCoroutine(Burn());
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("FireBall"))
+        {
+            if (isBurning) return;
+            StartCoroutine(Burn());
+        }
+    }
 
     private IEnumerator Burn()
     {
