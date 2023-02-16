@@ -123,7 +123,10 @@ public abstract class Pet : MonoBehaviour
     {
         return Vector3.Distance(transform.position, player.transform.position) >= followDistance;
     }
-
+    private float Distance()
+    {
+       return Vector3.Distance(transform.position, player.transform.position);
+    }
     // Connected State
     private void SetDestination(Vector3 dest)
     {
@@ -162,8 +165,16 @@ public abstract class Pet : MonoBehaviour
     {
         if (!isFollowing) return;
 
-        agent.SetDestination(player.transform.position);
         LookAtPlayer();
+
+        if(agent.destination!= player.transform.position)
+        {
+            agent.SetDestination(player.transform.position);
+        }
+        else
+        {
+            agent.SetDestination(transform.position);
+        }
     }
 
     protected void LookAtPlayer()
@@ -186,19 +197,18 @@ public abstract class Pet : MonoBehaviour
     {
         isFollowing = true;
         agent.isStopped = false;
-        agent.SetDestination(player.transform.position);
     }
     private void StartFollow()
     {
         isFollowing = true;
         agent.isStopped = false;
-        agent.SetDestination(player.transform.position);
     }
     private void StopFollow()
     {
         isFollowing = false;
         agent.isStopped = true;
         agent.ResetPath();
+        agent.velocity = Vector3.zero;
 
         StartCoroutine(CheckFollowDistance());
     }
