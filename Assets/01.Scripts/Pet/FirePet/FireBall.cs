@@ -54,7 +54,7 @@ public class FireBall : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        if (other.CompareTag("FirePet") || other.CompareTag("Player")) return;
+        if (other.CompareTag("FirePet") || other.CompareTag("Player") || other.CompareTag("OilPet") ) return;
 
         Fire[] fires = other.GetComponents<Fire>();
         if (fires.Length > 0)
