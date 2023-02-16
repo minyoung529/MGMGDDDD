@@ -28,6 +28,13 @@ public class ToggleCutScene : MonoBehaviour
         if (isPlay) return;
 
         isPlay = true;
+        CameraSwitcher.ChangeSwitchBlend(2f);
+        StartCoroutine(DelayOneFrame());
+    }
+
+    private IEnumerator DelayOneFrame()
+    {
+        yield return null;
         GameManager.Instance.CutSceneManager.Play(cutSceneName);
     }
 }
