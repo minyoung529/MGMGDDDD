@@ -33,6 +33,7 @@ public class CubePuzzleController : MonoBehaviour
         }
     }
 
+    [ContextMenu("SolvePuzzle")]
     private void SolvePuzzle()
     {
         OnSolvePuzzle?.Invoke();
