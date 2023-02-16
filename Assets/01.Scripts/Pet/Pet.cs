@@ -167,7 +167,7 @@ public abstract class Pet : MonoBehaviour
 
         LookAtPlayer();
 
-        if(agent.destination!= player.transform.position)
+        if(agent.destination != player.transform.position)
         {
             agent.SetDestination(player.transform.position);
         }
