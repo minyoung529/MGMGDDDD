@@ -27,6 +27,7 @@ public class TorchLight : MonoBehaviour
     public void OnLight()
     {
         isOn = true;
+        FireCollision();
 
         foreach (ParticleSystem p in particles)
             p.Play();
@@ -50,9 +51,8 @@ public class TorchLight : MonoBehaviour
         else OnLight();
     }
 
-    protected virtual void FireCollision()
+    public virtual void FireCollision()
     {
-        OnLight();
         OnLighted?.Invoke();
     }
 
@@ -62,7 +62,7 @@ public class TorchLight : MonoBehaviour
         if(fire !=null)
         {
             Destroy(fire.gameObject);
-            FireCollision();
+            OnLight();
         }
     }
 }

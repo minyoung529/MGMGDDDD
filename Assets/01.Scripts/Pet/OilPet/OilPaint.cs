@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEditor.PackageManager;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
@@ -17,7 +18,7 @@ public class OilPaint : MonoBehaviour{
 
     private bool isBurn = false;
     private bool isSpread = false;
-    public float scaleUp = 1.5f;
+    public float scaleUp = 10f;
 
     public float radius = 0.5f;
     public float strength = 1;
@@ -56,7 +57,6 @@ public class OilPaint : MonoBehaviour{
     {
         if (isSpread) return;
         isSpread = true;
-
         if (splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
 
@@ -64,13 +64,17 @@ public class OilPaint : MonoBehaviour{
         rigid.detectCollisions = true;
         rigid.velocity = Vector3.zero;
 
-        transform.SetParent(parent);
+        transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(()=>
+        {
+            HingeJoint joint = gameObject.AddComponent<HingeJoint>();
         StartCoroutine(DestroyObj());
+        });
     }
 
     private IEnumerator DestroyObj()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(60f);
+        Destroy(gameObject.GetComponent<HingeJoint>());
         gameObject.SetActive(false);
     }
 
@@ -92,6 +96,14 @@ public class OilPaint : MonoBehaviour{
                 if (o.isBurn) continue;
                 transform.DOKill();
                 o.SetBurn();
+            }
+
+            TorchLight[] lights = other.GetComponents<TorchLight>();
+
+            for(int i=0;i< lights.Length;i++)
+            {
+                if (lights[i].IsOn) continue;
+                lights[i].OnLight();
             }
         }
         

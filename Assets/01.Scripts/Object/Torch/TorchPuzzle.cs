@@ -17,7 +17,7 @@ public class TorchPuzzle : TorchLight
     }
     
 
-    protected override void FireCollision()
+    public override void FireCollision()
     {
         shortParticle.Play();
         torchM.LightOn(index);

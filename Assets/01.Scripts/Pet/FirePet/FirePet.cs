@@ -17,10 +17,10 @@ public class FirePet : Pet
     #region Skill
 
     // Active skill
-    protected override void ClickActive()
+    protected override void ActiveSkill(InputAction inputAction, float value)
     {
-        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
-        base.ClickActive();
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
+        base.ActiveSkill(inputAction, value);
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))

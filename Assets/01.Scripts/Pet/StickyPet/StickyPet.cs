@@ -29,15 +29,14 @@ public class StickyPet : Pet
     #region Skill
 
     // Active Skill
-    protected override void ClickActive()
+    protected override void ActiveSkill(InputAction inputAction, float value)
     {
-        base.ClickActive();
-        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
+        base.ActiveSkill(inputAction, value);
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            isSkilling = false;
             MoveActiveSkill(hit);
         }
     }
