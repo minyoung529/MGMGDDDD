@@ -55,6 +55,7 @@ public class PlayerMove : MonoBehaviour
     private int hash_tStateChange = Animator.StringToHash("tStateChange");
     private int hash_fVertical = Animator.StringToHash("fVertical");
     private int hash_fHorizontal = Animator.StringToHash("fHorizontal");
+    private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
     #endregion
 
     private Camera mainCam;
@@ -187,6 +188,8 @@ public class PlayerMove : MonoBehaviour
         Vector3 dir = inputDir * curSpeed;
         dir.y = rigid.velocity.y;
         rigid.velocity = dir;
+
+        anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
     public void Decelerate (float brakeTime = 0.5f) {
@@ -199,6 +202,8 @@ public class PlayerMove : MonoBehaviour
 
         if (dir.sqrMagnitude < 0.01f) return;
         rigid.velocity = dir;
+
+        anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
     public void SetRotate(Vector3 dir) {
         if (inputDir.sqrMagnitude <= 0) return;
@@ -218,7 +223,6 @@ public class PlayerMove : MonoBehaviour
     }
 
     public void JumpEvent() {
-        
         if(curState is JumpState)
         {
             JumpState jump = (JumpState)curState;
