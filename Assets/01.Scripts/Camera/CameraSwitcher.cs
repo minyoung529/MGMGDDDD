@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEditor.ShaderGraph.Internal;
 
 public enum CameraType
 {
@@ -15,10 +16,26 @@ public class CameraSwitcher : MonoBehaviour
 
     public static CinemachineVirtualCameraBase activeCamera = null;
 
+    private static CinemachineBrain cinemachineBrain;
+    public static CinemachineBrain CinemachineBrain
+    {
+        get
+        {
+            if (cinemachineBrain)
+                return cinemachineBrain;
+
+            cinemachineBrain = FindObjectOfType<CinemachineBrain>();
+            return cinemachineBrain;
+        }
+    }
+
+
     public static bool IsActiveCamera(CinemachineVirtualCameraBase cam) { return cam == activeCamera; }
 
     public static void SwitchCamera(CinemachineVirtualCameraBase cam)
     {
+        ChangeSwitchBlend(0.5f);
+
         cam.Priority = 10;
         activeCamera = cam;
         foreach (CinemachineVirtualCameraBase c in cameras)
@@ -42,4 +59,9 @@ public class CameraSwitcher : MonoBehaviour
     }
 
     #endregion
+
+    public static void ChangeSwitchBlend(float value)
+    {
+        CinemachineBrain.m_DefaultBlend.m_Time = value;
+    }
 }

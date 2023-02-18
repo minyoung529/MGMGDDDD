@@ -43,21 +43,7 @@ public class FireBall : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("FirePet")|| collision.collider.CompareTag("Player")) return;
-
-        Fire[] fires = collision.collider.GetComponents<Fire>();
-        if (fires.Length > 0)
-        {
-            Burning(fires[0]);
-            return;
-        }
-        IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
-        foreach (IceMelting ice in ices)
-        {
-            ice.Melt();
-        }
-
-        Destroy(gameObject, 0.1f);
+        
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -67,6 +53,22 @@ public class FireBall : MonoBehaviour
             oil.SetBurn();
             gameObject.SetActive(false);
         }
+
+        if (other.CompareTag("FirePet") || other.CompareTag("Player") || other.CompareTag("OilPet") ) return;
+
+        Fire[] fires = other.GetComponents<Fire>();
+        if (fires.Length > 0)
+        {
+            Burning(fires[0]);
+            return;
+        }
+        IceMelting[] ices = other.GetComponents<IceMelting>();
+        foreach (IceMelting ice in ices)
+        {
+            ice.Melt();
+        }
+
+        Destroy(gameObject, 0.1f);
     }
 
 
