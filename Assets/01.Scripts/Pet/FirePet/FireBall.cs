@@ -47,14 +47,14 @@ public class FireBall : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("OilBullet"))
+        if (other.CompareTag(Define.OIL_BULLET_TAG))
         {
             OilPaint oil = other.GetComponent<OilPaint>();
             oil.SetBurn();
             gameObject.SetActive(false);
         }
 
-        if (other.CompareTag("FirePet") || other.CompareTag("Player") || other.CompareTag("OilPet") ) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG) ) return;
 
         Fire[] fires = other.GetComponents<Fire>();
         if (fires.Length > 0)
@@ -73,4 +73,4 @@ public class FireBall : MonoBehaviour
 
 
     #endregion
-}
+} 

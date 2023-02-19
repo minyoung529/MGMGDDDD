@@ -12,31 +12,35 @@ public class Lever : MonoBehaviour
 {
     public UnityEvent OnLever;
     public UnityEvent OffLever;
+    public bool disposable = true;
     public LayerMask playerLayer;
 
-    private InteractOilObject interactOil;
-
     private Transform handle;
-    private bool ice = false;
+
     private bool isNear = false;
     private bool toggle = false;
 
-    private float nearRadius = 0.8f;
-
     private void Start()
     {
-        interactOil = GetComponent<InteractOilObject>();
         SetLever();
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (NearPlayer() && (!interactOil || (interactOil && !interactOil.IsRust))) ToggleEvent();
+            if (CheckLever())
+            {
+                ToggleEvent();
+            }
         }
     }
 
-    private void SetLever()
+    protected virtual bool CheckLever()
+    {
+        return NearPlayer();
+    }
+
+    protected virtual void SetLever()
     {
         // ?????
        //OnLever.AddListener(DebugOnLever);
@@ -48,7 +52,7 @@ public class Lever : MonoBehaviour
 
     #region Boolean
     // ?????? ?????? ??????? u???? ???
-    private bool NearPlayer()
+    protected bool NearPlayer()
     {
         if (isNear) return true;
         return false;
@@ -58,10 +62,12 @@ public class Lever : MonoBehaviour
     #region Event
     // Event Toggle
     [ContextMenu("Lever")]
+
     private void ToggleEvent()
     {
-        if (toggle) return;
-        toggle = true;
+        toggle = !toggle;
+        if(disposable) toggle = true;
+
         if (toggle)
         {
             EventStart();
@@ -71,28 +77,13 @@ public class Lever : MonoBehaviour
             EventStop();
         }
     }
-    
-    //private void ToggleEvent()
-    //{
-    //    toggle = !toggle;
-    //    if (toggle)
-    //    {
-    //        EventStart();
-    //    }
-    //    else
-    //    {
-    //        EventStop();
-    //    }
-    //}
 
-    // ???? ????
-    private void EventStart()
+    protected virtual void EventStart()
     {
         OnRotateLever();
         OnLever.Invoke();
     }
-    // ???? ????
-    private void EventStop()
+    protected virtual void EventStop()
     {
         OffRotateLever();
         OffLever.Invoke();
@@ -125,14 +116,14 @@ public class Lever : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag(Define.PLAYER_TAG))
         {
             isNear = true;
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag(Define.PLAYER_TAG))
         {
             isNear = false;
         }

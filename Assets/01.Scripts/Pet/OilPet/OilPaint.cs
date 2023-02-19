@@ -82,7 +82,7 @@ public class OilPaint : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("OilPet") || other.CompareTag("Player") || other.CompareTag("FirePet")) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG)) return;
         SpreadOil(other.transform, transform.position);
     }
     private void OnTriggerStay(Collider other)
