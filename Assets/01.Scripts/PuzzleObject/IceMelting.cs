@@ -10,6 +10,7 @@ public class IceMelting : MonoBehaviour
     [SerializeField] private bool inObj = false;
     [SerializeField] private float meltTime = 3.8f;
     [SerializeField] private UnityEvent OnMeltIce;
+    [SerializeField] private GameObject obj;
     private bool melting = false;
     private float meltReadyTime = 3.0f;
 
@@ -28,10 +29,10 @@ public class IceMelting : MonoBehaviour
 
     private void SetIce()
     {
-        inObjCollider = transform.GetChild(transform.childCount - 1).GetComponent<Collider>();
-
+        inObjCollider = obj.GetComponent<Collider>();
         inObjCollider.enabled = false;
-        inObjRigid = transform.GetChild(transform.childCount - 1).GetComponent<Rigidbody>();
+
+        inObjRigid = obj.GetComponent<Rigidbody>();
         inObjRigid.isKinematic = true;
         inObjRigid.useGravity = false;
     }
@@ -68,11 +69,9 @@ public class IceMelting : MonoBehaviour
 
     public void IceMeltInObj()
     {
-        inObjCollider = transform.GetChild(transform.childCount-1).GetComponent<Collider>();
-        inObjRigid = transform.GetChild(transform.childCount - 1).GetComponent<Rigidbody>();
-        inObjRigid.transform.SetParent(null);
+        obj.transform.SetParent(null);
+        
         inObjCollider.enabled = true;
-
         transform.DOScaleY(0f, 1.9f).OnComplete(() =>
         {
             inObjRigid.isKinematic = false;
@@ -91,6 +90,7 @@ public class IceMelting : MonoBehaviour
         {
             if (fire.IsBurn)
             {
+                UnityEngine.Debug.Log("Melt");
                 StartCoroutine(StartMelt());
             }
         }

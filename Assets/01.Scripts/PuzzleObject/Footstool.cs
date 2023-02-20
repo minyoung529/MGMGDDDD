@@ -8,6 +8,7 @@ public class Footstool : MonoBehaviour
 {
     [SerializeField] UnityEvent footEvent;
     [SerializeField] GameObject box;
+    [SerializeField] float smallTime = 0.5f;
 
     TogglePosition togglePosition;
 
@@ -18,7 +19,7 @@ public class Footstool : MonoBehaviour
 
     private void TriggerTrap()
     {
-        transform.DOScaleY(0.1f, 1f).OnComplete(()=>
+        transform.DOScaleY(0.1f, smallTime).OnComplete(()=>
         {
             footEvent?.Invoke();
         });

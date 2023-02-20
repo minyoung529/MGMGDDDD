@@ -7,11 +7,11 @@ public class FireAtOnce : MonoBehaviour
 {
     [SerializeField] UnityEvent clear;
 
-    private TorchLight[] torchs;
+    private BushObject[] bushes;
 
     private void Awake()
     {
-        torchs = GetComponentsInChildren<TorchLight>();
+        bushes = GetComponentsInChildren<BushObject>();
     }
     public void TryLightOnClear()
     {
@@ -23,9 +23,9 @@ public class FireAtOnce : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         bool isClear = true;
 
-        for (int i = 0; i < torchs.Length; i++)
+        for (int i = 0; i < bushes.Length; i++)
         {
-            if (torchs[i].IsOn == false)
+            if (bushes[i].IsBurn == false)
             {
                 isClear = false;
                 Failed();
@@ -34,15 +34,17 @@ public class FireAtOnce : MonoBehaviour
         }
         if (isClear)
         {
+            Debug.Log("Clear");
             clear.Invoke();
         }
     }
 
     private void Failed()
     {
-        for (int i = 0; i < torchs.Length; i++)
+        for (int i = 0; i < bushes.Length; i++)
         {
-            torchs[i].OffLight();
+            Debug.Log("Failed");
+            bushes[i].OffBurn();
         }
     }
 }

@@ -85,6 +85,7 @@ public class OilPaint : MonoBehaviour{
         if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG)) return;
         SpreadOil(other.transform, transform.position);
     }
+
     private void OnTriggerStay(Collider other)
     {
         if(isBurn)
@@ -97,6 +98,7 @@ public class OilPaint : MonoBehaviour{
                 transform.DOKill();
                 o.SetBurn();
             }
+            
 
             TorchLight[] lights = other.GetComponents<TorchLight>();
 
@@ -112,19 +114,6 @@ public class OilPaint : MonoBehaviour{
     {
         other.material = null;
     }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Paintable[] paints = collision.collider.GetComponents<Paintable>();
-
-    //    Vector3 pos = collision.contacts[0].point;
-    //    foreach (Paintable p in paints)
-    //    {
-    //        transform.DOKill();
-    //     //   PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
-    //        SpreadOil();
-    //    }
-    //}
 
     #endregion
 }

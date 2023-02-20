@@ -33,6 +33,7 @@ public class FireBall : MonoBehaviour
     {
         meshRender.enabled = false;
 
+        Debug.Log("Fire");
         transform.SetParent(fire.transform);
         fire.Burn();
     }
@@ -41,10 +42,6 @@ public class FireBall : MonoBehaviour
     #region Collider
 
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Define.OIL_BULLET_TAG))
@@ -62,6 +59,7 @@ public class FireBall : MonoBehaviour
             Burning(fires[0]);
             return;
         }
+
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Fire : MonoBehaviour
 {
+    [SerializeField] ParticleSystem fireParticle;
     [SerializeField] bool isDestroyType = false;
 
     bool isReadyBurn = false;
@@ -18,17 +19,28 @@ public class Fire : MonoBehaviour
     private void Awake()
     {
         isBurn = false;
+        fireParticle.Stop();
     }
 
     public void Burn()
     {
         isBurn = true;
+        fireParticle.Play();
         if (isDestroyType) DestroyBurn();
+
+        StartCoroutine(CoolFire());
     }
 
-    public void StopBurn()  
+    private IEnumerator CoolFire()
+    {
+        yield return new WaitForSeconds(10f);
+        StopBurn();
+    }
+
+public void StopBurn()  
     {
         isBurn = false;
+        fireParticle.Stop();
     }
 
     public void DestroyBurn()
@@ -62,59 +74,40 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (!IsBurn) return;
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {
             ice.Melt();
         }
+
+        Fire[] fires = other.GetComponents<Fire>();
+
+        foreach (Fire f in fires)
+        {
+            if (f.IsBurn) continue;
+            transform.DOKill();
+            f.Burn();
+        }
     }
     private void OnCollisionStay(Collision collision)
     {
+        if (!IsBurn) return;
+
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {
             ice.Melt();
         }
+
+        Fire[] fires = collision.collider.GetComponents<Fire>();
+
+        foreach (Fire f in fires)
+        {
+            if (f.IsBurn) continue;
+            transform.DOKill();
+            f.Burn();
+        }
     }
 
-    //}  private void OnTriggerEnter(Collider other)
-    //{
-    //    Fire fire = other.GetComponent<Fire>();
-    //    if(fire != null )
-    //    {
-    //        fire.StayFire();
-    //    }
-
-    //    IceMelting[] ices = other.GetComponents<IceMelting>();
-    //    foreach (IceMelting ice in ices)
-    //    {
-    //        ice.Melt();
-    //    }
-    //}
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    Fire fire = other.GetComponent<Fire>();
-    //    if( fire != null )
-    //    {
-    //        fire.ExitInFire();
-    //    }
-    //}
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Fire fire = collision.collider.GetComponent<Fire>();
-    //    if (fire != null)
-    //    {
-    //        fire.StayFire();
-    //    }
-
-        
-    //}
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    Fire fire = collision.collider.GetComponent<Fire>();
-    //    if (fire != null)
-    //    {
-    //        fire.ExitInFire();
-    //    }
-    //}
 }

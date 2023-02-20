@@ -28,4 +28,15 @@ public class GenerateOil : MonoBehaviour
             joint.connectedBody = GetComponent<Rigidbody>();
         }
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Fire[] fires = other.GetComponents<Fire>();   
+        for(int i=0;i<fires.Length;i++)
+        {
+            if (fires[i].IsBurn) continue;
+
+            fires[i].Burn();
+        }
+    }
 }

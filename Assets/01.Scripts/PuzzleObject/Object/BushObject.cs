@@ -2,17 +2,20 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 public class BushObject : MonoBehaviour
 {
     [SerializeField] private GameObject[] bushes;
     [SerializeField] private ParticleSystem[] fires;
+    public UnityEvent bushEvent;
 
     [SerializeField] new private Light light;
     new private Collider collider;
 
     private bool isBurning = false;
+    public bool IsBurn { get { return isBurning; } }
 
     private void Start()
     {
@@ -21,7 +24,7 @@ public class BushObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.CompareTag("FireBall"))
+        if (collision.transform.CompareTag(Define.FIRE_PET_TAG))
         {
             if (isBurning) return;
             StartCoroutine(Burn());
@@ -29,15 +32,43 @@ public class BushObject : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("FireBall"))
+        if (other.CompareTag(Define.FIRE_PET_TAG))
         {
             if (isBurning) return;
             StartCoroutine(Burn());
         }
     }
 
+
+    public void OffBurn()
+        {
+        StopCoroutine(Burn());
+        isBurning = false;
+
+        for (int i = bushes.Length - 1; i >= 0; i--)
+        {
+            bushes[i].gameObject.SetActive(true);
+
+            if (fires[i])
+                fires[i].Stop();
+        }
+        for (int i = 0; i < fires.Length; i++)
+        {
+            if (fires[i])
+            {
+                fires[i].gameObject.SetActive(false);
+            }
+        }
+     
+
+        light.DOIntensity(0f, 0.5f).OnComplete(() => light.gameObject.SetActive(false));
+        isBurning = false;
+
+    }
+
     private IEnumerator Burn()
     {
+        bushEvent?.Invoke();
         isBurning = true;
 
         light.gameObject.SetActive(true);
