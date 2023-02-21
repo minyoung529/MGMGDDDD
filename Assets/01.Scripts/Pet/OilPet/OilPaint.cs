@@ -8,7 +8,6 @@ public class OilPaint : MonoBehaviour{
 
     [SerializeField] Color paintColor;
     [SerializeField] PhysicMaterial oil;
-    [SerializeField] ParticleSystem fireParticle;
     [SerializeField] ParticleSystem splashParticle;
 
     private Rigidbody rigid;
@@ -24,10 +23,10 @@ public class OilPaint : MonoBehaviour{
     public float strength = 1;
     public float hardness = 1;
 
+    public bool IsBurn { get { return isBurn; } }
     private void OnEnable()
     {
         defaultScale = transform.localScale;
-        ResetBullet();
     }
 
     private void Awake()
@@ -42,15 +41,8 @@ public class OilPaint : MonoBehaviour{
 
         isBurn = false;
         isSpread= false;
-        fireParticle.Stop();
 
         rigid.useGravity = false;
-    }
-
-    public void SetBurn()
-    {
-        isBurn = true;
-        fireParticle.Play();
     }
 
     private void SpreadOil(Transform parent, Vector3 pos)
@@ -86,30 +78,6 @@ public class OilPaint : MonoBehaviour{
         SpreadOil(other.transform, transform.position);
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(isBurn)
-        {
-            OilPaint[] oils = other.GetComponents<OilPaint>();
-
-            foreach (OilPaint o in oils)
-            {
-                if (o.isBurn) continue;
-                transform.DOKill();
-                o.SetBurn();
-            }
-            
-
-            TorchLight[] lights = other.GetComponents<TorchLight>();
-
-            for(int i=0;i< lights.Length;i++)
-            {
-                if (lights[i].IsOn) continue;
-                lights[i].OnLight();
-            }
-        }
-        
-    }
     private void OnTriggerExit(Collider other)
     {
         other.material = null;

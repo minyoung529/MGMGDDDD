@@ -44,12 +44,7 @@ public class FireBall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Define.OIL_BULLET_TAG))
-        {
-            OilPaint oil = other.GetComponent<OilPaint>();
-            oil.SetBurn();
-            gameObject.SetActive(false);
-        }
+        
 
         if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG) ) return;
 

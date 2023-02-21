@@ -50,7 +50,6 @@ public class OilPet : Pet
     {
         Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
         OilPaint oil = Instantiate(oilSkill, spawnPoint, Quaternion.identity).GetComponent<OilPaint>();
-        if (isBurn) oil.SetBurn();
         return oil.gameObject;
     }
 

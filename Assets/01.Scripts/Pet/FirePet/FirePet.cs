@@ -35,22 +35,22 @@ public class FirePet : Pet
         //}
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag(Define.OIL_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG)) return;
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag(Define.OIL_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG)) return;
 
-        Fire[] fires = collision.collider.GetComponents<Fire>();
-        if (fires.Length > 0)
-        {
-            fires[0].Burn();
-        }
+    //    Fire[] fires = collision.collider.GetComponents<Fire>();
+    //    if (fires.Length > 0)
+    //    {
+    //        fires[0].Burn();
+    //    }
 
-        IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
-        if (ices.Length > 0)
-        {
-            ices[0].Melt();
-        }
-    }
+    //    IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
+    //    if (ices.Length > 0)
+    //    {
+    //        ices[0].Melt();
+    //    }
+    //}
 
     private GameObject CreateFire()
     {

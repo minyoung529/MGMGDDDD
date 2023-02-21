@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Fire : MonoBehaviour
 {
-    [SerializeField] ParticleSystem fireParticle;
+    [SerializeField] bool playOnAwake = false;
+    [SerializeField] UnityEvent fireEvent;
+    [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
 
     bool isReadyBurn = false;
@@ -18,17 +21,25 @@ public class Fire : MonoBehaviour
 
     private void Awake()
     {
-        isBurn = false;
-        fireParticle.Stop();
+        isBurn = playOnAwake;
+        if(playOnAwake)
+        {
+            Burn();
+        }
+        else
+        {
+            FireParticleStop();
+        }
     }
 
     public void Burn()
     {
         isBurn = true;
-        fireParticle.Play();
-        if (isDestroyType) DestroyBurn();
 
-        StartCoroutine(CoolFire());
+        FireParticlePlay();
+        if (isDestroyType) DestroyBurn();
+        fireEvent?.Invoke();
+        //StartCoroutine(CoolFire());
     }
 
     private IEnumerator CoolFire()
@@ -36,11 +47,24 @@ public class Fire : MonoBehaviour
         yield return new WaitForSeconds(10f);
         StopBurn();
     }
-
-public void StopBurn()  
+    private void FireParticlePlay()
+    {
+        for (int i = 0; i < fireParticle.Length; i++)
+        {
+            fireParticle[i].Play();
+        }
+    }
+    private void FireParticleStop()
+    {
+        for (int i = 0; i < fireParticle.Length; i++)
+        {
+            fireParticle[i].Stop();
+        }
+    }
+    public void StopBurn()  
     {
         isBurn = false;
-        fireParticle.Stop();
+        FireParticleStop();
     }
 
     public void DestroyBurn()
@@ -60,7 +84,6 @@ public void StopBurn()
         StopCoroutine(StayInFire());
     }
 
-
     private IEnumerator StayInFire()
     {
         yield return new WaitForSeconds(burningReadyTime);  
@@ -75,6 +98,7 @@ public void StopBurn()
     private void OnTriggerStay(Collider other)
     {
         if (!IsBurn) return;
+
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {
@@ -82,7 +106,6 @@ public void StopBurn()
         }
 
         Fire[] fires = other.GetComponents<Fire>();
-
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
@@ -101,13 +124,13 @@ public void StopBurn()
         }
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
-
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
             transform.DOKill();
             f.Burn();
         }
+
     }
 
 }
