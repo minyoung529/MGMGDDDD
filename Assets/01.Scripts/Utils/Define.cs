@@ -19,6 +19,8 @@ public class Define
     #region TAG
     public const string PLAYER_TAG = "Player";
     public const string OIL_BULLET_TAG = "OilBullet";
+    public const string OIL_PET_TAG = "OilPet";
+    public const string FIRE_PET_TAG = "FirePet";
     #endregion
 
     #region ROPE_VALUE

@@ -28,4 +28,5 @@ public class GenerateOil : MonoBehaviour
             joint.connectedBody = GetComponent<Rigidbody>();
         }
     }
+
 }

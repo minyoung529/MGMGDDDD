@@ -29,10 +29,10 @@ public class OilPet : Pet
     #region Skill
 
     // Active skill
-    protected override void ClickActive()
+    protected override void ActiveSkill(InputAction inputAction, float value)
     {
-        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
-        base.ClickActive();
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
+        base.ActiveSkill(inputAction, value);
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -50,7 +50,6 @@ public class OilPet : Pet
     {
         Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
         OilPaint oil = Instantiate(oilSkill, spawnPoint, Quaternion.identity).GetComponent<OilPaint>();
-        if (isBurn) oil.SetBurn();
         return oil.gameObject;
     }
 

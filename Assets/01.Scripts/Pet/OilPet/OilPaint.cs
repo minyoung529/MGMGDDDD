@@ -1,13 +1,13 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEditor.PackageManager;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
 
     [SerializeField] Color paintColor;
     [SerializeField] PhysicMaterial oil;
-    [SerializeField] ParticleSystem fireParticle;
     [SerializeField] ParticleSystem splashParticle;
 
     private Rigidbody rigid;
@@ -17,16 +17,16 @@ public class OilPaint : MonoBehaviour{
 
     private bool isBurn = false;
     private bool isSpread = false;
-    public float scaleUp = 1.5f;
+    public float scaleUp = 10f;
 
     public float radius = 0.5f;
     public float strength = 1;
     public float hardness = 1;
 
+    public bool IsBurn { get { return isBurn; } }
     private void OnEnable()
     {
         defaultScale = transform.localScale;
-        ResetBullet();
     }
 
     private void Awake()
@@ -41,22 +41,14 @@ public class OilPaint : MonoBehaviour{
 
         isBurn = false;
         isSpread= false;
-        fireParticle.Stop();
 
         rigid.useGravity = false;
-    }
-
-    public void SetBurn()
-    {
-        isBurn = true;
-        fireParticle.Play();
     }
 
     private void SpreadOil(Transform parent, Vector3 pos)
     {
         if (isSpread) return;
         isSpread = true;
-
         if (splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
 
@@ -64,13 +56,17 @@ public class OilPaint : MonoBehaviour{
         rigid.detectCollisions = true;
         rigid.velocity = Vector3.zero;
 
-        transform.SetParent(parent);
+        transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(()=>
+        {
+            HingeJoint joint = gameObject.AddComponent<HingeJoint>();
         StartCoroutine(DestroyObj());
+        });
     }
 
     private IEnumerator DestroyObj()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(60f);
+        Destroy(gameObject.GetComponent<HingeJoint>());
         gameObject.SetActive(false);
     }
 
@@ -78,41 +74,14 @@ public class OilPaint : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("OilPet") || other.CompareTag("Player") || other.CompareTag("FirePet")) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG)) return;
         SpreadOil(other.transform, transform.position);
     }
-    private void OnTriggerStay(Collider other)
-    {
-        if(isBurn)
-        {
-            OilPaint[] oils = other.GetComponents<OilPaint>();
 
-            foreach (OilPaint o in oils)
-            {
-                if (o.isBurn) continue;
-                transform.DOKill();
-                o.SetBurn();
-            }
-        }
-        
-    }
     private void OnTriggerExit(Collider other)
     {
         other.material = null;
     }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Paintable[] paints = collision.collider.GetComponents<Paintable>();
-
-    //    Vector3 pos = collision.contacts[0].point;
-    //    foreach (Paintable p in paints)
-    //    {
-    //        transform.DOKill();
-    //     //   PaintManager.Instance.paint(p, pos, radius, hardness, strength, paintColor);
-    //        SpreadOil();
-    //    }
-    //}
 
     #endregion
 }
