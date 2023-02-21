@@ -5,7 +5,8 @@ using UnityEngine;
 public class SetPosAuto : MonoBehaviour
 {
     [SerializeField] private Transform targetTransform;
-    [SerializeField] private float distance;
+    [SerializeField] private float distance = 1f;
+    [SerializeField] private float moveSpeed = 1f;
     private bool isSet = false;
 
     private void Update() {
@@ -18,8 +19,8 @@ public class SetPosAuto : MonoBehaviour
 
     private IEnumerator Move() {
         while((targetTransform.position - transform.position).sqrMagnitude <= 0.1f) {
-            transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, 1f);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetTransform.rotation, 1f);
+            transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, moveSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetTransform.rotation, moveSpeed * Time.deltaTime);
             yield return null;
         }
         transform.position = targetTransform.position;
