@@ -22,13 +22,10 @@ public class Fire : MonoBehaviour
     private void Awake()
     {
         isBurn = playOnAwake;
+        FireParticleStop();
         if(playOnAwake)
         {
             Burn();
-        }
-        else
-        {
-            FireParticleStop();
         }
     }
 

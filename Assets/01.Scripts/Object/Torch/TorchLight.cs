@@ -58,10 +58,10 @@ public class TorchLight : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        FireBall fire = other.GetComponent<FireBall>();
+        Fire fire = other.GetComponent<Fire>();
         if(fire !=null)
         {
-            Destroy(fire.gameObject);
+            if (!fire.IsBurn) return;
             OnLight();
         }
     }
