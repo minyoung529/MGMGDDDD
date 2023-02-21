@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class AutoInputPanel : MonoBehaviour
 {
-    [Header("Trigger")]
+    [Header("Animator Trigger")]
     [SerializeField]
     private string animatorBoolName;
 
@@ -16,6 +16,10 @@ public class AutoInputPanel : MonoBehaviour
 
     [SerializeField]
     private int intValue = 1;
+
+    [Header("Input")]
+    [SerializeField] private bool useInputAction = false;
+    [SerializeField] InputAction action;
 
     private Animator animator;
 
@@ -42,6 +46,12 @@ public class AutoInputPanel : MonoBehaviour
 
     private readonly Color MAX_COLOR = new Color32(72, 204, 70, 69);
 
+    private void Start()
+    {
+        if (useInputAction)
+            InputManager.StartListeningInput(action, SuccessInput);
+    }
+
     public void Init(Animator animator)
     {
         this.animator = animator;
@@ -49,10 +59,14 @@ public class AutoInputPanel : MonoBehaviour
 
     void Update()
     {
-        if(string.IsNullOrEmpty(animatorBoolName) || animatorBoolName == "")
+        if ((string.IsNullOrEmpty(animatorBoolName) || animatorBoolName == ""))
         {
-            success = true;
-            return;
+            if (!useInputAction)
+            {
+                success = true;
+                return;
+            }
+            else return;
         }
 
         if (Active && (isBool && animator.GetBool(animatorBoolName) || (!isBool && animator.GetInteger(animatorBoolName) == intValue)))
@@ -61,7 +75,7 @@ public class AutoInputPanel : MonoBehaviour
             {
                 timer += Time.deltaTime;
 
-                if(isFill)
+                if (isFill)
                 {
                     SetFadeColor();
                 }
@@ -86,5 +100,16 @@ public class AutoInputPanel : MonoBehaviour
         {
             image.color = Color.Lerp(Color.clear, MAX_COLOR, timer / MAX_TIME);
         }
+    }
+
+    private void SuccessInput(InputAction inputAction, float value)
+    {
+        success = true;
+    }
+
+    private void OnDestroy()
+    {
+        if (useInputAction)
+            InputManager.StopListeningInput(action, SuccessInput);
     }
 }

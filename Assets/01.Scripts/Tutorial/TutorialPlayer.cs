@@ -9,7 +9,10 @@ using UnityEngine.UIElements;
 public class TutorialPlayer : MonoBehaviour
 {
     [SerializeField] TutorialType tutorialType;
-    [SerializeField] private bool isStart = false;  // 처음부터 시작인가
+    [SerializeField] private bool isStart = false;      // 처음부터 시작인가
+    [SerializeField] private bool isConstant = false;   // 계속 지속되어있는 것인가 (ex. 상호작용(F))
+    [SerializeField] private bool isOnce = true;        // 한 번만 실행되는가
+
     [SerializeField] private Animator animator;
 
     [SerializeField]
@@ -17,6 +20,7 @@ public class TutorialPlayer : MonoBehaviour
 
     [SerializeField]
     private List<CanvasGroup> autoGroups = new List<CanvasGroup>();
+
 
     private int autoIdx = 0;
 
@@ -114,10 +118,27 @@ public class TutorialPlayer : MonoBehaviour
     [ContextMenu("Start Tutorial")]
     public void StartTutorial()
     {
-        if (isStarted || isFinish) return;
+        if (isOnce && (isStarted || isFinish)) return;
+        if (!isOnce)    // 반복 실행이라면 데이터 초기화
+        {
+            autoIdx = 0;
+            isFinish = false;
+        }
 
         ShowCurrentPanel();
         isStarted = true;
+    }
+
+    public void StopTutorial()
+    {
+        if (isFinish) return;
+
+        foreach (CanvasGroup canvas in autoGroups)
+        {
+            canvas.DOFade(0f, 0.6f).OnComplete(() => canvas.gameObject.SetActive(false));
+        }
+
+        isFinish = true;
     }
 
     public void Init()

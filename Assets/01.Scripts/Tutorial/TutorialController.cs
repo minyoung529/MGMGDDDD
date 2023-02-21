@@ -37,4 +37,10 @@ public class TutorialController : MonoBehaviour
         tutorials[type].Animator = animator;
         tutorials[type].StartTutorial();
     }
+
+    public void StopTutorial(TutorialType type)
+    {
+        tutorials[type].Animator = animator;
+        tutorials[type].StopTutorial();
+    }
 }

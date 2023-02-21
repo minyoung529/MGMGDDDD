@@ -8,10 +8,15 @@ public class TutorialTrigger : MonoBehaviour
     private bool isCollide = true;
 
     [SerializeField]
+    private bool autoEnd = true;
+
+    [SerializeField]
     LayerMask layerMask;
 
     [SerializeField]
     private TutorialType tutorialType;
+
+    private TutorialController tutorialController;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,12 +24,19 @@ public class TutorialTrigger : MonoBehaviour
 
         if (((1 << other.gameObject.layer) & layerMask) != 0 && Condition(other.transform))
         {
-            TutorialController controller = other.gameObject.GetComponent<TutorialController>();
+            tutorialController ??= other.gameObject.GetComponent<TutorialController>();
+            tutorialController?.StartTutorial(tutorialType);
+        }
+    }
 
-            if (controller)
-            {
-                controller.StartTutorial(tutorialType);
-            }
+    private void OnTriggerExit(Collider other)
+    {
+        if (autoEnd) return;
+
+        if (((1 << other.gameObject.layer) & layerMask) != 0 && Condition(other.transform))
+        {
+            tutorialController ??= other.gameObject.GetComponent<TutorialController>();
+            tutorialController?.StopTutorial(tutorialType);
         }
     }
 
