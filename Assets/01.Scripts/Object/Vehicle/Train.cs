@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum Destination : int
 {
-    Clock, TV, Count
+    Table, Clock, TV, Count
 }
 
 public class Train : MonoBehaviour
@@ -15,6 +15,10 @@ public class Train : MonoBehaviour
 
     [SerializeField]
     private Transform playerPos;
+    [SerializeField]
+    private Transform exitPos;
+
+    private JumpMotion jumpMotion = new JumpMotion();
 
     [SerializeField]
     private PathFollower pathFollower;
@@ -23,9 +27,10 @@ public class Train : MonoBehaviour
     private Transform[] destinations;
 
     private Transform playerTransform;
-    private Vector3 originalPlayerScale;
+    private Rigidbody playerRigid;
     private bool isPalyerArea = false;
     private bool isBoarding = false;
+    private bool isArrive = false;
 
     private void Awake()
     {
@@ -36,8 +41,8 @@ public class Train : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
+            playerRigid ??= other.attachedRigidbody;
             playerTransform = other.transform;
-            originalPlayerScale = playerTransform.localScale;
             isPalyerArea = true;
         }
     }
@@ -46,8 +51,6 @@ public class Train : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
-            playerTransform = null;
-            originalPlayerScale = Vector3.zero;
             isPalyerArea = false;
         }
     }
@@ -58,11 +61,13 @@ public class Train : MonoBehaviour
 
         if (isBoarding) // 타고 있다면 하차
         {
-            Quit();
+            if (isArrive)
+                QuitAnimation();
         }
         else
         {
-            Boarding();
+            BoardingAnimation();
+            isArrive = false;
         }
 
         isBoarding = !isBoarding;
@@ -70,23 +75,31 @@ public class Train : MonoBehaviour
 
     private void Boarding()
     {
-        playerTransform.position = playerPos.position;
+        playerRigid.isKinematic = true;
+        playerTransform.SetParent(transform.parent);
+
         pathFollower.destination = destinations[(int)Destination.Clock];
-
-        playerTransform.SetParent(transform);
-
         pathFollower.Depart();
+        pathFollower.onArrive.AddListener((x) => isArrive = true);
+    }
+
+    private void BoardingAnimation()
+    {
+        jumpMotion.targetPos = playerPos.position;
+        jumpMotion.StartJump(playerTransform, null, Boarding);
     }
 
     private void Quit()
     {
         playerTransform.SetParent(null);
-        MaintainPlayerScale();
+        playerRigid.isKinematic = false;
     }
 
-    private void MaintainPlayerScale()
+    private void QuitAnimation()
     {
-        playerTransform.localScale = originalPlayerScale;
+        jumpMotion.targetPos = exitPos.position;
+
+        jumpMotion.StartJump(playerTransform, null, Quit);
     }
 
     private void OnDestroy()

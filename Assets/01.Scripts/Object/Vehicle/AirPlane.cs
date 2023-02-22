@@ -12,12 +12,12 @@ public class AirPlane : MonoBehaviour
 
     [SerializeField]
     private Transform playerPos;
+    [SerializeField]
+    private Transform exitPos;
 
     private Transform playerTransform;
-    private Animator animator;
     private Rigidbody playerRigid;
 
-    private Vector3 originalPlayerScale;
     private bool isPalyerArea = false;
     private bool isBoarding = false;
 
@@ -27,9 +27,15 @@ public class AirPlane : MonoBehaviour
     [SerializeField]
     private UnityEvent OnQuit;
 
+    private JumpMotion jumpMotion = new JumpMotion();
+
+    private bool isArrive = false;
+
     private void Awake()
     {
         InputManager.StartListeningInput(InputAction.Interaction, Interaction);
+
+        OnQuit.AddListener(ResetPlayer);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,10 +43,8 @@ public class AirPlane : MonoBehaviour
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
             playerTransform = other.transform;
-            animator ??= playerTransform.GetComponent<Animator>();
             playerRigid = other.attachedRigidbody;
 
-            originalPlayerScale = playerTransform.localScale;
             isPalyerArea = true;
         }
     }
@@ -49,17 +53,7 @@ public class AirPlane : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
-            playerTransform = null;
-            originalPlayerScale = Vector3.zero;
             isPalyerArea = false;
-        }
-    }
-
-    private void Update()
-    {
-        if (isBoarding && playerTransform)
-        {
-            playerTransform.position = playerPos.position;
         }
     }
 
@@ -69,13 +63,13 @@ public class AirPlane : MonoBehaviour
 
         if (isBoarding) // 타고 있다면 하차
         {
-            Quit();
-            OnQuit?.Invoke();
+            if (isArrive)
+                QuitAnimation();
         }
         else
         {
+            isArrive = false;
             Boarding();
-            OnBoarding?.Invoke();
         }
 
         isBoarding = !isBoarding;
@@ -83,26 +77,36 @@ public class AirPlane : MonoBehaviour
 
     private void Boarding()
     {
-        playerTransform.position = playerPos.position;
         playerTransform.SetParent(transform.parent);
-        animator.SetInteger("iStateNum", (int)StateName.Sit);
         playerRigid.isKinematic = true;
 
+        BoardingAnimation();    // 포물선
     }
 
-    private void Quit()
+    private void BoardingAnimation()
+    {
+        jumpMotion.targetPos = playerPos.position;
+        jumpMotion.StartJump(playerTransform, null, () => OnBoarding?.Invoke(), true);
+    }
+
+
+    private void QuitAnimation()
+    {
+        jumpMotion.targetPos = exitPos.position;
+        jumpMotion.StartJump(playerTransform, null, () => OnQuit?.Invoke());
+    }
+
+    private void ResetPlayer()
     {
         playerTransform.SetParent(null);
-        MaintainPlayerScale();
-        animator.SetInteger("iStateNum", (int)0);
 
         if (playerRigid)
             playerRigid.isKinematic = false;
     }
 
-    private void MaintainPlayerScale()
+    public void Arrive()
     {
-        playerTransform.localScale = originalPlayerScale;
+        isArrive = true;
     }
 
     private void OnDestroy()

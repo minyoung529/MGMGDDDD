@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &40627201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 40627202}
+  - component: {fileID: 40627203}
+  m_Layer: 0
+  m_Name: ExitPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &40627202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40627201}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.63, y: 0, z: -0.14}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4666139864838604248}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &40627203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40627201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e9e05eac88fec479500e88004155c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 0, g: 1, b: 0.8776736, a: 1}
+  radius: 0.48
 --- !u!1 &247799839399927324
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,7 +1977,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2162048275534617191}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.04, y: 0.33, z: 0.466}
+  m_LocalPosition: {x: 0.04, y: 0.47, z: 0.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2894,7 +2940,7 @@ Transform:
   m_GameObject: {fileID: 3052326881096059896}
   m_LocalRotation: {x: -0, y: -0, z: 0.0000004768371, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 9.54713, y: 8.9, z: 13.16076}
+  m_LocalScale: {x: 9.54713, y: 14.34, z: 13.16076}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4666139864838604248}
@@ -2943,7 +2989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00a800ce2ede3b54bba3d04034cc5fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 1, g: 0.849145, b: 0, a: 0.22745098}
+  color: {r: 1, g: 0.849145, b: 0, a: 0.08627451}
 --- !u!114 &641569633347277023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2960,7 +3006,37 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   playerPos: {fileID: 4450768870769523576}
-  window: {fileID: 5137424105512024954}
+  exitPos: {fileID: 40627202}
+  OnBoarding:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1027395446}
+        m_TargetAssemblyTypeName: AirPlaneMove, Assembly-CSharp
+        m_MethodName: MoveY
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 282504452095097}
+        m_TargetAssemblyTypeName: ToggleRotation, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnQuit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3065583302567863123
 GameObject:
   m_ObjectHideFlags: 0
@@ -3583,7 +3659,7 @@ MeshCollider:
   m_GameObject: {fileID: 4584030584737931811}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -4012,6 +4088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5137424105512024954}
+  - component: {fileID: 282504452095097}
   m_Layer: 0
   m_Name: WindowPivot
   m_TagString: Untagged
@@ -4035,6 +4112,21 @@ Transform:
   m_Father: {fileID: 8832217393096431078}
   m_RootOrder: 74
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &282504452095097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5137424105512024953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d084c0e14e4ff8d4e8dc3901b8cf39ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 1
+  targetAngles: {x: 0, y: 0, z: 0}
+  isLocal: 1
 --- !u!1 &5291631583695827924
 GameObject:
   m_ObjectHideFlags: 0
@@ -4293,6 +4385,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4666139864838604248}
+  - component: {fileID: 1027395446}
   m_Layer: 0
   m_Name: Air Plane
   m_TagString: Untagged
@@ -4315,9 +4408,82 @@ Transform:
   - {fileID: 8832217393096431078}
   - {fileID: 9210990766130228531}
   - {fileID: 4450768870769523576}
+  - {fileID: 40627202}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1027395446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5443345414571876194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 929f4cd5ee352284d8ba4f57bde6f171, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 2
+  distance: 0.6
+  moveDistance: 14
+  isDown: 0
+  isPropellerAllPause: 0
+  targetPath: []
+  OnArrive:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 282504452095097}
+        m_TargetAssemblyTypeName: ToggleRotation, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4674750652979047666}
+        m_TargetAssemblyTypeName: Propeller, Assembly-CSharp
+        m_MethodName: Arrive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 641569633347277023}
+        m_TargetAssemblyTypeName: AirPlane, Assembly-CSharp
+        m_MethodName: Arrive
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDepart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4674750652979047666}
+        m_TargetAssemblyTypeName: Propeller, Assembly-CSharp
+        m_MethodName: Depart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5504694403247653462
 GameObject:
   m_ObjectHideFlags: 0
@@ -4660,7 +4826,7 @@ MeshCollider:
   m_GameObject: {fileID: 5735940212992280155}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30

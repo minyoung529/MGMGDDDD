@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace PathCreation.Examples
 {
@@ -18,6 +19,9 @@ namespace PathCreation.Examples
 
         [HideInInspector]
         public Transform destination = null;
+        private Destination destName = Destination.Clock;
+
+        public UnityEvent<Destination> onArrive;
 
         private bool isStart = false;
         private bool reacnDestination = false;
@@ -63,7 +67,8 @@ namespace PathCreation.Examples
         {
             isStart = true;
             reacnDestination = false;
-            speed = speedStorage;
+            speed = 0f;
+            DOTween.To(() => speed, (x) => speed = x, speedStorage, 2f);
         }
 
         private void CalculateDestination()
@@ -72,11 +77,17 @@ namespace PathCreation.Examples
 
             float dist = Vector3.Distance(transform.position, destination.position);
 
-            if (dist < 5f)
+            if (!reacnDestination && dist < 5f)
             {
                 reacnDestination = true;
-                DOTween.To(() => speed, (x) => speed = x, 0f, 2f);
+                DOTween.To(() => speed, (x) => speed = x, 0f, 2f).OnComplete(() => onArrive.Invoke(destName));
             }
+        }
+
+        public void SetDestination(Transform destTrn, Destination dest)
+        {
+            destination = destTrn;
+            destName = dest;
         }
     }
 }

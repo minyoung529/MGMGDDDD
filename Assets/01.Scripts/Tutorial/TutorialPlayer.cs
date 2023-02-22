@@ -125,6 +125,7 @@ public class TutorialPlayer : MonoBehaviour
             isFinish = false;
         }
 
+        Debug.Log("SHOW");
         ShowCurrentPanel();
         isStarted = true;
     }

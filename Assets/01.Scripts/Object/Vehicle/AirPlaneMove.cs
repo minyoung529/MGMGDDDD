@@ -5,13 +5,8 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Events;
 
-public enum PlaneState
-{
-    Idle, Move, Count
-}
 public class AirPlaneMove : MonoBehaviour
 {
-    private PlaneState planeState;
     [Header("Idle")]
     [SerializeField]
     private float duration;
@@ -25,14 +20,22 @@ public class AirPlaneMove : MonoBehaviour
     [SerializeField]
     private bool isDown = false;
     [SerializeField]
+    private bool isPropellerAllPause = false;
+    [SerializeField]
     private Transform[] targetPath;
 
     [SerializeField]
-    private UnityEvent OnArrive;
+    private UnityEvent<bool> OnArrive;
+
+    [SerializeField]
+    private UnityEvent<bool> OnDepart;
+
     private Vector3 originalPosition;
     private Quaternion originalRotation;
 
-    private void Start()
+    public bool isActive = false;
+
+    private void Awake()
     {
         if (!isDown)
         {
@@ -41,6 +44,8 @@ public class AirPlaneMove : MonoBehaviour
 
         originalPosition = transform.position;
         originalRotation = transform.rotation;
+
+        gameObject.SetActive(isActive);
     }
 
     private void StartIdleMove()
@@ -60,6 +65,15 @@ public class AirPlaneMove : MonoBehaviour
 
         idleSequence.Kill();
 
+        bool tempDown = isDown;
+        isDown = !isDown;
+
+        bool down = isDown;
+        if (isPropellerAllPause)
+            down = true;
+
+        OnDepart?.Invoke(isDown);
+
         if (targetPath.Length > 0)
         {
             Vector3[] wayPoints = new Vector3[targetPath.Length];
@@ -67,25 +81,22 @@ public class AirPlaneMove : MonoBehaviour
             for (int i = 0; i < wayPoints.Length; i++)
             {
                 wayPoints[i] = targetPath[i].position;
-                UnityEngine.Debug.Log(wayPoints[i]);
             }
 
-            if (isDown)
+            if (tempDown)
             {
-                transform.DOPath(wayPoints, 5f, PathType.Linear).OnComplete(() => OnArrive.Invoke());
+                transform.DOPath(wayPoints, 5f, PathType.CatmullRom).OnComplete(() => OnArrive.Invoke(down));
                 transform.DORotate(targetPath[^1].eulerAngles, 5f);
             }
             else
             {
-                transform.DOMove(originalPosition, 5f).OnComplete(() => OnArrive.Invoke());
+                transform.DOMove(originalPosition, 5f).OnComplete(() => OnArrive.Invoke(down));
                 transform.DORotateQuaternion(originalRotation, 5f);
             }
         }
         else
         {
-            transform.DOMoveY(transform.position.y + moveDistance, 5f).OnComplete(() => OnArrive.Invoke());
+            transform.DOMoveY(transform.position.y + moveDistance, 5f).OnComplete(() => OnArrive.Invoke(down));
         }
-
-        isDown = !isDown;
     }
 }
