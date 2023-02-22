@@ -9,6 +9,7 @@ public class GearAnimation : MonoBehaviour
     private void Start()
     {
         animators = new List<Animator>(transform.GetComponentsInChildren<Animator>());
+        Rotate();
     }
 
     public void Rotate()
