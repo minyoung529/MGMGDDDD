@@ -92,8 +92,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private void UpdateRotate()
     {
        float yAim = Camera.main.transform.rotation.eulerAngles.y;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.fixedDeltaTime);
-
+       // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.fixedDeltaTime);
+       transform.rotation = Quaternion.Euler(0, yAim, 0);
        // float mouseX = Input.GetAxis("Mouse X");
        // float mouseY = Input.GetAxis("Mouse Y");
 

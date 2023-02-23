@@ -121,6 +121,7 @@ public class PetManager : MonoSingleton<PetManager>
         pets.Add(p);
         ++petIndex;
         ActivePetUI(petIndex - 1);
+        SelectPet(petIndex-1);
     }
     public void DeletePet(Pet p)
     {

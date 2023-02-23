@@ -20,6 +20,7 @@ public class TogglePosition : MonoBehaviour
 
     public void Trigger()
     {
+        Debug.Log("TRIGGEr");
         if (isOpen)
             Close();
         else
@@ -37,7 +38,6 @@ public class TogglePosition : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Trigger();
-        Debug.Log("¤Ó¤½;");
     }
 
     public void Open()

@@ -59,9 +59,9 @@ public class TorchManager : MonoBehaviour
             torchs[puzzle[index][i]].Lighting();
 
             puzzleClear[puzzle[index][i]] = !puzzleClear[puzzle[index][i]];
+
             if (puzzleClear[puzzle[index][i]]) OnLight();
             else OffLight();
-
         }
     }
 
@@ -82,6 +82,7 @@ public class TorchManager : MonoBehaviour
         }
     }
 
+    [ContextMenu("Clear")]
     private void ClearPuzzle()
     {
         isClear = true;

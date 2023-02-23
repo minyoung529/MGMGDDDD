@@ -5,6 +5,18 @@ using UnityEngine;
 public class GameManager : MonoSingleton<GameManager>
 {
     public Camera MainCam { get; private set; }
+    private CutSceneManager cutSceneManager;
+    public CutSceneManager CutSceneManager
+    {
+        get
+        {
+            if (cutSceneManager)
+                return cutSceneManager;
+            
+            cutSceneManager = FindObjectOfType<CutSceneManager>();
+            return cutSceneManager;
+        }
+    }
 
     #region CORE
     public UIManager UI { get; private set; } = new UIManager();
