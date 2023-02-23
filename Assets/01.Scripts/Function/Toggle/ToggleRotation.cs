@@ -7,6 +7,7 @@ public class ToggleRotation : MonoBehaviour
 {
     [SerializeField] private float duration = 4f;
     [SerializeField] private Vector3 targetAngles;
+    [SerializeField] private bool isLocal = false;
     private Vector3 originalAngles;
     private bool isOpen = false;
 
@@ -28,12 +29,20 @@ public class ToggleRotation : MonoBehaviour
     public void Open()
     {
         transform.DOKill();
-        transform.DORotate(targetAngles, duration);
+
+        if (isLocal)
+            transform.DOLocalRotate(targetAngles, duration);
+        else
+            transform.DORotate(targetAngles, duration);
     }
 
     public void Close()
     {
         transform.DOKill();
-        transform.DORotate(originalAngles, duration);
+
+        if (isLocal)
+            transform.DOLocalRotate(originalAngles, duration);
+        else
+            transform.DORotate(originalAngles, duration);
     }
 }

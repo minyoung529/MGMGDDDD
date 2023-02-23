@@ -11,12 +11,10 @@ public abstract class Pet : MonoBehaviour
     #region CheckList
     [SerializeField] protected bool isGet = false;
     [SerializeField] protected bool isMove = false;
-    [SerializeField] protected bool isSkilling = false;
     [SerializeField] protected bool isSelected = false;
     [SerializeField] protected bool isFollowing = true;
     [SerializeField] protected bool isCoolTime = false;
     public bool IsGet { get { return isGet; } }
-    public bool IsSkilling { get { return isSkilling; } }
     public bool IsFollowing { get { return isFollowing; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
@@ -71,7 +69,6 @@ public abstract class Pet : MonoBehaviour
         isGet = false;
         isMove = false;
         isSelected = false;
-        isSkilling = false;
         isCoolTime = false;
 
         ////////////////////////////////// ????? FALSE ////////////////////////////////////
@@ -139,7 +136,7 @@ public abstract class Pet : MonoBehaviour
 
     private void MovePoint(InputAction inputAction, float value)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || isSkilling) return;
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
 
         RaycastHit hit;
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -220,24 +217,9 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ActiveSkill(InputAction inputAction, float value)
     {
-        isSkilling = false;
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
-        Debug.Log(gameObject.name + " : ActiveSkill Ready");
-
-        isSkilling = true;
-        ClickActive();
-    }
-    protected virtual void ClickActive()
-    {
-        if (!IsSkilling || !ThirdPersonCameraControll.IsPetAim) return;
-        isSkilling = false;
         SkillDelay();
-
-        // isSelected = false;
-        // PetManager.Instance.NotSelectPet();
-        Debug.Log(gameObject.name + " : ActiveSkill On");
     }
-
 
     protected void SkillDelay()
     {

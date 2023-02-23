@@ -17,9 +17,19 @@ public class TorchPuzzle : TorchLight
     }
     
 
-    protected override void FireCollision()
+    public override void FireCollision()
     {
         shortParticle.Play();
         torchM.LightOn(index);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Fire fire = other.GetComponent<Fire>();
+        if (fire != null)
+        {
+            if (!fire.IsBurn) return;
+            FireCollision();
+        }
     }
 }

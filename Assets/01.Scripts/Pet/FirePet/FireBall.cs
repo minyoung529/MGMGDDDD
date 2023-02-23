@@ -33,6 +33,7 @@ public class FireBall : MonoBehaviour
     {
         meshRender.enabled = false;
 
+        Debug.Log("Fire");
         transform.SetParent(fire.transform);
         fire.Burn();
     }
@@ -41,20 +42,11 @@ public class FireBall : MonoBehaviour
     #region Collider
 
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        
-    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("OilBullet"))
-        {
-            OilPaint oil = other.GetComponent<OilPaint>();
-            oil.SetBurn();
-            gameObject.SetActive(false);
-        }
+        
 
-        if (other.CompareTag("FirePet") || other.CompareTag("Player") || other.CompareTag("OilPet") ) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG) ) return;
 
         Fire[] fires = other.GetComponents<Fire>();
         if (fires.Length > 0)
@@ -62,6 +54,7 @@ public class FireBall : MonoBehaviour
             Burning(fires[0]);
             return;
         }
+
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {
@@ -73,4 +66,4 @@ public class FireBall : MonoBehaviour
 
 
     #endregion
-}
+} 
