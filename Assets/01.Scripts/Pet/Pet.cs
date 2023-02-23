@@ -1,179 +1,117 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SocialPlatforms;
 
 public abstract class Pet : MonoBehaviour
 {
-    // Test ?????? Serializefield ????? ????
+    public PetType petType = PetType.NONE;
+
+    [SerializeField] private float skillCoolTime = 2.0f;
+    [SerializeField] private float followDistance = 10.0f;
 
     #region CheckList
-    [SerializeField] protected bool isGet = false;
-    [SerializeField] protected bool isMove = false;
-    [SerializeField] protected bool isSelected = false;
-    [SerializeField] protected bool isFollowing = true;
-    [SerializeField] protected bool isCoolTime = false;
-    public bool IsGet { get { return isGet; } }
-    public bool IsFollowing { get { return isFollowing; } }
-    public bool IsCoolTime { get { return isCoolTime; } }
-    public bool IsSelected { get { return isSelected; } set { isSelected = value; } }
+
+    private bool isFollow = false;
+    private bool isCoolTime = false;
+    private bool isClickMove = false;
+
+    private int petIndex = -1;
+
     #endregion
 
-    [SerializeField] protected float activeCoolTime = 3.0f;
-    [SerializeField] protected float followDistance = 10.0f;
-    [SerializeField] protected float followSpeed = 7.0f;
+    private Camera camera;
+    private Rigidbody rigid;
+    private Transform target;
+    private NavMeshAgent agent;
 
-    protected Camera camera;
-    protected Rigidbody rigid;
-    protected GameObject player;
-    protected NavMeshAgent agent;
-
-    public PetType type;
-    public Color selectColor;
     private Vector3 destination = Vector3.zero;
 
-    protected virtual void Awake()
+    #region Get
+
+    public int Index { get { return petIndex; } }
+    public bool IsGet { get { return petIndex != -1; } }
+    public bool IsCoolTime { get { return isCoolTime; } }
+    public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
+    public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= followDistance; }}
+    public bool CheckSkillActive {  get { return (!ThirdPersonCameraControll.IsPetAim || !PetManager.Instance.IsPetSelected(Index) || IsCoolTime); } }
+
+    #endregion
+
+    private void Awake()
     {
         camera = Camera.main;
-        rigid = GetComponent<Rigidbody>();
-        agent = GetComponent<NavMeshAgent>();
     }
-
-    private void StartListen()
-    {
-        InputManager.StartListeningInput(InputAction.Pet_Skill, ActiveSkill);
-        InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
-        InputManager.StartListeningInput(InputAction.Pet_Follow, StartFollow);
-    }
-
-    private void OnEnable()
-    {
-        ResetPet();
-    }
-
-    protected virtual void Update()
+    private void Update()
     {
         if (!IsGet) return;
         FollowTarget();
-        ClickMove();
-
-        if (!ThirdPersonCameraControll.IsPetAim) return;
-        if (!IsSelected) return;
+    }
+    private void OnDestroy()
+    {
+        StopListen();
     }
 
-    #region SET
+    #region Set
 
     protected virtual void ResetPet()
     {
-        isGet = false;
-        isMove = false;
-        isSelected = false;
+        petIndex = -1;
+
+        isFollow = false;
         isCoolTime = false;
 
-        ////////////////////////////////// ????? FALSE ////////////////////////////////////
-        agent.enabled = false;
-        agent.speed = followSpeed;
+        rigid.velocity = Vector3.zero;
+        agent.velocity = Vector3.zero;
     }
 
-    public virtual void AppearPet()
+    public void GetPet(Transform obj)
     {
-
-    }
-
-    public void GetPet(GameObject obj)
-    {
-        player = obj;
-        isGet = true;
-        agent.enabled = true;
-        rigid.useGravity = true;
-        rigid.isKinematic = false;
+        target = obj;
+        PetManager.Instance.AddPet(this);
 
         StartListen();
-        StartFollow();
-        PetManager.Instance.AddPet(this);
     }
     public void LosePet()
     {
-        isGet = false;
+        ResetPet();
         PetManager.Instance.DeletePet(this);
+
+        StopListen();
+    }
+    public void SetIndex(int index)
+    {
+        petIndex = index;
     }
 
     #endregion
 
-    #region MOVE
+    #region Skill
 
-    private IEnumerator CheckFollowDistance()
+    protected virtual void Skill(InputAction inputAction, float value)
     {
-        while (!isFollowing)
-        {
-            yield return new WaitForSeconds(0.01f);
-            if (FollowDistance())
-            {
-                StartFollow();
-                yield return null;
-            }
-        }
+        if (CheckSkillActive) return;
+
+        SkillDelay();
     }
 
-    private bool FollowDistance()
+    protected void SkillDelay()
     {
-        return Vector3.Distance(transform.position, player.transform.position) >= followDistance;
+        isCoolTime = true;
+        StartCoroutine(SkillCoolTime(skillCoolTime));
     }
-    private float Distance()
+    private IEnumerator SkillCoolTime(float t)
     {
-       return Vector3.Distance(transform.position, player.transform.position);
-    }
-    // Connected State
-    private void SetDestination(Vector3 dest)
-    {
-        StopFollow();
-        destination = dest;
-        isMove = true;
-        rigid.velocity = Vector3.zero;
+        yield return new WaitForSeconds(t);
+        isCoolTime = false;
     }
 
+    #endregion
 
-    private void MovePoint(InputAction inputAction, float value)
-    {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
-
-        RaycastHit hit;
-        if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
-        {
-            SetDestination(hit.point);
-        }
-    }
-    private void ClickMove()
-    {
-        if (!isMove) return;
-        if (Vector3.Distance(destination, transform.position) <= 0.6f)
-        {
-            isMove = false;
-            return;
-        }
-        var dir = destination - transform.position;
-        dir.y = 0;
-        transform.position += dir.normalized * Time.deltaTime * 5f;
-    }
-
-    // Not Connected State
-    protected void FollowTarget()
-    {
-        if (!isFollowing) return;
-
-        LookAtPlayer();
-
-        if(agent.destination != player.transform.position)
-        {
-            agent.SetDestination(player.transform.position);
-        }
-        else
-        {
-            agent.SetDestination(transform.position);
-        }
-    }
-
+    #region Move
     protected void LookAtPlayer()
     {
         Quaternion targetRot = transform.rotation;
@@ -184,61 +122,76 @@ public abstract class Pet : MonoBehaviour
         }
         else
         {
-            targetRot = Quaternion.LookRotation((player.transform.position - transform.position), Vector3.up);
+            targetRot = Quaternion.LookRotation((target.position - transform.position), Vector3.up);
         }
 
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
+    private void MovePoint(InputAction inputAction, float value)
+    {
+        if (!ThirdPersonCameraControll.IsPetAim || PetManager.Instance.IsPetSelected(petIndex)) return;
+
+        RaycastHit hit;
+        if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
+        {
+            SetDestination(hit.point);
+        }
+    }
+    private void SetDestination(Vector3 dest)
+    {
+        StopFollow();
+
+        destination = dest;
+        isClickMove = true;
+        rigid.velocity = Vector3.zero;
+    }
+    private void ClickMove()
+    {
+        if (Vector3.Distance(destination, transform.position) <= 0.6f)
+        {
+            isClickMove = false;
+            return;
+        }
+        var dir = destination - transform.position;
+        dir.y = 0;
+        transform.position += dir.normalized * Time.deltaTime * 5f;
+    }
+
+    protected void FollowTarget()
+    {
+        if (!isFollow) return;
+        LookAtPlayer();
+
+        if (isClickMove) { ClickMove(); }
+        else if (agent.destination != target.position) { agent.SetDestination(target.position); }
+    }
+
     private void StartFollow(InputAction inputAction, float value)
     {
-        isFollowing = true;
-        agent.isStopped = false;
-    }
-    private void StartFollow()
-    {
-        isFollowing = true;
         agent.isStopped = false;
     }
     private void StopFollow()
     {
-        isFollowing = false;
         agent.isStopped = true;
         agent.ResetPath();
-        agent.velocity = Vector3.zero;
-
-        StartCoroutine(CheckFollowDistance());
-    }
-
-
-    #endregion
-
-    #region Skill
-
-    protected virtual void ActiveSkill(InputAction inputAction, float value)
-    {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
-        SkillDelay();
-    }
-
-    protected void SkillDelay()
-    {
-        isCoolTime = true;
-        StartCoroutine(StartCool(activeCoolTime));
-    }
-    private IEnumerator StartCool(float t)
-    {
-        yield return new WaitForSeconds(t);
-        isCoolTime = false;
     }
 
     #endregion
 
-    private void OnDestroy()
+    #region InputSystem
+    private void StartListen()
     {
-        InputManager.StopListeningInput(InputAction.Pet_Skill, ActiveSkill);
+        InputManager.StartListeningInput(InputAction.Pet_Skill, Skill);
+        InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
+        InputManager.StartListeningInput(InputAction.Pet_Follow, StartFollow);
+    }
+    private void StopListen()
+    {
+        InputManager.StopListeningInput(InputAction.Pet_Skill, Skill);
         InputManager.StopListeningInput(InputAction.Pet_Move, MovePoint);
         InputManager.StopListeningInput(InputAction.Pet_Follow, StartFollow);
     }
+    #endregion
 
 }

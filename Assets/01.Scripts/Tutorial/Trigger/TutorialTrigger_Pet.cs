@@ -10,6 +10,6 @@ public class TutorialTrigger_Pet : TutorialTrigger
     protected override bool Condition(Transform player)
     {
         getPet ??= player.GetComponent<GetPet>();
-        return getPet.PetCount >= petCount;
+        return PetManager.Instance.PetCount >= petCount;
     }
 }

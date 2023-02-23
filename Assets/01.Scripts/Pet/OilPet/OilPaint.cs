@@ -74,22 +74,12 @@ public class OilPaint : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other)
     {
-       
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG)) return;
+
+        SpreadOil(other.transform, transform.position);
 
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)) return;
-
-        Paintable paint = collision.collider.GetComponent<Paintable>();
-        if (paint != null)
-        {
-            Debug.Log("Paint");
-            Vector3 pos = collision.contacts[0].point;
-            PaintManager.Instance.paint(paint, pos, radius, hardness, strength, paintColor);
-        }
-    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)) return;

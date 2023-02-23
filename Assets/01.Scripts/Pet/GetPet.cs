@@ -8,9 +8,6 @@ public class GetPet : MonoBehaviour
     public LayerMask petLayer;
     private float nearRadius = 2f;
 
-    private int petCount;
-    public int PetCount => petCount;
-
     [SerializeField]
     private UnityEvent OnGetPet;
 
@@ -29,7 +26,6 @@ public class GetPet : MonoBehaviour
         InputManager.StartListeningInput(InputAction.Interaction, Get);
     }
 
-
     private void Get(InputAction inputAction, float value)
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, petLayer);
@@ -38,10 +34,8 @@ public class GetPet : MonoBehaviour
         for (int i = 0; i < colliders.Length; i++)
         {
             Pet p = colliders[i].GetComponent<Pet>();
-            if (p == null) continue;
-            if (IsMine(p)) continue;
-            p.GetPet(gameObject);
-            petCount++;
+            if (p == null || IsMine(p)) continue;
+            p.GetPet(gameObject.transform);
             OnGetPet?.Invoke();
         }
     }

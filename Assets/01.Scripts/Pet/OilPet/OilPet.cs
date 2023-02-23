@@ -29,13 +29,13 @@ public class OilPet : Pet
     #region Skill
 
     // Active skill
-    protected override void ActiveSkill(InputAction inputAction, float value)
+    protected override void Skill(InputAction inputAction, float value)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime) return;
-        base.ActiveSkill(inputAction, value);
+        if (CheckSkillActive) return;
+        base.Skill(inputAction, value);
 
         RaycastHit hit;
-        if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
+        if (Physics.Raycast(GetComponent<Camera>().ScreenPointToRay(Input.mousePosition), out hit))
         {
             GameObject oil = CreateOil();
 
