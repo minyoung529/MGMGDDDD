@@ -32,11 +32,25 @@ public class PetManager : MonoSingleton<PetManager>
     }
     private void Start()
     {
-        StartListen();
+       // StartListen();
+    }
+
+    private void Update()
+    {
+        Vector2 wheelInput2 = Input.mouseScrollDelta;
+        if (wheelInput2.y > 0)
+        {
+            SwitchPet(InputAction.Next_Pet, 1);
+        }
+        else if (wheelInput2.y < 0)
+        {
+            SwitchPet(InputAction.Next_Pet, -1);
+            // 휠을 당겨 올렸을 때의 처리 ↓
+        }
     }
     private void OnDestroy()
     {
-        StopListen();
+       // StopListen();
     }
 
     #region Listen

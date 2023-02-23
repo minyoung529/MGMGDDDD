@@ -42,8 +42,10 @@ public class OilPet : Pet
             Vector3 dir = (hit.point - transform.position) + (Vector3.up*1.3f);
             dir.y = 0;
             oil.transform.DOScale(oil.transform.localScale + new Vector3(0.5f, 0.5f, 0.5f), 0.5f);
-            oil.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.OutQuad);
+            oil.transform.DOMoveY(hit.point.y, 2f).SetEase(Ease.InQuad).OnComplete(()=>
+            {
             oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
+            });
         }
     }
     private GameObject CreateOil()

@@ -70,6 +70,7 @@ public abstract class Pet : MonoBehaviour
 
     public void GetPet(Transform obj)
     {
+        Debug.Log("Get");
         target = obj;
         PetManager.Instance.AddPet(this);
 
@@ -170,9 +171,11 @@ public abstract class Pet : MonoBehaviour
     private void StartFollow(InputAction inputAction, float value)
     {
         agent.isStopped = false;
+        isFollow = true;
     }
     private void StopFollow()
     {
+        isFollow = false;
         agent.isStopped = true;
         agent.ResetPath();
     }
