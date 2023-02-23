@@ -100,5 +100,6 @@ public class CubePuzzle : MonoBehaviour
             yield return null;
         }
         cubeTransform.GetComponent<RespawnObject>().Respawn();
+        cubeRigid = null;
     }
 }
