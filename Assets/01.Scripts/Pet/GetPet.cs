@@ -1,11 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GetPet : MonoBehaviour
 {
     public LayerMask petLayer;
     private float nearRadius = 2f;
+
+    private int petCount;
+    public int PetCount => petCount;
+
+    [SerializeField]
+    private UnityEvent OnGetPet;
+
     private void Start()
     {
         StartListen();
@@ -33,6 +41,8 @@ public class GetPet : MonoBehaviour
             if (p == null) continue;
             if (IsMine(p)) continue;
             p.GetPet(gameObject);
+            petCount++;
+            OnGetPet?.Invoke();
         }
     }
 

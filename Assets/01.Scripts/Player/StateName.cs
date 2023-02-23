@@ -4,4 +4,5 @@ public enum StateName
     Jump,
     Zoom,
     Climb,
+    Sit,
 }
