@@ -43,6 +43,7 @@ public class GearRotation : MonoBehaviour
         if (other.CompareTag(Define.OIL_BULLET_TAG))
         {
             isOil = true;
+            StartGear();
         }
     }
 }

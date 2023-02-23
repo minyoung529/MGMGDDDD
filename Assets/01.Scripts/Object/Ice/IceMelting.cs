@@ -90,7 +90,6 @@ public class IceMelting : MonoBehaviour
         {
             if (fire.IsBurn)
             {
-                UnityEngine.Debug.Log("Melt");
                 StartCoroutine(StartMelt());
             }
         }
