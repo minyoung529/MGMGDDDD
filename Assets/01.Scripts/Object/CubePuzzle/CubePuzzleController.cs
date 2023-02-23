@@ -18,7 +18,7 @@ public class CubePuzzleController : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < cubeCount; i++)
         {
             cubePuzzles.Add(transform.GetChild(i).GetComponent<CubePuzzle>());
             cubePuzzles[i].ListeningOnSuccess(OnSuccess);
@@ -27,9 +27,16 @@ public class CubePuzzleController : MonoBehaviour
 
     private void OnSuccess()
     {
-        if (++successCnt == cubeCount)
-        {
+        successCnt++;
+    }
+
+    [ContextMenu("ButtonTest")]
+    public void CheckSuccess() {
+        if(successCnt == cubeCount) {
             SolvePuzzle();
+        }
+        else {
+            ResetPuzzle();
         }
     }
 
@@ -42,5 +49,8 @@ public class CubePuzzleController : MonoBehaviour
     public void ResetPuzzle()
     {
         successCnt = solvedPuzzleCount;
+        foreach(CubePuzzle item in cubePuzzles) {
+            item.Respawn();
+        }
     }
 }

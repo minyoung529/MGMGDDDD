@@ -31,6 +31,8 @@ public class JumpState : MoveState
     private Animator anim = null;
     private int hash_tLanding = Animator.StringToHash("tLanding");
 
+    private bool isJump = false;
+
     private void Awake() {
         player = GetComponent<PlayerMove>();
         anim = GetComponent<Animator>();
@@ -38,6 +40,8 @@ public class JumpState : MoveState
     }
 
     public void Jump() {
+        if (isJump) return;
+        isJump = true;
         rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
         StartCoroutine(LandingCoroutine());
     }
@@ -48,5 +52,6 @@ public class JumpState : MoveState
             yield return null;
         }
         anim.SetTrigger(hash_tLanding);
+        isJump = false;
     }
 }
