@@ -9,8 +9,6 @@ public class AirPlaneController : MonoBehaviour
 
     public void ChangePlanePos(Destination destination)
     {
-        Debug.Log("sdfsdfs");
-
         int idx = (int)destination;
         int prev = idx - 1;
 

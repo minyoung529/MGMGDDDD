@@ -23,7 +23,7 @@ public class ChangeScene : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (IsRight(ChangeType.OnCollisionEnter) && collision.gameObject.layer == collideLayer)
+        if (IsRight(ChangeType.OnCollisionEnter) && ((1 << collision.gameObject.layer) & collideLayer) != 0)
         {
             GoTo();
         }
@@ -31,7 +31,7 @@ public class ChangeScene : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (IsRight(ChangeType.OnCollisionExit) && collision.gameObject.layer == collideLayer)
+        if (IsRight(ChangeType.OnCollisionExit) && ((1 << collision.gameObject.layer) & collideLayer) != 0)
         {
             GoTo();
         }
