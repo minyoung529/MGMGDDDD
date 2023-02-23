@@ -27,7 +27,6 @@ public class TorchLight : MonoBehaviour
     public void OnLight()
     {
         isOn = true;
-        FireCollision();
 
         foreach (ParticleSystem p in particles)
             p.Play();
@@ -37,16 +36,16 @@ public class TorchLight : MonoBehaviour
 
     public void OffLight()
     {
+        isOn = false;
+
         foreach (ParticleSystem p in particles)
             p.Stop();
 
-        isOn = false;
 
         //fireParticle.Stop();
     }
     public void Lighting()
     {
-        Debug.Log(IsOn);
         if (IsOn) OffLight();
         else OnLight();
     }
