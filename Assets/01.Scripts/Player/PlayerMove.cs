@@ -97,27 +97,6 @@ public class PlayerMove : MonoBehaviour
     }
     private void GetInput(InputAction action, Vector3 input) {
         if (isInputLock) return;
-
-        /*#region Ladder Input
-        // 나중에 구조 바꾸자...
-        if (LadderObject.IsLadder) {
-            switch (action) {
-                case InputAction.Move_Forward:
-                    input = transform.up;
-                    break;
-                case InputAction.Back:
-                    input = -transform.up;
-                    break;
-                case InputAction.Move_Left:
-                    input = -transform.right;
-                    break;
-                case InputAction.Move_Right:
-                    input = transform.right;
-                    break;
-            }
-        }
-        #endregion*/
-
         inputDir += input;
         inputDir = inputDir.normalized;
     }
@@ -216,12 +195,13 @@ public class PlayerMove : MonoBehaviour
 
     public bool CheckOnGround() {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position + Vector3.up * 0.15f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.2f, groundLayer)) {
-            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.5f) return true;
+        if (Physics.BoxCast(transform.position + Vector3.up * 0.2f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.3f, groundLayer)) {
+            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
         return false;
     }
 
+    #region 애니메이션 이벤트
     public void JumpEvent() {
         if(curState is JumpState)
         {
@@ -233,6 +213,7 @@ public class PlayerMove : MonoBehaviour
     public void LandingEvent() {
         ChangeState(StateName.DefaultMove);
     }
+    #endregion
 
     public void LockInput(float time)
     {
