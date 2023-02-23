@@ -32,10 +32,10 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    public void StartTutorial(TutorialType type)
+    public void StartTutorial(TutorialType type, string name = "")
     {
         tutorials[type].Animator = animator;
-        tutorials[type].StartTutorial();
+        tutorials[type].StartTutorial(name);
     }
 
     public void StopTutorial(TutorialType type)

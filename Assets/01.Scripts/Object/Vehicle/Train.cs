@@ -1,3 +1,4 @@
+using DG.Tweening;
 using PathCreation.Examples;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,18 +60,17 @@ public class Train : MonoBehaviour
     {
         if (!isPalyerArea || !playerTransform) return;
 
-        if (isBoarding) // 타고 있다면 하차
+        if (isBoarding && isArrive) // 타고 있다면 하차
         {
-            if (isArrive)
-                QuitAnimation();
+            QuitAnimation();
+            isBoarding = !isBoarding;
         }
-        else
+        else if(!isBoarding)
         {
             BoardingAnimation();
             isArrive = false;
+            isBoarding = !isBoarding;
         }
-
-        isBoarding = !isBoarding;
     }
 
     private void Boarding()
@@ -85,6 +85,8 @@ public class Train : MonoBehaviour
 
     private void BoardingAnimation()
     {
+        playerTransform.DORotateQuaternion(Quaternion.LookRotation(transform.forward, Vector3.up), 1f);
+
         jumpMotion.targetPos = playerPos.position;
         jumpMotion.StartJump(playerTransform, null, Boarding);
     }

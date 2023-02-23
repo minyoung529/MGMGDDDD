@@ -61,24 +61,25 @@ public class AirPlane : MonoBehaviour
     {
         if (!isPalyerArea || !playerTransform) return;
 
-        if (isBoarding) // 타고 있다면 하차
+        if (isBoarding && isArrive) // 타고 도착했다면 있다면 하차
         {
-            if (isArrive)
-                QuitAnimation();
+            QuitAnimation();
+            isBoarding = !isBoarding;
         }
-        else
+        else if(!isBoarding)
         {
             isArrive = false;
+            isBoarding = !isBoarding;
             Boarding();
         }
-
-        isBoarding = !isBoarding;
     }
 
     private void Boarding()
     {
         playerTransform.SetParent(transform.parent);
         playerRigid.isKinematic = true;
+
+        playerTransform.DORotateQuaternion(Quaternion.LookRotation(transform.forward, Vector3.up), 1f);
 
         BoardingAnimation();    // 포물선
     }

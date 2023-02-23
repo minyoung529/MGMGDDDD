@@ -110,6 +110,7 @@ public class Fire : MonoBehaviour
             f.Burn();
         }
     }
+
     private void OnCollisionStay(Collision collision)
     {
         if (!IsBurn) return;

@@ -44,12 +44,21 @@ public class AutoInputPanel : MonoBehaviour
     private bool isFill = false;
     #endregion
 
+    #region UI
+    [Header("UI")]
+    [SerializeField] private Text controlText;
+    [SerializeField] private Text nameText;
+    private string firstName;
+    #endregion
+
     private readonly Color MAX_COLOR = new Color32(72, 204, 70, 69);
 
     private void Start()
     {
         if (useInputAction)
             InputManager.StartListeningInput(action, SuccessInput);
+
+        firstName = nameText.text;
     }
 
     public void Init(Animator animator)
@@ -111,5 +120,24 @@ public class AutoInputPanel : MonoBehaviour
     {
         if (useInputAction)
             InputManager.StopListeningInput(action, SuccessInput);
+    }
+
+    public void ResetData()
+    {
+        success = false;
+        active = false;
+        timer = 0f;
+    }
+
+    public void SetName(string name)
+    {
+        if(string.IsNullOrEmpty(name) || name == "" || name.Length==0)
+        {
+            nameText.text = firstName;
+        }
+        else
+        {
+            nameText.text = name;
+        }
     }
 }

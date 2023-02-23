@@ -5,13 +5,14 @@ using System.ComponentModel.Design;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI;
 
 public class TutorialPlayer : MonoBehaviour
 {
     [SerializeField] TutorialType tutorialType;
     [SerializeField] private bool isStart = false;      // 처음부터 시작인가
-    [SerializeField] private bool isConstant = false;   // 계속 지속되어있는 것인가 (ex. 상호작용(F))
     [SerializeField] private bool isOnce = true;        // 한 번만 실행되는가
+    [SerializeField] private float removeDelayTime = 2.2f;
 
     [SerializeField] private Animator animator;
 
@@ -20,7 +21,6 @@ public class TutorialPlayer : MonoBehaviour
 
     [SerializeField]
     private List<CanvasGroup> autoGroups = new List<CanvasGroup>();
-
 
     private int autoIdx = 0;
 
@@ -60,7 +60,7 @@ public class TutorialPlayer : MonoBehaviour
 
         if (IsValidIdx)
         {
-            seq.AppendInterval(2.2f);
+            seq.AppendInterval(removeDelayTime);
             seq.Append(RemovePreviusPanel());
         }
 
@@ -72,7 +72,7 @@ public class TutorialPlayer : MonoBehaviour
         }
         else
         {
-            isFinish = true;
+            StopTutorial();
         }
     }
 
@@ -82,20 +82,30 @@ public class TutorialPlayer : MonoBehaviour
         return canvasGroup.DOFade(0f, 0.6f).OnComplete(() => canvasGroup.gameObject.SetActive(false));
     }
 
-    private Tweener ShowCurrentPanel()
+    private Tweener ShowCurrentPanel(string name = "")
     {
         CanvasGroup canvasGroup = autoGroups[autoIdx];
         canvasGroup.DOFade(0f, 0f);
         canvasGroup.gameObject.SetActive(true);
+
+        foreach (AutoInputPanel panel in autoPanelList)
+        {
+            if (IsCurrentPanel(canvasGroup.transform, panel.transform))
+                panel.SetName(name);
+        }
 
         return canvasGroup.DOFade(1f, 0.6f).OnComplete(() =>
         {
             foreach (AutoInputPanel panel in autoPanelList)
             {
                 if (IsCurrentPanel(canvasGroup.transform, panel.transform))
+                {
                     panel.Active = true;
+                }
                 else
+                {
                     panel.Active = false;
+                }
             }
 
             isChainging = false;
@@ -116,7 +126,7 @@ public class TutorialPlayer : MonoBehaviour
     }
 
     [ContextMenu("Start Tutorial")]
-    public void StartTutorial()
+    public void StartTutorial(string name = "")
     {
         if (isOnce && (isStarted || isFinish)) return;
         if (!isOnce)    // 반복 실행이라면 데이터 초기화
@@ -125,8 +135,7 @@ public class TutorialPlayer : MonoBehaviour
             isFinish = false;
         }
 
-        Debug.Log("SHOW");
-        ShowCurrentPanel();
+        ShowCurrentPanel(name);
         isStarted = true;
     }
 
@@ -136,15 +145,19 @@ public class TutorialPlayer : MonoBehaviour
 
         foreach (CanvasGroup canvas in autoGroups)
         {
-            canvas.DOFade(0f, 0.6f).OnComplete(() => canvas.gameObject.SetActive(false));
+            canvas.DOFade(0f, 0.3f).OnComplete(() => canvas.gameObject.SetActive(false));
         }
+
+        autoPanelList.ForEach(x => x.ResetData());
 
         isFinish = true;
     }
 
     public void Init()
     {
-        foreach (var auto in autoPanelList)
-            auto.Init(animator);
+        foreach (AutoInputPanel panel in autoPanelList)
+        {
+            panel.Init(animator);
+        }
     }
 }
