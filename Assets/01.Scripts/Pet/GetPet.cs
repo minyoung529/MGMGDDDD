@@ -33,6 +33,7 @@ public class GetPet : MonoBehaviour
 
         for (int i = 0; i < colliders.Length; i++)
         {
+            Debug.Log("GET");
             Pet p = colliders[i].GetComponent<Pet>();
             if (p == null || IsMine(p)) continue;
             p.GetPet(gameObject.transform);

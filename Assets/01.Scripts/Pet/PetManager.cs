@@ -2,7 +2,6 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +10,7 @@ public class PetManager : MonoSingleton<PetManager>
     public List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
 
-    private int petIndex = 0;
+    private int petIndex = -1;
     private int selectIndex = 0;
 
     private bool isSelect = false;
@@ -22,7 +21,6 @@ public class PetManager : MonoSingleton<PetManager>
 
     #region Get
     public int PetCount { get { return pets.Count; } }
-    public bool IsSwitching { get { return isSwitching; } }
     public bool IsSelected { get { return isSelect; } }
     #endregion 
 
@@ -32,23 +30,26 @@ public class PetManager : MonoSingleton<PetManager>
     }
     private void Start()
     {
-       // StartListen();
+        // StartListen();
     }
 
     private void Update()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (pets.Count == 0) return;
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && !isSwitching)
         {
-            SwitchPet(InputAction.Next_Pet, 1);
+            SwitchPet(1);
         }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && !isSwitching)
         {
-            SwitchPet(InputAction.Next_Pet, -1);
+            SwitchPet(-1);
         }
     }
+
     private void OnDestroy()
     {
-       // StopListen();
+        // StopListen();
     }
 
     #region Listen
@@ -74,7 +75,16 @@ public class PetManager : MonoSingleton<PetManager>
         if (isSwitching || PetCount <= 0) return;
 
         selectIndex += (int)addIndex;
-        Debug.Log(selectIndex);
+
+        if (selectIndex >= pets.Count) selectIndex = 0;
+        else if (selectIndex < 0) selectIndex = pets.Count - 1;
+
+        StartCoroutine(SwitchDelay(selectIndex));
+    }
+
+    private void SwitchPet(int addIndex)
+    {
+        selectIndex += addIndex;
 
         if (selectIndex >= pets.Count) selectIndex = 0;
         else if (selectIndex < 0) selectIndex = pets.Count - 1;
@@ -85,7 +95,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         isSwitching = true;
 
-        if (selectIndex != -1)
+        if (!isSelect)
         {
             SelectPet(0);
         }
@@ -104,13 +114,22 @@ public class PetManager : MonoSingleton<PetManager>
     public void SelectPet(int index)
     {
         isSelect = true;
-        selectIndex = index;
-        OnSelectPetUI(selectIndex);
+
+        for (int i = 0; i < pets.Count; i++)
+        {
+            pets[i].Select(false);
+        }
+        pets[index].Select(true);
+        OnSelectPetUI(index);
     }
     public void NotSelectPet()
     {
         isSelect = false;
         OffSelectPetUI();
+        for (int i = 0; i < pets.Count; i++)
+        {
+            pets[i].Select(false);
+        }
     }
 
     #endregion
@@ -120,8 +139,9 @@ public class PetManager : MonoSingleton<PetManager>
     {
         pets.Clear();
 
-        petIndex = 0;
+        petIndex = -1;
         selectIndex = 0;
+        isSelect = false;
         isSwitching = false;
 
         OffSelectPetUI();
@@ -130,13 +150,14 @@ public class PetManager : MonoSingleton<PetManager>
             DisablePetUI(i);
         }
     }
+
     public void AddPet(Pet p)
     {
         pets.Add(p);
-        p.SetIndex(petIndex++);
-        
-        ActivePetUI(petIndex - 1);
-        SelectPet(petIndex - 1);
+
+        ++petIndex;
+        ActivePetUI(petIndex);
+        SelectPet(petIndex);
     }
     public void DeletePet(Pet p)
     {
@@ -145,9 +166,11 @@ public class PetManager : MonoSingleton<PetManager>
         OffSelectPetUI();
         DisablePetUI(--petIndex);
     }
+
     #endregion
 
     #region PetUI
+
     private void OnSelectPetUI(int index)
     {
         OffSelectPetUI();
@@ -157,11 +180,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < pets.Count; i++)
         {
-            if (petInvens[i].gameObject.activeSelf)
-            {
-                petInvens[i].transform.localScale = defaultScale;
-               // petInvens[pets[i].Index].transform.DOScale(defaultScale, 1f);
-            }
+             petInvens[i].transform.DOScale(defaultScale, 1f);
         }
     }
 

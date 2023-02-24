@@ -15,11 +15,11 @@ public abstract class Pet : MonoBehaviour
 
     #region CheckList
 
+    private bool isGet = false;
     private bool isFollow = false;
     private bool isCoolTime = false;
+    private bool isSelected = false;
     private bool isClickMove = false;
-
-    private int petIndex = -1;
 
     #endregion
 
@@ -32,12 +32,12 @@ public abstract class Pet : MonoBehaviour
 
     #region Get
 
-    public int Index { get { return petIndex; } }
-    public bool IsGet { get { return petIndex != -1; } }
+    public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
+    public bool IsSelected { get { return isSelected; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= followDistance; }}
-    public bool CheckSkillActive {  get { return (!ThirdPersonCameraControll.IsPetAim || !PetManager.Instance.IsPetSelected(Index) || IsCoolTime); } }
+    public bool CheckSkillActive {  get { return (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime); } }
 
     #endregion
 
@@ -58,8 +58,7 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ResetPet()
     {
-        petIndex = -1;
-
+        isGet = false;
         isFollow = false;
         isCoolTime = false;
 
@@ -69,6 +68,7 @@ public abstract class Pet : MonoBehaviour
 
     public void GetPet(Transform obj)
     {
+        isGet = true;
         target = obj;
 
         StartFollow();
@@ -81,10 +81,12 @@ public abstract class Pet : MonoBehaviour
         StopListen();
         PetManager.Instance.DeletePet(this);
     }
-    public void SetIndex(int index)
+
+    public void Select(bool select)
     {
-        petIndex = index;
+        isSelected = select;
     }
+
 
     #endregion
 
@@ -129,13 +131,9 @@ public abstract class Pet : MonoBehaviour
 
     private void MovePoint(InputAction inputAction, float value)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || PetManager.Instance.IsPetSelected(petIndex)) return;
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
 
-        RaycastHit hit;
-        if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
-        {
-            SetDestination(hit.point);
-        }
+        SetDestination(GameManager.Instance.GetCameraHit());
     }
     private void SetDestination(Vector3 dest)
     {
@@ -198,5 +196,4 @@ public abstract class Pet : MonoBehaviour
         InputManager.StopListeningInput(InputAction.Pet_Follow, StartFollow);
     }
     #endregion
-
 }
