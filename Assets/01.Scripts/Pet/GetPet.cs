@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class GetPet : MonoBehaviour
 {
     public LayerMask petLayer;
-    private float nearRadius = 2f;
+    private float nearRadius = 5f;
 
     [SerializeField]
     private UnityEvent OnGetPet;

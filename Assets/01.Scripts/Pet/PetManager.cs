@@ -37,15 +37,13 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void Update()
     {
-        Vector2 wheelInput2 = Input.mouseScrollDelta;
-        if (wheelInput2.y > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
             SwitchPet(InputAction.Next_Pet, 1);
         }
-        else if (wheelInput2.y < 0)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             SwitchPet(InputAction.Next_Pet, -1);
-            // 휠을 당겨 올렸을 때의 처리 ↓
         }
     }
     private void OnDestroy()
@@ -73,9 +71,10 @@ public class PetManager : MonoSingleton<PetManager>
     }
     private void SwitchPet(InputAction input, float addIndex)
     {
-        if (isSwitching || PetCount > 0) return;
+        if (isSwitching || PetCount <= 0) return;
 
         selectIndex += (int)addIndex;
+        Debug.Log(selectIndex);
 
         if (selectIndex >= pets.Count) selectIndex = 0;
         else if (selectIndex < 0) selectIndex = pets.Count - 1;
@@ -104,6 +103,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void SelectPet(int index)
     {
+        isSelect = true;
         selectIndex = index;
         OnSelectPetUI(selectIndex);
     }

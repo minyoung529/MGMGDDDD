@@ -44,15 +44,14 @@ public abstract class Pet : MonoBehaviour
     private void Awake()
     {
         camera = Camera.main;
+        rigid = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
     }
     private void Update()
     {
         if (!IsGet) return;
         FollowTarget();
-    }
-    private void OnDestroy()
-    {
-        StopListen();
+        LookAtPlayer();
     }
 
     #region Set
@@ -70,18 +69,17 @@ public abstract class Pet : MonoBehaviour
 
     public void GetPet(Transform obj)
     {
-        Debug.Log("Get");
         target = obj;
-        PetManager.Instance.AddPet(this);
 
+        StartFollow();
         StartListen();
+        PetManager.Instance.AddPet(this);
     }
     public void LosePet()
     {
         ResetPet();
-        PetManager.Instance.DeletePet(this);
-
         StopListen();
+        PetManager.Instance.DeletePet(this);
     }
     public void SetIndex(int index)
     {
@@ -161,23 +159,27 @@ public abstract class Pet : MonoBehaviour
 
     protected void FollowTarget()
     {
-        if (!isFollow) return;
-        LookAtPlayer();
-
         if (isClickMove) { ClickMove(); }
-        else if (agent.destination != target.position) { agent.SetDestination(target.position); }
+        if (isFollow && agent.destination != target.position) { agent.SetDestination(target.position); }
     }
 
     private void StartFollow(InputAction inputAction, float value)
     {
-        agent.isStopped = false;
         isFollow = true;
+        agent.isStopped = false;
+    }
+    private void StartFollow()
+    {
+        isFollow = true;
+        agent.isStopped = false;
     }
     private void StopFollow()
     {
         isFollow = false;
         agent.isStopped = true;
         agent.ResetPath();
+
+        agent.velocity = Vector3.zero;
     }
 
     #endregion
