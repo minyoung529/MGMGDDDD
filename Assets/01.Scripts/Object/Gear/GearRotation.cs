@@ -8,9 +8,12 @@ public class GearRotation : MonoBehaviour
     [SerializeField] bool isOil = false;
     float rotSpeed = 1.0f;
 
+    [SerializeField]
+    private Animator animator;
+
     private void Awake()
     {
-        if(isRotate)
+        if (isRotate)
         {
             StartGear();
         }
@@ -19,7 +22,15 @@ public class GearRotation : MonoBehaviour
     {
         if (!isOil) return;
         isRotate = true;
-        StartCoroutine(RotateGear());
+
+        if (animator)
+        {
+            animator.SetBool("Rotate", true);
+        }
+        else
+        {
+            StartCoroutine(RotateGear());
+        }
     }
     public void StopGear()
     {

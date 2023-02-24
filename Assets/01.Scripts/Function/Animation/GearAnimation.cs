@@ -8,13 +8,13 @@ public class GearAnimation : MonoBehaviour
 
     private void Start()
     {
-        animators = new List<Animator>(transform.GetComponentsInChildren<Animator>());
-        Rotate();
+        animators ??= new List<Animator>(transform.GetComponentsInChildren<Animator>());
     }
 
+    [ContextMenu("Roll")]
     public void Rotate()
     {
-        foreach(Animator animator in animators)
+        foreach (Animator animator in animators)
         {
             animator.SetBool("Rotate", true);
         }
