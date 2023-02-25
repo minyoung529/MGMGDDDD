@@ -11,9 +11,7 @@ public class OilPet : Pet
     [SerializeField] GameObject fireBurnParticle;
     [SerializeField] Transform parentController;
     [SerializeField] Transform splatGunNozzle;
-    [SerializeField] CinemachineFreeLook freeLookCamera;
 
-    CinemachineImpulseSource impulseSource;
     ParticleSystem inkParticle;
 
     private const float fireStayTime = Define.ICE_MELTING_TIME;
@@ -46,15 +44,15 @@ public class OilPet : Pet
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            //GameObject oil = CreateOil();
+            GameObject oil = CreateOil();
 
-            //Vector3 dir = (hit.point - transform.position) + (Vector3.up*1.3f);
-            //dir.y = 0;
-            //oil.transform.DOScale(oil.transform.localScale + new Vector3(0.5f, 0.5f, 0.5f), 0.5f);
-            //oil.transform.DOMoveY(hit.point.y+ 1.0f, 2f);
-            //oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
+            Vector3 dir = (hit.point - transform.position) + (Vector3.up * 1.3f);
+            dir.y = 0;
+            oil.transform.DOScale(oil.transform.localScale + new Vector3(0.5f, 0.5f, 0.5f), 0.5f);
+            oil.transform.DOMoveY(hit.point.y, 2f);
+            oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
 
-            ParticlePlay(hit.point);
+   //         ParticlePlay(hit.point);
         }
     }
     private void ParticlePlay(Vector3 hit)

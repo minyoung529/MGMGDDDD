@@ -7,7 +7,7 @@ using UnityEngine;
 public class OilPaint : MonoBehaviour{
 
     [SerializeField] Color paintColor;
-    [SerializeField] PhysicMaterial oil;
+   // [SerializeField] PhysicMaterial oil;
     [SerializeField] ParticleSystem splashParticle;
 
     private Rigidbody rigid;
@@ -59,15 +59,23 @@ public class OilPaint : MonoBehaviour{
         transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(()=>
         {
             HingeJoint joint = gameObject.AddComponent<HingeJoint>();
-        StartCoroutine(DestroyObj());
+        StartCoroutine(DelayDestroy());
         });
     }
-
-    private IEnumerator DestroyObj()
+    public void BurnDestroy()
     {
-        yield return new WaitForSeconds(60f);
+        StartCoroutine(DestroyOil());
+    }
+    public IEnumerator DestroyOil()
+    {
+        yield return new WaitForSeconds(1f);
         Destroy(gameObject.GetComponent<HingeJoint>());
         gameObject.SetActive(false);
+    }
+    private IEnumerator DelayDestroy()
+    {
+        yield return new WaitForSeconds(180f);
+        StartCoroutine(DestroyOil());
     }
 
     #region Collider
