@@ -41,7 +41,7 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    private void Awake()
+    protected virtual void Awake()
     {
         camera = Camera.main;
         rigid = GetComponent<Rigidbody>();
@@ -115,17 +115,13 @@ public abstract class Pet : MonoBehaviour
     #region Move
     protected void LookAtPlayer()
     {
-        Quaternion targetRot = transform.rotation;
-
+        Vector3 dir = target.position;
         if (ThirdPersonCameraControll.IsPetAim)
         {
-            targetRot = Quaternion.LookRotation((GameManager.Instance.GetCameraHit() - transform.position), Vector3.up);
-        }
-        else
-        {
-            targetRot = Quaternion.LookRotation((target.position - transform.position), Vector3.up);
+            dir = GameManager.Instance.GetCameraHit();
         }
 
+        Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
