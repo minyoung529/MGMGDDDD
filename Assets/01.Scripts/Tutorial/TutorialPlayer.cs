@@ -56,30 +56,29 @@ public class TutorialPlayer : MonoBehaviour
     private void ShowNextTutorial()
     {
         Sequence seq = DOTween.Sequence();
+        CanvasGroup curGroup = autoGroups[autoIdx];
         isChainging = true;
-
-        if (IsValidIdx)
-        {
-            seq.AppendInterval(removeDelayTime);
-            seq.Append(RemovePreviusPanel());
-        }
 
         ++autoIdx;
 
-        if (IsValidIdx)
+        seq.AppendInterval(removeDelayTime);
+        seq.Append(RemovePreviusPanel(curGroup));
+        seq.AppendCallback(() =>
         {
-            seq.Append(ShowCurrentPanel());
-        }
-        else
-        {
-            StopTutorial();
-        }
+            if (IsValidIdx)
+            {
+                seq.Append(ShowCurrentPanel());
+            }
+            else
+            {
+                StopTutorial();
+            }
+        });
     }
 
-    private Tweener RemovePreviusPanel()
+    private Tweener RemovePreviusPanel(CanvasGroup canvas)
     {
-        CanvasGroup canvasGroup = autoGroups[autoIdx];
-        return canvasGroup.DOFade(0f, 0.6f).OnComplete(() => canvasGroup.gameObject.SetActive(false));
+        return canvas.DOFade(0f, 0.3f).OnComplete(() => canvas.gameObject.SetActive(false));
     }
 
     private Tweener ShowCurrentPanel(string name = "")
@@ -134,6 +133,7 @@ public class TutorialPlayer : MonoBehaviour
             autoIdx = 0;
             isFinish = false;
         }
+
 
         ShowCurrentPanel(name);
         isStarted = true;

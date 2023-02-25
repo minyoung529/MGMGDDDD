@@ -53,7 +53,7 @@ public class AutoInputPanel : MonoBehaviour
 
     private readonly Color MAX_COLOR = new Color32(72, 204, 70, 69);
 
-    private void Start()
+    private void Awake()
     {
         if (useInputAction)
             InputManager.StartListeningInput(action, SuccessInput);

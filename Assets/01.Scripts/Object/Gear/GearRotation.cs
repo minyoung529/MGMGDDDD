@@ -30,7 +30,7 @@ public class GearRotation : MonoBehaviour
         //    animator.SetBool("Rotate", true);
         //}
         //else
-        //{
+        //{ 
         DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, rotSpeed, 0.6f).SetEase(Ease.InQuad);
         StartCoroutine(RotateGear());
         //}

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using DG.Tweening.Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -11,6 +12,7 @@ public class Fire : MonoBehaviour
     [SerializeField] UnityEvent fireEvent;
     [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
+    [SerializeField] private float burnDelay = 0f;
 
     bool isReadyBurn = false;
     bool isBurn = false;
@@ -31,12 +33,17 @@ public class Fire : MonoBehaviour
 
     public void Burn()
     {
-        isBurn = true;
+        Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(burnDelay);
+        seq.AppendCallback(() =>
+        {
+            isBurn = true;
 
-        FireParticlePlay();
-        if (isDestroyType) DestroyBurn();
-        fireEvent?.Invoke();
-        //StartCoroutine(CoolFire());
+            FireParticlePlay();
+            if (isDestroyType) DestroyBurn();
+            fireEvent?.Invoke();
+            //StartCoroutine(CoolFire());
+        });
     }
 
     private IEnumerator CoolFire()
