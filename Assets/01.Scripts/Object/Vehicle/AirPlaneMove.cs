@@ -99,4 +99,10 @@ public class AirPlaneMove : MonoBehaviour
             transform.DOMoveY(transform.position.y + moveDistance, 5f).OnComplete(() => OnArrive.Invoke(down));
         }
     }
+
+    private void OnDestroy()
+    {
+        idleSequence.Kill();
+        transform.DOKill();
+    }
 }

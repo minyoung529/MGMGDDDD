@@ -7,43 +7,57 @@ using UnityEngine.SceneManagement;
 public enum SceneType
 {
     LivingRoom,
-    NewClock
+    NewClock_QU
 }
 
 
 public class SceneController
 {
-    public static Dictionary<SceneType, Action> OnEnterScene;
-    public static Dictionary<SceneType, Action> OnExitScene;
+    public static Dictionary<SceneType, Action> OnEnterScene = new();
+    public static Dictionary<SceneType, Action> OnExitScene = new();
 
     private static SceneType curScene;
     public static SceneType CurrentScene => curScene;
 
     public static void ChangeScnee(SceneType sceneType)
     {
+        Check(curScene, OnExitScene);
         OnExitScene[curScene]?.Invoke();
         curScene = sceneType;
+        Check(curScene, OnEnterScene);
         OnEnterScene[curScene]?.Invoke();
         SceneManager.LoadScene(sceneType.ToString());
     }
 
     public static void ListningEnter(SceneType sceneType, Action onEnter)
     {
+        Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] += onEnter;
     }
 
     public static void ListningExit(SceneType sceneType, Action onExit)
     {
+        Check(sceneType, OnExitScene);
         OnExitScene[sceneType] += onExit;
     }
 
     public static void StopListningEnter(SceneType sceneType, Action onEnter)
     {
+        Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] -= onEnter;
     }
 
     public static void StopListningExit(SceneType sceneType, Action onExit)
     {
+        Check(sceneType, OnExitScene);
         OnExitScene[sceneType] -= onExit;
+    }
+
+    private static void Check(SceneType type, Dictionary<SceneType, Action> map)
+    {
+        if(!map.ContainsKey(type))
+        {
+            map.Add(type, null);
+        }
     }
 }

@@ -40,6 +40,8 @@ public class TutorialPlayer : MonoBehaviour
     {
         if (isStart)
             StartTutorial();
+
+        //SceneController.ListningEnter(SceneType.NewClock_QU, Init);
     }
 
     private void Update()
@@ -159,5 +161,10 @@ public class TutorialPlayer : MonoBehaviour
         {
             panel.Init(animator);
         }
+    }
+
+    private void OnDestroy()
+    {
+        //SceneController.StopListningEnter(SceneType.NewClock_QU, Init);
     }
 }

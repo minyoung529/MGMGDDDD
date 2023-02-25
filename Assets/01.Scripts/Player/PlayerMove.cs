@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviour
     {
         get
         {
-            forward = mainCam.transform.forward;
+            forward = MainCam.transform.forward;
             forward.y = 0;
             forward = forward.normalized;
             return forward;
@@ -29,7 +29,7 @@ public class PlayerMove : MonoBehaviour
     {
         get
         {
-            right = mainCam.transform.right;
+            right = MainCam.transform.right;
             right.y = 0;
             right = right.normalized;
             return right;
@@ -59,6 +59,16 @@ public class PlayerMove : MonoBehaviour
     #endregion
 
     private Camera mainCam;
+    public Camera MainCam
+    {
+        get
+        {
+            if(mainCam==null)
+                mainCam = Camera.main;
+            return mainCam;
+        }
+    }
+
 
     [SerializeField] private float distanceToGround = 0;
 

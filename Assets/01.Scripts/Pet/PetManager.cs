@@ -23,9 +23,10 @@ public class PetManager : MonoSingleton<PetManager>
     private Vector3 scaleUp = new Vector3(1.33f, 1.33f, 1.33f);
     private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
 
-    private void Awake()
+    protected override void Awake()
     {
         ResetPetManager();
+        base.Awake();
     }
     private void Update()
     {

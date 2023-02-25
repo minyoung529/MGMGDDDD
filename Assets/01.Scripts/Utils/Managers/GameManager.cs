@@ -22,9 +22,10 @@ public class GameManager : MonoSingleton<GameManager>
     public UIManager UI { get; private set; } = new UIManager();
     #endregion
 
-    private void Awake()
+    protected override void Awake()
     {
         MainCam = Camera.main;
+        base.Awake();
     }
 
     private void Start()

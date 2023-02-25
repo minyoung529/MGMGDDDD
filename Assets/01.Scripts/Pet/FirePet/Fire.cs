@@ -21,6 +21,8 @@ public class Fire : MonoBehaviour
 
     public bool IsBurn { get { return isBurn; } }
 
+    Sequence seq;
+
     private void Awake()
     {
         isBurn = playOnAwake;
@@ -33,7 +35,7 @@ public class Fire : MonoBehaviour
 
     public void Burn()
     {
-        Sequence seq = DOTween.Sequence();
+        seq = DOTween.Sequence();
         seq.AppendInterval(burnDelay);
         seq.AppendCallback(() =>
         {
@@ -138,4 +140,8 @@ public class Fire : MonoBehaviour
 
     }
 
+    private void OnDestroy()
+    {
+        seq.Kill();
+    }
 }

@@ -17,17 +17,27 @@ public class TutorialController : MonoBehaviour
 
     private Animator animator;
 
-    private void Start()
+    private void Awake()
     {
-        tutorialCanvas = Instantiate(tutorialCanvasPrefab);
+        GameObject tutorial = GameObject.Find("TutorialCanvas");
+
+        if (tutorial)
+        {
+            tutorialCanvas = tutorial.GetComponent<Canvas>();
+        }
+        else
+        {
+            tutorialCanvas = Instantiate(tutorialCanvasPrefab);
+        }
         animator = GetComponent<Animator>();
 
         TutorialPlayer[] players = tutorialCanvas.GetComponentsInChildren<TutorialPlayer>();
 
-        foreach(TutorialPlayer player in players)
+        foreach (TutorialPlayer player in players)
         {
             tutorials.Add(player.TutorialType, player);
             tutorials[player.TutorialType].Animator = animator;
+            player.Animator = animator;
             player.Init();
         }
     }

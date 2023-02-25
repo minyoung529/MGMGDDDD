@@ -78,6 +78,8 @@ public class AutoInputPanel : MonoBehaviour
             else return;
         }
 
+        if (animator == null) return;
+
         if (Active && (isBool && animator.GetBool(animatorBoolName) || (!isBool && animator.GetInteger(animatorBoolName) == intValue)))
         {
             if (checkTime)

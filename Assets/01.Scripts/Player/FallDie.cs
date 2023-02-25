@@ -42,7 +42,7 @@ public class FallDie : MonoBehaviour
         {
             hitPoint = hitInfo.point;
         }
-        else if (Mathf.Abs(hitPoint.y - transform.position.y) > dieDistance)
+        else if (hitPoint.y - transform.position.y > dieDistance)
         {
             Die();
         }
