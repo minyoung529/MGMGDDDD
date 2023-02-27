@@ -18,4 +18,9 @@ public class LoadingScene : MonoBehaviour
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneController.CurrentScene.ToString());
     }
+
+    private void Update()
+    {
+        
+    }
 }

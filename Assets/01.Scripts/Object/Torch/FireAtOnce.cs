@@ -42,17 +42,20 @@ public class FireAtOnce : MonoBehaviour
         }
         if (isClear)
         {
-            Debug.Log("Clear");
+            for(int i=0;i<bushes.Length;i++)
+            {
+                bushes[i].StopBurn();
+                Destroy(bushes[i], 0.5f);
+            }
             clear.Invoke();
         }
-                isTry= false;
+        isTry= false;
     }
 
     private void Failed()
     {
         for (int i = 0; i < bushes.Length; i++)
         {
-            Debug.Log("Failed");
             bushes[i].StopBurn();
         }
     }

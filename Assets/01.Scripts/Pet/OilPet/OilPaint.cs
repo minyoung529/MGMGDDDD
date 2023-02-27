@@ -6,22 +6,14 @@ using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
 
-    [SerializeField] Color paintColor;
-    [SerializeField] PhysicMaterial oil;
     [SerializeField] ParticleSystem splashParticle;
-
     private Rigidbody rigid;
-    private MeshRenderer mesh;
 
     private Vector3 defaultScale;
 
     private bool isBurn = false;
     private bool isSpread = false;
     public float scaleUp = 10f;
-
-    public float radius = 0.5f;
-    public float strength = 1;
-    public float hardness = 1;
 
     public bool IsBurn { get { return isBurn; } }
     private void OnEnable()
@@ -32,7 +24,6 @@ public class OilPaint : MonoBehaviour{
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
-        mesh= GetComponent<MeshRenderer>();
     }
 
     private void ResetBullet()
@@ -52,44 +43,42 @@ public class OilPaint : MonoBehaviour{
         if (splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
 
-        rigid.isKinematic = true;
-        rigid.detectCollisions = true;
-        rigid.velocity = Vector3.zero;
-
-        transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(()=>
+        transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(() =>
         {
-            HingeJoint joint = gameObject.AddComponent<HingeJoint>();
-        StartCoroutine(DestroyObj());
+            //HingeJoint joint = gameObject.AddComponent<HingeJoint>();
+            transform.SetParent(parent);
+            StartCoroutine(DelayDestroy());
         });
-    }
 
-    private IEnumerator DestroyObj()
+        rigid.isKinematic = true;
+        rigid.detectCollisions = false;
+
+    }
+    public void BurnDestroy()
     {
-        yield return new WaitForSeconds(60f);
-        Destroy(gameObject.GetComponent<HingeJoint>());
-        gameObject.SetActive(false);
+        StartCoroutine(DestroyOil());
+    }
+    public IEnumerator DestroyOil()
+    {
+        yield return new WaitForSeconds(1f);
+    //    Destroy(gameObject.GetComponent<HingeJoint>());
+    }
+    private IEnumerator DelayDestroy()
+    {
+        yield return new WaitForSeconds(180f);
+        StartCoroutine(DestroyOil());
     }
 
     #region Collider
 
     private void OnTriggerEnter(Collider other)
     {
-       
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG)) return;
+
+        SpreadOil(other.transform, transform.position);
 
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)) return;
-
-        Paintable paint = collision.collider.GetComponent<Paintable>();
-        if (paint != null)
-        {
-            Debug.Log("Paint");
-            Vector3 pos = collision.contacts[0].point;
-            PaintManager.Instance.paint(paint, pos, radius, hardness, strength, paintColor);
-        }
-    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)) return;
