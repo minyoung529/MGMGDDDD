@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 public enum SceneType
 {
     LivingRoom,
-    NewClock_QU
+    NewClock_QU,
+    LoadingScene,
+    Count
 }
 
 
@@ -24,9 +26,14 @@ public class SceneController
         Check(curScene, OnExitScene);
         OnExitScene[curScene]?.Invoke();
         curScene = sceneType;
+        SceneManager.LoadScene(SceneType.LoadingScene.ToString());
+    }
+
+    public static void ChangeScene(AsyncOperation op)
+    {
+        Debug.Log("EnterScene");
         Check(curScene, OnEnterScene);
         OnEnterScene[curScene]?.Invoke();
-        SceneManager.LoadScene(sceneType.ToString());
     }
 
     public static void ListningEnter(SceneType sceneType, Action onEnter)

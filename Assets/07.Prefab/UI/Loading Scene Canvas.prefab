@@ -71,7 +71,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 74568907}
   - component: {fileID: 74568909}
   - component: {fileID: 74568908}
+  - component: {fileID: 144993824392493171}
   m_Layer: 5
   m_Name: Loading Text
   m_TagString: Untagged
@@ -107,7 +108,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 144993824178809340}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -155,7 +156,26 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Loading...
+  m_Text: Loading
+--- !u!114 &144993824392493171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74568906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb6124a7d565b94b9d6177973e20dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingText: {fileID: 74568908}
+  loadingTexts:
+  - "Loading\xB7"
+  - "Loading\xB7\xB7"
+  - "Loading\xB7\xB7\xB7"
+  - "Loading\xB7\xB7\xB7\xB7"
+  loadingInterval: 0.5
 --- !u!1 &1003273485
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +209,7 @@ RectTransform:
   m_Children:
   - {fileID: 19225577}
   m_Father: {fileID: 144993824178809340}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -278,7 +298,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 144993824178809340}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -408,6 +428,7 @@ GameObject:
   - component: {fileID: 144993824178809343}
   - component: {fileID: 144993824178809342}
   - component: {fileID: 144993824178809313}
+  - component: {fileID: 144993824392493169}
   m_Layer: 5
   m_Name: Loading Scene Canvas
   m_TagString: Untagged
@@ -428,9 +449,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1996755487}
+  - {fileID: 1311205425}
   - {fileID: 1003273486}
   - {fileID: 74568907}
-  - {fileID: 1311205425}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -500,3 +521,16 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &144993824392493169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144993824178809312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6135aa2c6db4a7f46a6b453dd6fdbf81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fillBar: {fileID: 19225578}
