@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,38 +8,46 @@ public class LoadingScene : MonoBehaviour
     [SerializeField]
     private Image fillBar;
 
-    private void Start()
+    private AsyncOperation operation;
+    private bool isChanging;
+
+    private float timer = 0f;
+    private float changeDuration = 5f;
+
+    public void ChangeScene()
     {
-        StartCoroutine(LoadScene());
+        operation = SceneManager.LoadSceneAsync(SceneController.CurrentScene.ToString()/*, LoadSceneMode.Additive*/);
+        operation.allowSceneActivation = false;
+        operation.completed += OnSceneChange;
+        isChanging = true;
     }
 
-    private IEnumerator LoadScene()
+    private void Update()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(SceneController.CurrentScene.ToString());
-        operation.allowSceneActivation = false;
+        if (!isChanging) return;
 
-        float timer = 0f;
-        operation.completed += SceneController.ChangeScene;
-
-        while (!operation.isDone)
+        timer += Time.deltaTime;
+        if (timer < changeDuration)
         {
-            yield return null;
-
-            if (operation.progress < 0.9f)
+            fillBar.fillAmount = Mathf.Lerp(0f, 0.9f, timer / changeDuration);
+        }
+        else
+        {
+            if (isChanging)
             {
-                fillBar.fillAmount = operation.progress;
-            }
-            else
-            {
-                timer += Time.unscaledDeltaTime;
-                fillBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer);
+                fillBar.fillAmount = 1f;
+                operation.allowSceneActivation = true;
 
-                if (fillBar.fillAmount >= 0.99f)
-                {
-                    operation.allowSceneActivation = true;
-                    yield break;
-                }
+                isChanging = false;
+                operation = null;
+                timer = 0f;
             }
         }
+    }
+
+    private void OnSceneChange(AsyncOperation op)
+    {
+        SceneController.ChangeScene(op);
+        //SceneManager.UnloadSceneAsync(SceneController.prevScene.ToString());
     }
 }

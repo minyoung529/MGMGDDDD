@@ -1,13 +1,7 @@
 using DG.Tweening;
-using Newtonsoft.Json.Bson;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
+
 public class Lever : MonoBehaviour
 {
     public UnityEvent OnLever;

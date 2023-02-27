@@ -1,7 +1,5 @@
 using DG.Tweening;
 using System.Collections;
-using UnityEditor.PackageManager;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class OilPaint : MonoBehaviour{

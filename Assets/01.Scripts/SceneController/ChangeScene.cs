@@ -20,7 +20,7 @@ public class ChangeScene : MonoBehaviour
     public void GoTo()
     {
         if (go) return;
-        SceneController.ChangeScnee(sceneType);
+        SceneController.ChangeScene(sceneType);
         go = true;
     }
 
