@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class GetPet : MonoBehaviour
 {
     public LayerMask petLayer;
-    private float nearRadius = 5f;
+    private float nearRadius = 10f;
 
     [SerializeField]
     private UnityEvent OnGetPet;
@@ -28,9 +28,9 @@ public class GetPet : MonoBehaviour
 
     private void Get(InputAction inputAction, float value)
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, petLayer);
-        if (colliders.Length <= 0) return;
 
+        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, petLayer);
+        Debug.Log(colliders.Length);
         for (int i = 0; i < colliders.Length; i++)
         {
             Pet p = colliders[i].GetComponent<Pet>();

@@ -6,22 +6,14 @@ using UnityEngine;
 
 public class OilPaint : MonoBehaviour{
 
-    [SerializeField] Color paintColor;
-   // [SerializeField] PhysicMaterial oil;
     [SerializeField] ParticleSystem splashParticle;
-
     private Rigidbody rigid;
-    private MeshRenderer mesh;
 
     private Vector3 defaultScale;
 
     private bool isBurn = false;
     private bool isSpread = false;
     public float scaleUp = 10f;
-
-    public float radius = 0.5f;
-    public float strength = 1;
-    public float hardness = 1;
 
     public bool IsBurn { get { return isBurn; } }
     private void OnEnable()
@@ -32,7 +24,6 @@ public class OilPaint : MonoBehaviour{
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
-        mesh= GetComponent<MeshRenderer>();
     }
 
     private void ResetBullet()
@@ -52,15 +43,16 @@ public class OilPaint : MonoBehaviour{
         if (splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
 
-        rigid.isKinematic = true;
-        rigid.detectCollisions = true;
-        rigid.velocity = Vector3.zero;
-
-        transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(()=>
+        transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(() =>
         {
-            HingeJoint joint = gameObject.AddComponent<HingeJoint>();
-        StartCoroutine(DelayDestroy());
+            //HingeJoint joint = gameObject.AddComponent<HingeJoint>();
+            transform.SetParent(parent);
+            StartCoroutine(DelayDestroy());
         });
+
+        rigid.isKinematic = true;
+        rigid.detectCollisions = false;
+
     }
     public void BurnDestroy()
     {
@@ -69,8 +61,7 @@ public class OilPaint : MonoBehaviour{
     public IEnumerator DestroyOil()
     {
         yield return new WaitForSeconds(1f);
-        Destroy(gameObject.GetComponent<HingeJoint>());
-        gameObject.SetActive(false);
+    //    Destroy(gameObject.GetComponent<HingeJoint>());
     }
     private IEnumerator DelayDestroy()
     {

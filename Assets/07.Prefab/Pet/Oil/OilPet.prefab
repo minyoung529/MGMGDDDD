@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1466740974349561211
 Transform:
   m_ObjectHideFlags: 0
@@ -30,7 +30,7 @@ Transform:
   m_Children:
   - {fileID: 3825109822871964482}
   m_Father: {fileID: 4586198276244333030}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1931876522531769281
 GameObject:
@@ -230,7 +230,7 @@ Transform:
   m_Children:
   - {fileID: 507445392636782205}
   m_Father: {fileID: 4586198276244333030}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &265402418745285514
 MeshFilter:
@@ -314,7 +314,7 @@ Transform:
   m_Children:
   - {fileID: 4963223828500765031}
   m_Father: {fileID: 4586198276244333030}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6274235867936672110
 MeshFilter:
@@ -396,15 +396,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4586198276244333025}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.56, y: 0.5, z: -22.84}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4586198278030254416}
   - {fileID: 5050980222190661609}
   - {fileID: 3281791729632739964}
   - {fileID: 1466740974349561211}
   - {fileID: 3379190288605958487}
+  - {fileID: 4586198278030254416}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -528,7 +528,6 @@ MonoBehaviour:
   fireBurnParticle: {fileID: 4586198278030254431}
   parentController: {fileID: 1466740974349561211}
   splatGunNozzle: {fileID: 3379190288605958487}
-  freeLookCamera: {fileID: 0}
 --- !u!1 &7627220979514709467
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +557,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4586198276244333030}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1581698023304752496
 PrefabInstance:
@@ -615,6 +614,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Visual Particle
       objectReference: {fileID: 0}
+    - target: {fileID: 2370816341622941235, guid: bf4c8ba82a957f94b868abbb05e787d4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2370816341607302483, guid: bf4c8ba82a957f94b868abbb05e787d4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bf4c8ba82a957f94b868abbb05e787d4, type: 3}
@@ -658,7 +661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1157456988223111491, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1157456988223111491, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
       propertyPath: m_LocalPosition.x
