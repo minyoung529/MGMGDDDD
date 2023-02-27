@@ -22,12 +22,12 @@ public class CubePuzzle : MonoBehaviour
     {
         if (isSuccess) return;
 
-        if (other.CompareTag("CubePuzzle")&&
-            other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
+        if (!other.CompareTag("CubePuzzle")) return;
+        cubeRigid = other.attachedRigidbody;
+        MoveCubeToCenter(other.transform);
+        if (other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
         {
             OnSuccess?.Invoke();
-            cubeRigid = other.attachedRigidbody;
-            MoveCubeToCenter(other.transform);
             isSuccess = true;
         }
     }
@@ -84,5 +84,22 @@ public class CubePuzzle : MonoBehaviour
     {
         cube.position += Vector3.up * 5f;
         cube.DOMoveY(cube.position.y - 5f, 1f).SetEase(Ease.InExpo).OnComplete(() => MoveCubeToCenter(cube));
+    }
+
+    public void Respawn() {
+        if (!cubeRigid) return; 
+        StartCoroutine(RespawnCoroutine());
+    }
+
+    private IEnumerator RespawnCoroutine() {
+        Transform cubeTransform = cubeRigid.transform;
+        float targetY = cubeTransform.position.y - 4f;
+        cubeTransform.GetComponent<Collider>().enabled = false;
+        cubeRigid.constraints = RigidbodyConstraints.FreezeRotation;
+        while (cubeTransform.position.y - targetY > 0.1f) {
+            yield return null;
+        }
+        cubeTransform.GetComponent<RespawnObject>().Respawn();
+        cubeRigid = null;
     }
 }

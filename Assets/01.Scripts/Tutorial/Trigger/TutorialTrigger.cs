@@ -16,6 +16,9 @@ public class TutorialTrigger : MonoBehaviour
     [SerializeField]
     private TutorialType tutorialType;
 
+    [SerializeField]
+    private string tutorialName;
+
     private TutorialController tutorialController;
     private bool isEnter = false;
 
@@ -27,8 +30,7 @@ public class TutorialTrigger : MonoBehaviour
         {
             isEnter = true;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
-            Debug.Log(gameObject.name + " : " + other.gameObject.name);
-            tutorialController?.StartTutorial(tutorialType);
+            tutorialController?.StartTutorial(tutorialType, tutorialName);
         }
     }
 
@@ -40,8 +42,6 @@ public class TutorialTrigger : MonoBehaviour
         {
             int len = Physics.OverlapBox(transform.position, transform.localScale * 0.5f, transform.rotation, layerMask).Length;
             if (len != 0) return;
-
-            Debug.Log("EXIT");
 
             isEnter = false;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();

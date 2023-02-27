@@ -13,6 +13,7 @@ public enum CameraType
 public class CameraSwitcher : MonoBehaviour
 {
     static List<CinemachineVirtualCameraBase> cameras = new List<CinemachineVirtualCameraBase>();
+    public static List<CinemachineVirtualCameraBase> Cameras => cameras;
 
     public static CinemachineVirtualCameraBase activeCamera = null;
 

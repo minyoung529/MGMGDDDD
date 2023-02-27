@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public enum SceneType
 {
     LivingRoom,
-    Clock_Main
+    NewClock
 }
 
 
