@@ -2,8 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BossSkill
+[RequireComponent(typeof (BossScript))]
+public abstract class BossSkill : MonoBehaviour
 {
+    protected BossScript bossScript;
+    public abstract float ChanceFactor { get; }
+
+    protected virtual void Awake() {
+        bossScript = GetComponent<BossScript>();
+    }
+
+    public abstract void ExecuteSkill();
+
     //선 딜레이 시작
     public abstract void PreDelay();
 
@@ -14,8 +24,12 @@ public abstract class BossSkill
     public abstract void PostDelay();
 
     //후 딜레이 종료
-    public abstract void Stay();
+    public virtual void End() {
+        bossScript.UseSkill();
+    }
 
-    //공격을 강제로 종료 시킬 때
+    /// <summary>
+    /// 스킬 강제 종료
+    /// </summary>
     public abstract void StopAttack();
 }
