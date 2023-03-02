@@ -29,7 +29,6 @@ public class GetPet : MonoBehaviour
     private void Get(InputAction inputAction, float value)
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius);
-        Debug.Log(colliders.Length);
         for (int i = 0; i < colliders.Length; i++)
         {
             Pet p = colliders[i].GetComponent<Pet>();

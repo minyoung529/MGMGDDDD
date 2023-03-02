@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class PetManager : MonoSingleton<PetManager>
 {
-    public List<Image> petInvens = new List<Image>();
+    private List<Image> petImages = new List<Image>();
+    private List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
 
     private int petIndex = -1;
@@ -16,7 +17,7 @@ public class PetManager : MonoSingleton<PetManager>
     private bool isSelect = false;
     private bool isSwitching = false;
 
-    private Vector3 scaleUp = new Vector3(1.33f, 1.33f, 1.33f);
+    private Vector3 scaleUp = new Vector3(1.25f, 1.25f, 1.25f);
     private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
 
     #region Get
@@ -119,12 +120,11 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void SelectPet(InputAction input, float index)
     {
-        Debug.Log(selectIndex);
+                    if (pets.Count <= 0) return;
         switch (input)
         {
             case InputAction.Select_First_Pet:
                 {
-                    if (pets.Count == 0) return;
                     selectIndex = 0;
                 }
                 break;
@@ -167,6 +167,13 @@ public class PetManager : MonoSingleton<PetManager>
     {
         pets.Clear();
 
+        for(int i=0;i<transform.GetChild(0).childCount;i++)
+        {
+            GameObject inven = transform.GetChild(0).GetChild(i).gameObject;
+            petInvens.Add(inven.GetComponent<Image>());
+            petImages.Add(inven.transform.GetChild(0).gameObject.GetComponent<Image>());
+        }
+
         petIndex = -1;
         selectIndex = 0;
         isSelect = false;
@@ -201,8 +208,11 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnSelectPetUI(int index)
     {
-        OffSelectPetUI();
-        petInvens[index].transform.DOScale(scaleUp, 1f);
+        for (int i = 0; i < pets.Count; i++)
+        {
+            petInvens[i].transform.DOScale(defaultScale, 1f);
+        }
+        petInvens[index].transform.DOScale(scaleUp, 1);
     }
     private void OffSelectPetUI()
     {
@@ -214,6 +224,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void ActivePetUI(int index)
     {
+        petImages[index].sprite = pets[index].petUI;
         petInvens[index].gameObject.SetActive(true);
     }
     private void DisablePetUI(int index)
