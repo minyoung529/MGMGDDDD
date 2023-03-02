@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Events;
-using static UnityEngine.ParticleSystem;
 
 public class TorchLight : MonoBehaviour
 {
@@ -36,33 +34,32 @@ public class TorchLight : MonoBehaviour
 
     public void OffLight()
     {
+        isOn = false;
+
         foreach (ParticleSystem p in particles)
             p.Stop();
 
-        isOn = false;
 
         //fireParticle.Stop();
     }
     public void Lighting()
     {
-        Debug.Log(IsOn);
         if (IsOn) OffLight();
         else OnLight();
     }
 
-    protected virtual void FireCollision()
+    public virtual void FireCollision()
     {
-        OnLight();
         OnLighted?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        FireBall fire = other.GetComponent<FireBall>();
+        Fire fire = other.GetComponent<Fire>();
         if(fire !=null)
         {
-            Destroy(fire.gameObject);
-            FireCollision();
+            if (!fire.IsBurn) return;
+            OnLight();
         }
     }
 }

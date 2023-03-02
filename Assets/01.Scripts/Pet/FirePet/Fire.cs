@@ -1,12 +1,18 @@
 using DG.Tweening;
+using DG.Tweening.Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Fire : MonoBehaviour
 {
+    [SerializeField] bool playOnAwake = false;
+    [SerializeField] UnityEvent fireEvent;
+    [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
+    [SerializeField] private float burnDelay = 0f;
 
     bool isReadyBurn = false;
     bool isBurn = false;
@@ -15,20 +21,56 @@ public class Fire : MonoBehaviour
 
     public bool IsBurn { get { return isBurn; } }
 
+    Sequence seq;
+
     private void Awake()
     {
-        isBurn = false;
+        isBurn = playOnAwake;
+        FireParticleStop();
+        if(playOnAwake)
+        {
+            Burn();
+        }
     }
 
     public void Burn()
     {
-        isBurn = true;
-        if (isDestroyType) DestroyBurn();
+        seq = DOTween.Sequence();
+        seq.AppendInterval(burnDelay);
+        seq.AppendCallback(() =>
+        {
+            isBurn = true;
+
+            FireParticlePlay();
+            if (isDestroyType) DestroyBurn();
+            fireEvent?.Invoke();
+            //StartCoroutine(CoolFire());
+        });
     }
 
+    private IEnumerator CoolFire()
+    {
+        yield return new WaitForSeconds(10f);
+        StopBurn();
+    }
+    private void FireParticlePlay()
+    {
+        for (int i = 0; i < fireParticle.Length; i++)
+        {
+            fireParticle[i].Play();
+        }
+    }
+    private void FireParticleStop()
+    {
+        for (int i = 0; i < fireParticle.Length; i++)
+        {
+            fireParticle[i].Stop();
+        }
+    }
     public void StopBurn()  
     {
         isBurn = false;
+        FireParticleStop();
     }
 
     public void DestroyBurn()
@@ -48,7 +90,6 @@ public class Fire : MonoBehaviour
         StopCoroutine(StayInFire());
     }
 
-
     private IEnumerator StayInFire()
     {
         yield return new WaitForSeconds(burningReadyTime);  
@@ -62,59 +103,45 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (!IsBurn) return;
+
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {
             ice.Melt();
         }
+
+        Fire[] fires = other.GetComponents<Fire>();
+        foreach (Fire f in fires)
+        {
+            if (f.IsBurn) continue;
+            transform.DOKill();
+            f.Burn();
+        }
     }
+
     private void OnCollisionStay(Collision collision)
     {
+        if (!IsBurn) return;
+
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
         {
             ice.Melt();
         }
+
+        Fire[] fires = collision.collider.GetComponents<Fire>();
+        foreach (Fire f in fires)
+        {
+            if (f.IsBurn) continue;
+            transform.DOKill();
+            f.Burn();
+        }
+
     }
 
-    //}  private void OnTriggerEnter(Collider other)
-    //{
-    //    Fire fire = other.GetComponent<Fire>();
-    //    if(fire != null )
-    //    {
-    //        fire.StayFire();
-    //    }
-
-    //    IceMelting[] ices = other.GetComponents<IceMelting>();
-    //    foreach (IceMelting ice in ices)
-    //    {
-    //        ice.Melt();
-    //    }
-    //}
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    Fire fire = other.GetComponent<Fire>();
-    //    if( fire != null )
-    //    {
-    //        fire.ExitInFire();
-    //    }
-    //}
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Fire fire = collision.collider.GetComponent<Fire>();
-    //    if (fire != null)
-    //    {
-    //        fire.StayFire();
-    //    }
-
-        
-    //}
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    Fire fire = collision.collider.GetComponent<Fire>();
-    //    if (fire != null)
-    //    {
-    //        fire.ExitInFire();
-    //    }
-    //}
+    private void OnDestroy()
+    {
+        seq.Kill();
+    }
 }

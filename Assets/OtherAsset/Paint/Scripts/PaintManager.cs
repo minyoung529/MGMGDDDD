@@ -22,12 +22,13 @@ public class PaintManager : MonoSingleton<PaintManager>{
 
     CommandBuffer command;
 
-    public void Awake(){
+    protected override void Awake(){
         
         paintMaterial = new Material(texturePaint);
         extendMaterial = new Material(extendIslands);
         command = new CommandBuffer();
         command.name = "CommmandBuffer - " + gameObject.name;
+        base.Awake();
     }
 
     public void initTextures(Paintable paintable){

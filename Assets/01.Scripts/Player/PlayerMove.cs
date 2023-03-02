@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviour
     {
         get
         {
-            forward = mainCam.transform.forward;
+            forward = MainCam.transform.forward;
             forward.y = 0;
             forward = forward.normalized;
             return forward;
@@ -29,7 +29,7 @@ public class PlayerMove : MonoBehaviour
     {
         get
         {
-            right = mainCam.transform.right;
+            right = MainCam.transform.right;
             right.y = 0;
             right = right.normalized;
             return right;
@@ -55,9 +55,20 @@ public class PlayerMove : MonoBehaviour
     private int hash_tStateChange = Animator.StringToHash("tStateChange");
     private int hash_fVertical = Animator.StringToHash("fVertical");
     private int hash_fHorizontal = Animator.StringToHash("fHorizontal");
+    private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
     #endregion
 
     private Camera mainCam;
+    public Camera MainCam
+    {
+        get
+        {
+            if(mainCam==null)
+                mainCam = Camera.main;
+            return mainCam;
+        }
+    }
+
 
     [SerializeField] private float distanceToGround = 0;
 
@@ -96,27 +107,6 @@ public class PlayerMove : MonoBehaviour
     }
     private void GetInput(InputAction action, Vector3 input) {
         if (isInputLock) return;
-
-        /*#region Ladder Input
-        // 나중에 구조 바꾸자...
-        if (LadderObject.IsLadder) {
-            switch (action) {
-                case InputAction.Move_Forward:
-                    input = transform.up;
-                    break;
-                case InputAction.Back:
-                    input = -transform.up;
-                    break;
-                case InputAction.Move_Left:
-                    input = -transform.right;
-                    break;
-                case InputAction.Move_Right:
-                    input = transform.right;
-                    break;
-            }
-        }
-        #endregion*/
-
         inputDir += input;
         inputDir = inputDir.normalized;
     }
@@ -187,6 +177,8 @@ public class PlayerMove : MonoBehaviour
         Vector3 dir = inputDir * curSpeed;
         dir.y = rigid.velocity.y;
         rigid.velocity = dir;
+
+        anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
     public void Decelerate (float brakeTime = 0.5f) {
@@ -199,6 +191,8 @@ public class PlayerMove : MonoBehaviour
 
         if (dir.sqrMagnitude < 0.01f) return;
         rigid.velocity = dir;
+
+        anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
     public void SetRotate(Vector3 dir) {
         if (inputDir.sqrMagnitude <= 0) return;
@@ -211,14 +205,14 @@ public class PlayerMove : MonoBehaviour
 
     public bool CheckOnGround() {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position + Vector3.up * 0.15f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.2f, groundLayer)) {
-            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.5f) return true;
+        if (Physics.BoxCast(transform.position + Vector3.up * 0.2f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.3f, groundLayer)) {
+            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
         return false;
     }
 
+    #region 애니메이션 이벤트
     public void JumpEvent() {
-        
         if(curState is JumpState)
         {
             JumpState jump = (JumpState)curState;
@@ -229,6 +223,7 @@ public class PlayerMove : MonoBehaviour
     public void LandingEvent() {
         ChangeState(StateName.DefaultMove);
     }
+    #endregion
 
     public void LockInput(float time)
     {
