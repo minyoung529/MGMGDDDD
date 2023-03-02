@@ -12,6 +12,7 @@ namespace PathCreation.Examples
         public EndOfPathInstruction endOfPathInstruction;
         private float speedStorage = 0f;
         public float speed = 5;
+        private bool isStop = false;
         float distanceTravelled;
 
         [SerializeField]
@@ -44,16 +45,28 @@ namespace PathCreation.Examples
                 CalculateDestination();
                 distanceTravelled += speed * Time.deltaTime;
 
+                Vector3 nextPos;
+                Quaternion rotation;
+
                 if (reverseStartEnd)
                 {
-                    transform.position = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
-                    transform.rotation = Quaternion.LookRotation(-pathCreator.path.GetRDirectionAtDistance(distanceTravelled), Vector3.up);
+                    nextPos = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
+                    rotation = Quaternion.LookRotation(-pathCreator.path.GetRDirectionAtDistance(distanceTravelled), Vector3.up);
                 }
                 else
                 {
-                    transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-                    transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+                    nextPos = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                    rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
                 }
+
+                if (endOfPathInstruction == EndOfPathInstruction.Stop && distanceTravelled > 1f && !isStop && Vector3.Distance(transform.position, nextPos) < 0.01f)
+                {
+                    onArrive?.Invoke(destName);
+                    isStop = true;
+                }
+
+                transform.position = nextPos;
+                transform.rotation = rotation;
             }
         }
 
