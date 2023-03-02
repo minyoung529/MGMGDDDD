@@ -24,7 +24,6 @@ public class FireAtOnce : MonoBehaviour
 
     IEnumerator AtOnceLight()
     {
-        Debug.Log("Try");
         yield return new WaitForSeconds(0.1f);
         for (int i = 0; i < bushes.Length; i++)
         {

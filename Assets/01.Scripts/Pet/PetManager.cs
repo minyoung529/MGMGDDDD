@@ -24,43 +24,34 @@ public class PetManager : MonoSingleton<PetManager>
     public bool IsSelected { get { return isSelect; } }
     #endregion 
 
-    private void Awake()
-    {
-        ResetPetManager();
-    }
     private void Start()
     {
-        // StartListen();
-    }
-
-    private void Update()
-    {
-        if (pets.Count == 0) return;
-
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 && !isSwitching)
-        {
-            SwitchPet(1);
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && !isSwitching)
-        {
-            SwitchPet(-1);
-        }
+        ResetPetManager();
+        StartListen();
     }
 
     private void OnDestroy()
     {
-        // StopListen();
+        StopListen();
     }
 
     #region Listen
 
     private void StartListen()
     {
-        InputManager.StartListeningInput(InputAction.Next_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Down_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_First_Pet, SelectPet);
+        InputManager.StartListeningInput(InputAction.Select_Second_Pet, SelectPet);
+        InputManager.StartListeningInput(InputAction.Select_Third_Pet, SelectPet);
     }
     private void StopListen()
     {
-        InputManager.StopListeningInput(InputAction.Next_Pet, SwitchPet);
+        InputManager.StopListeningInput(InputAction.Up_Pet, SwitchPet);
+        InputManager.StopListeningInput(InputAction.Down_Pet, SwitchPet);
+        InputManager.StopListeningInput(InputAction.Select_First_Pet, SelectPet);
+        InputManager.StopListeningInput(InputAction.Select_Second_Pet, SelectPet);
+        InputManager.StopListeningInput(InputAction.Select_Third_Pet, SelectPet);
     }
 
     #endregion
@@ -72,14 +63,16 @@ public class PetManager : MonoSingleton<PetManager>
     }
     private void SwitchPet(InputAction input, float addIndex)
     {
-        if (isSwitching || PetCount <= 0) return;
+        if (PetCount <= 0) return;
 
-        selectIndex += (int)addIndex;
-
-        if (selectIndex >= pets.Count) selectIndex = 0;
-        else if (selectIndex < 0) selectIndex = pets.Count - 1;
-
-        StartCoroutine(SwitchDelay(selectIndex));
+        if (input == InputAction.Up_Pet && !isSwitching)
+        {
+            SwitchPet(1);
+        }
+        else if (input == InputAction.Down_Pet && !isSwitching)
+        {
+            SwitchPet(-1);
+        }
     }
 
     private void SwitchPet(int addIndex)
@@ -113,6 +106,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void SelectPet(int index)
     {
+        if (pets.Count == 0) return;
         isSelect = true;
 
         for (int i = 0; i < pets.Count; i++)
@@ -121,6 +115,40 @@ public class PetManager : MonoSingleton<PetManager>
         }
         pets[index].Select(true);
         OnSelectPetUI(index);
+    }
+
+    public void SelectPet(InputAction input, float index)
+    {
+        Debug.Log(selectIndex);
+        switch (input)
+        {
+            case InputAction.Select_First_Pet:
+                {
+                    if (pets.Count == 0) return;
+                    selectIndex = 0;
+                }
+                break;
+            case InputAction.Select_Second_Pet:
+                {
+                    if (pets.Count == 1) return;
+                    selectIndex = 1;
+                }
+                break;
+            case InputAction.Select_Third_Pet:
+                {
+                    if (pets.Count == 2) return;
+                    selectIndex = 2;
+                }
+                break;
+        }
+        isSelect = true;
+
+        for (int i = 0; i < pets.Count; i++)
+        {
+            pets[i].Select(false);
+        }
+        pets[selectIndex].Select(true);
+        OnSelectPetUI(selectIndex);
     }
     public void NotSelectPet()
     {
@@ -180,7 +208,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < pets.Count; i++)
         {
-             petInvens[i].transform.DOScale(defaultScale, 1f);
+            petInvens[i].transform.DOScale(defaultScale, 1f);
         }
     }
 

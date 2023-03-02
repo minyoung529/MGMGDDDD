@@ -2876,6 +2876,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5173571670086286467}
   - component: {fileID: 327777261175942199}
+  - component: {fileID: 873702560}
   m_Layer: 0
   m_Name: Cam 1
   m_TagString: Untagged
@@ -2891,7 +2892,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4326548708226733365}
   m_LocalRotation: {x: -9.95657e-16, y: -0.23979717, z: -2.4593125e-16, w: 0.97082305}
-  m_LocalPosition: {x: 17.525389, y: 68.03314, z: 51.275223}
+  m_LocalPosition: {x: 17.525389, y: 70.22, z: 51.275223}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2937,6 +2938,26 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 4343657842113077344}
+--- !u!95 &873702560
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4326548708226733365}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &4404126111387669117
 GameObject:
   m_ObjectHideFlags: 0
@@ -3506,22 +3527,10 @@ PlayableDirector:
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
-  - key: {fileID: 632189107736543192, guid: 5c14bb86ba7f8f649bcb6850f69c61f8, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -459996202111288374, guid: 5c14bb86ba7f8f649bcb6850f69c61f8, type: 2}
-    value: {fileID: 172411533857083521}
-  - key: {fileID: 1551522256081818364, guid: 5c14bb86ba7f8f649bcb6850f69c61f8, type: 2}
-    value: {fileID: 1858563747485201619}
-  - key: {fileID: -1685397024552007789, guid: d868c947f9f76c042b504d719adca1d0, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 6759092979069774972, guid: d868c947f9f76c042b504d719adca1d0, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 851919373147878607, guid: d868c947f9f76c042b504d719adca1d0, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -7539861589840461516, guid: d868c947f9f76c042b504d719adca1d0, type: 2}
-    value: {fileID: 0}
   - key: {fileID: 8001648082620864116, guid: 162e15c6154c23d43b4647e3da5fdc8b, type: 2}
     value: {fileID: 0}
+  - key: {fileID: -694793597924265521, guid: 162e15c6154c23d43b4647e3da5fdc8b, type: 2}
+    value: {fileID: 873702560}
   m_ExposedReferences:
     m_References:
     - 1398d2f5fa46f3f4a9f092df3c68e830: {fileID: 327777261175942199}
@@ -3551,19 +3560,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: f74eac40d6ff7fc4f97755966881cc42, type: 2}
     m_Events:
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: IceMelting, Assembly-CSharp
-          m_MethodName: IceMeltInObj
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 0}

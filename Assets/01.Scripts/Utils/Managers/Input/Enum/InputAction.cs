@@ -8,7 +8,7 @@ public enum InputAction
     Jump = 5,
     Attack = 6,
     Zoom = 7,
-    Next_Pet = 8,
+    Down_Pet = 8,
     Previous_Pet = 9,
     Select_First_Pet = 10,
     Select_Second_Pet = 11,
@@ -16,5 +16,6 @@ public enum InputAction
     Pet_Move = 13,
     Pet_Skill = 14,
     Pet_Follow = 15,
-    Interaction = 16
+    Interaction = 16,
+    Up_Pet = 17
 }
