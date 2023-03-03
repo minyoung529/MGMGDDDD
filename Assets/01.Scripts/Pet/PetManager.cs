@@ -210,19 +210,19 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < pets.Count; i++)
         {
-            petInvens[i].DOFade(0.2f, 1f);
-            petImages[i].DOFade(0.2f, 1f);
-            petInvens[i].transform.DOScale(defaultScale, 1f);
+            petInvens[i].DOFade(0.2f, 0.5f);
+            petImages[i].DOFade(0.2f, 0.5f);
+            petInvens[i].transform.DOScale(defaultScale, 0.5f);
         }
-        petInvens[index].DOFade(1f, 1f);
-        petImages[index].DOFade(1f, 1f);
-        petInvens[index].transform.DOScale(scaleUp, 1).SetEase(Ease.Flash);
+        petInvens[index].DOFade(1f, 0.5f);
+        petImages[index].DOFade(1f, 0.5f);
+        petInvens[index].transform.DOScale(scaleUp, 0.5f).SetEase(Ease.Flash);
     }
     private void OffSelectPetUI()
     {
         for (int i = 0; i < pets.Count; i++)
         {
-            petInvens[i].transform.DOScale(defaultScale, 1f);
+            petInvens[i].transform.DOScale(defaultScale, 0.5f);
         }
     }
 
