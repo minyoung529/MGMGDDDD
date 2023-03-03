@@ -112,10 +112,13 @@ public class Fire : MonoBehaviour
         }
 
         Fire[] fires = other.GetComponents<Fire>();
+            Debug.Log("Check");
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
+            Debug.Log("Fire");
             transform.DOKill();
+            Debug.Log("Fire_Burn");
             f.Burn();
         }
     }
@@ -131,10 +134,13 @@ public class Fire : MonoBehaviour
         }
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
+            Debug.Log("Check");
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
+            Debug.Log("Fire");
             transform.DOKill();
+            Debug.Log("Fire_Burn");
             f.Burn();
         }
 

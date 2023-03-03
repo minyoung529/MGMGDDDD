@@ -13,6 +13,7 @@ public class GetPet : MonoBehaviour
     [SerializeField]
     private UnityEvent OnGetPet;
 
+    private Pet pet = null;
 
     private void Awake()
     {
@@ -34,21 +35,21 @@ public class GetPet : MonoBehaviour
 
     private void Get(InputAction inputAction, float value)
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, petLayer);
+        if (pet == null) return;
+        if (IsMine(pet)) return;
 
+        pet.GetPet(gameObject.transform);
+        OnGetPet?.Invoke();
+        pet = null;
+    }
 
-        Debug.Log("히히히히히");
-        if (colliders.Length <= 0) return;
-        Debug.Log(colliders[0]);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            Pet p = colliders[i].GetComponent<Pet>();
-            if (p == null) continue;
-            if (IsMine(p)) continue;
-            Debug.Log(colliders[i].name);
-            p.GetPet(gameObject.transform);
-            OnGetPet?.Invoke();
-        }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == Define.PET_LAYER)  pet = other.GetComponent<Pet>();
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == Define.PET_LAYER) pet = null;
     }
 
     #region Boolean
@@ -57,14 +58,4 @@ public class GetPet : MonoBehaviour
         return p.IsGet;
     }
     #endregion
-
-#if UNITY_EDITOR
-
-    void OnDrawGizmosSelected()
-    {
-        // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position, nearRadius);
-    }
-#endif
 }

@@ -48,7 +48,8 @@ public class OilPaint : MonoBehaviour{
             StartCoroutine(DelayDestroy());
         });
 
-        rigid.isKinematic = true;
+        rigid.velocity= Vector3.zero;
+      //  rigid.isKinematic = true;
         rigid.detectCollisions = false;
 
     }
