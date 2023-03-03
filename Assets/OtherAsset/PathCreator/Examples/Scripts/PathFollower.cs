@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -30,13 +31,16 @@ namespace PathCreation.Examples
         private bool isStart = false;
         private bool reachDestination = false;
 
+        [SerializeField]
+        private Ease moveEase = Ease.Unset;
+
         void Start()
         {
             if (duration > 0f)
             {
                 // 5초 10
                 // 1초 2
-                speed =  pathCreator.path.length/ duration;
+                speed = pathCreator.path.length / duration;
             }
 
             speedStorage = speed;
@@ -53,7 +57,8 @@ namespace PathCreation.Examples
             if (pathCreator != null && isStart)
             {
                 CalculateDestination();
-                distanceTravelled += speed * Time.deltaTime;
+                //float ease = DOVirtual.EasedValue(0f, 1f, distanceTravelled / pathCreator.path.length, moveEase);
+                distanceTravelled += speed * Time.deltaTime /** ease*/;
 
                 Vector3 nextPos;
                 Quaternion rotation;
@@ -98,7 +103,7 @@ namespace PathCreation.Examples
             distanceTravelled = 0f;
             onDepart?.Invoke(destName);
 
-            if(reverseStartEnd)
+            if (reverseStartEnd)
             {
                 transform.position = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
             }
