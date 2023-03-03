@@ -120,7 +120,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void SelectPet(InputAction input, float index)
     {
-                    if (pets.Count <= 0) return;
+        if (pets.Count <= 0) return;
         switch (input)
         {
             case InputAction.Select_First_Pet:
@@ -167,7 +167,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         pets.Clear();
 
-        for(int i=0;i<transform.GetChild(0).childCount;i++)
+        for (int i = 0; i < transform.GetChild(0).childCount; i++)
         {
             GameObject inven = transform.GetChild(0).GetChild(i).gameObject;
             petInvens.Add(inven.GetComponent<Image>());
@@ -210,9 +210,13 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < pets.Count; i++)
         {
+            petInvens[i].DOFade(0.2f, 1f);
+            petImages[i].DOFade(0.2f, 1f);
             petInvens[i].transform.DOScale(defaultScale, 1f);
         }
-        petInvens[index].transform.DOScale(scaleUp, 1);
+        petInvens[index].DOFade(1f, 1f);
+        petImages[index].DOFade(1f, 1f);
+        petInvens[index].transform.DOScale(scaleUp, 1).SetEase(Ease.Flash);
     }
     private void OffSelectPetUI()
     {
