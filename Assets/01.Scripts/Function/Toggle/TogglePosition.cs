@@ -20,7 +20,6 @@ public class TogglePosition : MonoBehaviour
 
     public void Trigger()
     {
-        Debug.Log("TRIGGEr");
         if (isOpen)
             Close();
         else

@@ -1,3 +1,4 @@
+using PathCreation.Examples;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class TorchPuzzle : TorchLight
 
     public override void FireCollision()
     {
-        shortParticle.Play();
+        shortParticle.Play();   
         torchM.LightOn(index);
     }
 
