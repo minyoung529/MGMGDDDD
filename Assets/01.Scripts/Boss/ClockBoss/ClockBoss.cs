@@ -5,14 +5,40 @@ using UnityEngine;
 
 public class ClockBoss : BossScript
 {
-    public override float MaxHp => throw new NotImplementedException();
-    public override float CurHp { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
-    public override float TimeToNextSkill => 3f;
+    [SerializeField] private float maxHp;
+    private float curHp;
 
-    [SerializeField] private BossSkill[] skills;
-    public override BossSkill[] Skills => skills;
+    [SerializeField] private Action onEncounter;
+    [SerializeField] private Action onPageChange;
+    [SerializeField] private Action onDie;
 
-    protected override Action OnEncounter => throw new NotImplementedException();
+    #region abstract ±¸ÇöºÎ
+    [SerializeField] private BossPage[] skillList;
+    public override BossPage[] SkillList => skillList;
 
-    protected override Action OnDie => throw new NotImplementedException();
+    public override void Encounter() {
+        onEncounter?.Invoke();
+    }
+
+    public override void GetDamage() {
+        curHp--;
+        if (curHp <= 0) {
+            Die();
+            return;
+        }
+        if (pageIndex < SkillList.Length)
+    }
+    protected override void PageChange() {
+        onPageChange?.Invoke();
+        pageIndex++;
+    }
+
+    protected override void Die() {
+        onDie?.Invoke();
+    }
+
+    protected override void CallNextSkill() {
+        throw new NotImplementedException();
+    }
+    #endregion
 }
