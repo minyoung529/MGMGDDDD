@@ -63,28 +63,26 @@ public class TorchManager : MonoBehaviour
             if (puzzleClear[puzzle[index][i]]) OnLight();
             else OffLight();
         }
+        if (torchCnt >= MAX_TORCH)
+        {
+            ClearPuzzle();
+        }
     }
 
     public void OnLight()
     {
         torchCnt++;
-        if (torchCnt >= MAX_TORCH)
-        {
-            ClearPuzzle();
-        }
     }
+
     public void OffLight()
     {
         torchCnt--;
-        if (torchCnt >= MAX_TORCH)
-        {
-            ClearPuzzle();
-        }
     }
 
     [ContextMenu("Clear")]
     private void ClearPuzzle()
     {
+        Debug.Log("CLEAR");
         isClear = true;
         clearFunc.Invoke();
     }

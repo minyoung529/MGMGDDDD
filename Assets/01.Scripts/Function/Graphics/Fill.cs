@@ -8,6 +8,8 @@ public class Fill : MonoBehaviour
     [SerializeField]
     private float duration;
 
+    [SerializeField]
+    private float preDelay = 0f;
     private bool isFill;
 
     private readonly int FILL_ID = Shader.PropertyToID("_Fill");
@@ -20,7 +22,7 @@ public class Fill : MonoBehaviour
 
     public void Trigger()
     {
-        if(isFill)
+        if (isFill)
         {
             UnFilling();
         }
@@ -34,12 +36,25 @@ public class Fill : MonoBehaviour
 
     public void Filling()
     {
-        ChangeValue(1f);
+        Sequence seq = DOTween.Sequence();
+
+        if (preDelay != 0f)
+        {
+            seq.AppendInterval(preDelay);
+        }
+
+        seq.AppendCallback(() => ChangeValue(1f));
     }
 
     public void UnFilling()
     {
-        ChangeValue(0f);
+        Sequence seq = DOTween.Sequence();
+
+        if (preDelay != 0f)
+        {
+            seq.AppendInterval(preDelay);
+        }
+        seq.AppendCallback(() => ChangeValue(0f));
     }
 
     private void ChangeValue(float value)
