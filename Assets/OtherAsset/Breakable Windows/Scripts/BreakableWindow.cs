@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using UnityEngine;
 
 [AddComponentMenu("Breakable Windows/Breakable Window")]
@@ -206,7 +207,6 @@ public class BreakableWindow : MonoBehaviour {
                 {
                     for (int i = 0; i < splinters.Count; i++)
                     {
-            Debug.Log("GOO");
                         splinters[i].GetComponent<Rigidbody>().AddTorque(new Vector3(Random.value > 0.5f ? Random.value * 50 : -Random.value * 50, Random.value > 0.5f ? Random.value * 50 : -Random.value * 50, Random.value > 0.5f ? Random.value * 50 : -Random.value * 50));
                     }
                 }
@@ -230,10 +230,43 @@ public class BreakableWindow : MonoBehaviour {
         return splinters.ToArray();
     }
 
+    IEnumerator BreakWindow()
+    {
+        yield return new WaitForSeconds(5.5f);
+
+            if (isBroken == false)
+            {
+                if (allreadyCalculated == true)
+                {
+                    splinterParent.SetActive(true);
+                    if (addTorques)
+                    {
+                        for (int i = 0; i < splinters.Count; i++)
+                        {
+                            splinters[i].GetComponent<Rigidbody>().AddTorque(new Vector3(Random.value > 0.5f ? Random.value * 50 : -Random.value * 50, Random.value > 0.5f ? Random.value * 50 : -Random.value * 50, Random.value > 0.5f ? Random.value * 50 : -Random.value * 50));
+                        }
+                    }
+                }
+                else
+                {
+                    bakeVertices();
+                    bakeSplinters();
+                }
+
+                Physics.IgnoreLayerCollision(layer.value, layer.value, true);
+                Destroy(GetComponent<Collider>());
+                Destroy(GetComponent<MeshRenderer>());
+                Destroy(GetComponent<MeshFilter>());
+
+                isBroken = true;
+            }
+
+           GetComponent<AudioSource>().Play();
+    }
     public void Break()
     {
                     health = 0;
-                    breakWindow();
+                    StartCoroutine(BreakWindow());
     }
 
 
@@ -244,10 +277,8 @@ public class BreakableWindow : MonoBehaviour {
             if (health > 0)
             {
                 health -= col.impulse.magnitude;
-                Debug.Log(col.impulse.magnitude);
                 if (health < 0)
                 {
-                    Debug.Log("h = 0");
                     health = 0;
                     breakWindow();
                 }
