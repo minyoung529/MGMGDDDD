@@ -44,13 +44,12 @@ public class TorchLight : MonoBehaviour
     {
         if (IsOn) OffLight();
         else OnLight();
-        
+
         OnLighted?.Invoke(isOn);
     }
 
     public virtual void FireCollision()
     {
-        Debug.Log("OnLight");
         //OnLighted?.Invoke(isOn);
     }
 
@@ -61,6 +60,7 @@ public class TorchLight : MonoBehaviour
         {
             if (!fire.IsBurn) return;
             OnLight();
+            OnLighted?.Invoke(isOn);
         }
     }
 }

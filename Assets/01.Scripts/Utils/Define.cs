@@ -8,12 +8,12 @@ using UnityEngine;
 public class Define
 {
     #region LAYER_MASK
-    public const int ROPE_LAYER                 = 6;
-    public const int BOTTOM_LAYER               = 7;
-    public const int PLAYER_LAYER               = 3;
-    public const int PET_LAYER                  = 8;
-    public const int CONNECTED_OBJECT_LAYER     = 9;
-    public const int CONNECTED_ROPE_LAYER       = 10;
+    public const int ROPE_LAYER = 6;
+    public const int BOTTOM_LAYER = 7;
+    public const int PLAYER_LAYER = 3;
+    public const int PET_LAYER = 8;
+    public const int CONNECTED_OBJECT_LAYER = 9;
+    public const int CONNECTED_ROPE_LAYER = 10;
     #endregion
 
     #region TAG
@@ -21,6 +21,7 @@ public class Define
     public const string OIL_BULLET_TAG = "OilBullet";
     public const string OIL_PET_TAG = "OilPet";
     public const string FIRE_PET_TAG = "FirePet";
+    public const string TRIGGER_TAG = "Trigger";
     #endregion
 
     #region ROPE_VALUE

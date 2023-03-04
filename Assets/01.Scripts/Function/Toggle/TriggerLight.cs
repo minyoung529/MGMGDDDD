@@ -26,7 +26,6 @@ public class TriggerLight : MonoBehaviour
         follower.onArrive.AddListener((x) => OnArrive.Invoke());
     }
 
-    [ContextMenu("Trigger")]
     public void Trigger(bool isOn)
     {
         if (isToggle && reverse != isOn)
@@ -36,6 +35,12 @@ public class TriggerLight : MonoBehaviour
             this.isOn = isOn;
         }
 
+        Trigger();
+    }
+
+    [ContextMenu("Trigger")]
+    private void Trigger()
+    {
         follower.Depart();
     }
 

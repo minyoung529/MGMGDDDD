@@ -69,7 +69,7 @@ public class OilPaint : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG ) || other.CompareTag(Define.OIL_BULLET_TAG)) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG ) || other.CompareTag(Define.OIL_BULLET_TAG) || other.CompareTag(Define.TRIGGER_TAG)) return;
 
         SpreadOil(other.transform, transform.position);
 
@@ -77,7 +77,7 @@ public class OilPaint : MonoBehaviour{
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)|| collision.collider.CompareTag(Define.OIL_BULLET_TAG)) return;
+        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)|| collision.collider.CompareTag(Define.OIL_BULLET_TAG) || collision.collider.CompareTag(Define.TRIGGER_TAG)) return;
 
         SpreadOil(collision.transform, transform.position);
     }

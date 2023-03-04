@@ -76,7 +76,7 @@ public class IceMelting : MonoBehaviour
         obj.transform.SetParent(null);
 
         inObjCollider.enabled = true;
-        transform.DOScaleY(0f, 1.9f).OnComplete(() =>
+        transform.DOScaleY(0f, meltTime).OnComplete(() =>
         {
             inObjRigid.isKinematic = false;
             inObjRigid.useGravity = true;
