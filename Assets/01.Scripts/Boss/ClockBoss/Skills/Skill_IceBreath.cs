@@ -4,29 +4,30 @@ using UnityEngine;
 
 public class Skill_IceBreath : BossSkill
 {
+    [SerializeField] private float chanceFactor;
     public override float ChanceFactor => throw new System.NotImplementedException();
 
     public override void ExecuteSkill() {
-        throw new System.NotImplementedException();
-    }
 
-    public override void HitTime() {
-        throw new System.NotImplementedException();
-    }
-
-    public override void PostDelay() {
-        throw new System.NotImplementedException();
     }
 
     public override void PreDelay() {
-        throw new System.NotImplementedException();
+
+    }
+
+    public override void HitTime() {
+
+    }
+
+    public override void PostDelay() {
+
     }
 
     public override void SkillEnd() {
-        throw new System.NotImplementedException();
+
     }
 
     public override void StopSkill() {
-        throw new System.NotImplementedException();
+
     }
 }

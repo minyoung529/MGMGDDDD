@@ -6,15 +6,29 @@ using Random = UnityEngine.Random;
 
 public abstract class BossScript : MonoBehaviour
 {
-    public abstract BossPage[] SkillList { get; }
-    protected int pageIndex = 0;
-    public BossPage CurPage => SkillList[pageIndex];
+    public abstract Animator Anim { get; }
+    protected abstract Action OnEncounter { get; }
 
-    public abstract void Encounter();
+    #region 스킬 관련 변수
+    public abstract BossPage[] PageList { get; }
+    protected int pageIndex = 0;
+    public BossPage CurPage => PageList[pageIndex];
+    #endregion
+
+    public virtual void Encounter() {
+        OnEncounter?.Invoke();
+        for(int i = 0; i < PageList.Length; i++) {
+            PageList[i].SetParent(this);
+        }
+    }
     public abstract void GetDamage();
     protected abstract void PageChange();
     protected abstract void Die();
-    protected abstract void CallNextSkill();
+    
+    /// <summary>
+    /// 스킬이 종료되면 호출되는 함수
+    /// </summary>
+    public abstract void CallNextSkill();
 
     #region 애니메이션 이벤트 함수
     //선 딜레이 시작

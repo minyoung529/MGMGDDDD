@@ -4,6 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class BossPage 
 {
+    private BossScript parent = null;
+
     public float TimeToNextSkill = 3f;
     public float TTNRandomRange = 1f;
     //이 페이지로 진입하기 위한 체력 조건
@@ -13,10 +15,14 @@ public class BossPage
     private float totalChance;
 
     private int skillIndex = 0;
-    public List<BossSkill> skillList;
+    [SerializeField] private List<BossSkill> skillList;
     public BossSkill CurSkill => skillList[skillIndex];
 
+    /// <summary>
+    /// 선택된 스킬을 사용합니다
+    /// </summary>
     public void Execute() {
+        Debug.Log(2);
         CurSkill.ExecuteSkill();
     }
 
@@ -36,5 +42,16 @@ public class BossPage
     /// </summary>
     public void SelectSkill(int index) {
         skillIndex = index;
+    }
+
+    public void SetParent(BossScript parent) {
+        if (this.parent) {
+            Debug.LogError("한 스킬 당 둘 이상의 부모는 존재할 수 없습니다");
+            return;
+        }
+        this.parent = parent;
+        for(int i = 0; i < skillList.Count; i++) {
+            skillList[i].SetParent(parent);
+        }
     }
 }

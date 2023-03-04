@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public abstract class BossSkill
+[System.Serializable]
+public abstract class BossSkill : MonoBehaviour
 {
-    protected BossScript bossScript = null;
+    protected BossScript parent = null;
     //스킬 발동 확률 배수
     public abstract float ChanceFactor { get; }
     //스킬 실행
@@ -19,9 +20,6 @@ public abstract class BossSkill
     public abstract void StopSkill();
 
     public void SetParent(BossScript parent) {
-        if (bossScript) {
-            Debug.LogError("한 스킬에 두 개의 보스는 할당될 수 없습니다");
-        }
-        bossScript = parent;
+        this.parent = parent;
     }
 }
