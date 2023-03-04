@@ -6,36 +6,50 @@ using UnityEngine.Events;
 public class GetPet : MonoBehaviour
 {
     public LayerMask petLayer;
-    private float nearRadius = 3f;
+
+    [SerializeField]
+    private float nearRadius = 30f;
 
     [SerializeField]
     private UnityEvent OnGetPet;
 
-    private void Start()
+    private Pet pet = null;
+
+    private void Awake()
     {
         StartListen();
     }
-
     private void OnDestroy()
     {
-        InputManager.StopListeningInput(InputAction.Interaction, Get);
+        StopListen();
     }
-
     private void StartListen()
     {
         InputManager.StartListeningInput(InputAction.Interaction, Get);
     }
+    private void StopListen()
+    {
+        InputManager.StopListeningInput(InputAction.Interaction, Get);
+    }
+
 
     private void Get(InputAction inputAction, float value)
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            Pet p = colliders[i].GetComponent<Pet>();
-            if (p == null || IsMine(p)) continue;
-            p.GetPet(gameObject.transform);
-            OnGetPet?.Invoke();
-        }
+        if (pet == null) return;
+        if (IsMine(pet)) return;
+
+        pet.GetPet(gameObject.transform);
+        OnGetPet?.Invoke();
+        pet = null;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == Define.PET_LAYER)  pet = other.GetComponent<Pet>();
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == Define.PET_LAYER) pet = null;
     }
 
     #region Boolean
@@ -44,5 +58,4 @@ public class GetPet : MonoBehaviour
         return p.IsGet;
     }
     #endregion
-
 }
