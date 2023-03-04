@@ -10,17 +10,11 @@ public class Footstool : MonoBehaviour
     [SerializeField] GameObject box;
     [SerializeField] float smallTime = 0.5f;
 
-    TogglePosition togglePosition;
-
-    private void Awake()
-    {
-        togglePosition= GetComponent<TogglePosition>();
-    }
-
     private void TriggerTrap()
     {
         transform.DOScaleY(0.1f, smallTime).OnComplete(()=>
         {
+            Debug.Log("Clear");
             footEvent?.Invoke();
         });
     }

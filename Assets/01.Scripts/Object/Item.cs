@@ -7,54 +7,65 @@ public class Item : MonoBehaviour
     [SerializeField] Transform attachPoint;
 
     public LayerMask playerLayer;
-    private float nearRadius = 1f;
+    private float nearRadius = 3f;
     private Rigidbody rigid;
+    private Collider collider;
 
     private bool isGet = false;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
+        isGet = false;
+    }
+    private void Start()
+    {
+        StartListen();
     }
 
-    private void Update()
+    private void StartListen()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (NearPlayer())
-            {
-                GetItem();
-            }
-        }
+        InputManager.StartListeningInput(InputAction.Interaction, SetEquip);
+    }
+  private void StopListen()
+    {
+        InputManager.StopListeningInput(InputAction.Interaction, SetEquip);
     }
 
     #region Boolean
-    // ?????? ?????? ??????? u???? ???
     private bool NearPlayer()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, playerLayer);
-
-        if (colliders.Length > 0) return true;
-        return false;
+       return colliders.Length > 0;
     }
     #endregion
 
+    protected virtual void SetEquip(InputAction action, float value)
+    {
+       if (!NearPlayer()) return;
+
+        isGet = !isGet;
+        rigid.isKinematic = isGet;
+        collider.enabled = !isGet;
+
+        if (isGet) GetItem();
+        else UseItem();
+    }
+    
     protected virtual void GetItem()
     {
         isGet = true;
-        gameObject.SetActive(false);
-    }
-    protected virtual void UseItem()
-    {
-        isGet = false;
-    }
 
-    protected virtual void PutItem()
+        transform.SetParent(attachPoint, true);
+        transform.localPosition = Vector3.zero;
+        transform.rotation = new Quaternion(0, 0, 0, 0);
+    }
+    public virtual void UseItem()
     {
         isGet = false;
 
-        //rigid.isKinematic = false;
-        //rigid.useGravity = true;
-        //transform.SetParent(null);
+        attachPoint.transform.DetachChildren();
     }
+
 }

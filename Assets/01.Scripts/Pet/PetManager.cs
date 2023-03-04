@@ -7,45 +7,75 @@ using UnityEngine.UI;
 
 public class PetManager : MonoSingleton<PetManager>
 {
-    public List<Image> petInvens = new List<Image>();
+    private List<Image> petImages = new List<Image>();
+    private List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
 
-    private Color selectDefaultColor = Color.white;
-
-    private int petIndex = 0; // ?? ????
+    private int petIndex = -1;
     private int selectIndex = 0;
 
     private bool isSelect = false;
     private bool isSwitching = false;
-    public bool IsSelecting { get { return isSelect; } }
-    public bool IsSwitching { get { return isSwitching; } }
 
-    private Vector3 scaleUp = new Vector3(1.33f, 1.33f, 1.33f);
+    private Vector3 scaleUp = new Vector3(1.25f, 1.25f, 1.25f);
     private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
 
-    private void Awake()
+    #region Get
+    public int PetCount { get { return pets.Count; } }
+    public bool IsSelected { get { return isSelect; } }
+    #endregion 
+
+    private void Start()
     {
         ResetPetManager();
+        StartListen();
     }
-    private void Update()
-    {
-        if (pets.Count == 0) return;
 
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 && !isSwitching)
+    private void OnDestroy()
+    {
+        StopListen();
+    }
+
+    #region Listen
+
+    private void StartListen()
+    {
+        InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Down_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_First_Pet, SelectPet);
+        InputManager.StartListeningInput(InputAction.Select_Second_Pet, SelectPet);
+        InputManager.StartListeningInput(InputAction.Select_Third_Pet, SelectPet);
+    }
+    private void StopListen()
+    {
+        InputManager.StopListeningInput(InputAction.Up_Pet, SwitchPet);
+        InputManager.StopListeningInput(InputAction.Down_Pet, SwitchPet);
+        InputManager.StopListeningInput(InputAction.Select_First_Pet, SelectPet);
+        InputManager.StopListeningInput(InputAction.Select_Second_Pet, SelectPet);
+        InputManager.StopListeningInput(InputAction.Select_Third_Pet, SelectPet);
+    }
+
+    #endregion
+
+    #region SwitchPet
+    public bool IsPetSelected(int index)
+    {
+        return selectIndex == index;
+    }
+    private void SwitchPet(InputAction input, float addIndex)
+    {
+        if (PetCount <= 0) return;
+
+        if (input == InputAction.Up_Pet && !isSwitching)
         {
             SwitchPet(1);
         }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && !isSwitching)
+        else if (input == InputAction.Down_Pet && !isSwitching)
         {
             SwitchPet(-1);
         }
     }
 
-    #region SwitchPet
-    public int GetPetIndex(Pet p)
-    {
-        return pets.FindIndex(e => e == p);
-    }
     private void SwitchPet(int addIndex)
     {
         selectIndex += addIndex;
@@ -75,25 +105,58 @@ public class PetManager : MonoSingleton<PetManager>
 
     #region SELECT
 
-    public void SelectPet(int selectIndex)
+    public void SelectPet(int index)
     {
+        if (pets.Count == 0) return;
         isSelect = true;
-        OnSelectPetUI(selectIndex);
 
         for (int i = 0; i < pets.Count; i++)
         {
-            pets[i].IsSelected = false;
+            pets[i].Select(false);
         }
-        pets[selectIndex].IsSelected = true;
+        pets[index].Select(true);
+        OnSelectPetUI(index);
+    }
+
+    public void SelectPet(InputAction input, float index)
+    {
+        if (pets.Count <= 0) return;
+        switch (input)
+        {
+            case InputAction.Select_First_Pet:
+                {
+                    selectIndex = 0;
+                }
+                break;
+            case InputAction.Select_Second_Pet:
+                {
+                    if (pets.Count == 1) return;
+                    selectIndex = 1;
+                }
+                break;
+            case InputAction.Select_Third_Pet:
+                {
+                    if (pets.Count == 2) return;
+                    selectIndex = 2;
+                }
+                break;
+        }
+        isSelect = true;
+
+        for (int i = 0; i < pets.Count; i++)
+        {
+            pets[i].Select(false);
+        }
+        pets[selectIndex].Select(true);
+        OnSelectPetUI(selectIndex);
     }
     public void NotSelectPet()
     {
         isSelect = false;
         OffSelectPetUI();
-
         for (int i = 0; i < pets.Count; i++)
         {
-            pets[i].IsSelected = false;
+            pets[i].Select(false);
         }
     }
 
@@ -104,53 +167,68 @@ public class PetManager : MonoSingleton<PetManager>
     {
         pets.Clear();
 
+        for (int i = 0; i < transform.GetChild(0).childCount; i++)
+        {
+            GameObject inven = transform.GetChild(0).GetChild(i).gameObject;
+            petInvens.Add(inven.GetComponent<Image>());
+            petImages.Add(inven.transform.GetChild(0).gameObject.GetComponent<Image>());
+        }
+
+        petIndex = -1;
         selectIndex = 0;
-        petIndex = 0;
         isSelect = false;
         isSwitching = false;
 
-        for (int i = 0; i < 3; i++)
+        OffSelectPetUI();
+        for (int i = 0; i < petInvens.Count; i++)
         {
-            petInvens[i].transform.localScale = defaultScale;
-            petInvens[i].gameObject.SetActive(false);
+            DisablePetUI(i);
         }
     }
 
     public void AddPet(Pet p)
     {
         pets.Add(p);
+
         ++petIndex;
-        ActivePetUI(petIndex - 1);
-        SelectPet(petIndex-1);
+        ActivePetUI(petIndex);
+        SelectPet(petIndex);
     }
     public void DeletePet(Pet p)
     {
         pets.Remove(p);
+
+        OffSelectPetUI();
         DisablePetUI(--petIndex);
     }
+
     #endregion
 
-    #region SelectUI
+    #region PetUI
+
     private void OnSelectPetUI(int index)
     {
-        OffSelectPetUI();
-        petInvens[index].transform.DOScale(scaleUp, 1f);
-        petInvens[index].color = pets[index].selectColor;
+        for (int i = 0; i < pets.Count; i++)
+        {
+            petInvens[i].DOFade(0.2f, 0.5f);
+            petImages[i].DOFade(0.2f, 0.5f);
+            petInvens[i].transform.DOScale(defaultScale, 0.5f);
+        }
+        petInvens[index].DOFade(1f, 0.5f);
+        petImages[index].DOFade(1f, 0.5f);
+        petInvens[index].transform.DOScale(scaleUp, 0.5f).SetEase(Ease.Flash);
     }
     private void OffSelectPetUI()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < pets.Count; i++)
         {
-            if (petInvens[i].gameObject.activeSelf)
-            {
-                if (pets[i].IsSelected) petInvens[i].transform.DOScale(defaultScale, 1f);
-                petInvens[i].color = selectDefaultColor;
-            }
+            petInvens[i].transform.DOScale(defaultScale, 0.5f);
         }
     }
 
     private void ActivePetUI(int index)
     {
+        petImages[index].sprite = pets[index].petUI;
         petInvens[index].gameObject.SetActive(true);
     }
     private void DisablePetUI(int index)

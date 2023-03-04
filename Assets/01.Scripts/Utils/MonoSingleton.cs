@@ -33,6 +33,13 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
+    protected virtual void Awake()
+    {
+        //if(Instance != this)
+        //{
+        //    Destroy(this);
+        //}
+    }
     private void OnApplicationQuit()
     {
         shuttingDown = true;

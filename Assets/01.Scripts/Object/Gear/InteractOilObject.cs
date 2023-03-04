@@ -23,7 +23,7 @@ public class InteractOilObject : MonoBehaviour
         if (gameObject.CompareTag(Define.OIL_BULLET_TAG))
         {
             isRust = false;
-            OnEnterOil.Invoke(); 
+            OnEnterOil.Invoke();
         }
     }
 

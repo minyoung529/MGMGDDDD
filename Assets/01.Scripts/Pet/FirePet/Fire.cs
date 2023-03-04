@@ -1,4 +1,5 @@
 using DG.Tweening;
+using DG.Tweening.Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -11,13 +12,16 @@ public class Fire : MonoBehaviour
     [SerializeField] UnityEvent fireEvent;
     [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
+    [SerializeField] private float burnDelay = 0f;
+    [SerializeField] float burningTime = 2f;
 
     bool isReadyBurn = false;
     bool isBurn = false;
-    float burningTime = 2f;
     float burningReadyTime = 2f;
 
     public bool IsBurn { get { return isBurn; } }
+
+    Sequence seq;
 
     private void Awake()
     {
@@ -31,12 +35,17 @@ public class Fire : MonoBehaviour
 
     public void Burn()
     {
-        isBurn = true;
+        seq = DOTween.Sequence();
+        seq.AppendInterval(burnDelay);
+        seq.AppendCallback(() =>
+        {
+            isBurn = true;
 
-        FireParticlePlay();
-        if (isDestroyType) DestroyBurn();
-        fireEvent?.Invoke();
-        //StartCoroutine(CoolFire());
+            FireParticlePlay();
+            if (isDestroyType) DestroyBurn();
+            fireEvent?.Invoke();
+            //StartCoroutine(CoolFire());
+        });
     }
 
     private IEnumerator CoolFire()
@@ -67,6 +76,18 @@ public class Fire : MonoBehaviour
     public void DestroyBurn()
     {
         Destroy(gameObject, burningTime);
+    }
+    
+    public void DestroyBurn(float destroyTime)
+    {
+        StartCoroutine(StopAndDestroy(destroyTime));
+    }
+
+    IEnumerator StopAndDestroy(float t)
+    {
+        yield return new WaitForSeconds(t);
+        FireParticleStop();
+        Destroy(gameObject, 1.0f);
     }
 
     public void StayFire()
@@ -131,4 +152,8 @@ public class Fire : MonoBehaviour
 
     }
 
+    private void OnDestroy()
+    {
+        seq.Kill();
+    }
 }

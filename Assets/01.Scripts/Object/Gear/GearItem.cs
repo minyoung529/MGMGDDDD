@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GearItem : Item
 {
+ 
 
-
-    protected override void GetItem()
+    public override void UseItem()
     {
-        base.GetItem();
+        base.UseItem();
 
     }
 }

@@ -27,7 +27,11 @@ public class BushObject : MonoBehaviour
         if (collision.transform.CompareTag(Define.FIRE_PET_TAG))
         {
             if (isBurning) return;
-            StartCoroutine(Burn());
+            Fire[] fire = collision.collider.GetComponents<Fire>();
+            if (fire[0])
+            {
+                if (fire[0].IsBurn) StartCoroutine(Burn());
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -35,7 +39,11 @@ public class BushObject : MonoBehaviour
         if (other.CompareTag(Define.FIRE_PET_TAG))
         {
             if (isBurning) return;
-            StartCoroutine(Burn());
+            Fire[] fire = other.GetComponents<Fire>();
+            if (fire[0])
+            {
+                if (fire[0].IsBurn) StartCoroutine(Burn());
+            }
         }
     }
     //private void OnTriggerEnter(Collider other)

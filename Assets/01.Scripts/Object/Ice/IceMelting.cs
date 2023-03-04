@@ -10,6 +10,7 @@ public class IceMelting : MonoBehaviour
     [SerializeField] private bool inObj = false;
     [SerializeField] private float meltTime = 3.8f;
     [SerializeField] private UnityEvent OnMeltIce;
+    [SerializeField] private UnityEvent OnMeltIceEnd;
     [SerializeField] private GameObject obj;
     private bool melting = false;
     private float meltReadyTime = 3.0f;
@@ -63,24 +64,27 @@ public class IceMelting : MonoBehaviour
     public void IceMelt()
     {
         OnMeltIce?.Invoke();
-        transform.DOScaleY(0f, meltTime);
-        Destroy(gameObject, 2f);
+        transform.DOScaleY(0f, meltTime).OnComplete(() =>
+        {
+            OnMeltIceEnd?.Invoke();
+            Destroy(gameObject);
+        });
     }
 
     public void IceMeltInObj()
     {
         obj.transform.SetParent(null);
-        
+
         inObjCollider.enabled = true;
         transform.DOScaleY(0f, 1.9f).OnComplete(() =>
         {
             inObjRigid.isKinematic = false;
             inObjRigid.useGravity = true;
+            OnMeltIceEnd?.Invoke();
+            Destroy(gameObject);
         });
 
         OnMeltIce?.Invoke();
-
-        Destroy(gameObject, 2f);
     }
 
     private void OnCollisionEnter(Collision collision)

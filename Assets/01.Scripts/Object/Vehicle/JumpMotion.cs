@@ -25,7 +25,7 @@ public class JumpMotion
         OnStartJump?.Invoke();
         StartAnimation(player);
 
-        player.DOPath(GetWayPoints(player), 1.5f, PathType.CatmullRom).OnComplete(() =>
+        player.DOPath(GetWayPoints(player), 1f, PathType.CatmullRom).OnComplete(() =>
         {
             if (isSit)
             {
@@ -51,8 +51,6 @@ public class JumpMotion
     private void EndAnimation(Transform player)
     {
         animator ??= player.GetComponent<Animator>();
-
-        Debug.Log("LANDING");
         animator?.SetTrigger("tLanding");
     }
 }
