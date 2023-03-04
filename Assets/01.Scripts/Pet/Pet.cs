@@ -9,6 +9,7 @@ using UnityEngine.SocialPlatforms;
 public abstract class Pet : MonoBehaviour
 {
     public PetType petType = PetType.NONE;
+    public Sprite petUI;
 
     [SerializeField] private float skillCoolTime = 2.0f;
     [SerializeField] private float followDistance = 10.0f;

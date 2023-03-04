@@ -61,19 +61,11 @@ public class Item : MonoBehaviour
         transform.localPosition = Vector3.zero;
         transform.rotation = new Quaternion(0, 0, 0, 0);
     }
-    protected virtual void UseItem()
+    public virtual void UseItem()
     {
         isGet = false;
 
         attachPoint.transform.DetachChildren();
     }
 
-    protected virtual void PutItem()
-    {
-        isGet = false;
-
-        //rigid.isKinematic = false;
-        //rigid.useGravity = true;
-        //transform.SetParent(null);
-    }
 }

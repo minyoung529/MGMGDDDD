@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class InputManager : MonoSingleton<InputManager>
@@ -101,7 +102,7 @@ public class InputManager : MonoSingleton<InputManager>
                 }
                 else if (infos[keyIndex].inputType <= InputType.ScrollDown)
                 {
-                    if ((float)value == 0)
+                    if ((int)value == 0)
                     {
                         result = false;
                         break;

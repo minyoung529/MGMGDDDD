@@ -15,6 +15,9 @@ public class Fill : MonoBehaviour
     private readonly int FILL_ID = Shader.PropertyToID("_Fill");
     private Material material;
 
+    [SerializeField]
+    private Ease ease = Ease.OutQuad;
+
     private void Start()
     {
         material = GetComponent<Renderer>().material;
@@ -60,6 +63,6 @@ public class Fill : MonoBehaviour
     private void ChangeValue(float value)
     {
         material.DOKill();
-        material.DOFloat(value, FILL_ID, duration).SetEase(Ease.OutQuad);
+        material.DOFloat(value, FILL_ID, duration).SetEase(ease);
     }
 }
