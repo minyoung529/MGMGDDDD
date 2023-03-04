@@ -43,14 +43,12 @@ public class OilPaint : MonoBehaviour{
 
         transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(() =>
         {
-            //HingeJoint joint = gameObject.AddComponent<HingeJoint>();
+            transform.GetChild(0).localScale += new Vector3(scaleUp, scaleUp, scaleUp);
             transform.SetParent(parent);
             StartCoroutine(DelayDestroy());
         });
 
-        rigid.isKinematic = true;
-        rigid.detectCollisions = false;
-
+        rigid.velocity= Vector3.zero;
     }
     public void BurnDestroy()
     {
@@ -71,7 +69,7 @@ public class OilPaint : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG)) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG ) || other.CompareTag(Define.OIL_BULLET_TAG)) return;
 
         SpreadOil(other.transform, transform.position);
 
@@ -79,7 +77,7 @@ public class OilPaint : MonoBehaviour{
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)) return;
+        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)|| collision.collider.CompareTag(Define.OIL_BULLET_TAG)) return;
 
         SpreadOil(collision.transform, transform.position);
     }
