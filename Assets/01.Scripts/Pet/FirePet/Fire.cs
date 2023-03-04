@@ -13,10 +13,10 @@ public class Fire : MonoBehaviour
     [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
     [SerializeField] private float burnDelay = 0f;
+    [SerializeField] float burningTime = 2f;
 
     bool isReadyBurn = false;
     bool isBurn = false;
-    float burningTime = 2f;
     float burningReadyTime = 2f;
 
     public bool IsBurn { get { return isBurn; } }
@@ -112,13 +112,10 @@ public class Fire : MonoBehaviour
         }
 
         Fire[] fires = other.GetComponents<Fire>();
-            Debug.Log("Check");
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
-            Debug.Log("Fire");
             transform.DOKill();
-            Debug.Log("Fire_Burn");
             f.Burn();
         }
     }
@@ -134,13 +131,10 @@ public class Fire : MonoBehaviour
         }
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
-            Debug.Log("Check");
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
-            Debug.Log("Fire");
             transform.DOKill();
-            Debug.Log("Fire_Burn");
             f.Burn();
         }
 

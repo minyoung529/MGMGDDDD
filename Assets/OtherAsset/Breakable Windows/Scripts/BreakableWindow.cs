@@ -206,6 +206,7 @@ public class BreakableWindow : MonoBehaviour {
                 {
                     for (int i = 0; i < splinters.Count; i++)
                     {
+            Debug.Log("GOO");
                         splinters[i].GetComponent<Rigidbody>().AddTorque(new Vector3(Random.value > 0.5f ? Random.value * 50 : -Random.value * 50, Random.value > 0.5f ? Random.value * 50 : -Random.value * 50, Random.value > 0.5f ? Random.value * 50 : -Random.value * 50));
                     }
                 }
@@ -224,37 +225,37 @@ public class BreakableWindow : MonoBehaviour {
             isBroken = true;            
         }
 
-        if (breakingSound != null)
-        {
-            GetComponent<AudioSource>().clip = breakingSound;
             GetComponent<AudioSource>().Play();
-        }
 
         return splinters.ToArray();
     }
 
     public void Break()
     {
-        breakWindow();
-
+                    health = 0;
+                    breakWindow();
     }
 
 
     void OnCollisionEnter(Collision col)
     {
-
-        //if (useCollision == true)
-        //{
-        //    if (health > 0)
-        //    {
-        //        health -= col.impulse.magnitude;
-        //        if (health < 0)
-        //        {
-        //            health = 0;
-        //            breakWindow();
-        //        }
-        //    }
-        //    else
-        //}
+        if (useCollision == true)
+        {
+            if (health > 0)
+            {
+                health -= col.impulse.magnitude;
+                Debug.Log(col.impulse.magnitude);
+                if (health < 0)
+                {
+                    Debug.Log("h = 0");
+                    health = 0;
+                    breakWindow();
+                }
+            }
+            else
+            {
+                breakWindow();
+            }
+        }
     }
 }
