@@ -49,6 +49,6 @@ public class IceWallMove : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
-        Destroy();
+        Destroy(gameObject);
     }
 }

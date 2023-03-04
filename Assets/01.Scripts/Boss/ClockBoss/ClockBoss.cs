@@ -20,7 +20,7 @@ public class ClockBoss : BossScript
     protected override Action OnEncounter => onEncounter;
 
     private Animator anim;
-    public override Animator Anim => throw new NotImplementedException();
+    public override Animator Anim => anim;
 
     private void Awake() {
         anim = GetComponent<Animator>();
@@ -32,20 +32,23 @@ public class ClockBoss : BossScript
         CallNextSkill();
     }
 
-    public override void GetDamage() {
-        curHp--;
+    public override void GetDamage(float damage) {
+        curHp -= damage;
         if (curHp <= 0) {
             Die();
             return;
         }
-        //다음 페이지가 존재하고 해당 조건의 체력에 도달했을때
-        if (pageIndex < PageList.Length - 1 && curHp / maxHp <= pageList[pageIndex + 1].ConditionHp) {
+        if (curHp <= 0.5 * maxHp) {
             PageChange();
         }
     }
+
+    [ContextMenu("Test2")]
     protected override void PageChange() {
         onPageChange?.Invoke();
-        pageIndex++;
+        foreach(BossPage item in pageList) {
+            item.Reinforce();
+        }
     }
 
     protected override void Die() {

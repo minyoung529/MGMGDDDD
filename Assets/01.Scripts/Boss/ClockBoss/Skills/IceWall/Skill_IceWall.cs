@@ -5,7 +5,8 @@ using UnityEngine;
 public class Skill_IceWall : BossSkill
 {
     [Header("얼음 생성 관련")]
-    [SerializeField] private List<Transform> spawnPoint;
+    [SerializeField] private List<Transform> spawnPoints_Horizontal;
+    [SerializeField] private List<Transform> spawnPoints_Vertical;
     [SerializeField] private List<float> spawnRange;
     //스폰 주기
     [SerializeField] private float spawnTerm;
@@ -24,15 +25,23 @@ public class Skill_IceWall : BossSkill
     private int hash_tIceWall = Animator.StringToHash("tIceWall");
 
     public override void ExecuteSkill() {
+        //애니메이션 제작 시 변경 (임시 코드)
         //Anim.SetTrigger(hash_tIceWall);
-        StartCoroutine(SpawnWall());
+        bool isHorizontal = Random.Range(0, 2) > 0;
+        StartCoroutine(SpawnWall(isHorizontal, false));
     }
 
-    private IEnumerator SpawnWall() {
+    private IEnumerator SpawnWall(bool isHorizontal, bool isSecond) {
         int count = 0;
-        int index = Random.Range(0, spawnPoint.Count);
-        Transform point = spawnPoint[index];
+        List<Transform> points = isHorizontal ? spawnPoints_Horizontal : spawnPoints_Vertical;
+        if (isReinforce && !isSecond)
+            StartCoroutine(SpawnWall(!isHorizontal, true));
+
+        int index = Random.Range(0, points.Count);
+        Transform point = points[index];
+        if (!isHorizontal) index += spawnPoints_Horizontal.Count;
         float range = spawnRange[index];
+
         while(count < spawnCount) {
             IceWallMove obj = Instantiate(prefab, point);
             wallList.Add(obj);
@@ -43,6 +52,7 @@ public class Skill_IceWall : BossSkill
             yield return new WaitForSeconds(spawnTerm);
         }
 
+        if (isSecond) yield break;
         SkillEnd();
     }
 
@@ -51,7 +61,8 @@ public class Skill_IceWall : BossSkill
     }
 
     public override void HitTime() {
-        StartCoroutine(SpawnWall());
+        bool isHorizontal = Random.Range(0, 2) > 0;
+        StartCoroutine(SpawnWall(isHorizontal, false));
     }
 
     public override void PostDelay() {

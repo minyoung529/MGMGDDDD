@@ -17,11 +17,11 @@ public abstract class BossScript : MonoBehaviour
 
     public virtual void Encounter() {
         OnEncounter?.Invoke();
-        for(int i = 0; i < PageList.Length; i++) {
-            PageList[i].SetParent(this);
+        for (int i = 0; i < PageList.Length; i++) {
+            PageList[i].SetUp(this);
         }
     }
-    public abstract void GetDamage();
+    public abstract void GetDamage(float damage);
     protected abstract void PageChange();
     protected abstract void Die();
     
@@ -46,7 +46,6 @@ public abstract class BossScript : MonoBehaviour
     //후 딜레이 종료
     public virtual void SkillEnd() {
         CurPage.CurSkill.SkillEnd();
-        CallNextSkill();
     }
     #endregion
 }

@@ -22,7 +22,6 @@ public class BossPage
     /// 선택된 스킬을 사용합니다
     /// </summary>
     public void Execute() {
-        Debug.Log(2);
         CurSkill.ExecuteSkill();
     }
 
@@ -44,7 +43,7 @@ public class BossPage
         skillIndex = index;
     }
 
-    public void SetParent(BossScript parent) {
+    public void SetUp(BossScript parent) {
         if (this.parent) {
             Debug.LogError("한 스킬 당 둘 이상의 부모는 존재할 수 없습니다");
             return;
@@ -52,6 +51,12 @@ public class BossPage
         this.parent = parent;
         for(int i = 0; i < skillList.Count; i++) {
             skillList[i].SetParent(parent);
+            totalChance += skillList[i].ChanceFactor;
         }
+    }
+
+    public void Reinforce() {
+        foreach (BossSkill item in skillList)
+            item.Reinforce();
     }
 }

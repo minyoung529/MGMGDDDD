@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class BossSkill : MonoBehaviour
 {
     protected BossScript parent = null;
+    protected bool isReinforce = false;
     //스킬 발동 확률 배수
     public abstract float ChanceFactor { get; }
     //스킬 실행
@@ -21,5 +22,9 @@ public abstract class BossSkill : MonoBehaviour
 
     public void SetParent(BossScript parent) {
         this.parent = parent;
+    }
+
+    public void Reinforce() {
+        isReinforce = true;
     }
 }
