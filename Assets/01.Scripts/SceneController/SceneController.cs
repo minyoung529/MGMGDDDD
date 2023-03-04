@@ -6,10 +6,9 @@ using UnityEngine;
 
 public enum SceneType
 {
-    LivingRoom,
-    NewClock_QU,
-    LoadingScene,
-    Test,
+    LivingRoom = 0,
+    Clock = 1,
+    LoadingScene = 2,
     Count
 }
 
