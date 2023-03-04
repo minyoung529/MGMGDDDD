@@ -77,6 +77,18 @@ public class Fire : MonoBehaviour
     {
         Destroy(gameObject, burningTime);
     }
+    
+    public void DestroyBurn(float destroyTime)
+    {
+        StartCoroutine(StopAndDestroy(destroyTime));
+    }
+
+    IEnumerator StopAndDestroy(float t)
+    {
+        yield return new WaitForSeconds(t);
+        FireParticleStop();
+        Destroy(gameObject, 1.0f);
+    }
 
     public void StayFire()
     {
