@@ -72,17 +72,17 @@ public class TorchManager : MonoBehaviour
     public void OnLight()
     {
         torchCnt++;
-        
     }
+
     public void OffLight()
     {
         torchCnt--;
-        
     }
 
     [ContextMenu("Clear")]
     private void ClearPuzzle()
     {
+        Debug.Log("CLEAR");
         isClear = true;
         clearFunc.Invoke();
     }

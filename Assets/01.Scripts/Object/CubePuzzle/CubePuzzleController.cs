@@ -7,6 +7,7 @@ public class CubePuzzleController : MonoBehaviour
 {
     [SerializeField]
     private int cubeCount = 9;
+    [SerializeField]
     private int successCnt = 0;
     [SerializeField]
     private int solvedPuzzleCount = 0;
@@ -14,7 +15,10 @@ public class CubePuzzleController : MonoBehaviour
     List<CubePuzzle> cubePuzzles = new List<CubePuzzle>();
 
     [SerializeField]
-    private UnityEvent OnSolvePuzzle;
+    private UnityEvent<int> OnSolvePuzzle;
+
+    [SerializeField]
+    private UnityEvent<int> OnPressButton;
 
     void Start()
     {
@@ -36,6 +40,7 @@ public class CubePuzzleController : MonoBehaviour
             SolvePuzzle();
         }
         else {
+            OnPressButton?.Invoke(successCnt);
             ResetPuzzle();
         }
     }
@@ -43,7 +48,7 @@ public class CubePuzzleController : MonoBehaviour
     [ContextMenu("SolvePuzzle")]
     private void SolvePuzzle()
     {
-        OnSolvePuzzle?.Invoke();
+        OnSolvePuzzle?.Invoke(successCnt);
     }
 
     public void ResetPuzzle()

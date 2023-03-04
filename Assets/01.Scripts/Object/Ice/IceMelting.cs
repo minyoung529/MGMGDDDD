@@ -67,6 +67,8 @@ public class IceMelting : MonoBehaviour
         transform.DOScaleY(0f, meltTime).OnComplete(() =>
         {
             OnMeltIceEnd?.Invoke();
+
+            transform.DOKill();
             Destroy(gameObject);
         });
     }
@@ -76,11 +78,13 @@ public class IceMelting : MonoBehaviour
         obj.transform.SetParent(null);
 
         inObjCollider.enabled = true;
-        transform.DOScaleY(0f, 1.9f).OnComplete(() =>
+        transform.DOScaleY(0f, meltTime).OnComplete(() =>
         {
             inObjRigid.isKinematic = false;
             inObjRigid.useGravity = true;
             OnMeltIceEnd?.Invoke();
+
+            transform.DOKill();
             Destroy(gameObject);
         });
 

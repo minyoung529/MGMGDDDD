@@ -19,7 +19,7 @@ public class TutorialTrigger : MonoBehaviour
     [SerializeField]
     private string tutorialName;
 
-    private TutorialController tutorialController;
+    private TutorialController tutorialController = null;
     private bool isEnter = false;
 
     private void OnTriggerEnter(Collider other)
@@ -30,6 +30,9 @@ public class TutorialTrigger : MonoBehaviour
         {
             isEnter = true;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
+
+            Debug.Log($"{other.gameObject.name} Has TC => {tutorialController != null}");
+
             tutorialController?.StartTutorial(tutorialType, tutorialName);
         }
     }
