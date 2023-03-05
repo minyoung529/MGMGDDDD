@@ -32,7 +32,6 @@ public class Skill_IceWall : BossSkill
     }
 
     private IEnumerator SpawnWall(bool isHorizontal, bool isSecond) {
-        int count = 0;
         List<Transform> points = isHorizontal ? spawnPoints_Horizontal : spawnPoints_Vertical;
         if (isReinforce && !isSecond)
             StartCoroutine(SpawnWall(!isHorizontal, true));
@@ -42,13 +41,12 @@ public class Skill_IceWall : BossSkill
         if (!isHorizontal) index += spawnPoints_Horizontal.Count;
         float range = spawnRange[index];
 
-        while(count < spawnCount) {
+        for (int count = 0; count < spawnCount; count++) {
             IceWallMove obj = Instantiate(prefab, point);
             wallList.Add(obj);
             obj.transform.forward = point.forward;
             obj.transform.position += Vector3.Cross(point.forward, Vector3.up) * Random.Range(-(int)range, (int)range);
             obj.SpawnWall(wallSize, spawnTime, liveTime, moveSpeed);
-            count++;
             yield return new WaitForSeconds(spawnTerm);
         }
 
