@@ -38,7 +38,6 @@ public class CubePuzzle : MonoBehaviour
 
         isSuccess = false;
         bottomRenderer.material.SetColor("_EmissionColor", Color.black);
-        cubeRigid.GetComponent<FallTest>().SavePoint();
 
         cubeRigid.constraints ^= RigidbodyConstraints.FreezePosition;
     }

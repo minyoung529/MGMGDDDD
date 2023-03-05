@@ -23,6 +23,7 @@ public class Fill : MonoBehaviour
         material = GetComponent<Renderer>().material;
     }
 
+    [ContextMenu("Trigger")]
     public void Trigger()
     {
         if (isFill)
