@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,24 +13,38 @@ namespace PathCreation.Examples
         public EndOfPathInstruction endOfPathInstruction;
         private float speedStorage = 0f;
         public float speed = 5;
+        private bool isStop = false;
         float distanceTravelled;
 
-        [SerializeField]
-        private bool reverseStartEnd = false;
+        public bool reverseStartEnd = false;
 
         [HideInInspector]
         public Transform destination = null;
         private Destination destName = Destination.Clock;
 
+        [SerializeField]
+        private float duration = -1f;
+
         public UnityEvent<Destination> onArrive;
         public UnityEvent<Destination> onDepart;
 
         private bool isStart = false;
-        private bool reacnDestination = false;
+        private bool reachDestination = false;
+
+        [SerializeField]
+        private Ease moveEase = Ease.Unset;
 
         void Start()
         {
+            if (duration > 0f)
+            {
+                // 5초 10
+                // 1초 2
+                speed = pathCreator.path.length / duration;
+            }
+
             speedStorage = speed;
+
             if (pathCreator != null)
             {
                 // Subscribed to the pathUpdated event so that we're notified if the path changes during the game
@@ -42,18 +57,32 @@ namespace PathCreation.Examples
             if (pathCreator != null && isStart)
             {
                 CalculateDestination();
-                distanceTravelled += speed * Time.deltaTime;
+                //float ease = DOVirtual.EasedValue(0f, 1f, distanceTravelled / pathCreator.path.length, moveEase);
+                distanceTravelled += speed * Time.deltaTime /** ease*/;
+
+                Vector3 nextPos;
+                Quaternion rotation;
 
                 if (reverseStartEnd)
                 {
-                    transform.position = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
-                    transform.rotation = Quaternion.LookRotation(-pathCreator.path.GetRDirectionAtDistance(distanceTravelled), Vector3.up);
+                    nextPos = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
+                    rotation = Quaternion.LookRotation(-pathCreator.path.GetRDirectionAtDistance(distanceTravelled), Vector3.up);
                 }
                 else
                 {
-                    transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-                    transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+                    nextPos = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                    rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
                 }
+
+                if (endOfPathInstruction == EndOfPathInstruction.Stop && distanceTravelled > 1f && !isStop && Vector3.Distance(transform.position, nextPos) < 0.01f)
+                {
+                    onArrive?.Invoke(destName);
+                    isStop = true;
+                    isStart = false;
+                }
+
+                transform.position = nextPos;
+                transform.rotation = rotation;
             }
         }
 
@@ -67,11 +96,21 @@ namespace PathCreation.Examples
         public void Depart()
         {
             isStart = true;
-            reacnDestination = false;
+            reachDestination = false;
+            isStop = false;
             speed = 0f;
             DOTween.To(() => speed, (x) => speed = x, speedStorage, 2f);
-
+            distanceTravelled = 0f;
             onDepart?.Invoke(destName);
+
+            if (reverseStartEnd)
+            {
+                transform.position = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
+            }
+            else
+            {
+                transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+            }
         }
 
         private void CalculateDestination()
@@ -80,9 +119,9 @@ namespace PathCreation.Examples
 
             float dist = Vector3.Distance(transform.position, destination.position);
 
-            if (!reacnDestination && dist < 5f)
+            if (!reachDestination && dist < 5f)
             {
-                reacnDestination = true;
+                reachDestination = true;
                 DOTween.To(() => speed, (x) => speed = x, 0f, 2f).OnComplete(() => onArrive.Invoke(destName));
             }
         }

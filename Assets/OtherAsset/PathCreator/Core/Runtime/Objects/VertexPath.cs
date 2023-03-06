@@ -207,7 +207,7 @@ namespace PathCreation
 
         public Vector3 GetRPointAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
-            float t = 1f - (dst / length);
+            float t = ((length - dst) / length);
             return GetPointAtTime(t, endOfPathInstruction);
         }
 

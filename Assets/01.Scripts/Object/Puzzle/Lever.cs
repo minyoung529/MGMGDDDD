@@ -24,6 +24,7 @@ public class Lever : MonoBehaviour
         {
             if (CheckLever())
             {
+                Debug.Log(isNear);
                 ToggleEvent();
             }
         }

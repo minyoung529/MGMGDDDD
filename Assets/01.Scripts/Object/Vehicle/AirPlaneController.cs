@@ -6,6 +6,17 @@ using UnityEngine;
 public class AirPlaneController : MonoBehaviour
 {
     [SerializeField] private Transform[] airPlanes;
+    private Vector3[] positions;
+
+    private void Start()
+    {
+        positions = new Vector3[airPlanes.Length];
+
+        for (int i = 0; i < airPlanes.Length; i++)
+        {
+            positions[i]= airPlanes[i].position;    
+        }
+    }
 
     public void ChangePlanePos(Destination destination)
     {
@@ -14,7 +25,7 @@ public class AirPlaneController : MonoBehaviour
 
         if (prev >= 0 && idx >= 0 && idx < airPlanes.Length)
         {
-            Vector3 targetPos = airPlanes[idx].position;
+            Vector3 targetPos = positions[idx];
 
             airPlanes[idx].DOMove(airPlanes[prev].position, 0f).OnComplete(() =>
             {
