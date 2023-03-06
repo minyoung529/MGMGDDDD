@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class FallingObject : MonoBehaviour
 {
-    [SerializeField] private Transform inPoint;
-    [SerializeField] private Transform outPoint;
     [SerializeField] private float range;
     [SerializeField] private float damage;
+    [SerializeField] private bool isUnmove;
+    private Vector3 inPoint;
+    private Vector3 outPoint;
     private Rigidbody rigid;
 
     private void Awake()
@@ -17,20 +18,29 @@ public class FallingObject : MonoBehaviour
 
     private void Update()
     {
-        if(Vector3.Distance(transform.position, inPoint.position) <= range)
+        if(Vector3.Distance(transform.position, inPoint) <= range)
         {
-            transform.position = outPoint.position;
+            transform.position = outPoint;
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.CompareTag("Boss"))
-        {
-            rigid.AddForce(new Vector3(1, Random.Range(-1, 1), Random.Range(-1, 1)).normalized * 100, ForceMode.Impulse);
+        if(collision.transform.CompareTag("Boss")) {
+            rigid.AddForce((transform.position - collision.GetContact(0).point).normalized * 100f, ForceMode.Impulse);
             BossScript boss = collision.transform.GetComponent<BossScript>();
             boss.GetDamage(damage);
+            GetComponent<Collider>().enabled = false;
         }
+        if (!isUnmove) return;
+        if (collision.transform.CompareTag("Floor")) {
+            GetComponent<UnMovedObject>().enabled = true;
+        }
+    }
+
+    public void SetPoint(Vector3 inPoint, Vector3 outPoint) {
+        this.inPoint = inPoint;
+        this.outPoint = outPoint;
     }
 
     public void Destroy()

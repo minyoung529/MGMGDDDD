@@ -31,7 +31,6 @@ public class Skill_IceBreath : BossSkill
 
     public override void PreDelay() {
         count--;
-        Debug.Log("Pre");
         effect_1.SetActive(true);
     }
 
@@ -52,12 +51,10 @@ public class Skill_IceBreath : BossSkill
 
     public override void SkillEnd() {
         if (count > 0) {
-            Debug.Log("end");
             parent.Anim.SetInteger(hash_iRandom, Random.Range(0, 2));
             parent.Anim.SetTrigger(hash_tIceBreath);
         }
         else {
-            Debug.Log("³¡");
             effect_1.SetActive(false);
             parent.CallNextSkill();
         }
