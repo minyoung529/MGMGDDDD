@@ -22,6 +22,7 @@ public class Define
     public const string OIL_PET_TAG = "OilPet";
     public const string FIRE_PET_TAG = "FirePet";
     public const string TRIGGER_TAG = "Trigger";
+    public const string EQUIP_POINT = "EquipPoint";
     #endregion
 
     #region ROPE_VALUE
