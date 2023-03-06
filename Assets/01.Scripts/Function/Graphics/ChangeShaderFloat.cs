@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChangeShaderFloat : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class ChangeShaderFloat : MonoBehaviour
     new private string name;
 
     private int fillId;
-    private Material material;
+    private Material material = null;
 
     [SerializeField]
     private Ease ease = Ease.OutQuad;
@@ -29,7 +30,12 @@ public class ChangeShaderFloat : MonoBehaviour
 
     private void Start()
     {
-        material = GetComponent<Renderer>().material;
+        if (GetComponent<Renderer>())
+        {
+
+            material = GetComponent<Renderer>().material;
+        }
+        material ??= GetComponent<RawImage>().material;
         fillId = Shader.PropertyToID(name);
     }
 
@@ -67,6 +73,8 @@ public class ChangeShaderFloat : MonoBehaviour
         {
             seq.AppendInterval(preDelay);
         }
+
+        Debug.Log(inactiveValue);
         seq.AppendCallback(() => ChangeValue(inactiveValue));
     }
 

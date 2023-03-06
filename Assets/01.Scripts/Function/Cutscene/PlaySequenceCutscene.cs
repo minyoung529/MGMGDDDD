@@ -11,6 +11,7 @@ public class PlaySequenceCutscene : MonoBehaviour
     private void Start()
     {
         StartCoroutine(PlayAllDirectors());
+        CameraSwitcher.ChangeSwitchBlend(4f);
     }
 
     private IEnumerator PlayAllDirectors()

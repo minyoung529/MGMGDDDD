@@ -38,7 +38,7 @@ public class FallDie : MonoBehaviour
 
         Ray ray = new Ray(transform.position + Vector3.up * 0.2f, Vector3.down);
 
-        if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hitInfo, 0.6f, bottomLayer))
+        if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hitInfo, 1.2f, bottomLayer))
         {
             hitPoint = hitInfo.point;
         }
