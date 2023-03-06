@@ -16,7 +16,6 @@ public class GearItem : Item
 
         if(isNearEquipPoint)
         {
-            Debug.Log("Clear");
             useItem.Invoke();
         }
     }
