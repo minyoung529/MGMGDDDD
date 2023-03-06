@@ -102,7 +102,7 @@ public class InputManager : MonoSingleton<InputManager>
                 }
                 else if (infos[keyIndex].inputType <= InputType.ScrollDown)
                 {
-                    if ((int)value == 0)
+                    if ((float)value == 0)
                     {
                         result = false;
                         break;
@@ -136,11 +136,11 @@ public class InputManager : MonoSingleton<InputManager>
             case InputType.ScrollUp:
                 if (Input.mouseScrollDelta.y > 0)
                     return Input.mouseScrollDelta.y;
-                return 0;
+                return 0f;
             case InputType.ScrollDown:
                 if (Input.mouseScrollDelta.y < 0)
                     return Input.mouseScrollDelta.y;
-                return 0;
+                return 0f;
             default:
                 return 0;
         }
