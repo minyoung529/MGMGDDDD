@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public class AirPlaneMove : MonoBehaviour
 {
@@ -35,27 +36,31 @@ public class AirPlaneMove : MonoBehaviour
 
     public bool isActive = false;
 
+    [SerializeField]
+    private bool isStartIdle = true;
+
+    private float positionY = 0f;
+
     private void Awake()
     {
-        if (!isDown)
+        if (!isDown && isStartIdle)
         {
             StartIdleMove();
         }
 
         originalPosition = transform.position;
         originalRotation = transform.rotation;
-
         gameObject.SetActive(isActive);
     }
 
-    private void StartIdleMove()
+    public void StartIdleMove()
     {
         idleSequence.Kill();
 
-        float originalY = transform.position.y;
+        positionY = transform.position.y;
         idleSequence = DOTween.Sequence();
-        idleSequence.Append(transform.DOMoveY(originalY + distance, duration).SetEase(Ease.OutQuad));
-        idleSequence.Append(transform.DOMoveY(originalY, duration).SetEase(Ease.OutQuad));
+        idleSequence.Append(transform.DOMoveY(positionY + distance, duration).SetEase(Ease.OutQuad));
+        idleSequence.Append(transform.DOMoveY(positionY, duration).SetEase(Ease.OutQuad));
         idleSequence.SetLoops(-1);
     }
 
