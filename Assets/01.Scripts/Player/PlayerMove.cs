@@ -236,4 +236,9 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(time);
         isInputLock = false;
     }
+
+    public void ActiveRigidbody(bool isActive)
+    {
+        rigid.isKinematic = !isActive;
+    }
 }
