@@ -28,6 +28,7 @@ public class TutorialController : MonoBehaviour
         else
         {
             tutorialCanvas = Instantiate(tutorialCanvasPrefab);
+            tutorialCanvas.name = "TutorialCanvas";
         }
         animator = GetComponent<Animator>();
 
