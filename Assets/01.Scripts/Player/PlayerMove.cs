@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
@@ -57,6 +58,14 @@ public class PlayerMove : MonoBehaviour
     private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
     #endregion
 
+    #region Push And Pull
+
+    public float pushPower = 2.0F;
+    private bool isPushObj = false;
+    private PushAndPull pushObj = null;
+
+    #endregion
+
     private Camera mainCam;
     public Camera MainCam
     {
@@ -67,7 +76,6 @@ public class PlayerMove : MonoBehaviour
             return mainCam;
         }
     }
-
 
     [SerializeField] private float distanceToGround = 0;
 
@@ -84,6 +92,23 @@ public class PlayerMove : MonoBehaviour
         SetStateDictionary();
     }
 
+    private void InputPush(InputAction input, float value)
+    {
+        if (pushObj == null || !isPushObj) return;
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 2.0f);
+        for(int i=0; i < colliders.Length;i++)
+        {
+            PushAndPull obj = colliders[i].GetComponent<PushAndPull>();
+            if(obj == null) continue;
+
+            isPushObj = true;
+            pushObj = obj;
+
+        }
+
+    }
+
     private void SetStateDictionary()
     {
         foreach (MoveState item in stateList)
@@ -94,6 +119,8 @@ public class PlayerMove : MonoBehaviour
 
     private void StartListen()
     {
+        InputManager.StartListeningInput(InputAction.Push_Object, InputPush);
+
         actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
@@ -271,8 +298,10 @@ public class PlayerMove : MonoBehaviour
         rigid.isKinematic = !isActive;
     }
 
+
     private void OnDestroy()
     {
+        InputManager.StopListeningInput(InputAction.Push_Object, InputPush);
         foreach (var keyValue in actions)
         {
             InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
