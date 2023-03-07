@@ -33,6 +33,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void Start()
     {
+        // LATER FIX
+        SceneController.ListeningEnter(SceneType.Clock, () => MainCam = Camera.main);
         RenderSettingController.Start();
         CameraSwitcher.Start();
     }

@@ -62,7 +62,7 @@ public class PlayerMove : MonoBehaviour
     {
         get
         {
-            if(mainCam==null)
+            if (mainCam == null)
                 mainCam = Camera.main;
             return mainCam;
         }
@@ -70,6 +70,8 @@ public class PlayerMove : MonoBehaviour
 
 
     [SerializeField] private float distanceToGround = 0;
+
+    private Dictionary<InputAction, Action<InputAction, float>> actions = new Dictionary<InputAction, Action<InputAction, float>>();
 
     private void Awake()
     {
@@ -82,39 +84,53 @@ public class PlayerMove : MonoBehaviour
         SetStateDictionary();
     }
 
-    private void SetStateDictionary() {
-        foreach(MoveState item in stateList) {
+    private void SetStateDictionary()
+    {
+        foreach (MoveState item in stateList)
+        {
             stateDictionary.Add(item.StateName, item);
         }
     }
 
-    private void StartListen() {
-        InputManager.StartListeningInput(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
-        InputManager.StartListeningInput(InputAction.Back, (action, value) => GetInput(action, -Forward));
-        InputManager.StartListeningInput(InputAction.Move_Right, (action, value) => GetInput(action, Right));
-        InputManager.StartListeningInput(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
-        InputManager.StartListeningInput(InputAction.Zoom, (action, value) => {
+    private void StartListen()
+    {
+        actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
+        actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
+        actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
+        actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
+        actions.Add(InputAction.Zoom, (action, value) =>
+        {
             if (curState.StateName != StateName.Zoom)
                 ChangeState(StateName.Zoom);
             else
                 ChangeState(StateName.DefaultMove);
-            });
-        InputManager.StartListeningInput(InputAction.Jump, (action, value) => {
-            if(CheckOnGround())
+        });
+
+        actions.Add(InputAction.Jump, (action, value) =>
+        {
+            if (CheckOnGround())
                 ChangeState(StateName.Jump);
         });
+
+        foreach(var keyValue in actions)
+        {
+            InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
+        }
     }
-    private void GetInput(InputAction action, Vector3 input) {
+    private void GetInput(InputAction action, Vector3 input)
+    {
         if (isInputLock) return;
         inputDir += input;
         inputDir = inputDir.normalized;
     }
 
-    private void Update() {
+    private void Update()
+    {
         SendInput();
     }
 
-    private void SendInput() {
+    private void SendInput()
+    {
         curState.OnInput(inputDir);
         anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, inputDir));
         anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, inputDir));
@@ -151,13 +167,16 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    public void ChangeState(StateName state) {
+    public void ChangeState(StateName state)
+    {
         MoveState targetState;
-        if(!stateDictionary.TryGetValue(state, out targetState)) {
+        if (!stateDictionary.TryGetValue(state, out targetState))
+        {
             Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
             return;
         }
-        curState.OnStateEnd(() => {
+        curState.OnStateEnd(() =>
+        {
             curState = targetState;
             anim.SetInteger(hash_iStateNum, (int)state);
             anim.SetTrigger(hash_tStateChange);
@@ -165,11 +184,14 @@ public class PlayerMove : MonoBehaviour
         });
     }
 
-    public void Accelerate(Vector3 inputDir, float accel = 2f, float brakeTime = 0.5f, float maxSpeed = 2f) {
+    public void Accelerate(Vector3 inputDir, float accel = 2f, float brakeTime = 0.5f, float maxSpeed = 2f)
+    {
         curSpeed += accel * Time.deltaTime;
-        if (curSpeed > maxSpeed) {
+        if (curSpeed > maxSpeed)
+        {
             curSpeed = Mathf.MoveTowards(curSpeed, maxSpeed, curSpeed / brakeTime * Time.deltaTime);
-            if(curSpeed < maxSpeed) {
+            if (curSpeed < maxSpeed)
+            {
                 curSpeed = maxSpeed;
             }
         }
@@ -180,9 +202,11 @@ public class PlayerMove : MonoBehaviour
         anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
-    public void Decelerate (float brakeTime = 0.5f) {
+    public void Decelerate(float brakeTime = 0.5f)
+    {
         curSpeed = Mathf.MoveTowards(curSpeed, 0, curSpeed / brakeTime * Time.deltaTime);
-        if (curSpeed < 0) {
+        if (curSpeed < 0)
+        {
             curSpeed = 0;
         }
         Vector3 dir = inputDir * curSpeed;
@@ -193,33 +217,39 @@ public class PlayerMove : MonoBehaviour
 
         anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
-    public void SetRotate(Vector3 dir) {
+    public void SetRotate(Vector3 dir)
+    {
         if (inputDir.sqrMagnitude <= 0) return;
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
     }
-    public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {
+    public void SetRotate(Vector3 dir, float rotateTime = rotateTime)
+    {
         if (inputDir.sqrMagnitude <= 0) return;
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
     }
 
-    public bool CheckOnGround() {
+    public bool CheckOnGround()
+    {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position + Vector3.up * 0.2f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.3f, groundLayer)) {
+        if (Physics.BoxCast(transform.position + Vector3.up * 0.2f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.3f, groundLayer))
+        {
             if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
         return false;
     }
 
     #region 애니메이션 이벤트
-    public void JumpEvent() {
-        if(curState is JumpState)
+    public void JumpEvent()
+    {
+        if (curState is JumpState)
         {
             JumpState jump = (JumpState)curState;
             jump?.Jump();
         }
     }
 
-    public void LandingEvent() {
+    public void LandingEvent()
+    {
         ChangeState(StateName.DefaultMove);
     }
     #endregion
@@ -239,5 +269,13 @@ public class PlayerMove : MonoBehaviour
     public void ActiveRigidbody(bool isActive)
     {
         rigid.isKinematic = !isActive;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var keyValue in actions)
+        {
+            InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
+        }
     }
 }
