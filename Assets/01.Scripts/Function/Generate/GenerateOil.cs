@@ -14,6 +14,7 @@ public class GenerateOil : MonoBehaviour
 
     private void Awake()
     {
+        meshRenderer = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
 
         for (int i = 0; i < meshRenderer.Count; i++)
         {
@@ -32,7 +33,7 @@ public class GenerateOil : MonoBehaviour
         //     oilObject.gameObject.SetActive(true);
         for (int i = 0; i < meshRenderer.Count; i++)
         {
-            if (mats.Length == 1) continue;
+            if (mats[i].Length == 1) continue;
 
             mats[i][1] = oilMat;
             meshRenderer[i].materials = mats[i];
