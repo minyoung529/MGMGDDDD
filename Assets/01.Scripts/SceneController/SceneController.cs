@@ -53,7 +53,7 @@ public class SceneController : MonoBehaviour
         OnEnterScene[curScene]?.Invoke();
     }
 
-    public static void ListningEnter(SceneType sceneType, Action onEnter)
+    public static void ListeningEnter(SceneType sceneType, Action onEnter)
     {
         Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] += onEnter;
