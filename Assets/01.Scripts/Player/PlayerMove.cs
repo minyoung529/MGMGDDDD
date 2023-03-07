@@ -7,7 +7,6 @@ public class PlayerMove : MonoBehaviour
 {
     #region 속력, 방향 관련 변수
     private Rigidbody rigid;
-    [SerializeField] private float zoomMoveSpeed = 10;
     [SerializeField] private const float rotateTime = 2f;
 
     private float curSpeed = 0;
@@ -235,5 +234,10 @@ public class PlayerMove : MonoBehaviour
         isInputLock = true;
         yield return new WaitForSeconds(time);
         isInputLock = false;
+    }
+
+    public void ActiveRigidbody(bool isActive)
+    {
+        rigid.isKinematic = !isActive;
     }
 }
