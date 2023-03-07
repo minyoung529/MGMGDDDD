@@ -8,20 +8,16 @@ public class GenerateOil : MonoBehaviour
     [SerializeField] private GameObject oilObject;
     [SerializeField] private Material oilMat;
 
-    private List<MeshRenderer> meshRenderers = new List<MeshRenderer>();
+    public List<MeshRenderer> meshRenderer = new List<MeshRenderer>();
+    private Material[][] mats = new Material[5][];
     private Vector3 scale;
 
     private void Awake()
     {
-        meshRenderers = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
-        
-        for (int i = 0; i < meshRenderers.Count; i++)
+
+        for (int i = 0; i < meshRenderer.Count; i++)
         {
-            if (meshRenderers[i].materials.Length == 1)
-            {
-                //List<Material> matList = new List<Material>(meshRenderers[i].materials);
-                meshRenderers[i].materials = new Material[2] { meshRenderers[i].material, null };
-            }
+            mats[i] = meshRenderer[i].materials;
         }
     }
 
@@ -33,13 +29,11 @@ public class GenerateOil : MonoBehaviour
 
     public void Generate()
     {
-        Debug.Log("GENERATE");
-
         //     oilObject.gameObject.SetActive(true);
-        for (int i = 0; i < meshRenderers.Count; i++)
+        for (int i = 0; i < meshRenderer.Count; i++)
         {
-            meshRenderers[i].materials[1] = oilMat;
-            meshRenderers[i].sharedMaterials[1].CopyPropertiesFromMaterial(oilMat);
+            mats[i][1] = oilMat;
+            meshRenderer[i].materials = mats[i];
         }
         //    oilObject.transform.localScale = Vector3.zero;
         //   oilObject.transform.DOScale(scale, 1f);
