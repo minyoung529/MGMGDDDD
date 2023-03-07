@@ -13,7 +13,14 @@ public class ToggleRotation : MonoBehaviour
 
     private void Start()
     {
-        originalAngles = transform.eulerAngles;
+        if (isLocal)
+        {
+            originalAngles = transform.localEulerAngles;
+        }
+        else
+        {
+            originalAngles = transform.eulerAngles;
+        }
     }
 
     [ContextMenu("Trigger")]

@@ -5,11 +5,16 @@ using DG.Tweening;
 
 public class FireworkMove : MonoBehaviour
 {
-    [SerializeField] private GameObject particle;
     [SerializeField] private float range = 5;
     [SerializeField] private float time = 3;
     [SerializeField] private float damage = 15;
     [SerializeField] private int pathCount = 5;
+
+    [Header("파티클 관련")]
+    [SerializeField] private GameObject explosion;
+    [SerializeField] private GameObject fire;
+    [SerializeField] private GameObject fuze;
+    [SerializeField] private GameObject fuzeParticle;
 
     private Vector3 target;
     private Sequence seq;
@@ -20,12 +25,16 @@ public class FireworkMove : MonoBehaviour
     }
 
     public void Enable() {
-        particle.SetActive(true);
-        seq = DOTween.Sequence();
+        rigid.constraints = RigidbodyConstraints.FreezeAll;
 
-        seq.Append(transform.DOMoveY(2, 1));
+        seq = DOTween.Sequence();
+        fuzeParticle.SetActive(true);
+        seq.Append(fuze.transform.DOLocalMoveZ(0.1f, 0.3f));
+        seq.AppendCallback(() => { fire.SetActive(true); });
+        seq.Append(transform.DOMoveY(transform.position.y + 2, 1));
         seq.Join(transform.DOLookAt(target, 1));
         seq.Append(transform.DOMove(target, time));
+
         /*
         Vector3[] path = new Vector3[pathCount];
 
@@ -59,10 +68,15 @@ public class FireworkMove : MonoBehaviour
             Enable();
         }
         if (collision.transform.CompareTag("Boss")) {
-            rigid.AddForce((transform.position - collision.GetContact(0).point).normalized * 100f, ForceMode.Impulse);
+            Instantiate(explosion, collision.GetContact(0).point, Quaternion.identity);
+
             BossScript boss = collision.transform.GetComponent<BossScript>();
             boss.GetDamage(damage);
-            particle.SetActive(false);
+
+            rigid.constraints = RigidbodyConstraints.None;
+            fuze.transform.position = Vector3.zero;
+            fuzeParticle.SetActive(false);
+            fire.SetActive(false);
             gameObject.SetActive(false);
         }
     }
