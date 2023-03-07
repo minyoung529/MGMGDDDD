@@ -31,6 +31,6 @@ public class ButtonObject : MonoBehaviour
 
     private void OnButtonAnimation()
     {
-        transform.DOLocalMoveY(-0.37f, 0.7f);
+        transform.DOLocalMoveY(-0.31f, 0.7f);
     }
 }

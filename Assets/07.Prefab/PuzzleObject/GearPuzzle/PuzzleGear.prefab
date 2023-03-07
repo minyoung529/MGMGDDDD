@@ -4984,6 +4984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRotate: 0
   isOil: 0
+  animator: {fileID: 0}
 --- !u!54 &7226620965843104626
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5100,6 +5101,8 @@ MonoBehaviour:
   fireParticle:
   - {fileID: 1876223434763984533}
   isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
 --- !u!65 &1876223433682048221
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5337,11 +5340,27 @@ PrefabInstance:
       value: rotate1_Model0218
       objectReference: {fileID: 0}
     - target: {fileID: 1952077851438228562, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952077851438228562, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a9fe39bc99111904bab2d65d2fd2f9f4, type: 2}
+    - target: {fileID: 1952077851438228562, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: a9fe39bc99111904bab2d65d2fd2f9f4, type: 2}
+    - target: {fileID: 3071095329121965439, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071095329121965439, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a9fe39bc99111904bab2d65d2fd2f9f4, type: 2}
     - target: {fileID: 3071095329121965439, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: a9fe39bc99111904bab2d65d2fd2f9f4, type: 2}
     - target: {fileID: 8604126180703532792, guid: b3108976d6cbba142a4ff0aafd096b66, type: 3}
@@ -5572,3 +5591,5 @@ MonoBehaviour:
       m_Calls: []
   fireParticle: []
   isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
