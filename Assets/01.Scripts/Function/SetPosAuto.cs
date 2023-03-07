@@ -4,26 +4,35 @@ using UnityEngine;
 
 public class SetPosAuto : MonoBehaviour
 {
-    [SerializeField] private Transform targetTransform;
+    [SerializeField] private List<Transform> targetTransform;
     [SerializeField] private float distance = 1f;
     [SerializeField] private float moveSpeed = 1f;
     private bool isSet = false;
 
     private void Update() {
         if (isSet) return;
-        if ((targetTransform.position - transform.position).sqrMagnitude <= Mathf.Pow(distance, 2)) {
-            StartCoroutine(Move());
-            isSet = true;
+        foreach (Transform item in targetTransform)
+        {
+            if ((item.position - transform.position).sqrMagnitude <= Mathf.Pow(distance, 2))
+            {
+                StartCoroutine(Move(item));
+                isSet = true;
+            }
         }
     }
 
-    private IEnumerator Move() {
-        while((targetTransform.position - transform.position).sqrMagnitude <= 0.1f) {
-            transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, moveSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetTransform.rotation, moveSpeed * Time.deltaTime);
+    private IEnumerator Move(Transform pos) {
+        while((pos.position - transform.position).sqrMagnitude <= 0.01f) {
+            transform.position = Vector3.MoveTowards(transform.position, pos.position, moveSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, pos.rotation, moveSpeed * Time.deltaTime);
             yield return null;
         }
-        transform.position = targetTransform.position;
-        transform.rotation = targetTransform.rotation;
+        transform.position = pos.position;
+        transform.rotation = pos.rotation;
+    }
+
+    public void Reset()
+    {
+        isSet = false;
     }
 } 
