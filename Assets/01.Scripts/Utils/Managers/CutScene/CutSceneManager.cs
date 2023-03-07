@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 public class CutSceneManager : MonoBehaviour
 {
@@ -11,6 +12,11 @@ public class CutSceneManager : MonoBehaviour
 
     private static Action OnCutsceneStart;
     private static Action OnCutsceneEnd;
+
+    [SerializeField]
+    protected Image topBar;
+    [SerializeField]
+    protected Image bottomBar;
 
     private void Awake()
     {
