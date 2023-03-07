@@ -1,26 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class Item : MonoBehaviour
 {
     [SerializeField] Transform attachPoint;
 
-    public LayerMask playerLayer;
-    private float nearRadius = 3f;
+    protected bool isGet = false;
+    protected bool isNearPlayer = false;
+    protected string playerTag = Define.PLAYER_TAG;
+
     private Rigidbody rigid;
-    private Collider collider;
+    private PushObject playerPushObj;
 
-    private bool isGet = false;
-
-    private void Awake()
-    {
-        rigid = GetComponent<Rigidbody>();
-        collider = GetComponent<Collider>();
-        isGet = false;
-    }
     private void Start()
     {
+        rigid = GetComponent<Rigidbody>();
+        isGet = false;
         StartListen();
     }
 
@@ -33,39 +30,66 @@ public class Item : MonoBehaviour
         InputManager.StopListeningInput(InputAction.Interaction, SetEquip);
     }
 
-    #region Boolean
-    private bool NearPlayer()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, nearRadius, playerLayer);
-       return colliders.Length > 0;
-    }
-    #endregion
-
     protected virtual void SetEquip(InputAction action, float value)
     {
-       if (!NearPlayer()) return;
-
         isGet = !isGet;
-        rigid.isKinematic = isGet;
-        collider.enabled = !isGet;
 
         if (isGet) GetItem();
         else UseItem();
     }
-    
+
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag(playerTag))
+        {
+            isNearPlayer = true;
+            playerPushObj = other.GetComponent<PushObject>();
+        }
+    }
+    protected virtual void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(playerTag))
+        {
+            isNearPlayer = false;
+            playerPushObj = null;
+        }
+    }
+
     protected virtual void GetItem()
     {
-        isGet = true;
+        if (!isNearPlayer)
+        {
+            isGet = false;
+            return;
+        }
+        PickUp();
+    }
+    public virtual void UseItem()
+    {
+        Drop();
+    }
+
+    public void PickUp()
+    {
+        if (playerPushObj == null) return;
+
+        playerPushObj.CanPush = true;
+        rigid.isKinematic = true;
+        rigid.useGravity = false;
 
         transform.SetParent(attachPoint, true);
         transform.localPosition = Vector3.zero;
         transform.rotation = new Quaternion(0, 0, 0, 0);
     }
-    public virtual void UseItem()
+    public void Drop()
     {
-        isGet = false;
-
-        attachPoint.transform.DetachChildren();
+        //attachPoint.transform.DetachChildren();
+        //playerPushObj.CanPush = false;
+        //    playerPushObj = null;
     }
 
+    private void OnDestroy()
+    {
+        StopListen();
+    }
 }

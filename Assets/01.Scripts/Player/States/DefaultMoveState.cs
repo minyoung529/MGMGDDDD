@@ -61,4 +61,9 @@ public class DefaultMoveState : MoveState
         anim.SetBool(hash_bWalk, false);
         player.Decelerate(brakeTime);
     }
+
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.Sprint, Sprint);
+    }
 }

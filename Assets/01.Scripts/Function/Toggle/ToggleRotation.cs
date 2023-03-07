@@ -16,6 +16,7 @@ public class ToggleRotation : MonoBehaviour
         originalAngles = transform.eulerAngles;
     }
 
+    [ContextMenu("Trigger")]
     public void Trigger()
     {
         if (isOpen)

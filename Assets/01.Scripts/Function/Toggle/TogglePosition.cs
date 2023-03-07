@@ -12,6 +12,7 @@ public class TogglePosition : MonoBehaviour
     private bool isOpen = false;
 
     [SerializeField] private UnityEvent OnOpen;
+    [SerializeField] private UnityEvent OnClose;
 
     private void Start()
     {
@@ -20,7 +21,6 @@ public class TogglePosition : MonoBehaviour
 
     public void Trigger()
     {
-        Debug.Log("TRIGGEr");
         if (isOpen)
             Close();
         else
@@ -43,7 +43,7 @@ public class TogglePosition : MonoBehaviour
     public void Open()
     {
         transform.DOKill();
-        transform.DOMove(originalPos + targetPos, duration);
+        transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke());
 
         OnOpen?.Invoke();
     }

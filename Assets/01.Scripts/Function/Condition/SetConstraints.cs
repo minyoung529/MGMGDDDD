@@ -29,7 +29,6 @@ public class SetConstraints : MonoBehaviour
 
         if (((1 << collision.gameObject.layer) & targetLayer) != 0)
         {
-            Debug.Log("Sdf");
             isRotating = true;
             transform.DORotate(rotation, 0.5f).OnComplete(() => isRotating = false);
             rigid.constraints = constraints;

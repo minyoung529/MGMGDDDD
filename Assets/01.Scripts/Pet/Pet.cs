@@ -137,12 +137,13 @@ public abstract class Pet : MonoBehaviour
         StopFollow();
 
         destination = dest;
+        isFollow = false;
         isClickMove = true;
         rigid.velocity = Vector3.zero;
     }
     private void ClickMove()
     {
-        if (Vector3.Distance(destination, transform.position) <= 0.6f)
+        if (Vector3.Distance(destination, transform.position) <= 1f)
         {
             isClickMove = false;
             return;
@@ -154,8 +155,14 @@ public abstract class Pet : MonoBehaviour
 
     protected void FollowTarget()
     {
-        if (isClickMove) { ClickMove(); }
-        if (isFollow && agent.destination != target.position) { agent.SetDestination(target.position); }
+        if (isClickMove)
+        {
+            ClickMove(); 
+        }
+        if (isFollow && agent.destination != target.position)
+        {
+            agent.SetDestination(target.position);
+        }
     }
 
     private void StartFollow(InputAction inputAction, float value)

@@ -2,7 +2,8 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
-public class OilPaint : MonoBehaviour{
+public class OilPaint : MonoBehaviour
+{
 
     [SerializeField] ParticleSystem splashParticle;
     private Rigidbody rigid;
@@ -29,7 +30,7 @@ public class OilPaint : MonoBehaviour{
         transform.localScale = defaultScale;
 
         isBurn = false;
-        isSpread= false;
+        isSpread = false;
 
         rigid.useGravity = false;
     }
@@ -41,6 +42,8 @@ public class OilPaint : MonoBehaviour{
         if (splashParticle.isPlaying) splashParticle.Stop();
         splashParticle.Play();
 
+        rigid.isKinematic = true;
+
         transform.DOScale(transform.localScale + new Vector3(scaleUp, scaleUp, scaleUp), 0.1f).OnComplete(() =>
         {
             transform.GetChild(0).localScale += new Vector3(scaleUp, scaleUp, scaleUp);
@@ -48,7 +51,7 @@ public class OilPaint : MonoBehaviour{
             StartCoroutine(DelayDestroy());
         });
 
-        rigid.velocity= Vector3.zero;
+        rigid.velocity = Vector3.zero;
     }
     public void BurnDestroy()
     {
@@ -57,7 +60,7 @@ public class OilPaint : MonoBehaviour{
     public IEnumerator DestroyOil()
     {
         yield return new WaitForSeconds(1f);
-    //    Destroy(gameObject.GetComponent<HingeJoint>());
+        //    Destroy(gameObject.GetComponent<HingeJoint>());
     }
     private IEnumerator DelayDestroy()
     {
@@ -69,7 +72,7 @@ public class OilPaint : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG ) || other.CompareTag(Define.OIL_BULLET_TAG)) return;
+        if (other.CompareTag(Define.FIRE_PET_TAG) || other.CompareTag(Define.PLAYER_TAG) || other.CompareTag(Define.OIL_PET_TAG) || other.CompareTag(Define.OIL_BULLET_TAG) || other.CompareTag(Define.TRIGGER_TAG)) return;
 
         SpreadOil(other.transform, transform.position);
 
@@ -77,11 +80,11 @@ public class OilPaint : MonoBehaviour{
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG)|| collision.collider.CompareTag(Define.OIL_BULLET_TAG)) return;
+        if (collision.collider.CompareTag(Define.FIRE_PET_TAG) || collision.collider.CompareTag(Define.PLAYER_TAG) || collision.collider.CompareTag(Define.OIL_PET_TAG) || collision.collider.CompareTag(Define.OIL_BULLET_TAG) || collision.collider.CompareTag(Define.TRIGGER_TAG)) return;
 
         SpreadOil(collision.transform, transform.position);
     }
-   
+
     private void OnTriggerExit(Collider other)
     {
         other.material = null;

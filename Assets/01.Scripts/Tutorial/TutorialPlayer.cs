@@ -58,6 +58,9 @@ public class TutorialPlayer : MonoBehaviour
     private void ShowNextTutorial()
     {
         Sequence seq = DOTween.Sequence();
+
+        if (autoGroups.Count <= autoIdx) return;
+
         CanvasGroup curGroup = autoGroups[autoIdx];
         isChainging = true;
 

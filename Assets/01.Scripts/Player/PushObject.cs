@@ -12,6 +12,7 @@ public class PushObject : MonoBehaviour
     private Vector3 leftPos, rightPos;
 
     Rigidbody pushedRigid;
+    public bool CanPush { get; set; }
     private Animator animator;
 
     private void Start()
@@ -39,7 +40,7 @@ public class PushObject : MonoBehaviour
 
     private void OnAnimatorIK(int layerIndex)
     {
-        if (pushedRigid)
+        if (pushedRigid || CanPush)
         {
             animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
             animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);

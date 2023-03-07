@@ -6,10 +6,9 @@ using UnityEngine;
 
 public enum SceneType
 {
-    LivingRoom,
-    NewClock_QU,
-    LoadingScene,
-    Test,
+    LivingRoom = 0,
+    Clock = 1,
+    LoadingScene = 2,
     Count
 }
 
@@ -54,7 +53,7 @@ public class SceneController : MonoBehaviour
         OnEnterScene[curScene]?.Invoke();
     }
 
-    public static void ListningEnter(SceneType sceneType, Action onEnter)
+    public static void ListeningEnter(SceneType sceneType, Action onEnter)
     {
         Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] += onEnter;

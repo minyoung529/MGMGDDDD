@@ -9,7 +9,7 @@ public enum CameraType
     Rope,
     Pet
 }
-public class CameraSwitcher : MonoBehaviour
+public class CameraSwitcher
 {
     static List<CinemachineVirtualCameraBase> cameras = new List<CinemachineVirtualCameraBase>();
     public static List<CinemachineVirtualCameraBase> Cameras => cameras;
@@ -24,7 +24,7 @@ public class CameraSwitcher : MonoBehaviour
             if (cinemachineBrain)
                 return cinemachineBrain;
 
-            cinemachineBrain = FindObjectOfType<CinemachineBrain>();
+            cinemachineBrain = Object.FindObjectOfType<CinemachineBrain>();
             return cinemachineBrain;
         }
     }
@@ -45,6 +45,17 @@ public class CameraSwitcher : MonoBehaviour
                 c.Priority = 0;
             }
         }
+    }
+
+    public static void Start()
+    {
+        SceneController.ListeningEnter(SceneType.Clock, ResetCameras);
+    }
+
+    private static void ResetCameras()
+    {
+        cameras.Clear();
+        activeCamera = null;
     }
 
     #region CameraSet

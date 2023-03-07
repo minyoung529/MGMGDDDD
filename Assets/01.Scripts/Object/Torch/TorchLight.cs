@@ -9,9 +9,7 @@ public class TorchLight : MonoBehaviour
     private bool isOn = false;
 
     public bool IsOn { get { return isOn; } }
-
-    [SerializeField]
-    private UnityEvent OnLighted;
+    public UnityEvent<bool> OnLighted;
 
     ParticleSystem[] particles;
 
@@ -46,11 +44,13 @@ public class TorchLight : MonoBehaviour
     {
         if (IsOn) OffLight();
         else OnLight();
+
+        OnLighted?.Invoke(isOn);
     }
 
     public virtual void FireCollision()
     {
-        OnLighted?.Invoke();
+        //OnLighted?.Invoke(isOn);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -60,6 +60,7 @@ public class TorchLight : MonoBehaviour
         {
             if (!fire.IsBurn) return;
             OnLight();
+            OnLighted?.Invoke(isOn);
         }
     }
 }

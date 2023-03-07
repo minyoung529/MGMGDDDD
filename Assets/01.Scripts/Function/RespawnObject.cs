@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RespawnObject : MonoBehaviour
 {
     [SerializeField] private Transform respawnPoint;
+    [SerializeField] private UnityEvent OnRespawn;
 
     private Collider col;
 
@@ -13,6 +15,7 @@ public class RespawnObject : MonoBehaviour
     }
 
     public void Respawn() {
+        OnRespawn?.Invoke();
         StartCoroutine(RespawnCoroutine());
     }
 
@@ -23,10 +26,5 @@ public class RespawnObject : MonoBehaviour
             yield return null;
         }
         col.enabled = true;
-    }
-
-    [ContextMenu("Test")]
-    public void Test() {
-        GetComponent<Collider>().enabled = false;
     }
 }

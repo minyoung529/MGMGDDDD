@@ -31,8 +31,11 @@ public class GearRotation : MonoBehaviour
         //}
         //else
         //{ 
-        DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, rotSpeed, 0.6f).SetEase(Ease.InQuad);
-        StartCoroutine(RotateGear());
+        if (animator == null)
+        {
+            DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, rotSpeed, 0.6f).SetEase(Ease.InQuad);
+            StartCoroutine(RotateGear());
+        }
         //}
     }
     public void StopGear()

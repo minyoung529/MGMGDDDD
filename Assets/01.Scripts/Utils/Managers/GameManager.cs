@@ -12,7 +12,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             if (cutSceneManager)
                 return cutSceneManager;
-            
+
             cutSceneManager = FindObjectOfType<CutSceneManager>();
             return cutSceneManager;
         }
@@ -22,15 +22,21 @@ public class GameManager : MonoSingleton<GameManager>
     public UIManager UI { get; private set; } = new UIManager();
     #endregion
 
+    private float st;
+
     protected override void Awake()
     {
+        st = Time.time;
         MainCam = Camera.main;
         base.Awake();
     }
 
     private void Start()
     {
+        // LATER FIX
+        SceneController.ListeningEnter(SceneType.Clock, () => MainCam = Camera.main);
         RenderSettingController.Start();
+        CameraSwitcher.Start();
     }
 
     public Vector3 GetMousePos()
@@ -59,5 +65,10 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         return Vector3.zero;
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log(st);
     }
 }
