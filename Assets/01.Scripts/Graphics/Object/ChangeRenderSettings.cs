@@ -58,7 +58,13 @@ public class ChangeRenderSettings : MonoBehaviour
         }
     }
 
-    private void Change()
+    public void TriggerFog(bool isTrigger)
+    {
+        fog = isTrigger;
+        Change();
+    }
+
+    public void Change()
     {
         oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
         oAmbientLight = RenderSettingController.SetAmbientLight(ambientLight, duration);
@@ -67,7 +73,7 @@ public class ChangeRenderSettings : MonoBehaviour
         oFogDensity = RenderSettingController.SetFogDensity(fogDensity, duration);
     }
 
-    private void Back()
+    public void Back()
     {
         RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
         RenderSettingController.SetAmbientLight(oAmbientLight, duration);

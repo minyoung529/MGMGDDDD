@@ -9,8 +9,8 @@ public class Item : MonoBehaviour
 
     protected bool isGet = false;
     protected bool isNearPlayer = false;
-
     protected string playerTag = Define.PLAYER_TAG;
+
     private Rigidbody rigid;
     private PushObject playerPushObj;
 
@@ -32,8 +32,6 @@ public class Item : MonoBehaviour
 
     protected virtual void SetEquip(InputAction action, float value)
     {
-       if (!isNearPlayer) return;
-
         isGet = !isGet;
 
         if (isGet) GetItem();
@@ -59,6 +57,11 @@ public class Item : MonoBehaviour
 
     protected virtual void GetItem()
     {
+        if (!isNearPlayer)
+        {
+            isGet = false;
+            return;
+        }
         PickUp();
     }
     public virtual void UseItem()
@@ -80,9 +83,9 @@ public class Item : MonoBehaviour
     }
     public void Drop()
     {
-        attachPoint.transform.DetachChildren();
-        playerPushObj.CanPush = false;
-        playerPushObj = null;
+        //attachPoint.transform.DetachChildren();
+        //playerPushObj.CanPush = false;
+        //    playerPushObj = null;
     }
 
     private void OnDestroy()
