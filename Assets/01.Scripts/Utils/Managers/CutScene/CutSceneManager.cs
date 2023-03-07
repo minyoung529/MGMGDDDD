@@ -24,6 +24,8 @@ public class CutSceneManager : MonoBehaviour
 
     public void Play(string sceneName)
     {
+        if (!sceneDictionary.ContainsKey(sceneName)) return;
+
         sceneDictionary[sceneName].gameObject.SetActive(true);
         sceneDictionary[sceneName].Play();
         OnCutsceneStart?.Invoke();

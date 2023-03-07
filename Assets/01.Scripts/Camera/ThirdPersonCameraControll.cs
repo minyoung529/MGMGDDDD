@@ -39,6 +39,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
         CutSceneManager.AddStartCutscene(InactiveCrossHair);
         CutSceneManager.AddEndCutscene(ActiveCrossHair);
+
+        InputManager.StartListeningInput(InputAction.Zoom, SetPet);
     }
 
     #region Camera Set
@@ -77,15 +79,29 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
         crosshair.gameObject.SetActive(isPetAim);
     }
-    #endregion
-
-    private void Update()
+    
+    public void SetPet(InputAction input, float value)
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        isPetAim = !isPetAim;
+
+        if (isPetAim)
         {
-            SetPet();
+            CameraSwitcher.SwitchCamera(petAimCamera);
+            eulerAngleX = transform.eulerAngles.x;
+            eulerAngleY = transform.eulerAngles.y;
+
+            transform.forward = (transform.position - defaultCamera.transform.position).normalized;
+            transform.eulerAngles = transform.eulerAngles.MultiplyVec(new Vector3(0f, 1f, 1f));
         }
+        else
+        {
+            SetDefault();
+            SetResetPos();
+        }
+
+        crosshair.gameObject.SetActive(isPetAim);
     }
+    #endregion
 
     private void FixedUpdate()
     {
@@ -146,6 +162,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void OnDestroy()
     {
+        InputManager.StopListeningInput(InputAction.Zoom, SetPet);
+
         CutSceneManager.RemoveStartCutscene(InactiveCrossHair);
         CutSceneManager.RemoveEndCutscene(ActiveCrossHair);
     }

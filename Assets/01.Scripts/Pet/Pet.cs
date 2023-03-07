@@ -167,6 +167,8 @@ public abstract class Pet : MonoBehaviour
 
     private void StartFollow(InputAction inputAction, float value)
     {
+        if (!ThirdPersonCameraControll.IsPetAim) return;
+
         isFollow = true;
         agent.isStopped = false;
     }
