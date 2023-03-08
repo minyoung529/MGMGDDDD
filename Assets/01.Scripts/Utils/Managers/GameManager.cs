@@ -24,6 +24,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     private float st;
 
+    [SerializeField]
+    private LayerMask cameraHitLayerMask;
+
     protected override void Awake()
     {
         st = Time.time;
@@ -58,7 +61,7 @@ public class GameManager : MonoSingleton<GameManager>
         Ray ray = MainCam.ViewportPointToRay(Vector2.one * 0.5f);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, MainCam.farClipPlane))
+        if (Physics.Raycast(ray, out hit, MainCam.farClipPlane, cameraHitLayerMask))
         {
             Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
             return hit.point;

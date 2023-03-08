@@ -16,8 +16,9 @@ public class SoundManager : MonoSingleton<SoundManager>
 
 	[SerializeField] private const float defaultRandomPitch = 0.05f;
 
-    private void Awake()
+    protected override void Awake()
     {
+		base.Awake();
 		SetAudioSource();
 	}
 

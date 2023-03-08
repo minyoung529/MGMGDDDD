@@ -3,13 +3,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder.Shapes;
 
 public class CubePuzzle : MonoBehaviour
 {
-    private Action OnSuccess;
+    private Action<int> OnSuccess;
     private bool isSuccess = false;
     [SerializeField] private Renderer bottomRenderer;
+    [SerializeField] private Collider coverCollider;
 
     private Rigidbody cubeRigid;
 
@@ -25,10 +27,16 @@ public class CubePuzzle : MonoBehaviour
         if (!other.CompareTag("CubePuzzle")) return;
         cubeRigid = other.attachedRigidbody;
         MoveCubeToCenter(other.transform);
+        coverCollider.gameObject.SetActive(true);
+
         if (other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
         {
-            OnSuccess?.Invoke();
+            OnSuccess?.Invoke(transform.GetSiblingIndex()+1000);
             isSuccess = true;
+        }
+        else
+        {
+            OnSuccess?.Invoke(transform.GetSiblingIndex());
         }
     }
 
@@ -38,12 +46,13 @@ public class CubePuzzle : MonoBehaviour
 
         isSuccess = false;
         bottomRenderer.material.SetColor("_EmissionColor", Color.black);
+        coverCollider.gameObject.SetActive(false);
 
         cubeRigid.constraints ^= RigidbodyConstraints.FreezePosition;
     }
 
     #region SUCCESS
-    private void LightBottom()
+    private void LightBottom(int v)
     {
         bottomRenderer.material.SetColor("_EmissionColor", Color.cyan * 5f);
         //StartCoroutine(Delay());
@@ -67,7 +76,7 @@ public class CubePuzzle : MonoBehaviour
     }
     #endregion
 
-    public void ListeningOnSuccess(Action action, bool listen = true)
+    public void ListeningOnSuccess(Action<int> action, bool listen = true)
     {
         if (listen)
         {
@@ -85,17 +94,20 @@ public class CubePuzzle : MonoBehaviour
         cube.DOMoveY(cube.position.y - 5f, 1f).SetEase(Ease.InExpo).OnComplete(() => MoveCubeToCenter(cube));
     }
 
-    public void Respawn() {
-        if (!cubeRigid) return; 
+    public void Respawn()
+    {
+        if (!cubeRigid) return;
         StartCoroutine(RespawnCoroutine());
     }
 
-    private IEnumerator RespawnCoroutine() {
+    private IEnumerator RespawnCoroutine()
+    {
         Transform cubeTransform = cubeRigid.transform;
         float targetY = cubeTransform.position.y - 4f;
         cubeTransform.GetComponent<Collider>().enabled = false;
         cubeRigid.constraints = RigidbodyConstraints.FreezeRotation;
-        while (cubeTransform.position.y - targetY > 0.1f) {
+        while (cubeTransform.position.y - targetY > 0.1f)
+        {
             yield return null;
         }
         cubeTransform.GetComponent<RespawnObject>().Respawn();

@@ -1,8 +1,10 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 public class CutSceneManager : MonoBehaviour
 {
@@ -11,6 +13,11 @@ public class CutSceneManager : MonoBehaviour
 
     private static Action OnCutsceneStart;
     private static Action OnCutsceneEnd;
+
+    [SerializeField]
+    protected Image topBar;
+    [SerializeField]
+    protected Image bottomBar;
 
     private void Awake()
     {
@@ -22,12 +29,13 @@ public class CutSceneManager : MonoBehaviour
         }
     }
 
-    public void Play(string sceneName)
+    public void Play(string sceneName, float speed = 1f)
     {
         if (!sceneDictionary.ContainsKey(sceneName)) return;
 
         sceneDictionary[sceneName].gameObject.SetActive(true);
         sceneDictionary[sceneName].Play();
+        sceneDictionary[sceneName].playableGraph.GetRootPlayable(0).SetSpeed(speed);
         OnCutsceneStart?.Invoke();
 
         StartCoroutine(WaitForDuration(sceneDictionary[sceneName]));
@@ -35,9 +43,12 @@ public class CutSceneManager : MonoBehaviour
 
     private IEnumerator WaitForDuration(PlayableDirector playableDirector)
     {
+        ActiveBlackBar();
+
         yield return new WaitForSeconds((float)playableDirector.duration);
         playableDirector.gameObject.SetActive(false);
         OnCutsceneEnd?.Invoke();
+        InactiveBlackBar();
     }
 
     public static void AddStartCutscene(Action action)
@@ -58,5 +69,17 @@ public class CutSceneManager : MonoBehaviour
     public static void RemoveEndCutscene(Action action)
     {
         OnCutsceneEnd -= action;
+    }
+
+    private void ActiveBlackBar()
+    {
+        bottomBar.rectTransform.DOAnchorPosY(150, 1f);
+        topBar.rectTransform.DOAnchorPosY(-150, 1f);
+    }
+
+    private void InactiveBlackBar()
+    {
+        bottomBar.rectTransform.DOAnchorPosY(0, 1f);
+        topBar.rectTransform.DOAnchorPosY(0, 1f);
     }
 }
