@@ -17,6 +17,17 @@ public class ToggleCutScene : MonoBehaviour
     [SerializeField]
     private float speed = 1f;
 
+    [SerializeField]
+    private bool isStart = false;
+
+    private void Start()
+    {
+        if(isStart)
+        {
+            Trigger();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (isCollide)
