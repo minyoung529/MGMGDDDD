@@ -15,10 +15,11 @@ public class FireAtOnce : MonoBehaviour
     {
         bushes = GetComponentsInChildren<Fire>();
     }
+
     public void TryLightOnClear()
     {
         if (isTry || isClear) return;
-        isTry= true;
+        isTry = true;
         StartCoroutine(AtOnceLight());
     }
 
@@ -30,8 +31,8 @@ public class FireAtOnce : MonoBehaviour
             if (bushes[i].IsBurn == false)
             {
                 isClear = false;
+                isTry = false;
                 Failed();
-                isTry= false;
                 break;
             }
             else
@@ -48,7 +49,7 @@ public class FireAtOnce : MonoBehaviour
             }
             clear.Invoke();
         }
-        isTry= false;
+        isTry = false;
     }
 
     private void Failed()
