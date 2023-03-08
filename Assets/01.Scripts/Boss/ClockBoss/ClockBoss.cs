@@ -44,6 +44,7 @@ public class ClockBoss : BossScript
         CallNextSkill();
     }
 
+    #region 피격 관련
     public override void GetDamage(float damage) {
         if (isInvincible) return;
         Debug.Log(curHp);
@@ -67,16 +68,17 @@ public class ClockBoss : BossScript
         yield return new WaitForSeconds(time);
         isInvincible = false;
     }
+
+    [ContextMenu("PageChange")]
     protected override void PageChange() {
         onPageChange?.Invoke();
-        foreach(BossPage item in pageList) {
-            item.Reinforce();
-        }
+        CurPage.Reinforce(true);
     }
 
     protected override void Die() {
         onDie?.Invoke();
     }
+    #endregion
 
     public override void CallNextSkill() {
         StartCoroutine(WaitForSkill());
@@ -98,5 +100,10 @@ public class ClockBoss : BossScript
             }
         }
         CurPage.Execute();
+    }
+
+    public override void ResetBoss() {
+        CurPage.CurSkill.StopSkill();
+        CurPage.Reinforce(false);
     }
 }

@@ -193,10 +193,12 @@ public class PlayerMove : MonoBehaviour
 
         anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
+
     public void SetRotate(Vector3 dir) {
         if (inputDir.sqrMagnitude <= 0) return;
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
     }
+
     public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {
         if (inputDir.sqrMagnitude <= 0) return;
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
