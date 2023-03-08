@@ -37,15 +37,25 @@ public class FirePet : Pet
         isOn = !isOn;
         if (isOn)
         {
-            fire.Burn();
+            OnSkill();
         }
         else
         {
-            fire.StopBurn();
+           OffSkill();
         }
 
     }
 
+    public void OffSkill()
+    {
+        isOn = false;
+        fire.StopBurn();
+    }
+    public void OnSkill()
+    {
+        isOn = true;
+        fire.Burn();
+    }
 
     private GameObject CreateFire()
     {

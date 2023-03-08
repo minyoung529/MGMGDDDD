@@ -224,15 +224,14 @@ public class BreakableWindow : MonoBehaviour {
 
             isBroken = true;            
         }
-
-            GetComponent<AudioSource>().Play();
+        GetComponent<AudioSource>().Play();
 
         return splinters.ToArray();
     }
 
     IEnumerator BreakWindow()
     {
-        yield return new WaitForSeconds(5.5f);
+        yield return new WaitForSeconds(0.4f);
 
             if (isBroken == false)
             {

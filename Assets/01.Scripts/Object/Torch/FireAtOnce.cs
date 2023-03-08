@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class FireAtOnce : MonoBehaviour
 {
     [SerializeField] UnityEvent clear;
+    [SerializeField] UnityEvent failed;
 
     private Fire[] bushes;
     bool isClear = false;
@@ -54,6 +55,7 @@ public class FireAtOnce : MonoBehaviour
 
     private void Failed()
     {
+        failed.Invoke();
         for (int i = 0; i < bushes.Length; i++)
         {
             bushes[i].StopBurn();
