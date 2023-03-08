@@ -36,6 +36,11 @@ public class ThirdPersonCameraControll : MonoBehaviour
         animator = GetComponent<Animator>();
         crosshair = Instantiate(crosshair);
         crosshair.gameObject.SetActive(false);
+
+        CutSceneManager.AddStartCutscene(InactiveCrossHair);
+        CutSceneManager.AddEndCutscene(ActiveCrossHair);
+
+        InputManager.StartListeningInput(InputAction.Zoom, SetPet);
     }
 
     #region Camera Set
@@ -74,28 +79,42 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
         crosshair.gameObject.SetActive(isPetAim);
     }
-    #endregion
-
-    private void Update()
+    
+    public void SetPet(InputAction input, float value)
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        isPetAim = !isPetAim;
+
+        if (isPetAim)
         {
-            SetPet();
+            CameraSwitcher.SwitchCamera(petAimCamera);
+            eulerAngleX = transform.eulerAngles.x;
+            eulerAngleY = transform.eulerAngles.y;
+
+            transform.forward = (transform.position - defaultCamera.transform.position).normalized;
+            transform.eulerAngles = transform.eulerAngles.MultiplyVec(new Vector3(0f, 1f, 1f));
         }
+        else
+        {
+            SetDefault();
+            SetResetPos();
+        }
+
+        crosshair.gameObject.SetActive(isPetAim);
     }
+    #endregion
 
     private void FixedUpdate()
     {
-        if(IsPetAim) UpdateRotate();
+        if (IsPetAim) UpdateRotate();
     }
 
     private void UpdateRotate()
     {
-       float yAim = Camera.main.transform.rotation.eulerAngles.y;
-       // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.fixedDeltaTime);
-       transform.rotation = Quaternion.Euler(0, yAim, 0);
-       // float mouseX = Input.GetAxis("Mouse X");
-       // float mouseY = Input.GetAxis("Mouse Y");
+        float yAim = Camera.main.transform.rotation.eulerAngles.y;
+        // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yAim, 0), rotationSpeed * Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Euler(0, yAim, 0);
+        // float mouseX = Input.GetAxis("Mouse X");
+        // float mouseY = Input.GetAxis("Mouse Y");
 
         //CalculateRotation(mouseX, mouseY);
     }
@@ -126,5 +145,26 @@ public class ThirdPersonCameraControll : MonoBehaviour
         eulerAngles.x = 0f;
         eulerAngles.y = defaultCamera.transform.eulerAngles.y;
         transform.eulerAngles = eulerAngles;
+    }
+
+    private void ActiveCrossHair()
+    {
+        if (isPetAim)
+        {
+            crosshair.gameObject.SetActive(true);
+        }
+    }
+
+    private void InactiveCrossHair()
+    {
+        crosshair.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.Zoom, SetPet);
+
+        CutSceneManager.RemoveStartCutscene(InactiveCrossHair);
+        CutSceneManager.RemoveEndCutscene(ActiveCrossHair);
     }
 }

@@ -1,29 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class SetPosAuto : MonoBehaviour
 {
-    [SerializeField] private Transform targetTransform;
+    [SerializeField] private List<Transform> targetTransform;
     [SerializeField] private float distance = 1f;
-    [SerializeField] private float moveSpeed = 1f;
+    [SerializeField] private float moveTime = 1f;
+    [SerializeField] private CubePuzzleController puzzleController;
     private bool isSet = false;
 
-    private void Update() {
+    private void Update()
+    {
         if (isSet) return;
-        if ((targetTransform.position - transform.position).sqrMagnitude <= Mathf.Pow(distance, 2)) {
-            StartCoroutine(Move());
-            isSet = true;
+        float min = 0;
+        Transform target = null;
+        for (int i = 0; i < targetTransform.Count; i++)
+        {
+            if (puzzleController.IsVisited(i)) return;
+            float distance = (targetTransform[i].position - transform.position).sqrMagnitude;
+            if (distance <= Mathf.Pow(this.distance, 2))
+            {
+                if (min == 0 || distance < min)
+                {
+                    target = targetTransform[i];
+                }
+            }
         }
+        if (!target) return;
+        transform.DOMove(target.position, moveTime);
+        transform.DORotate(target.rotation.eulerAngles, moveTime);
+        isSet = true;
     }
 
-    private IEnumerator Move() {
-        while((targetTransform.position - transform.position).sqrMagnitude <= 0.1f) {
-            transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, moveSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetTransform.rotation, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-        transform.position = targetTransform.position;
-        transform.rotation = targetTransform.rotation;
+    public void Reset()
+    {
+        isSet = false;
     }
-} 
+}

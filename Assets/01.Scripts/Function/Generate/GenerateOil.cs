@@ -14,7 +14,8 @@ public class GenerateOil : MonoBehaviour
 
     private void Awake()
     {
-       
+        meshRenderer = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
+
         for (int i = 0; i < meshRenderer.Count; i++)
         {
             mats[i] = meshRenderer[i].materials;
@@ -32,11 +33,13 @@ public class GenerateOil : MonoBehaviour
         //     oilObject.gameObject.SetActive(true);
         for (int i = 0; i < meshRenderer.Count; i++)
         {
-             mats[i][1] = oilMat;
+            if (mats[i].Length == 1) continue;
+
+            mats[i][1] = oilMat;
             meshRenderer[i].materials = mats[i];
         }
-    //    oilObject.transform.localScale = Vector3.zero;
-     //   oilObject.transform.DOScale(scale, 1f);
+        //    oilObject.transform.localScale = Vector3.zero;
+        //   oilObject.transform.DOScale(scale, 1f);
 
         SpringJoint joint = oilObject.GetComponent<SpringJoint>();
 

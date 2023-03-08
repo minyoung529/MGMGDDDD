@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour
-{
+public class PlayerMove : MonoBehaviour {
     #region 속력, 방향 관련 변수
     private Rigidbody rigid;
     [SerializeField] private const float rotateTime = 2f;
@@ -13,10 +12,8 @@ public class PlayerMove : MonoBehaviour
     public float CurSpeed => curSpeed;
     private Vector3 inputDir;
     private Vector3 forward;
-    public Vector3 Forward
-    {
-        get
-        {
+    public Vector3 Forward {
+        get {
             forward = MainCam.transform.forward;
             forward.y = 0;
             forward = forward.normalized;
@@ -24,10 +21,8 @@ public class PlayerMove : MonoBehaviour
         }
     }
     private Vector3 right;
-    public Vector3 Right
-    {
-        get
-        {
+    public Vector3 Right {
+        get {
             right = MainCam.transform.right;
             right.y = 0;
             right = right.normalized;
@@ -58,11 +53,9 @@ public class PlayerMove : MonoBehaviour
     #endregion
 
     private Camera mainCam;
-    public Camera MainCam
-    {
-        get
-        {
-            if(mainCam==null)
+    public Camera MainCam {
+        get {
+            if (mainCam == null)
                 mainCam = Camera.main;
             return mainCam;
         }
@@ -71,8 +64,9 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] private float distanceToGround = 0;
 
-    private void Awake()
-    {
+    private Dictionary<InputAction, Action<InputAction, float>> actions = new Dictionary<InputAction, Action<InputAction, float>>();
+
+    private void Awake() {
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
 
@@ -83,26 +77,31 @@ public class PlayerMove : MonoBehaviour
     }
 
     private void SetStateDictionary() {
-        foreach(MoveState item in stateList) {
+        foreach (MoveState item in stateList) {
             stateDictionary.Add(item.StateName, item);
         }
     }
 
     private void StartListen() {
-        InputManager.StartListeningInput(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
-        InputManager.StartListeningInput(InputAction.Back, (action, value) => GetInput(action, -Forward));
-        InputManager.StartListeningInput(InputAction.Move_Right, (action, value) => GetInput(action, Right));
-        InputManager.StartListeningInput(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
-        InputManager.StartListeningInput(InputAction.Zoom, (action, value) => {
+        actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
+        actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
+        actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
+        actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
+        actions.Add(InputAction.Zoom, (action, value) => {
             if (curState.StateName != StateName.Zoom)
                 ChangeState(StateName.Zoom);
             else
                 ChangeState(StateName.DefaultMove);
-            });
-        InputManager.StartListeningInput(InputAction.Jump, (action, value) => {
-            if(CheckOnGround())
+        });
+
+        actions.Add(InputAction.Jump, (action, value) => {
+            if (CheckOnGround())
                 ChangeState(StateName.Jump);
         });
+
+        foreach (var keyValue in actions) {
+            InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
+        }
     }
     private void GetInput(InputAction action, Vector3 input) {
         if (isInputLock) return;
@@ -121,18 +120,15 @@ public class PlayerMove : MonoBehaviour
         inputDir = Vector3.zero;
     }
 
-    private void OnAnimatorIK(int layerIndex)
-    {
-        if (anim)
-        {
+    private void OnAnimatorIK(int layerIndex) {
+        if (anim) {
             //발 IK 위치 연산
             anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
             anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
 
             RaycastHit hit;
             Ray ray = new Ray(anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
-            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER))
-            {
+            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER)) {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
                 anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
@@ -142,8 +138,7 @@ public class PlayerMove : MonoBehaviour
             anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
 
             ray = new Ray(anim.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
-            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER))
-            {
+            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER)) {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
                 anim.SetIKPosition(AvatarIKGoal.RightFoot, footposition);
@@ -153,7 +148,7 @@ public class PlayerMove : MonoBehaviour
 
     public void ChangeState(StateName state) {
         MoveState targetState;
-        if(!stateDictionary.TryGetValue(state, out targetState)) {
+        if (!stateDictionary.TryGetValue(state, out targetState)) {
             Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
             return;
         }
@@ -169,7 +164,7 @@ public class PlayerMove : MonoBehaviour
         curSpeed += accel * Time.deltaTime;
         if (curSpeed > maxSpeed) {
             curSpeed = Mathf.MoveTowards(curSpeed, maxSpeed, curSpeed / brakeTime * Time.deltaTime);
-            if(curSpeed < maxSpeed) {
+            if (curSpeed < maxSpeed) {
                 curSpeed = maxSpeed;
             }
         }
@@ -180,7 +175,7 @@ public class PlayerMove : MonoBehaviour
         anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
-    public void Decelerate (float brakeTime = 0.5f) {
+    public void Decelerate(float brakeTime = 0.5f) {
         curSpeed = Mathf.MoveTowards(curSpeed, 0, curSpeed / brakeTime * Time.deltaTime);
         if (curSpeed < 0) {
             curSpeed = 0;
@@ -214,8 +209,7 @@ public class PlayerMove : MonoBehaviour
 
     #region 애니메이션 이벤트
     public void JumpEvent() {
-        if(curState is JumpState)
-        {
+        if (curState is JumpState) {
             JumpState jump = (JumpState)curState;
             jump?.Jump();
         }
@@ -226,20 +220,23 @@ public class PlayerMove : MonoBehaviour
     }
     #endregion
 
-    public void LockInput(float time)
-    {
+    public void LockInput(float time) {
         StartCoroutine(LockTimer(time));
     }
 
-    private IEnumerator LockTimer(float time)
-    {
+    private IEnumerator LockTimer(float time) {
         isInputLock = true;
         yield return new WaitForSeconds(time);
         isInputLock = false;
     }
 
-    public void ActiveRigidbody(bool isActive)
-    {
+    public void ActiveRigidbody(bool isActive) {
         rigid.isKinematic = !isActive;
+    }
+
+    private void OnDestroy() {
+        foreach (var keyValue in actions) {
+            InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
+        }
     }
 }

@@ -25,6 +25,13 @@ public class PetManager : MonoSingleton<PetManager>
     public bool IsSelected { get { return isSelect; } }
     #endregion 
 
+    protected override void Awake()
+    {
+        base.Awake();
+        CutSceneManager.AddStartCutscene(InactivePetCanvas);
+        CutSceneManager.AddEndCutscene(ActivePetCanvas);    
+    }
+
     private void Start()
     {
         ResetPetManager();
@@ -33,6 +40,9 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnDestroy()
     {
+        CutSceneManager.RemoveStartCutscene(InactivePetCanvas);
+        CutSceneManager.RemoveEndCutscene(ActivePetCanvas);
+
         StopListen();
     }
 
@@ -234,6 +244,16 @@ public class PetManager : MonoSingleton<PetManager>
     private void DisablePetUI(int index)
     {
         petInvens[index].gameObject.SetActive(false);
+    }
+
+    private void ActivePetCanvas()
+    {
+        transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    private void InactivePetCanvas()
+    {
+        transform.GetChild(0).gameObject.SetActive(false);
     }
     #endregion
 }

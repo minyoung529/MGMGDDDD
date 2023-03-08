@@ -1,12 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 public class CutSceneManager : MonoBehaviour
 {
     private PlayableDirector[] scenes = null;
     private Dictionary<string, PlayableDirector> sceneDictionary = new Dictionary<string, PlayableDirector>();
+
+    private static Action OnCutsceneStart;
+    private static Action OnCutsceneEnd;
+
+    [SerializeField]
+    protected Image topBar;
+    [SerializeField]
+    protected Image bottomBar;
 
     private void Awake()
     {
@@ -20,8 +30,11 @@ public class CutSceneManager : MonoBehaviour
 
     public void Play(string sceneName)
     {
+        if (!sceneDictionary.ContainsKey(sceneName)) return;
+
         sceneDictionary[sceneName].gameObject.SetActive(true);
         sceneDictionary[sceneName].Play();
+        OnCutsceneStart?.Invoke();
 
         StartCoroutine(WaitForDuration(sceneDictionary[sceneName]));
     }
@@ -30,5 +43,26 @@ public class CutSceneManager : MonoBehaviour
     {
         yield return new WaitForSeconds((float)playableDirector.duration);
         playableDirector.gameObject.SetActive(false);
+        OnCutsceneEnd?.Invoke();
+    }
+
+    public static void AddStartCutscene(Action action)
+    {
+        OnCutsceneStart += action;
+    }
+
+    public static void RemoveStartCutscene(Action action)
+    {
+        OnCutsceneStart -= action;
+    }
+
+    public static void AddEndCutscene(Action action)
+    {
+        OnCutsceneEnd += action;
+    }
+
+    public static void RemoveEndCutscene(Action action)
+    {
+        OnCutsceneEnd -= action;
     }
 }

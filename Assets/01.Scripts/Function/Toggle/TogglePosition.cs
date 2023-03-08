@@ -21,8 +21,6 @@ public class TogglePosition : MonoBehaviour
 
     public void Trigger()
     {
-        Debug.Log(isOpen);
-
         if (isOpen)
             Close();
         else

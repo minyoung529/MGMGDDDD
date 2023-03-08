@@ -26,6 +26,8 @@ public class UnMovedObject : MonoBehaviour
     private void Update()
     {
         if (!calcDistance) return;
+        if (!rigid) return;
+
         CalcDistance();
 
         if (moveDistance > 2f)
@@ -36,6 +38,8 @@ public class UnMovedObject : MonoBehaviour
 
     public void OnEnterOil()
     {
+        if (!rigid) return;
+
         rigid.velocity = Vector3.zero;
         rigid.angularVelocity = Vector3.zero;
         rigid.ResetCenterOfMass();
@@ -48,6 +52,8 @@ public class UnMovedObject : MonoBehaviour
 
     private void StopMoving()
     {
+        if (!rigid) return;
+
         calcDistance = false;
         rigid.constraints = RigidbodyConstraints.FreezeAll;
 

@@ -20,8 +20,12 @@ public class CubePuzzleController : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> OnPressButton;
 
+    private bool[] visited;
+
     void Start()
     {
+        visited = new bool[cubeCount];
+
         for (int i = 0; i < cubeCount; i++)
         {
             cubePuzzles.Add(transform.GetChild(i).GetComponent<CubePuzzle>());
@@ -29,17 +33,28 @@ public class CubePuzzleController : MonoBehaviour
         }
     }
 
-    private void OnSuccess()
+    private void OnSuccess(int v)
     {
-        successCnt++;
+        if (v > 1000)
+        {
+            successCnt++;
+            visited[v - 1000] = true;
+        }
+        else
+        {
+            visited[v] = true;
+        }
     }
 
     [ContextMenu("ButtonTest")]
-    public void CheckSuccess() {
-        if(successCnt == cubeCount) {
+    public void CheckSuccess()
+    {
+        if (successCnt == cubeCount)
+        {
             SolvePuzzle();
         }
-        else {
+        else
+        {
             OnPressButton?.Invoke(successCnt);
             ResetPuzzle();
         }
@@ -53,9 +68,20 @@ public class CubePuzzleController : MonoBehaviour
 
     public void ResetPuzzle()
     {
+        for (int i = 0; i < cubeCount; i++)
+        {
+            visited[i] = false;
+        }
+
         successCnt = solvedPuzzleCount;
-        foreach(CubePuzzle item in cubePuzzles) {
+        foreach (CubePuzzle item in cubePuzzles)
+        {
             item.Respawn();
         }
+    }
+
+    public bool IsVisited(int v)
+    {
+        return visited[v];
     }
 }

@@ -57,7 +57,7 @@ public class TutorialTrigger : MonoBehaviour
 
         if (controller)
         {
-            controller.StartTutorial(tutorialType);
+            controller.StartTutorial(tutorialType, tutorialName);
         }
     }
 
@@ -68,7 +68,7 @@ public class TutorialTrigger : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(preDelay);
-        seq.AppendCallback(() => controller.StartTutorial(tutorialType));
+        seq.AppendCallback(() => controller.StartTutorial(tutorialType, tutorialName));
     }
 
     private TutorialController ReadyTutorialStart()
