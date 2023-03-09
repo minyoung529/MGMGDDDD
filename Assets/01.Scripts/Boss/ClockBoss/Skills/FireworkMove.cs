@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class FireworkMove : MonoBehaviour
-{
+public class FireworkMove : MonoBehaviour {
+
+    [SerializeField] private Transform target;
     [SerializeField] private float range = 5;
     [SerializeField] private float time = 3;
     [SerializeField] private float damage = 15;
@@ -16,7 +17,6 @@ public class FireworkMove : MonoBehaviour
     [SerializeField] private GameObject fuze;
     [SerializeField] private GameObject fuzeParticle;
 
-    private Vector3 target;
     private Sequence seq;
     private Rigidbody rigid;
 
@@ -32,8 +32,8 @@ public class FireworkMove : MonoBehaviour
         seq.Append(fuze.transform.DOLocalMoveZ(0.1f, 0.3f));
         seq.AppendCallback(() => { fire.SetActive(true); });
         seq.Append(transform.DOMoveY(transform.position.y + 2, 1));
-        seq.Join(transform.DOLookAt(target, 1));
-        seq.Append(transform.DOMove(target, time));
+        seq.Join(transform.DOLookAt(target.position, 1));
+        seq.Append(transform.DOMove(target.position, time));
 
         /*
         Vector3[] path = new Vector3[pathCount];
@@ -57,10 +57,6 @@ public class FireworkMove : MonoBehaviour
 
         transform.DOPath(path, pathCount, PathType.CatmullRom);
         */
-    }
-
-    public void SetTarget(Vector3 target) {
-        this.target = target;   
     }
 
     private void OnCollisionEnter(Collision collision) {

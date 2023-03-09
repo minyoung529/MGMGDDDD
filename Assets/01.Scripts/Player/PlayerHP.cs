@@ -19,12 +19,14 @@ public class PlayerHP : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision) {
         if (isInvincible) return;
-        if (collision.transform.CompareTag("EnemeyAttack")) {
+        if (collision.transform.CompareTag("EnemyAttack")) {
             curHp--;
-            anim.SetTrigger(hash_tDamaged);
+            //anim.SetTrigger(hash_tDamaged);
+            Debug.Log("ÇÇ°Ý");
             StartCoroutine(Invincible(0.2f));
             if(curHp <= 0) {
                 onDie?.Invoke();
+                Debug.Log("Á×À½");
             }
         }
     }

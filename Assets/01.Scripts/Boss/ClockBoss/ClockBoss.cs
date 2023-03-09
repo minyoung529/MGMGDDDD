@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -36,6 +35,7 @@ public class ClockBoss : BossScript
 
     private void Awake() {
         anim = GetComponent<Animator>();
+        curHp = maxHp;
     }
 
     [ContextMenu("Test")]
@@ -46,6 +46,7 @@ public class ClockBoss : BossScript
 
     #region 피격 관련
     public override void GetDamage(float damage) {
+        Debug.Log(curHp);
         if (isInvincible) return;
         Debug.Log(curHp);
         StartCoroutine(InvinsibleTimer(0.1f));
@@ -73,6 +74,7 @@ public class ClockBoss : BossScript
     protected override void PageChange() {
         onPageChange?.Invoke();
         CurPage.Reinforce(true);
+        CallNextSkill();
     }
 
     protected override void Die() {
