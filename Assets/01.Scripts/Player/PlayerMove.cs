@@ -11,7 +11,7 @@ public class PlayerMove : MonoBehaviour {
     private Animator anim;
     private Collider coll;
 
-    public Rigidbody => rigid;
+    public Rigidbody Rigid => rigid;
     public Animator Anim => anim;
     public Collider Coll => coll;
     #endregion
@@ -87,7 +87,7 @@ public class PlayerMove : MonoBehaviour {
 
         SetUpCompo();
         StartListen();
-        SetStateDictionary();
+        SetUpStateDictionary();
     }
 
     private void SetUpCompo() {
@@ -96,17 +96,12 @@ public class PlayerMove : MonoBehaviour {
         coll = GetComponent<Collider>();
     }
 
-    private void SetUpStateDictionary()
-    {
-        foreach (MoveState item in stateList)
-        {
+    private void SetUpStateDictionary() {
+        foreach (MoveState item in stateList) {
             stateDictionary.Add(item.StateName, item);
         }
     }
-    private void StartListen()
-    {
-        InputManager.StartListeningInput(InputAction.Push_Object, InputPush);
-
+    private void StartListen() {
         actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
@@ -133,7 +128,18 @@ public class PlayerMove : MonoBehaviour {
         inputDir = inputDir.normalized;
     }
 
+    /// <summary>
+    /// 애니메이션에 사용될 fHorizontal과 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="length">벡터의 길이:0~1</param>
+    //private void SetAnimInput(Vector3 input, float length) {
+    //    Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, inputDir));
+    //    Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, inputDir));
+    //}
+
     private void Update() {
+        Debug.Log(CheckOnGround());
         SendInput();
     }
 
@@ -224,11 +230,23 @@ public class PlayerMove : MonoBehaviour {
 
     public bool CheckOnGround() {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position + Vector3.up * 0.2f, new Vector3(0.5f, 0, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.3f, groundLayer)) {
+        if (Physics.BoxCast(transform.position + Vector3.up * 0.5f, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 1.3f, groundLayer)) {
             if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
         return false;
     }
+
+    //private void OnDrawGizmos() {
+    //    Gizmos.color = Color.red;
+    //    RaycastHit hit;
+    //    bool col = Physics.BoxCast(transform.position + Vector3.up * 0.5f, new Vector3(0.5f, 0.2f, 0.5f), Vector3.down, out hit, Quaternion.identity, 1.3f, groundLayer);
+    //    Ray ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.down);
+    //    Gizmos.DrawRay(transform.position + Vector3.up * 0.5f, Vector3.down * 1.5f);
+
+    //    if(col) {
+    //        Gizmos.DrawWireCube(hit.point, new Vector3(0.5f, 0.2f, 0.5f));
+    //    }
+    //}
 
     public void LockInput(float time) {
         StartCoroutine(LockTimer(time));
@@ -259,11 +277,8 @@ public class PlayerMove : MonoBehaviour {
         rigid.isKinematic = !isActive;
     }
 
-    private void OnDestroy()
-    {
-        InputManager.StopListeningInput(InputAction.Push_Object, InputPush);
-        foreach (var keyValue in actions)
-        {
+    private void OnDestroy() {
+        foreach (var keyValue in actions) {
             InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
         }
     }

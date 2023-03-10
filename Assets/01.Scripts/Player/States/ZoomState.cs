@@ -23,7 +23,5 @@ public class ZoomState : MoveState
     }
 
     private void SetAnim() {
-        player.Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, inputDir));
-        player.Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, inputDir));
     }
 }
