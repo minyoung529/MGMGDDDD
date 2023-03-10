@@ -115,8 +115,6 @@ public class PlayerMove : MonoBehaviour {
 
     private void SendInput() {
         curState.OnInput(inputDir);
-        anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, inputDir));
-        anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, inputDir));
         inputDir = Vector3.zero;
     }
 
@@ -160,6 +158,7 @@ public class PlayerMove : MonoBehaviour {
         });
     }
 
+    #region 편의성 함수 (State에서 주로 사용)
     public void Accelerate(Vector3 inputDir, float accel = 2f, float brakeTime = 0.5f, float maxSpeed = 2f) {
         curSpeed += accel * Time.deltaTime;
         if (curSpeed > maxSpeed) {
@@ -206,6 +205,7 @@ public class PlayerMove : MonoBehaviour {
         }
         return false;
     }
+    #endregion
 
     #region 애니메이션 이벤트
     public void JumpEvent() {

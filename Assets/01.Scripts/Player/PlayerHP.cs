@@ -23,7 +23,7 @@ public class PlayerHP : MonoBehaviour
             curHp--;
             //anim.SetTrigger(hash_tDamaged);
             Debug.Log("ÇÇ°Ý");
-            StartCoroutine(Invincible(0.2f));
+            StartCoroutine(Invincible(2f));
             if(curHp <= 0) {
                 onDie?.Invoke();
                 Debug.Log("Á×À½");
