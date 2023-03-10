@@ -14,6 +14,20 @@ public class ToggleCutScene : MonoBehaviour
 
     private bool isPlay = false;
 
+    [SerializeField]
+    private float speed = 1f;
+
+    [SerializeField]
+    private bool isStart = false;
+
+    private void Start()
+    {
+        if(isStart)
+        {
+            Trigger();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (isCollide)
@@ -35,6 +49,6 @@ public class ToggleCutScene : MonoBehaviour
     private IEnumerator DelayOneFrame()
     {
         yield return null;
-        GameManager.Instance.CutSceneManager.Play(cutSceneName);
+        GameManager.Instance.CutSceneManager.Play(cutSceneName, speed);
     }
 }

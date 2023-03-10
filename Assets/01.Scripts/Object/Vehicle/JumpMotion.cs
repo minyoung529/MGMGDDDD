@@ -25,7 +25,7 @@ public class JumpMotion
         OnStartJump?.Invoke();
         StartAnimation(player);
 
-        player.DOPath(GetWayPoints(player), 1f, PathType.CatmullRom).OnComplete(() =>
+        player.DOPath(GetWayPoints(player), 0.75f, PathType.CatmullRom).OnComplete(() =>
         {
             if (isSit)
             {
@@ -37,7 +37,7 @@ public class JumpMotion
                 EndAnimation(player);
             }
             OnEndJump?.Invoke();
-        }).SetEase(Ease.InOutQuart);
+        }).SetEase(Ease.InOutQuint);
     }
 
     private void StartAnimation(Transform player)

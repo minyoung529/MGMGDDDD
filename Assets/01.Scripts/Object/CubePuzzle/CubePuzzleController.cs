@@ -76,6 +76,7 @@ public class CubePuzzleController : MonoBehaviour
         successCnt = solvedPuzzleCount;
         foreach (CubePuzzle item in cubePuzzles)
         {
+            item.ResetPuzzle();
             item.Respawn();
         }
     }

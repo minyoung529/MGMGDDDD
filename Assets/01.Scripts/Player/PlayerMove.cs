@@ -1,11 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour {
-    #region 속력, 방향 관련 변수
+    #region 컴포넌트
     private Rigidbody rigid;
+    private Animator anim;
+    private Collider coll;
+
+    public Rigidbody => rigid;
+    public Animator Anim => anim;
+    public Collider Coll => coll;
+    #endregion
+
+    #region 속력, 방향 관련 변수
     [SerializeField] private const float rotateTime = 2f;
 
     private float curSpeed = 0;
@@ -43,13 +54,19 @@ public class PlayerMove : MonoBehaviour {
     #endregion
 
     #region 애니메이션 관련 변수
-    private Animator anim;
-    public Animator Anim => anim;
     private int hash_iStateNum = Animator.StringToHash("iStateNum");
     private int hash_tStateChange = Animator.StringToHash("tStateChange");
     private int hash_fVertical = Animator.StringToHash("fVertical");
     private int hash_fHorizontal = Animator.StringToHash("fHorizontal");
     private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
+    #endregion
+
+    #region Push And Pull
+
+    public float pushPower = 2.0F;
+    private bool isPushObj = false;
+    private PushAndPull pushObj = null;
+
     #endregion
 
     private Camera mainCam;
@@ -61,28 +78,35 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
-
     [SerializeField] private float distanceToGround = 0;
 
     private Dictionary<InputAction, Action<InputAction, float>> actions = new Dictionary<InputAction, Action<InputAction, float>>();
 
     private void Awake() {
-        rigid = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
-
         mainCam = Camera.main;
 
+        SetUpCompo();
         StartListen();
         SetStateDictionary();
     }
 
-    private void SetStateDictionary() {
-        foreach (MoveState item in stateList) {
+    private void SetUpCompo() {
+        rigid = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
+        coll = GetComponent<Collider>();
+    }
+
+    private void SetUpStateDictionary()
+    {
+        foreach (MoveState item in stateList)
+        {
             stateDictionary.Add(item.StateName, item);
         }
     }
+    private void StartListen()
+    {
+        InputManager.StartListeningInput(InputAction.Push_Object, InputPush);
 
-    private void StartListen() {
         actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
@@ -205,6 +229,16 @@ public class PlayerMove : MonoBehaviour {
         }
         return false;
     }
+
+    public void LockInput(float time) {
+        StartCoroutine(LockTimer(time));
+    }
+
+    private IEnumerator LockTimer(float time) {
+        isInputLock = true;
+        yield return new WaitForSeconds(time);
+        isInputLock = false;
+    }
     #endregion
 
     #region 애니메이션 이벤트
@@ -220,22 +254,16 @@ public class PlayerMove : MonoBehaviour {
     }
     #endregion
 
-    public void LockInput(float time) {
-        StartCoroutine(LockTimer(time));
-    }
-
-    private IEnumerator LockTimer(float time) {
-        isInputLock = true;
-        yield return new WaitForSeconds(time);
-        isInputLock = false;
-    }
 
     public void ActiveRigidbody(bool isActive) {
         rigid.isKinematic = !isActive;
     }
 
-    private void OnDestroy() {
-        foreach (var keyValue in actions) {
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.Push_Object, InputPush);
+        foreach (var keyValue in actions)
+        {
             InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
         }
     }

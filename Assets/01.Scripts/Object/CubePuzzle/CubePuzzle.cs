@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder.Shapes;
 
 public class CubePuzzle : MonoBehaviour
@@ -41,13 +42,13 @@ public class CubePuzzle : MonoBehaviour
 
     public void ResetPuzzle()
     {
-        if (!isSuccess) return;
+        //if (!isSuccess) return;
 
         isSuccess = false;
         bottomRenderer.material.SetColor("_EmissionColor", Color.black);
         coverCollider.gameObject.SetActive(false);
 
-        cubeRigid.constraints ^= RigidbodyConstraints.FreezePosition;
+        //cubeRigid.constraints ^= RigidbodyConstraints.FreezePosition;
     }
 
     #region SUCCESS

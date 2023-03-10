@@ -14,6 +14,8 @@ public class TogglePosition : MonoBehaviour
     [SerializeField] private UnityEvent OnOpen;
     [SerializeField] private UnityEvent OnClose;
 
+    [SerializeField] Ease ease = Ease.Unset;
+
     private void Start()
     {
         originalPos = transform.position;
@@ -43,7 +45,7 @@ public class TogglePosition : MonoBehaviour
     public void Open()
     {
         transform.DOKill();
-        transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke());
+        transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke()).SetEase(ease);
 
         OnOpen?.Invoke();
     }
@@ -51,6 +53,6 @@ public class TogglePosition : MonoBehaviour
     public void Close()
     {
         transform.DOKill();
-        transform.DOMove(originalPos, duration);
+        transform.DOMove(originalPos, duration).SetEase(ease);
     }
 }

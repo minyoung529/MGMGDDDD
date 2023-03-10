@@ -17,5 +17,6 @@ public enum InputAction
     Pet_Skill = 14,
     Pet_Follow = 15,
     Interaction = 16,
-    Up_Pet = 17
+    Up_Pet = 17,
+    Push_Object = 18
 }
