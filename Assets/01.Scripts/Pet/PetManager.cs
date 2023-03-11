@@ -13,6 +13,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private int petIndex = -1;
     private int selectIndex = 0;
+    private float switchDelay = 0.2f;
 
     private bool isSelect = false;
     private bool isSwitching = false;
@@ -23,11 +24,15 @@ public class PetManager : MonoSingleton<PetManager>
     #region Get
     public int PetCount { get { return pets.Count; } }
     public bool IsSelected { get { return isSelect; } }
+    public bool IsPetSelected(int index) { return selectIndex == index; }
+
     #endregion 
 
     protected override void Awake()
     {
         base.Awake();
+
+        StartListen();
         CutSceneManager.AddStartCutscene(InactivePetCanvas);
         CutSceneManager.AddEndCutscene(ActivePetCanvas);    
     }
@@ -35,14 +40,12 @@ public class PetManager : MonoSingleton<PetManager>
     private void Start()
     {
         ResetPetManager();
-        StartListen();
     }
 
     private void OnDestroy()
     {
         CutSceneManager.RemoveStartCutscene(InactivePetCanvas);
         CutSceneManager.RemoveEndCutscene(ActivePetCanvas);
-
         StopListen();
     }
 
@@ -68,25 +71,20 @@ public class PetManager : MonoSingleton<PetManager>
     #endregion
 
     #region SwitchPet
-    public bool IsPetSelected(int index)
-    {
-        return selectIndex == index;
-    }
+
     private void SwitchPet(InputAction input, float addIndex)
     {
         if (PetCount <= 0) return;
 
-        if (input == InputAction.Up_Pet && !isSwitching)
-        {
-            SwitchPet(1);
-        }
-        else if (input == InputAction.Down_Pet && !isSwitching)
-        {
-            SwitchPet(-1);
-        }
-    }
+        addIndex = 0;
 
-    private void SwitchPet(int addIndex)
+        if (input == InputAction.Up_Pet && !isSwitching) addIndex = 1;
+        else if (input == InputAction.Down_Pet && !isSwitching) addIndex = -1;
+        else return;
+
+        SwitchPetIndex((int)addIndex);
+    }
+    private void SwitchPetIndex(int addIndex)
     {
         selectIndex += addIndex;
 
@@ -108,25 +106,13 @@ public class PetManager : MonoSingleton<PetManager>
             SelectPet(newIndex);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(switchDelay);
         isSwitching = false;
     }
+
     #endregion
 
     #region SELECT
-
-    public void SelectPet(int index)
-    {
-        if (pets.Count == 0) return;
-        isSelect = true;
-
-        for (int i = 0; i < pets.Count; i++)
-        {
-            pets[i].Select(false);
-        }
-        pets[index].Select(true);
-        OnSelectPetUI(index);
-    }
 
     public void SelectPet(InputAction input, float index)
     {
@@ -151,15 +137,22 @@ public class PetManager : MonoSingleton<PetManager>
                 }
                 break;
         }
+        SelectPet(petIndex);
+    }
+    public void SelectPet(int index)
+    {
         isSelect = true;
 
         for (int i = 0; i < pets.Count; i++)
         {
             pets[i].Select(false);
         }
-        pets[selectIndex].Select(true);
-        OnSelectPetUI(selectIndex);
+        pets[index].Select(true);
+
+        OnSelectPetUI(index);
     }
+
+
     public void NotSelectPet()
     {
         isSelect = false;
@@ -238,7 +231,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void ActivePetUI(int index)
     {
-        petImages[index].sprite = pets[index].petUI;
+        petImages[index].sprite = pets[index].petSprite;
         petInvens[index].gameObject.SetActive(true);
     }
     private void DisablePetUI(int index)
