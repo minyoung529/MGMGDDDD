@@ -7,9 +7,18 @@ public class HardMoveObject : MonoBehaviour
     private Rigidbody rigid;
     private int enterIdx = 0;
 
+    private float mass;
+    private float angular;
+    private float drag;
+
     private void Start()
     {
         rigid = GetComponent<Rigidbody>();
+
+        drag = rigid.drag;
+        angular = rigid.angularDrag;
+        mass = rigid.mass;
+
         UnMove();
     }
 
@@ -17,6 +26,8 @@ public class HardMoveObject : MonoBehaviour
     {
         if (other.CompareTag("OilBullet"))
         {
+            Debug.Log("OIL");
+
             if (enterIdx++ == 0)
             {
                 Move();
@@ -28,6 +39,34 @@ public class HardMoveObject : MonoBehaviour
     {
         if (other.CompareTag("OilBullet"))
         {
+            Debug.Log("OIL");
+
+            if (--enterIdx == 0)
+            {
+                UnMove();
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("OilBullet"))
+        {
+            Debug.Log("OIL");
+
+            if (enterIdx++ == 0)
+            {
+                Move();
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("OilBullet"))
+        {
+            Debug.Log("OIL");
+
             if (--enterIdx == 0)
             {
                 UnMove();
@@ -37,13 +76,15 @@ public class HardMoveObject : MonoBehaviour
 
     private void Move()
     {
-        rigid.mass = 1;
-        //rigid.drag = 0;
+        rigid.mass = mass;
+        rigid.drag = drag;
+        rigid.angularDrag = angular;
     }
 
     private void UnMove()
     {
-        rigid.mass = 500;
-        //rigid.drag = 50;
+        rigid.mass = 10000;
+        rigid.drag = 50000;
+        rigid.angularDrag = 50000;
     }
 }

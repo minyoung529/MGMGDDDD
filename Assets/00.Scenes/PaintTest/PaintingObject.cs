@@ -11,6 +11,16 @@ struct PaintStructure
     public float hardness;
     public float strength;
     public Color? color;
+
+    public void DataSet(Paintable paint, Vector3 point, float radius, float hardness, float strength, Color? color)
+    {
+        this.paint = paint;
+        this.point = point;
+        this.radius = radius;
+        this.hardness = hardness;
+        this.strength = strength;
+        this.color = color;
+    }
 }
 
 public class PaintingObject : MonoBehaviour
@@ -39,11 +49,13 @@ public class PaintingObject : MonoBehaviour
     private Queue<SphereCollider> colliders = new Queue<SphereCollider>();
     private List<SphereCollider> colliderList = new List<SphereCollider>();
 
+    private readonly float OIL_PAINT_DURATION = 0.5f;
+
     private void Start()
     {
         prevPosition = transform.position;
 
-        Transform root = new GameObject("Oil Trigger Root").transform;
+        Transform root = new GameObject("-- Oil Trigger Root --").transform;
 
         for (int i = 0; i < eraseQueueSize; i++)
         {
@@ -57,7 +69,7 @@ public class PaintingObject : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (((1 << collision.gameObject.layer) & layerMask) != 0) return;
+        if (((1 << collision.gameObject.layer) & layerMask) == 0) return;
 
         Paintable p = collision.gameObject.GetComponent<Paintable>();
 
@@ -75,45 +87,60 @@ public class PaintingObject : MonoBehaviour
                 }
             }
 
-            SphereCollider col = colliders.Dequeue();
-            col.transform.position = collision.GetContact(0).point;
-            col.gameObject.SetActive(true);
-            colliders.Enqueue(col);
+            if (IsNear(collision.GetContact(0).point)) return;
 
-            PaintManager.instance.Paint(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
+            CreateOilPaint(collision, p);
 
-            PaintStructure paint;
-            paint.paint = p;
-            paint.point = collision.GetContact(0).point;
-            paint.radius = radius;
-            paint.hardness = 0.2f;
-            paint.strength = 1f;
-            paint.color = color;
+            PaintStructure paint = new();
+            paint.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
 
             eraseQueue.Enqueue(paint);
-
             distanceChecker = 0f;
         }
-
 
         distanceChecker += Vector3.Distance(prevPosition, transform.position);
         prevPosition = transform.position;
     }
 
-    private IEnumerator DryCoroutine(PaintStructure top)
+    void CreateOilPaint(Collision collision, Paintable p)
+    {
+        SphereCollider col = colliders.Dequeue();
+        col.transform.position = collision.GetContact(0).point;
+        col.gameObject.SetActive(true);
+        colliders.Enqueue(col);
+
+        PaintStructure paintData = new PaintStructure();
+        paintData.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
+
+        StartCoroutine(SpreadCoroutine(paintData));
+    }
+
+    private IEnumerator DryCoroutine(PaintStructure p)
     {
         float timer = 0f;
-        //PaintManager.instance.Paint(top.paint, top.point, top.radius, top.hardness, top.strength, Color.clear);
 
-        while (timer < 0.5f)
+        while (timer < OIL_PAINT_DURATION)
         {
-            Color blend = Color.Lerp(top.color.Value, Color.clear, timer / 1f);
+            Color blend = Color.Lerp(p.color.Value, Color.clear, timer / OIL_PAINT_DURATION);
+            PaintManager.instance.Paint(p.paint, p.point, p.radius * 0.75f, p.hardness, p.strength, blend);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator SpreadCoroutine(PaintStructure top)
+    {
+        float timer = 0f;
+
+        while (timer < OIL_PAINT_DURATION)
+        {
+            Color blend = Color.Lerp(Color.clear, top.color.Value, timer / OIL_PAINT_DURATION);
             PaintManager.instance.Paint(top.paint, top.point, top.radius * 0.75f, top.hardness, top.strength, blend);
 
             timer += Time.deltaTime;
             yield return null;
         }
-        yield break;
     }
 
     private bool IsNear(Vector3 pos)
@@ -122,6 +149,9 @@ public class PaintingObject : MonoBehaviour
         colliderList.FindAll(x => x.gameObject.activeSelf).
         OrderBy(x => Vector3.Distance(x.transform.position, pos));
 
-        return (Vector3.Distance(pos, cols.ToList()[1].transform.position) < radius * 0.3f);
+        if (cols.ToList().Count < 2)
+            return false;
+
+        return (Vector3.Distance(pos, cols.ToList()[1].transform.position) < radius * 0.5f);
     }
 }
