@@ -34,15 +34,17 @@ public class FirePet : Pet
         if (CheckSkillActive) return;
         base.Skill(inputAction, value);
 
-        isOn = !isOn;
-        if (isOn)
-        {
-            OnSkill();
-        }
-        else
-        {
-           OffSkill();
-        }
+        StartCoroutine(FireBurn());
+
+        //isOn = !isOn;
+        //if (isOn)
+        //{
+        //    OnSkill();
+        //}
+        //else
+        //{
+        //   OffSkill();
+        //}
 
     }
 
@@ -51,6 +53,14 @@ public class FirePet : Pet
         isOn = false;
         fire.StopBurn();
     }
+
+    private IEnumerator FireBurn()
+    {
+        OnSkill();
+        yield return new WaitForSeconds(petInform.skillDelayTime);
+        OffSkill();
+    }
+
     public void OnSkill()
     {
         isOn = true;

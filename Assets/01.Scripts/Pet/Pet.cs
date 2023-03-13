@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] private PetTypeSO petInform;
+    [SerializeField] protected PetTypeSO petInform;
 
     #region Bool
 
@@ -15,6 +15,8 @@ public abstract class Pet : MonoBehaviour
     private bool isCoolTime = false;
     private bool isSelected = false;
     private bool isClickMove = false;
+
+    private bool isReadyThrow = false;
 
     #endregion
 
@@ -28,6 +30,7 @@ public abstract class Pet : MonoBehaviour
     public bool CheckSkillActive { get { return (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime); } }
     public Sprite petSprite {  get { return petInform.petUISprite; } }
     public Animator Anim => anim;
+    public Rigidbody Rigid => rigid;
 
     #endregion
 
@@ -137,20 +140,25 @@ public abstract class Pet : MonoBehaviour
     {
         if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
 
-        StopFollow();
         ClickSetDestination(GameManager.Instance.GetCameraHit());
     }
-    private void ClickSetDestination(Vector3 dest)
+    protected void ClickSetDestination(Vector3 dest)
     {
+        if (dest == Vector3.zero) return;
+        StopFollow();
         isClickMove = true;
         destination = dest;
         rigid.velocity = Vector3.zero;
     }
-    private void StopClickMove()
+    protected void StopClickMove()
     {
         isClickMove = false;
         destination = Vector3.zero;
         rigid.velocity = Vector3.zero;
+    }
+    protected void StartClickMove()
+    {
+        isClickMove = true;
     }
     private void ClickMove()
     {
@@ -175,8 +183,9 @@ public abstract class Pet : MonoBehaviour
     {
         isFollow = true;
     }
-    private void StopFollow()
+    protected void StopFollow()
     {
+        if (!isFollow) return;
         isFollow = false;
         agent.ResetPath();
         agent.velocity = Vector3.zero;
@@ -211,7 +220,16 @@ public abstract class Pet : MonoBehaviour
 
     private void InputThrow(InputAction input, float value)
     {
-        Throw();
+        if(input == InputAction.Pet_Throw_Ready)
+        {
+            ThrowToggle();
+        Debug.Log(petInform.petType + " : Throw_Toggle");
+        }
+        else if(input == InputAction.Pet_Throw && isReadyThrow)
+        {
+            Throw();
+        Debug.Log(petInform.petType + " : Throw");
+        }
     }
 
     public void Hold()
@@ -220,7 +238,12 @@ public abstract class Pet : MonoBehaviour
     }
     public void Throw()
     {
-        Debug.Log(petInform.petType + " : Throw");
+        isReadyThrow = false;
+        agent.enabled = false;
+    }
+    public void ThrowToggle()
+    {
+        isReadyThrow = !isReadyThrow;
     }
 
     #endregion
@@ -281,6 +304,7 @@ public abstract class Pet : MonoBehaviour
     {
         InputManager.StartListeningInput(InputAction.Pet_Skill, Skill);
         InputManager.StartListeningInput(InputAction.Pet_Throw, InputThrow);
+        InputManager.StartListeningInput(InputAction.Pet_Throw_Ready, InputThrow);
         InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
         InputManager.StartListeningInput(InputAction.Pet_Follow, StartFollow);
     }
@@ -288,6 +312,7 @@ public abstract class Pet : MonoBehaviour
     {
         InputManager.StopListeningInput(InputAction.Pet_Skill, Skill);
         InputManager.StopListeningInput(InputAction.Pet_Throw, InputThrow);
+        InputManager.StopListeningInput(InputAction.Pet_Throw_Ready, InputThrow);
         InputManager.StopListeningInput(InputAction.Pet_Move, MovePoint);
         InputManager.StopListeningInput(InputAction.Pet_Follow, StartFollow);
     }

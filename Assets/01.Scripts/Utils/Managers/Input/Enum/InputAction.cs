@@ -19,5 +19,6 @@ public enum InputAction
     Interaction = 16,
     Up_Pet = 17,
     Push_Object = 18,
-    Pet_Throw = 19
+    Pet_Throw = 19,
+    Pet_Throw_Ready = 20
 }
