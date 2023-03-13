@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Animator))]
@@ -13,9 +13,9 @@ public class ClockBoss : BossScript
     private bool isInvincible;
 
     [Header("이벤트")]
-    [SerializeField] private Action onEncounter;
-    [SerializeField] private Action onPageChange;
-    [SerializeField] private Action onDie;
+    [SerializeField] private UnityEvent onEncounter;
+    [SerializeField] private UnityEvent onPageChange;
+    [SerializeField] private UnityEvent onDie;
 
     [Header("스킬 관련")]
     [SerializeField] private BossPage[] pageList;
@@ -27,15 +27,15 @@ public class ClockBoss : BossScript
 
     #region abstract 구현부
     public override BossPage[] PageList => pageList;
-    protected override Action OnEncounter => onEncounter;
+    protected override Action OnEncounter => onEncounter.Invoke;
 
     private Animator anim;
     public override Animator Anim => anim;
     private int hash_tDamaged = Animator.StringToHash("tDamaged");
-    private int hash_tStop = Animator.StringToHash("tStop");
 
     private void Awake() {
         anim = GetComponent<Animator>();
+        curHp = maxHp;
     }
 
     [ContextMenu("Test")]
@@ -44,7 +44,9 @@ public class ClockBoss : BossScript
         CallNextSkill();
     }
 
+    #region 피격 관련
     public override void GetDamage(float damage) {
+        Debug.Log(curHp);
         if (isInvincible) return;
         Debug.Log(curHp);
         StartCoroutine(InvinsibleTimer(0.1f));
@@ -68,22 +70,17 @@ public class ClockBoss : BossScript
         isInvincible = false;
     }
 
-    [ContextMenu("Test2")]
+    [ContextMenu("PageChange")]
     protected override void PageChange() {
         onPageChange?.Invoke();
-        foreach(BossPage item in pageList) {
-            item.Reinforce();
-        }
-    }
-
-    [ContextMenu("Test3")]
-    public void Test3() {
-        skillCount = 2;
+        CurPage.Reinforce(true);
+        CallNextSkill();
     }
 
     protected override void Die() {
         onDie?.Invoke();
     }
+    #endregion
 
     public override void CallNextSkill() {
         StartCoroutine(WaitForSkill());
@@ -105,5 +102,10 @@ public class ClockBoss : BossScript
             }
         }
         CurPage.Execute();
+    }
+
+    public override void ResetBoss() {
+        CurPage.CurSkill.StopSkill();
+        CurPage.Reinforce(false);
     }
 }

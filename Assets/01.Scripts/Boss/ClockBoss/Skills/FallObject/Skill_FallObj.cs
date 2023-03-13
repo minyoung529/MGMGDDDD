@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Skill_FallObj : BossSkill
 {
-    [SerializeField] private Transform inPoint;
-    [SerializeField] private Transform outPoint;
+    [Header("생성 관련")]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Vector3 spawnRange;
     [SerializeField] private Vector2 holeRange;
-    [SerializeField] private int count;
-
     [SerializeField] private FallingObject moveObj;
     [SerializeField] private FallingObject unmoveObj;
+    [SerializeField] private int count;
+    [SerializeField] private float duration = 10f;
+
+    [Header("큐브 이동 관련")]
+    [SerializeField] private Transform inPoint;
+    [SerializeField] private Transform outPoint;
 
     private List<FallingObject> list = new List<FallingObject>();
     private int hash_tFallObj = Animator.StringToHash("tFallObj");
@@ -51,9 +54,10 @@ public class Skill_FallObj : BossSkill
             obj.transform.position += pos;
             obj.SetPoint(inPoint.position, outPoint.position);
         }
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(duration);
         foreach (FallingObject item in list)
             item.Destroy();
+        list.Clear();
         parent.CallNextSkill();
     }
 
@@ -69,5 +73,6 @@ public class Skill_FallObj : BossSkill
         StopAllCoroutines();
         foreach (FallingObject item in list)
             item.Destroy();
+        list.Clear();
     }
 }

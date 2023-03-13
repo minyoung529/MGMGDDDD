@@ -38,7 +38,7 @@ public class InputManager : MonoSingleton<InputManager> {
     }
 
     private void LoadKeyMapping() {
-        if (!File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) {
+        if (File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) {
             string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
             inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
             keyBinding.Clear();

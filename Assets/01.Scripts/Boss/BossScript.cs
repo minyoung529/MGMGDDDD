@@ -30,6 +30,8 @@ public abstract class BossScript : MonoBehaviour
     /// </summary>
     public abstract void CallNextSkill();
 
+    public abstract void ResetBoss();
+
     #region 애니메이션 이벤트 함수
     //선 딜레이 시작
     public virtual void PreDelay() {

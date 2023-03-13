@@ -24,7 +24,7 @@ public abstract class BossSkill : MonoBehaviour
         this.parent = parent;
     }
 
-    public void Reinforce() {
-        isReinforce = true;
+    public void Reinforce(bool value) {
+        isReinforce = value;
     }
 }
