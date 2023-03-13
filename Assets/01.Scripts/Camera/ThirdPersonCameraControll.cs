@@ -6,6 +6,7 @@ using UnityEngine;
 public class ThirdPersonCameraControll : MonoBehaviour
 {
     [SerializeField] Texture2D skillCursor;
+    [SerializeField] Material playerMaterial;
 
     [SerializeField] CinemachineFreeLook defaultCamera;
     [SerializeField] CinemachineFreeLook petAimCamera;
@@ -158,6 +159,11 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private void InactiveCrossHair()
     {
         crosshair.gameObject.SetActive(false);
+    }
+
+    private void CheckNearPlayer()
+    {
+        playerMaterial.color = new Color(playerMaterial.color.r, playerMaterial.color.b, playerMaterial.color.b, 0);
     }
 
     private void OnDestroy()
