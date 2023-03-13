@@ -69,9 +69,4 @@ public class GameManager : MonoSingleton<GameManager>
 
         return Vector3.zero;
     }
-
-    private void OnDestroy()
-    {
-        Debug.Log(st);
-    }
 }
