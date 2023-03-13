@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallingObject : MonoBehaviour
-{
+public class FallingObject : MonoBehaviour {
     [SerializeField] private float range;
     [SerializeField] private float damage;
     [SerializeField] private bool isUnmove;
@@ -11,22 +10,18 @@ public class FallingObject : MonoBehaviour
     private Vector3 outPoint;
     private Rigidbody rigid;
 
-    private void Awake()
-    {
+    private void Awake() {
         rigid = GetComponent<Rigidbody>();
     }
 
-    private void Update()
-    {
-        if(Vector3.Distance(transform.position, inPoint) <= range)
-        {
+    private void Update() {
+        if (Vector3.Distance(transform.position, inPoint) <= range) {
             transform.position = outPoint;
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.transform.CompareTag("Boss")) {
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.transform.CompareTag("Boss")) {
             rigid.AddForce((transform.position - collision.GetContact(0).point).normalized * 100f, ForceMode.Impulse);
             BossScript boss = collision.transform.GetComponent<BossScript>();
             boss.GetDamage(damage);
@@ -43,16 +38,13 @@ public class FallingObject : MonoBehaviour
         this.outPoint = outPoint;
     }
 
-    public void Destroy()
-    {
+    public void Destroy() {
         StartCoroutine(DestroyCoroutine());
     }
 
-    private IEnumerator DestroyCoroutine()
-    {
+    private IEnumerator DestroyCoroutine() {
         float time = 0;
-        while (time <= 1)
-        {
+        while (time <= 1) {
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, time / 1);
             time += Time.deltaTime;
             yield return null;

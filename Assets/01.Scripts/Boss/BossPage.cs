@@ -55,8 +55,8 @@ public class BossPage
         }
     }
 
-    public void Reinforce() {
+    public void Reinforce(bool value) {
         foreach (BossSkill item in skillList)
-            item.Reinforce();
+            item.Reinforce(value);
     }
 }
