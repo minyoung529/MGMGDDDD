@@ -11,17 +11,21 @@ public class ZoomState : MoveState
 
     public override void OnInput(Vector3 inputDir) {
         player.SetRotate(player.Forward);
-        if (inputDir.sqrMagnitude <= 0)
+        if (inputDir.sqrMagnitude <= 0) {
             player.Decelerate();
-        else
-            player.Accelerate(inputDir);
+        }
+        else {
+            player.Accelerate(inputDir, maxSpeed: zoomSpeed);
+            moveDir = inputDir;
+        }
+        player.SetAnimInput(moveDir.normalized * (player.CurSpeed / zoomSpeed));
     }
     #endregion
 
+    [SerializeField] private float zoomSpeed = 2f;
+    private Vector3 moveDir = Vector3.zero;
+
     private void Awake() {
         player = GetComponent<PlayerMove>();
-    }
-
-    private void SetAnim() {
     }
 }

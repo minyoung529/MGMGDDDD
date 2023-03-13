@@ -8,15 +8,12 @@ public class JumpState : MoveState
     private PlayerMove player = null;
     public override PlayerMove PlayerMove => player;
 
-    public override void OnStateStart() {
-
-    }
     public override void OnInput(Vector3 inputDir) {
         if (inputDir.sqrMagnitude <= 0) {
-            PlayerMove.Decelerate(brakeTime);
+            PlayerMove.Decelerate(brake);
             return;
         }
-        player.Accelerate(inputDir, accel, brakeTime, maxSpeed);
+        player.Accelerate(inputDir, accel, brake, maxSpeed);
         player.SetRotate(inputDir);
     }
     #endregion
@@ -25,13 +22,11 @@ public class JumpState : MoveState
     [SerializeField] private float jumpPower = 10;
     [SerializeField] private float maxSpeed = 1.5f;
     [SerializeField] private float accel = 1f;
-    [SerializeField] private float brakeTime = 3f;
+    [SerializeField] private float brake = 5f;
 
 
     private Animator anim = null;
     private int hash_tLanding = Animator.StringToHash("tLanding");
-
-    private bool isJump = false;
 
     private void Awake() {
         player = GetComponent<PlayerMove>();
@@ -40,8 +35,6 @@ public class JumpState : MoveState
     }
 
     public void Jump() {
-        if (isJump) return;
-        isJump = true;
         rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
         StartCoroutine(LandingCoroutine());
     }
@@ -52,6 +45,5 @@ public class JumpState : MoveState
             yield return null;
         }
         anim.SetTrigger(hash_tLanding);
-        isJump = false;
     }
 }

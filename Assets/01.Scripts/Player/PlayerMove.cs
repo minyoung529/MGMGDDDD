@@ -61,14 +61,6 @@ public class PlayerMove : MonoBehaviour {
     private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
     #endregion
 
-    #region Push And Pull
-
-    public float pushPower = 2.0F;
-    private bool isPushObj = false;
-    private PushAndPull pushObj = null;
-
-    #endregion
-
     private Camera mainCam;
     public Camera MainCam {
         get {
@@ -112,9 +104,8 @@ public class PlayerMove : MonoBehaviour {
             else
                 ChangeState(StateName.DefaultMove);
         });
-
         actions.Add(InputAction.Jump, (action, value) => {
-            if (CheckOnGround())
+            if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(StateName.Jump);
         });
 
@@ -123,27 +114,24 @@ public class PlayerMove : MonoBehaviour {
         }
     }
     private void GetInput(InputAction action, Vector3 input) {
-        if (isInputLock) return;
         inputDir += input;
         inputDir = inputDir.normalized;
     }
 
     /// <summary>
-    /// 애니메이션에 사용될 fHorizontal과 
+    /// 애니메이션에 사용될 fHorizontal과 fVertical을 설정
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="length">벡터의 길이:0~1</param>
-    //private void SetAnimInput(Vector3 input, float length) {
-    //    Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, inputDir));
-    //    Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, inputDir));
-    //}
+    public void SetAnimInput(Vector3 dir) {
+        Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, dir));
+        Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, dir));
+    }
 
     private void Update() {
-        Debug.Log(CheckOnGround());
         SendInput();
     }
 
     private void SendInput() {
+        if (isInputLock) inputDir = Vector3.zero;
         curState.OnInput(inputDir);
         inputDir = Vector3.zero;
     }
@@ -189,14 +177,15 @@ public class PlayerMove : MonoBehaviour {
     }
 
     #region 편의성 함수 (State에서 주로 사용)
-    public void Accelerate(Vector3 inputDir, float accel = 2f, float brakeTime = 0.5f, float maxSpeed = 2f) {
-        curSpeed += accel * Time.deltaTime;
-        if (curSpeed > maxSpeed) {
-            curSpeed = Mathf.MoveTowards(curSpeed, maxSpeed, curSpeed / brakeTime * Time.deltaTime);
-            if (curSpeed < maxSpeed) {
-                curSpeed = maxSpeed;
-            }
-        }
+    public void Accelerate(Vector3 inputDir, float accel = 5f, float brake = 5f, float maxSpeed = 2f) {
+        if (curSpeed < maxSpeed)
+            curSpeed += accel * Time.deltaTime;
+        else if (curSpeed > maxSpeed)
+            curSpeed -= brake * Time.deltaTime;
+        else
+            curSpeed = maxSpeed;
+
+
         Vector3 dir = inputDir * curSpeed;
         dir.y = rigid.velocity.y;
         rigid.velocity = dir;
@@ -204,23 +193,19 @@ public class PlayerMove : MonoBehaviour {
         anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
-    public void Decelerate(float brakeTime = 0.5f) {
-        curSpeed = Mathf.MoveTowards(curSpeed, 0, curSpeed / brakeTime * Time.deltaTime);
+    public void Decelerate(float brake = 5f) {
+        curSpeed -= brake * Time.deltaTime;
         if (curSpeed < 0) {
             curSpeed = 0;
         }
-        Vector3 dir = inputDir * curSpeed;
-        dir.y = rigid.velocity.y;
 
-        if (dir.sqrMagnitude < 0.01f) return;
+        Vector3 dir = rigid.velocity;
+        dir.y = 0;
+        dir = dir.normalized * curSpeed;
+        dir.y = rigid.velocity.y;
         rigid.velocity = dir;
 
         anim.SetFloat(hash_fCurSpeed, curSpeed);
-    }
-
-    public void SetRotate(Vector3 dir) {
-        if (inputDir.sqrMagnitude <= 0) return;
-        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
     }
 
     public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {
@@ -235,18 +220,6 @@ public class PlayerMove : MonoBehaviour {
         }
         return false;
     }
-
-    //private void OnDrawGizmos() {
-    //    Gizmos.color = Color.red;
-    //    RaycastHit hit;
-    //    bool col = Physics.BoxCast(transform.position + Vector3.up * 0.5f, new Vector3(0.5f, 0.2f, 0.5f), Vector3.down, out hit, Quaternion.identity, 1.3f, groundLayer);
-    //    Ray ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.down);
-    //    Gizmos.DrawRay(transform.position + Vector3.up * 0.5f, Vector3.down * 1.5f);
-
-    //    if(col) {
-    //        Gizmos.DrawWireCube(hit.point, new Vector3(0.5f, 0.2f, 0.5f));
-    //    }
-    //}
 
     public void LockInput(float time) {
         StartCoroutine(LockTimer(time));
@@ -271,11 +244,6 @@ public class PlayerMove : MonoBehaviour {
         ChangeState(StateName.DefaultMove);
     }
     #endregion
-
-
-    public void ActiveRigidbody(bool isActive) {
-        rigid.isKinematic = !isActive;
-    }
 
     private void OnDestroy() {
         foreach (var keyValue in actions) {
