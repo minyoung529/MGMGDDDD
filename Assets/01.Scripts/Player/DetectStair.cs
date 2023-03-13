@@ -13,8 +13,6 @@ public class DetectStair : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
-
-        //stepRayUpper.transform.position = new Vector3(stepRayUpper.transform.position.x, stepHeight, stepRayUpper.transform.position.z);
     }
 
     private void FixedUpdate()

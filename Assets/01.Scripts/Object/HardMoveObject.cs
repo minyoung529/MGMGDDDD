@@ -26,8 +26,6 @@ public class HardMoveObject : MonoBehaviour
     {
         if (other.CompareTag("OilBullet"))
         {
-            Debug.Log("OIL");
-
             if (enterIdx++ == 0)
             {
                 Move();
@@ -39,8 +37,6 @@ public class HardMoveObject : MonoBehaviour
     {
         if (other.CompareTag("OilBullet"))
         {
-            Debug.Log("OIL");
-
             if (--enterIdx == 0)
             {
                 UnMove();
@@ -52,8 +48,6 @@ public class HardMoveObject : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("OilBullet"))
         {
-            Debug.Log("OIL");
-
             if (enterIdx++ == 0)
             {
                 Move();
@@ -65,8 +59,6 @@ public class HardMoveObject : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("OilBullet"))
         {
-            Debug.Log("OIL");
-
             if (--enterIdx == 0)
             {
                 UnMove();
