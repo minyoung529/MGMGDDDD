@@ -52,7 +52,7 @@ public class DefaultMoveState : MoveState
     private void Stop() {
         if (player.Anim.GetBool(hash_bSprint) && player.CurSpeed > (walkSpeed + sprintSpeed) / 2) {
             player.Anim.SetTrigger(hash_tStop);
-            player.LockInput(0.2f);
+            player.LockInput(0.3f);
         }
         MaxSpeed = walkSpeed;
         player.Anim.SetBool(hash_bSprint, false);
