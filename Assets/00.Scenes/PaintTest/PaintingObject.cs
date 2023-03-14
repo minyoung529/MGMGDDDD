@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 struct PaintStructure
 {
@@ -51,6 +52,20 @@ public class PaintingObject : MonoBehaviour
 
     private readonly float OIL_PAINT_DURATION = 0.5f;
 
+    private bool isPainting = false;
+    public bool IsPainting
+    {
+        get
+        {
+            return isPainting;
+        }
+        set
+        {
+            prevPosition = transform.position;
+            isPainting = value;
+        }
+    }
+
     private void Start()
     {
         prevPosition = transform.position;
@@ -69,6 +84,7 @@ public class PaintingObject : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        if (!isPainting) return;
         if (((1 << collision.gameObject.layer) & layerMask) == 0) return;
 
         Paintable p = collision.gameObject.GetComponent<Paintable>();
@@ -113,6 +129,7 @@ public class PaintingObject : MonoBehaviour
         paintData.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
 
         StartCoroutine(SpreadCoroutine(paintData));
+        //PaintManager.instance.Paint(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
     }
 
     private IEnumerator DryCoroutine(PaintStructure p)
@@ -153,5 +170,15 @@ public class PaintingObject : MonoBehaviour
             return false;
 
         return (Vector3.Distance(pos, cols.ToList()[1].transform.position) < radius * 0.5f);
+    }
+
+    public void ResetData()
+    {
+        while (eraseQueue.Count > 0)
+        {
+            StartCoroutine(DryCoroutine(eraseQueue.Dequeue()));
+        }
+
+        colliderList.ForEach(x => x.gameObject.SetActive(false));
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 using DG.Tweening;
 using System.Drawing;
 using Cinemachine;
+using UnityEngine.AI;
+using System.Reflection;
+using UnityEngine.UIElements;
 
 public class OilPet : Pet
 {
@@ -20,11 +23,19 @@ public class OilPet : Pet
 
     private bool isParticleOn;
 
+    [SerializeField]
+    private NavMeshAgent pathAgent;
+    private OilPetSkill oilPetSkill = new OilPetSkill();
+    private bool isSkilling;
+    protected bool isSkillDragging;
+
+
     protected override void Awake()
     {
         base.Awake();
         inkParticle = parentController.transform.GetComponentInChildren<ParticleSystem>();
 
+        oilPetSkill?.Init(GetComponentInChildren<PaintingObject>(), GetComponent<LineRenderer>(), pathAgent, agent);
     }
     #region Set
     protected override void ResetPet()
@@ -39,21 +50,13 @@ public class OilPet : Pet
     protected override void Skill(InputAction inputAction, float value)
     {
         if (CheckSkillActive) return;
+        if (isSkillDragging || isSkillDragging) return;
+
         base.Skill(inputAction, value);
 
-        RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-        {
-            GameObject oil = CreateOil();
-
-            Vector3 dir = (hit.point - transform.position) + (Vector3.up * 1.3f);
-            dir.y = 0;
-            oil.transform.DOScale(oil.transform.localScale + new Vector3(0.5f, 0.5f, 0.5f), 0.5f);
-            oil.transform.DOMoveY(hit.point.y, 2f);
-            oil.GetComponent<Rigidbody>().AddForce(dir, ForceMode.Impulse);
-
-   //         ParticlePlay(hit.point);
-        }
+        isSkillDragging = true;
+        isSkilling = true;
+        oilPetSkill.OnClickSkill();
     }
     private void ParticlePlay(Vector3 hit)
     {
@@ -63,11 +66,11 @@ public class OilPet : Pet
     }
     IEnumerator InkParticle()
     {
-        isParticleOn= true;
-            inkParticle.Play();
+        isParticleOn = true;
+        inkParticle.Play();
         yield return new WaitForSeconds(2f);
-            inkParticle.Stop();
-        isParticleOn= false;
+        inkParticle.Stop();
+        isParticleOn = false;
     }
     void VisualPolish(Vector3 point)
     {
@@ -79,7 +82,7 @@ public class OilPet : Pet
             parentController.DOLocalMove(localPos - new Vector3(0, .2f, 0), .03f)
                 .OnComplete(() => parentController.DOLocalMove(localPos, .1f).SetEase(Ease.OutSine));
 
-         //   impulseSource.GenerateImpulse();
+            //   impulseSource.GenerateImpulse();
         }
 
         if (!DOTween.IsTweening(splatGunNozzle))
@@ -98,4 +101,42 @@ public class OilPet : Pet
 
     #endregion
 
+    protected override void OnMoveEnd()
+    {
+        if (isSkilling && !isMouseMove)
+        {
+            oilPetSkill.StartSpreadOil(() => isForceBlockMove = true, () => { isForceBlockMove = false; ResetSkill(); MovePoint(transform.position); });
+        }
+    }
+
+    protected override void OnFollowTarget()
+    {
+        //ResetSkill();
+    }
+
+    protected override void SkillUp(InputAction inputAction, float value)
+    {
+        base.SkillUp(inputAction, value);
+
+        if (!isSkilling || !isSkillDragging) return;
+
+        MovePoint(oilPetSkill.StartPoint);
+
+        agent.isStopped = false;
+        isSkillDragging = false;
+    }
+
+    protected void ResetSkill()
+    {
+        if (isSkilling)
+        {
+            oilPetSkill.ResetSkill();
+            isSkilling = false;
+        }
+    }
+
+    protected override void OnUpdate()
+    {
+        oilPetSkill.Update(isSkilling, isSkillDragging);
+    }
 }

@@ -68,15 +68,15 @@ public class HardMoveObject : MonoBehaviour
 
     private void Move()
     {
-        rigid.mass = mass;
-        rigid.drag = drag;
-        rigid.angularDrag = angular;
+        //rigid.mass = mass;
+        //rigid.drag = drag;
+        //rigid.angularDrag = angular;
     }
 
     private void UnMove()
     {
-        rigid.mass = 10000;
-        rigid.drag = 50000;
-        rigid.angularDrag = 50000;
+        //rigid.mass = 10000;
+        //rigid.drag = 50000;
+        //rigid.angularDrag = 50000;
     }
 }
