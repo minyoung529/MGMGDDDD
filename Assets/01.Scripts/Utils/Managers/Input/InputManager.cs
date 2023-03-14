@@ -6,7 +6,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
 
-public class InputManager : MonoSingleton<InputManager> {
+public class InputManager : MonoSingleton<InputManager> 
+{
+    [SerializeField] private bool isLoadData = false;
+
     #region Å° ¸ÅÇÎ
     private static string SAVE_PATH;
     private const string SAVE_FILE = "/KeyMapping";
@@ -38,7 +41,7 @@ public class InputManager : MonoSingleton<InputManager> {
     }
 
     private void LoadKeyMapping() {
-        if (File.Exists(string.Concat(SAVE_PATH, SAVE_FILE))) {
+        if (File.Exists(string.Concat(SAVE_PATH, SAVE_FILE)) && isLoadData) {
             string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
             inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
             keyBinding.Clear();

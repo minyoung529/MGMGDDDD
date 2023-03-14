@@ -28,8 +28,9 @@ public abstract class Pet : MonoBehaviour
     public bool IsSelected { get { return isSelected; } }
     public bool IsNotMove { get { return isNotMove; } set { isNotMove = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
+    
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
-    public bool CheckSkillActive { get { return (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime); } }
+    public bool CheckSkillActive {  get { return (!IsSelected || IsCoolTime); } }
     public Sprite petSprite {  get { return petInform.petUISprite; } }
     public Animator Anim => anim;
     public Rigidbody Rigid => rigid;
@@ -233,11 +234,20 @@ public abstract class Pet : MonoBehaviour
             Throw();
         Debug.Log(petInform.petType + " : Throw");
         }
+
+        Vector3 dir = target.position;
+        dir = GameManager.Instance.GetCameraHit();
+
+        Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
     public void Hold()
     {
         Debug.Log(petInform.petType + " : Hold");
+        if (!IsSelected) return;
+
+        SetDestination(GameManager.Instance.GetCameraHit());
     }
     public void Throw()
     {
