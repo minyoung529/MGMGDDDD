@@ -2,13 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class HardMoveObject : MonoBehaviour
 {
-    [SerializeField] private bool canMove = false;
-    public bool CanMove {  get { return canMove; } }
-    
+    private Rigidbody rigid;
     private int enterIdx = 0;
+
+    private float mass;
+    private float angular;
+    private float drag;
+
+    private void Start()
+    {
+        rigid = GetComponent<Rigidbody>();
+
+        drag = rigid.drag;
+        angular = rigid.angularDrag;
+        mass = rigid.mass;
+
+        UnMove();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -54,13 +66,17 @@ public class HardMoveObject : MonoBehaviour
         }
     }
 
-    public void Move()
+    private void Move()
     {
-        canMove = true;
+        //rigid.mass = mass;
+        //rigid.drag = drag;
+        //rigid.angularDrag = angular;
     }
 
-    public void UnMove()
+    private void UnMove()
     {
-        canMove = false;
+        //rigid.mass = 10000;
+        //rigid.drag = 50000;
+        //rigid.angularDrag = 50000;
     }
 }

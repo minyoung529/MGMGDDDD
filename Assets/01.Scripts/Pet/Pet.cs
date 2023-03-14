@@ -1,71 +1,73 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SocialPlatforms;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] protected PetTypeSO petInform;
+    public PetType petType = PetType.NONE;
+    public Sprite petUI;
 
-    #region Bool
+    [SerializeField] private float skillCoolTime = 2.0f;
+    [SerializeField] private float followDistance = 10.0f;
+
+    #region CheckList
 
     private bool isGet = false;
     private bool isFollow = false;
     private bool isCoolTime = false;
     private bool isSelected = false;
     private bool isClickMove = false;
-    private bool isNotMove = false;
-
-    private bool isReadyThrow = false;
-
+    protected bool isMouseMove = false;
+    protected bool isForceBlockMove = false;
     #endregion
+
+    private Camera camera;
+    protected Rigidbody rigid;
+    private Transform target;
+    protected NavMeshAgent agent;
+
+    private Vector3 destination = Vector3.zero;
 
     #region Get
 
     public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
-    public bool IsNotMove { get { return isNotMove; } set { isNotMove = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
-    
-    public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
+
+    public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= followDistance; } }
     public bool CheckSkillActive {  get { return (!IsSelected || IsCoolTime); } }
-    public Sprite petSprite {  get { return petInform.petUISprite; } }
-    public Animator Anim => anim;
-    public Rigidbody Rigid => rigid;
+    public Vector3 MouseUpDestination { get; private set; }
+    public Vector3 Destination => destination;
 
     #endregion
 
-    #region Component
-
-    private Camera camera;
-    private Animator anim;
-    private Rigidbody rigid;
-    private Transform target;
-    private NavMeshAgent agent;
-
-    #endregion
-
-    private List<Action> actingFunc;
-
-    private Vector3 destination = Vector3.zero;
+    private float stopDistance;
 
     protected virtual void Awake()
     {
         camera = Camera.main;
-        anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        stopDistance = agent.stoppingDistance;
     }
-
-    protected virtual void Update()
+    private void FixedUpdate()
     {
+        if (isForceBlockMove) return;
         if (!IsGet) return;
-
-        Follow();
+        FollowTarget();
         LookAtPlayer();
+        OnUpdate();
     }
+
+    protected virtual void OnUpdate() { }
+
+    #region Set
 
     protected virtual void ResetPet()
     {
@@ -75,34 +77,7 @@ public abstract class Pet : MonoBehaviour
 
         rigid.velocity = Vector3.zero;
         agent.velocity = Vector3.zero;
-
-        InitActing();
-        EmotionHide();
     }
-
-    private void InitActing()
-    {
-        SetIdleActing(IdleActing);
-    }
-
-    protected void LookAtPlayer()
-    {
-        //Vector3 dir = target.position;
-        //if (ThirdPersonCameraControll.IsPetAim)
-        //{
-        //    dir = GameManager.Instance.GetCameraHit();
-        //}
-
-        //Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
-        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
-    }
-
-    public void Select(bool select)
-    {
-        isSelected = select;
-    }
-
-    #region Own
 
     public void GetPet(Transform obj)
     {
@@ -120,86 +95,16 @@ public abstract class Pet : MonoBehaviour
         PetManager.Instance.DeletePet(this);
     }
 
-
-    #endregion
-   
-    #region Move
-
-    protected void Follow()
+    public void Select(bool select)
     {
-        if (IsNotMove) return;
-        if (isClickMove)
-        {
-            ClickMove();
-        }
-        else if (isFollow)
-        {
-            agent.SetDestination(target.position);
-        }
+        isSelected = select;
     }
 
-    #region ClickMove
-
-    private void MovePoint(InputAction inputAction, float value)
-    {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsNotMove) return;
-
-        ClickSetDestination(GameManager.Instance.GetCameraHit());
-    }
-    protected void ClickSetDestination(Vector3 dest)
-    {
-        if (dest == Vector3.zero) return;
-        StopFollow();
-        isClickMove = true;
-        destination = dest;
-        rigid.velocity = Vector3.zero;
-    }
-    protected void StopClickMove()
-    {
-        isClickMove = false;
-        destination = Vector3.zero;
-        rigid.velocity = Vector3.zero;
-    }
-    protected void StartClickMove()
-    {
-        isClickMove = true;
-    }
-    private void ClickMove()
-    {
-        if (Vector3.Distance(destination, transform.position) <= 1f)
-        {
-            isClickMove = false;
-            return;
-        }
-        var dir = destination - transform.position;
-        dir.y = 0;
-        transform.position += dir.normalized * Time.deltaTime * 5f;
-    }
-
-    #endregion
-
-    #region AgentMove
-    private void StartFollow(InputAction inputAction, float value)
-    {
-        isFollow = true;
-    }
-    private void StartFollow()
-    {
-        isFollow = true;
-    }
-    protected void StopFollow()
-    {
-        if (!isFollow) return;
-        isFollow = false;
-        agent.ResetPath();
-        agent.velocity = Vector3.zero;
-    }
-    
-    #endregion
 
     #endregion
 
     #region Skill
+
     protected virtual void Skill(InputAction inputAction, float value)
     {
         if (CheckSkillActive) return;
@@ -210,7 +115,7 @@ public abstract class Pet : MonoBehaviour
     protected void SkillDelay()
     {
         isCoolTime = true;
-        StartCoroutine(SkillCoolTime(petInform.skillDelayTime));
+        StartCoroutine(SkillCoolTime(skillCoolTime));
     }
     private IEnumerator SkillCoolTime(float t)
     {
@@ -220,21 +125,9 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    #region Throw
-
-    private void InputThrow(InputAction input, float value)
+    #region Move
+    protected void LookAtPlayer()
     {
-        if(input == InputAction.Pet_Throw_Ready)
-        {
-            ThrowToggle();
-        Debug.Log(petInform.petType + " : Throw_Toggle");
-        }
-        else if(input == InputAction.Pet_Throw && isReadyThrow)
-        {
-            Throw();
-        Debug.Log(petInform.petType + " : Throw");
-        }
-
         Vector3 dir = target.position;
         dir = GameManager.Instance.GetCameraHit();
 
@@ -242,72 +135,93 @@ public abstract class Pet : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
-    public void Hold()
+    protected void MovePoint(InputAction inputAction, float value)
     {
-        Debug.Log(petInform.petType + " : Hold");
         if (!IsSelected) return;
 
         SetDestination(GameManager.Instance.GetCameraHit());
-    }
-    public void Throw()
-    {
-        isReadyThrow = false;
-        agent.enabled = false;
-    }
-    public void ThrowToggle()
-    {
-        isReadyThrow = !isReadyThrow;
+        isMouseMove = true;
+        transform.DOKill();
     }
 
-    #endregion
-
-    #region Acting
-
-    private void SetIdleActing(Action act)
+    protected void MovePoint(Vector3 destination)
     {
-        actingFunc.Add(act);
+        if (!IsSelected) return;
+
+        SetDestination(destination);
+        isMouseMove = false;
     }
 
-    public virtual void RandomIdleActing()
+    private void SetDestination(Vector3 dest)
     {
-        int randomAct = UnityEngine.Random.Range(0, actingFunc.Count);
-        actingFunc[randomAct].Invoke();
+        StopFollow();
+
+        agent.SetDestination(dest);
+        destination = dest;
+        isFollow = false;
+        isClickMove = true;
+        rigid.velocity = Vector3.zero;
+    }
+    private void ClickMove()
+    {
+        if (isClickMove && Vector3.Distance(destination, transform.position) <= 1f)
+        {
+            isClickMove = false;
+            OnMoveEnd();
+            return;
+        }
+
+        //var dir = destination - transform.position;
+        //dir.y = 0;
+        //transform.position += dir.normalized * Time.deltaTime * 5f;
     }
 
-    protected virtual void IdleActing()
+    protected void FollowTarget()
     {
-
+        if (isClickMove)
+        {
+            ClickMove();
+        }
+        if (isFollow && agent.destination != target.position)
+        {
+            OnFollowTarget();
+            agent.SetDestination(target.position);
+        }
     }
 
-    #endregion
-    
-    #region Emoji
+    protected virtual void OnFollowTarget() { }
 
-    protected void Emotion()
+    private void StartFollow(InputAction inputAction, float value)
     {
+        isFollow = true;
+        agent.stoppingDistance = stopDistance;
+        //agent.isStopped = false;
 
     }
-
-    protected void EmotionShow()
+    public void StartFollow()
     {
-
-    }
-    protected void EmotionHide()
-    {
-
+        isFollow = true;
+        agent.stoppingDistance = stopDistance;
+        //agent.isStopped = false;
     }
 
-    #endregion
-
-    #region Animation
-
-    public void AnimPlay(string animation)
+    protected virtual void SkillUp(InputAction inputAction, float value)
     {
-        anim.SetTrigger(animation);
+        MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
-    public void AnimPlay(string animation, bool isPlay)
+
+    protected virtual void OnMoveEnd()
     {
-        anim.SetBool(animation, isPlay);
+    }
+
+    private void StopFollow()
+    {
+        isFollow = false;
+        //agent.isStopped = true;
+        agent.stoppingDistance = 0f;
+
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
     }
 
     #endregion
@@ -316,18 +230,16 @@ public abstract class Pet : MonoBehaviour
     private void StartListen()
     {
         InputManager.StartListeningInput(InputAction.Pet_Skill, Skill);
-        InputManager.StartListeningInput(InputAction.Pet_Throw, InputThrow);
-        InputManager.StartListeningInput(InputAction.Pet_Throw_Ready, InputThrow);
         InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
         InputManager.StartListeningInput(InputAction.Pet_Follow, StartFollow);
+        InputManager.StartListeningInput(InputAction.Pet_Skill_Up, SkillUp);
     }
     private void StopListen()
     {
         InputManager.StopListeningInput(InputAction.Pet_Skill, Skill);
-        InputManager.StopListeningInput(InputAction.Pet_Throw, InputThrow);
-        InputManager.StopListeningInput(InputAction.Pet_Throw_Ready, InputThrow);
         InputManager.StopListeningInput(InputAction.Pet_Move, MovePoint);
         InputManager.StopListeningInput(InputAction.Pet_Follow, StartFollow);
+        InputManager.StopListeningInput(InputAction.Pet_Skill_Up, SkillUp);
     }
     #endregion
 }
