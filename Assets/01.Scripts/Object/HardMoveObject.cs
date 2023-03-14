@@ -2,23 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class HardMoveObject : MonoBehaviour
 {
+    [SerializeField] private bool canMove = false;
+    public bool CanMove {  get { return canMove; } }
+    
     private Rigidbody rigid;
     private int enterIdx = 0;
-
-    private float mass;
-    private float angular;
-    private float drag;
+    private bool inOil = false;
 
     private void Start()
     {
         rigid = GetComponent<Rigidbody>();
-
-        drag = rigid.drag;
-        angular = rigid.angularDrag;
-        mass = rigid.mass;
-
+        
         UnMove();
     }
 
@@ -28,6 +25,7 @@ public class HardMoveObject : MonoBehaviour
         {
             if (enterIdx++ == 0)
             {
+                inOil = true;
                 Move();
             }
         }
@@ -39,6 +37,7 @@ public class HardMoveObject : MonoBehaviour
         {
             if (--enterIdx == 0)
             {
+                inOil = false;
                 UnMove();
             }
         }
@@ -66,17 +65,13 @@ public class HardMoveObject : MonoBehaviour
         }
     }
 
-    private void Move()
+    public void Move()
     {
-        rigid.mass = mass;
-        rigid.drag = drag;
-        rigid.angularDrag = angular;
+        canMove = true;
     }
 
-    private void UnMove()
+    public void UnMove()
     {
-        rigid.mass = 10000;
-        rigid.drag = 50000;
-        rigid.angularDrag = 50000;
+        canMove = false;
     }
 }

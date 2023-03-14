@@ -15,6 +15,7 @@ public abstract class Pet : MonoBehaviour
     private bool isCoolTime = false;
     private bool isSelected = false;
     private bool isClickMove = false;
+    private bool isNotMove = false;
 
     private bool isReadyThrow = false;
 
@@ -25,6 +26,7 @@ public abstract class Pet : MonoBehaviour
     public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
+    public bool IsNotMove { get { return isNotMove; } set { isNotMove = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
     public bool CheckSkillActive { get { return (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime); } }
@@ -124,6 +126,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void Follow()
     {
+        if (IsNotMove) return;
         if (isClickMove)
         {
             ClickMove();
@@ -138,7 +141,7 @@ public abstract class Pet : MonoBehaviour
 
     private void MovePoint(InputAction inputAction, float value)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
+        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsNotMove) return;
 
         ClickSetDestination(GameManager.Instance.GetCameraHit());
     }

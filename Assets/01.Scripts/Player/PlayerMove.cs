@@ -139,7 +139,6 @@ public class PlayerMove : MonoBehaviour {
     //}
 
     private void Update() {
-        Debug.Log(CheckOnGround());
         SendInput();
     }
 

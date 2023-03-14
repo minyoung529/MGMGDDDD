@@ -19,7 +19,7 @@ public class Sticky : MonoBehaviour
         if(isSticky) return;
 
         isSticky = true;
-        rigid.useGravity = false;
+       // rigid.useGravity = false;
     }
     
     public void NotSticky()
