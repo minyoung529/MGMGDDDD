@@ -9,12 +9,8 @@ using UnityEngine.SocialPlatforms;
 
 public abstract class Pet : MonoBehaviour
 {
-    public PetType petType = PetType.NONE;
-    public Sprite petUI;
-
-    [SerializeField] private float skillCoolTime = 2.0f;
-    [SerializeField] private float followDistance = 10.0f;
-
+    [SerializeField] protected PetTypeSO petInform;
+    
     #region CheckList
 
     private bool isGet = false;
@@ -24,6 +20,7 @@ public abstract class Pet : MonoBehaviour
     private bool isClickMove = false;
     protected bool isMouseMove = false;
     protected bool isForceBlockMove = false;
+    protected bool isNotMove = false;
     #endregion
 
     private Camera camera;
@@ -38,12 +35,15 @@ public abstract class Pet : MonoBehaviour
     public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
+    public bool IsNotMove { get { return isNotMove; } set { isNotMove = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
 
-    public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= followDistance; } }
+    public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
     public bool CheckSkillActive {  get { return (!IsSelected || IsCoolTime); } }
     public Vector3 MouseUpDestination { get; private set; }
     public Vector3 Destination => destination;
+    public Rigidbody Rigid => rigid;
+    public Sprite petSprite => petInform.petUISprite;
 
     #endregion
 
@@ -115,7 +115,7 @@ public abstract class Pet : MonoBehaviour
     protected void SkillDelay()
     {
         isCoolTime = true;
-        StartCoroutine(SkillCoolTime(skillCoolTime));
+        StartCoroutine(SkillCoolTime(petInform.skillDelayTime));
     }
     private IEnumerator SkillCoolTime(float t)
     {
@@ -139,7 +139,7 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsSelected) return;
 
-        SetDestination(GameManager.Instance.GetCameraHit());
+        ClickSetDestination(GameManager.Instance.GetCameraHit());
         isMouseMove = true;
         transform.DOKill();
     }
@@ -148,11 +148,11 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsSelected) return;
 
-        SetDestination(destination);
+        ClickSetDestination(destination);
         isMouseMove = false;
     }
 
-    private void SetDestination(Vector3 dest)
+    private void ClickSetDestination(Vector3 dest)
     {
         StopFollow();
 
@@ -162,6 +162,13 @@ public abstract class Pet : MonoBehaviour
         isClickMove = true;
         rigid.velocity = Vector3.zero;
     }
+
+    protected void StopClickMove() {
+        isClickMove = false;
+        destination = Vector3.zero;
+        rigid.velocity = Vector3.zero;
+    }
+
     private void ClickMove()
     {
         if (isClickMove && Vector3.Distance(destination, transform.position) <= 1f)
@@ -214,7 +221,7 @@ public abstract class Pet : MonoBehaviour
     {
     }
 
-    private void StopFollow()
+    protected void StopFollow()
     {
         isFollow = false;
         //agent.isStopped = true;

@@ -4,37 +4,24 @@ using UnityEditor.SceneManagement;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
-public class StickyPet : Pet
-{
+public class StickyPet : Pet {
     [SerializeField] private ParticleSystem skillEffect;
 
     private bool isSticky = false;
+    private bool isHardMove = false;
     private float moveSpeed = 1f;
 
     private Sticky sticky = null;
 
-    protected override void Awake()
-    {
+    protected override void Awake() {
         base.Awake();
 
     }
 
     #region Set
-    protected override void ResetPet()
-    {
+    protected override void ResetPet() {
         base.ResetPet();
 
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-
-        if(sticky != null)
-        {
-            HardMoveObject hard = sticky.GetComponent<HardMoveObject>();
-            IsHard(hard);
-        }
     }
 
     #endregion
@@ -42,51 +29,42 @@ public class StickyPet : Pet
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value)
-    {
+    protected override void Skill(InputAction inputAction, float value) {
         if (CheckSkillActive) return;
         base.Skill(inputAction, value);
 
-        if (isSticky)
-        {
-            SeparateSticky();
+        if (isSticky) {
+            NotSticky();
         }
-        else
-        {
+        else {
             SetSticky();
         }
-      
+
     }
 
-    private void SetSticky()
-    {
+    private void SetSticky() {
         Vector3 hit = GameManager.Instance.GetCameraHit();
-        if (hit != Vector3.zero)
-        {
+        if (hit != Vector3.zero) {
             isSticky = true;
 
             StopClickMove();
             StopFollow();
 
             transform.DOMoveX(hit.x, moveSpeed);
-            transform.DOMoveZ(hit.z, moveSpeed).OnComplete(() =>
-            {
+            transform.DOMoveZ(hit.z, moveSpeed).OnComplete(() => {
                 StartCoroutine(CheckDelay());
             });
         }
     }
 
-    private IEnumerator CheckDelay()
-    {
+    private IEnumerator CheckDelay() {
         yield return new WaitForSeconds(0.2f);
-        if (sticky == null)
-        {
+        if (sticky == null) {
             isSticky = false;
         }
     }
 
-    private void SeparateSticky()
-    {
+    private void NotSticky() {
         if (!isSticky) return;
         isSticky = false;
 
@@ -101,9 +79,8 @@ public class StickyPet : Pet
         isSticky = false;
         sticky = null;
     }
-    
-    private void StickyToCollision(Sticky stickyObject)
-    {
+
+    private void StickyToCollision(Sticky stickyObject) {
         if (!isSticky) return;
 
         stickyObject.SetSticky();
@@ -116,15 +93,12 @@ public class StickyPet : Pet
         joint.connectedBody = sticky.GetComponent<Rigidbody>();
     }
 
-    private void IsHard(HardMoveObject hard)
-    {
+    private void IsHard(HardMoveObject hard) {
         IsNotMove = !hard.CanMove;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(isSticky)
-        {
+    private void OnCollisionEnter(Collision collision) {
+        if (isSticky) {
             Sticky stickyObject = collision.collider.GetComponent<Sticky>();
             if (stickyObject != null) StickyToCollision(stickyObject);
             else isSticky = false;

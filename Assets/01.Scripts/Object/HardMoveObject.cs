@@ -6,18 +6,13 @@ public class HardMoveObject : MonoBehaviour
 {
     private Rigidbody rigid;
     private int enterIdx = 0;
+    private bool canMove  = false;
 
-    private float mass;
-    private float angular;
-    private float drag;
+    public bool CanMove { get { return canMove; }  }
 
     private void Start()
     {
         rigid = GetComponent<Rigidbody>();
-
-        drag = rigid.drag;
-        angular = rigid.angularDrag;
-        mass = rigid.mass;
 
         UnMove();
     }
@@ -71,6 +66,7 @@ public class HardMoveObject : MonoBehaviour
         //rigid.mass = mass;
         //rigid.drag = drag;
         //rigid.angularDrag = angular;
+        canMove = true;
     }
 
     private void UnMove()
@@ -78,5 +74,6 @@ public class HardMoveObject : MonoBehaviour
         //rigid.mass = 10000;
         //rigid.drag = 50000;
         //rigid.angularDrag = 50000;
+        canMove = false;
     }
 }

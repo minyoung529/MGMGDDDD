@@ -6,6 +6,8 @@ using UnityEngine;
 public class ThirdPersonCameraControll : MonoBehaviour
 {
     [SerializeField] Texture2D skillCursor;
+    [SerializeField] CinemachineFreeLook defaultCamera;
+    [SerializeField] Canvas crosshair;
 
     [SerializeField] private float rotCamXAxisSpeed = 5f; // ???? x?? ??????
     [SerializeField] private float rotCamYAxisSpeed = 3f; // ???? y?? ??????
