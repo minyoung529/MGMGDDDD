@@ -58,7 +58,7 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (!IsGet) return;
 
@@ -86,14 +86,14 @@ public abstract class Pet : MonoBehaviour
 
     protected void LookAtPlayer()
     {
-        Vector3 dir = target.position;
-        if (ThirdPersonCameraControll.IsPetAim)
-        {
-            dir = GameManager.Instance.GetCameraHit();
-        }
+        //Vector3 dir = target.position;
+        //if (ThirdPersonCameraControll.IsPetAim)
+        //{
+        //    dir = GameManager.Instance.GetCameraHit();
+        //}
 
-        Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
+        //Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
+        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
     public void Select(bool select)

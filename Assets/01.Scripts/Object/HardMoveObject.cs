@@ -8,16 +8,7 @@ public class HardMoveObject : MonoBehaviour
     [SerializeField] private bool canMove = false;
     public bool CanMove {  get { return canMove; } }
     
-    private Rigidbody rigid;
     private int enterIdx = 0;
-    private bool inOil = false;
-
-    private void Start()
-    {
-        rigid = GetComponent<Rigidbody>();
-        
-        UnMove();
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -25,7 +16,6 @@ public class HardMoveObject : MonoBehaviour
         {
             if (enterIdx++ == 0)
             {
-                inOil = true;
                 Move();
             }
         }
@@ -37,7 +27,6 @@ public class HardMoveObject : MonoBehaviour
         {
             if (--enterIdx == 0)
             {
-                inOil = false;
                 UnMove();
             }
         }

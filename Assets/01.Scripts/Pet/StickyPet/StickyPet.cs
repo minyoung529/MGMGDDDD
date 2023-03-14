@@ -9,7 +9,6 @@ public class StickyPet : Pet
     [SerializeField] private ParticleSystem skillEffect;
 
     private bool isSticky = false;
-    private bool isHardMove = false;
     private float moveSpeed = 1f;
 
     private Sticky sticky = null;
@@ -27,6 +26,17 @@ public class StickyPet : Pet
 
     }
 
+    protected override void Update()
+    {
+        base.Update();
+
+        if(sticky != null)
+        {
+            HardMoveObject hard = sticky.GetComponent<HardMoveObject>();
+            IsHard(hard);
+        }
+    }
+
     #endregion
 
     #region Skill
@@ -39,7 +49,7 @@ public class StickyPet : Pet
 
         if (isSticky)
         {
-            NotSticky();
+            SeparateSticky();
         }
         else
         {
@@ -75,7 +85,7 @@ public class StickyPet : Pet
         }
     }
 
-    private void NotSticky()
+    private void SeparateSticky()
     {
         if (!isSticky) return;
         isSticky = false;
