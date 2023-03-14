@@ -98,12 +98,12 @@ public class PlayerMove : MonoBehaviour {
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
         actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
-        actions.Add(InputAction.Zoom, (action, value) => {
-            if (curState.StateName != StateName.Zoom)
-                ChangeState(StateName.Zoom);
-            else
-                ChangeState(StateName.DefaultMove);
-        });
+        //actions.Add(InputAction.Zoom, (action, value) => {
+        //    if (curState.StateName != StateName.Zoom)
+        //        ChangeState(StateName.Zoom);
+        //    else
+        //        ChangeState(StateName.DefaultMove);
+        //});
         actions.Add(InputAction.Jump, (action, value) => {
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(StateName.Jump);
