@@ -39,10 +39,12 @@ public abstract class Pet : MonoBehaviour
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
+
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= followDistance; } }
-    public bool CheckSkillActive { get { return (!ThirdPersonCameraControll.IsPetAim || !IsSelected || IsCoolTime); } }
+    public bool CheckSkillActive {  get { return (!IsSelected || IsCoolTime); } }
     public Vector3 MouseUpDestination { get; private set; }
     public Vector3 Destination => destination;
+
     #endregion
 
     private float stopDistance;
@@ -127,10 +129,7 @@ public abstract class Pet : MonoBehaviour
     protected void LookAtPlayer()
     {
         Vector3 dir = target.position;
-        if (ThirdPersonCameraControll.IsPetAim)
-        {
-            dir = GameManager.Instance.GetCameraHit();
-        }
+        dir = GameManager.Instance.GetCameraHit();
 
         Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
@@ -138,7 +137,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void MovePoint(InputAction inputAction, float value)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
+        if (!IsSelected) return;
 
         SetDestination(GameManager.Instance.GetCameraHit());
         isMouseMove = true;
@@ -147,7 +146,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void MovePoint(Vector3 destination)
     {
-        if (!ThirdPersonCameraControll.IsPetAim || !IsSelected) return;
+        if (!IsSelected) return;
 
         SetDestination(destination);
         isMouseMove = false;

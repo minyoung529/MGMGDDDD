@@ -98,12 +98,12 @@ public class PlayerMove : MonoBehaviour {
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
         actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
-        actions.Add(InputAction.Zoom, (action, value) => {
-            if (curState.StateName != StateName.Zoom)
-                ChangeState(StateName.Zoom);
-            else
-                ChangeState(StateName.DefaultMove);
-        });
+        //actions.Add(InputAction.Zoom, (action, value) => {
+        //    if (curState.StateName != StateName.Zoom)
+        //        ChangeState(StateName.Zoom);
+        //    else
+        //        ChangeState(StateName.DefaultMove);
+        //});
         actions.Add(InputAction.Jump, (action, value) => {
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(StateName.Jump);
@@ -178,13 +178,16 @@ public class PlayerMove : MonoBehaviour {
 
     #region 편의성 함수 (State에서 주로 사용)
     public void Accelerate(Vector3 inputDir, float accel = 5f, float brake = 5f, float maxSpeed = 2f) {
-        if (curSpeed < maxSpeed)
+        if (curSpeed < maxSpeed) {
             curSpeed += accel * Time.deltaTime;
-        else if (curSpeed > maxSpeed)
+            if (curSpeed > maxSpeed)
+                curSpeed = maxSpeed;
+        }
+        else if (curSpeed > maxSpeed) {
             curSpeed -= brake * Time.deltaTime;
-        else
-            curSpeed = maxSpeed;
-
+            if (curSpeed < maxSpeed)
+                curSpeed = maxSpeed;
+        }
 
         Vector3 dir = inputDir * curSpeed;
         dir.y = rigid.velocity.y;
