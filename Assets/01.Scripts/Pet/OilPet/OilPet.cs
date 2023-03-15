@@ -33,7 +33,7 @@ public class OilPet : Pet
     protected override void Awake()
     {
         base.Awake();
-        inkParticle = parentController.transform.GetComponentInChildren<ParticleSystem>();
+        //inkParticle = parentController.transform.GetComponentInChildren<ParticleSystem>();
 
         oilPetSkill?.Init(GetComponentInChildren<PaintingObject>(), GetComponent<LineRenderer>(), pathAgent, agent);
     }
