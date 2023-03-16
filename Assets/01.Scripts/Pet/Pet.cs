@@ -185,6 +185,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void FollowTarget()
     {
+        if (IsNotMove) return;
         if (isClickMove)
         {
             ClickMove();
