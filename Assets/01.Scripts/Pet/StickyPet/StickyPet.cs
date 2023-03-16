@@ -4,24 +4,37 @@ using UnityEditor.SceneManagement;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
-public class StickyPet : Pet {
+public class StickyPet : Pet
+{
     [SerializeField] private ParticleSystem skillEffect;
+    [SerializeField] private GameObject jumpObject;
 
     private bool isSticky = false;
-    private bool isHardMove = false;
+    private bool readySticky = false;
     private float moveSpeed = 1f;
 
     private Sticky sticky = null;
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
         base.Awake();
 
     }
 
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if(Input.GetKeyDown(KeyCode.X)) ReadySticky();
+    }
+
     #region Set
-    protected override void ResetPet() {
+    protected override void ResetPet()
+    {
         base.ResetPet();
 
+        jumpObject.transform.localScale = new Vector3(1, 1, 1);
+        jumpObject.SetActive(false);
     }
 
     #endregion
@@ -29,44 +42,51 @@ public class StickyPet : Pet {
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value) {
+    protected override void Skill(InputAction inputAction, float value)
+    {
         if (CheckSkillActive) return;
         base.Skill(inputAction, value);
 
-        if (isSticky) {
-            NotSticky();
-        }
-        else {
-            SetSticky();
-        }
-
+        Billow();
     }
 
-    private void SetSticky() {
-        Vector3 hit = GameManager.Instance.GetCameraHit();
-        if (hit != Vector3.zero) {
-            isSticky = true;
+    private void Billow()
+    {
+        NotSticky();
 
+        // 풍선처럼 부푸는 행동을 구현하는 함수
+        jumpObject.SetActive(true);
+        jumpObject.transform.DOScale(transform.localScale + new Vector3(3f, 3f, 3f), 0.5f);
+
+        IsNotMove = true;
+
+        SetJump();
+    }
+
+    private void SetJump()
+    {
+        // 점프대 점프할 수 있도록 설정하는 곳
+        // 민영아 여기다가 하면 돼
+    }
+
+    private void ReadySticky()
+    {
+        readySticky = true;
+
+        Vector3 hit = GameManager.Instance.GetCameraHit();
+        if (hit != Vector3.zero)
+        {
             StopClickMove();
             StopFollow();
 
             transform.DOMoveX(hit.x, moveSpeed);
-            transform.DOMoveZ(hit.z, moveSpeed).OnComplete(() => {
-                StartCoroutine(CheckDelay());
-            });
+            transform.DOMoveZ(hit.z, moveSpeed);
         }
     }
 
-    private IEnumerator CheckDelay() {
-        yield return new WaitForSeconds(0.2f);
-        if (sticky == null) {
-            isSticky = false;
-        }
-    }
-
-    private void NotSticky() {
+    private void NotSticky()
+    {
         if (!isSticky) return;
-        isSticky = false;
 
         IsNotMove = false;
         Destroy(GetComponent<FixedJoint>());
@@ -75,13 +95,15 @@ public class StickyPet : Pet {
         skillEffect.Play();
         Rigid.isKinematic = false;
         Rigid.useGravity = true;
+        readySticky = false;
 
         isSticky = false;
         sticky = null;
     }
 
-    private void StickyToCollision(Sticky stickyObject) {
-        if (!isSticky) return;
+    private void Sticky(Sticky stickyObject)
+    {
+        isSticky = true;
 
         stickyObject.SetSticky();
         sticky = stickyObject;
@@ -93,18 +115,12 @@ public class StickyPet : Pet {
         joint.connectedBody = sticky.GetComponent<Rigidbody>();
     }
 
-    private void IsHard(HardMoveObject hard) {
-        IsNotMove = !hard.CanMove;
-    }
-
-    private void OnCollisionEnter(Collision collision) {
-        if (isSticky) {
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (readySticky)
+        {
             Sticky stickyObject = collision.collider.GetComponent<Sticky>();
-            if (stickyObject != null) StickyToCollision(stickyObject);
-            else isSticky = false;
-
-            HardMoveObject hardObj = collision.collider.GetComponent<HardMoveObject>();
-            if (hardObj != null) IsHard(hardObj);
+            if (stickyObject != null) Sticky(stickyObject);
         }
     }
 
