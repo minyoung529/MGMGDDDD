@@ -30,6 +30,8 @@ public abstract class Pet : MonoBehaviour
 
     private Vector3 destination = Vector3.zero;
 
+    [SerializeField] protected float sightRange = 5f;
+
     #region Get
 
     public bool IsGet { get { return isGet; } }
@@ -163,12 +165,6 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
     }
 
-    protected void StopClickMove() {
-        isClickMove = false;
-        destination = Vector3.zero;
-        rigid.velocity = Vector3.zero;
-    }
-
     private void ClickMove()
     {
         if (isClickMove && Vector3.Distance(destination, transform.position) <= 1f)
@@ -178,9 +174,30 @@ public abstract class Pet : MonoBehaviour
             return;
         }
 
-        //var dir = destination - transform.position;
-        //dir.y = 0;
-        //transform.position += dir.normalized * Time.deltaTime * 5f;
+        var dir = destination - transform.position;
+        dir.y = 0;
+        transform.position += dir.normalized * Time.deltaTime * 5f;
+    }
+
+    protected void StopClickMove() {
+        isClickMove = false;
+        destination = Vector3.zero;
+        rigid.velocity = Vector3.zero;
+    }
+
+    public virtual void OnLanding() {
+        SetButtonTarget();
+    }
+
+    private void SetButtonTarget() {
+        ButtonObject[] buttons = GameManager.Instance.GetButttons();
+        float min = float.MaxValue;
+        int index = 0;
+        for(int i = 0; i < buttons.Length; i++) {
+            if((buttons[i].transform.position - transform.position).sqrMagnitude < min) {
+
+            }
+        }
     }
 
     protected void FollowTarget()
@@ -203,7 +220,6 @@ public abstract class Pet : MonoBehaviour
         isFollow = true;
         agent.stoppingDistance = stopDistance;
         //agent.isStopped = false;
-
     }
     public void StartFollow()
     {

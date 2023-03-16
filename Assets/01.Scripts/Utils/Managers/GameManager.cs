@@ -27,10 +27,15 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField]
     private LayerMask cameraHitLayerMask;
 
+    #region 퍼즐 관련 변수
+    private ButtonObject[] buttons;
+    #endregion
+
     protected override void Awake()
     {
         st = Time.time;
         MainCam = Camera.main;
+        buttons = FindObjectsOfType<ButtonObject>();
         base.Awake();
     }
 
@@ -68,5 +73,9 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         return Vector3.zero;
+    }
+
+    public ButtonObject[] GetButttons() {
+        return buttons;
     }
 }
