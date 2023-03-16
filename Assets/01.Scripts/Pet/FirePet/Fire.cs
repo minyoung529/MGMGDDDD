@@ -127,6 +127,7 @@ public class Fire : MonoBehaviour
             ice.Melt();
         }
 
+        /*
         Fire[] fires = other.GetComponents<Fire>();
         foreach (Fire f in fires)
         {
@@ -134,6 +135,7 @@ public class Fire : MonoBehaviour
             transform.DOKill();
             f.Burn();
         }
+        */
     }
 
     private void OnCollisionStay(Collision collision)
@@ -146,6 +148,8 @@ public class Fire : MonoBehaviour
             ice.Melt();
         }
 
+        /*
+
         Fire[] fires = collision.collider.GetComponents<Fire>();
         foreach (Fire f in fires)
         {
@@ -153,7 +157,7 @@ public class Fire : MonoBehaviour
             transform.DOKill();
             f.Burn();
         }
-
+        */
     }
 
     private void OnDestroy()

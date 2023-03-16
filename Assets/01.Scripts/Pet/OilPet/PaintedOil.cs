@@ -7,40 +7,37 @@ using UnityEngine;
 public class PaintedOil : MonoBehaviour
 {
     public event EventHandler OnContactFirePet;
-    new private SphereCollider collider;
-    public SphereCollider Collider { get { return collider; } }
 
-    private Fire fire;
+    private Fire fire = null;
 
-    [SerializeField]
-    private GameObject fireEffect;
+    private Fire firePet = null;
 
     private void Awake()
     {
-        collider = GetComponent<SphereCollider>();
+        fire = GetComponent<Fire>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("FirePet"))
+        if (other.CompareTag(Define.FIRE_PET_TAG))
         {
-            OnContactFirePet?.Invoke(this, EventArgs.Empty);
+            firePet ??= other.GetComponent<Fire>();
+
+            if (firePet.IsBurn)
+            {
+                OnContactFirePet?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 
     public void Burn()
     {
-        fire = gameObject.AddComponent<Fire>();
-        fireEffect.SetActive(true);
+        fire.Burn();
     }
 
     public void ResetOil()
     {
-        Destroy(fire);
-        fire = null;
-
+        fire.StopBurn();
         gameObject.SetActive(false);
-        fireEffect.SetActive(false);
     }
-
 }

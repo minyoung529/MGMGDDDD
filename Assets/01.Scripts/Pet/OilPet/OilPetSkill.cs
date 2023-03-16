@@ -117,6 +117,13 @@ public class OilPetSkill
             }
 
             Vector3 cameraHit = GameManager.Instance.GetCameraHit();
+
+            if (!pathAgent.gameObject.activeSelf)
+            {
+                pathAgent.gameObject.SetActive(true);
+                return;
+            }
+
             pathAgent.SetDestination(cameraHit);
 
             float dist = Vector3.Distance(prevPosition, pathAgent.transform.position);
@@ -134,7 +141,7 @@ public class OilPetSkill
             ShowPath();
         }
 
-        if(!isSkilling)
+        if (!isSkilling)
         {
             lineRenderer.positionCount = 0;
             pathAgent.transform.position = GameManager.Instance.GetCameraHit();
