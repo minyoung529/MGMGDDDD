@@ -17,10 +17,6 @@ public class OilPet : Pet
 
     ParticleSystem inkParticle;
 
-    private const float fireStayTime = Define.ICE_MELTING_TIME;
-    private const float fireSkillTime = Define.BURN_TIME;
-    private const float fireRadius = Define.FIRE_RADIUS;
-
     private bool isParticleOn;
 
     [SerializeField]
@@ -81,8 +77,6 @@ public class OilPet : Pet
             Vector3 localPos = parentController.localPosition;
             parentController.DOLocalMove(localPos - new Vector3(0, .2f, 0), .03f)
                 .OnComplete(() => parentController.DOLocalMove(localPos, .1f).SetEase(Ease.OutSine));
-
-            //   impulseSource.GenerateImpulse();
         }
 
         if (!DOTween.IsTweening(splatGunNozzle))

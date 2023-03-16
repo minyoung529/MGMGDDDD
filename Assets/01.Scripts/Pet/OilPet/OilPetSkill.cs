@@ -35,6 +35,8 @@ public class OilPetSkill
         this.pathAgent = pathAgent;
         agent = player;
         lineRenderer = line;
+
+        pathAgent.transform.SetParent(null);
     }
 
     public void OnClickSkill()

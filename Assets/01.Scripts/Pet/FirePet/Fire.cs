@@ -27,7 +27,7 @@ public class Fire : MonoBehaviour
     {
         isBurn = playOnAwake;
         FireParticleStop();
-        if(playOnAwake)
+        if (playOnAwake)
         {
             Burn();
         }
@@ -55,6 +55,8 @@ public class Fire : MonoBehaviour
     }
     private void FireParticlePlay()
     {
+        if (fireParticle == null) return;
+
         for (int i = 0; i < fireParticle.Length; i++)
         {
             fireParticle[i].Play();
@@ -62,12 +64,14 @@ public class Fire : MonoBehaviour
     }
     private void FireParticleStop()
     {
+        if (fireParticle == null) return;
+
         for (int i = 0; i < fireParticle.Length; i++)
         {
             fireParticle[i].Stop();
         }
     }
-    public void StopBurn()  
+    public void StopBurn()
     {
         isBurn = false;
         FireParticleStop();
@@ -77,7 +81,7 @@ public class Fire : MonoBehaviour
     {
         Destroy(gameObject, burningTime);
     }
-    
+
     public void DestroyBurn(float destroyTime)
     {
         StartCoroutine(StopAndDestroy(destroyTime));
@@ -104,7 +108,7 @@ public class Fire : MonoBehaviour
 
     private IEnumerator StayInFire()
     {
-        yield return new WaitForSeconds(burningReadyTime);  
+        yield return new WaitForSeconds(burningReadyTime);
 
         if (isReadyBurn)
         {
