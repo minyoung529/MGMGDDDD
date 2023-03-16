@@ -35,6 +35,7 @@ public class StickyPet : Pet
 
         jumpObject.transform.localScale = new Vector3(1, 1, 1);
         jumpObject.SetActive(false);
+        skillEffect.Play();
     }
 
     #endregion
@@ -80,6 +81,7 @@ public class StickyPet : Pet
             StopFollow();
 
             transform.DOMoveX(hit.x, moveSpeed);
+            transform.DOMoveY(hit.y, moveSpeed);
             transform.DOMoveZ(hit.z, moveSpeed);
         }
     }
