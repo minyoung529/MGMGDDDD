@@ -83,6 +83,8 @@ public class PaintManager : Singleton<PaintManager>
 
         Graphics.ExecuteCommandBuffer(command);
         command.Clear();
+
+        Debug.Log("PAINT");
     }
 
     public void Erase(Paintable paintable, Vector3 pos, float radius = 1f)

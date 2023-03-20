@@ -73,8 +73,10 @@ public class OilPetSkill
 
         for (int i = 1; i < points.Count; i++)
         {
+        Debug.Log("ShowPath");
             lineRenderer.SetPosition(i, points[i]);
         }
+
     }
 
     public void StartSpreadOil(Action onStartPath, Action onEndPath)

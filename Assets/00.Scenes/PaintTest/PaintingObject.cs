@@ -147,7 +147,7 @@ public class PaintingObject : MonoBehaviour
         while (timer < OIL_PAINT_DURATION)
         {
             Color blend = Color.Lerp(p.color.Value, Color.clear, timer / OIL_PAINT_DURATION);
-            PaintManager.instance.Paint(p.paint, p.point, p.radius * 0.75f, p.hardness, p.strength, blend);
+            PaintManager.Instance.Paint(p.paint, p.point, p.radius * 0.75f, p.hardness, p.strength, blend);
 
             timer += Time.deltaTime;
             yield return null;
@@ -161,7 +161,7 @@ public class PaintingObject : MonoBehaviour
         while (timer < OIL_PAINT_DURATION)
         {
             Color blend = Color.Lerp(Color.clear, top.color.Value, timer / OIL_PAINT_DURATION);
-            PaintManager.instance.Paint(top.paint, top.point, top.radius * 0.75f, top.hardness, top.strength, blend);
+            PaintManager.Instance.Paint(top.paint, top.point, top.radius * 0.75f, top.hardness, top.strength, blend);
 
             timer += Time.deltaTime;
             yield return null;
