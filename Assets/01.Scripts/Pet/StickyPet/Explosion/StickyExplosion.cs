@@ -58,6 +58,8 @@ public class StickyExplosion : MonoBehaviour
 
         foreach (Collider col in cols)
         {
+            if (col.gameObject == gameObject) continue;
+
             ExplosionReceiver receiver = col.GetComponent<ExplosionReceiver>();
 
             if (receiver)
@@ -69,14 +71,13 @@ public class StickyExplosion : MonoBehaviour
 
             if (rigid)
             {
-                rigid.AddExplosionForce(explosionForce, transform.position, explosionRadius, 10f);
+                rigid.AddExplosionForce(explosionForce * rigid.mass, transform.position, explosionRadius, 10f);
             }
         }
 
         explosionParticles.ForEach(x => x.Play());
         isExplosioning = false;
 
-        visual.gameObject.SetActive(false);
         visual.DOScale(originalScale, 1f);
     }
 

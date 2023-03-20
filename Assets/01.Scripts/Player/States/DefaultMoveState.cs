@@ -29,13 +29,14 @@ public class DefaultMoveState : MoveState
     [SerializeField] private float brake = 5f;
     [SerializeField] private float accel = 1f;
 
+    [SerializeField] private float oilWalkWeight = 1.2f;
+    [SerializeField] private float oilSprintWeight = 1.2f;
+
     public float MaxSpeed { get; private set; }
 
     private float originSprintSpeed;
     private float originWalkSpeed;
     private float originBrake;
-
-    private bool isSlide = false;
     #endregion
 
     #region 애니메이션
@@ -75,26 +76,27 @@ public class DefaultMoveState : MoveState
         player.Decelerate(brake);
     }
 
-    private void OnTriggerStay(Collider other)
+    public void OnEnterOil()
     {
-        if (!isSlide && other.CompareTag(Define.OIL_BULLET_TAG))
-        {
-            isSlide = true;
-            walkSpeed = originWalkSpeed * 2f;
-            sprintSpeed = originSprintSpeed * 2f;
-            brake = originBrake * 0.3f;
-        }
+        ChangeWalkSpeed(oilWalkWeight, oilSprintWeight, 0.3f);
     }
 
-    private void OnTriggerExit(Collider other)
+    public void OnExitOil()
     {
-        if (isSlide && other.CompareTag(Define.OIL_BULLET_TAG))
-        {
-            isSlide = false;
-            walkSpeed = originWalkSpeed;
-            sprintSpeed = originSprintSpeed;
-            brake = originBrake;
-        }
+        ChangeWalkSpeed(1f, 1f, 1f);
+    }
+
+    private void ChangeWalkSpeed(float walkW, float sprintW, float brakeW)
+    {
+        walkSpeed = originWalkSpeed * walkW;
+        sprintSpeed = originSprintSpeed * sprintW;
+        brake = originBrake * brakeW;
+
+        if (player.Anim.GetBool(hash_bWalk))
+            MaxSpeed = walkSpeed;
+
+        else if (player.Anim.GetBool(hash_bSprint))
+            MaxSpeed = walkSpeed;
     }
 
     private void OnDestroy()

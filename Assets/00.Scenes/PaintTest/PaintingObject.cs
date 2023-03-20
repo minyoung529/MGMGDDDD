@@ -40,7 +40,7 @@ public class PaintingObject : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
-    private const int OIL_MAX_SIZE = 30;
+    private const int OIL_MAX_SIZE = 100;
 
     private float distanceChecker = 0f;
     private Vector3 prevPosition = Vector3.zero;

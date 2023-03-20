@@ -25,7 +25,7 @@ public class OilPetSkill
     private float skillDistance;
 
     private readonly float MIN_PATH_DIST = 0.25f;
-    private readonly float MAX_OIL_DIST = 10f;
+    private readonly float MAX_OIL_DIST = 25f;
     #endregion
 
 
