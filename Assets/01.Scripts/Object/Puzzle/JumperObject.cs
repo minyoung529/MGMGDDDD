@@ -17,9 +17,13 @@ public class JumperObject : MonoBehaviour
     [SerializeField]
     private UnityEvent OnJump;
 
+    public bool CanJump { get; set; } = true;
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == Define.PLAYER_LAYER)
+        if (!CanJump) return;
+
+        if (collision.transform.CompareTag(Define.PLAYER_TAG))
         {
             playerRigid ??= collision.gameObject.GetComponent<Rigidbody>();
             playerOil ??= collision.gameObject.GetComponent<DetectOil>();
@@ -28,16 +32,21 @@ public class JumperObject : MonoBehaviour
             playerRigid.angularVelocity = Vector3.zero;
             //playerRigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-            if (playerOil.IsContactOil)
-            {
-                playerRigid.velocity = Vector3.up * jumpForce * oilWeight;
-            }
-            else
-            {
-                playerRigid.velocity = Vector3.up * jumpForce;
-            }
-
-            OnJump?.Invoke();
+            Jump();
         }
+    }
+
+    private void Jump()
+    {
+        if (playerOil.IsContactOil)
+        {
+            playerRigid.velocity = Vector3.up * jumpForce * oilWeight;
+        }
+        else
+        {
+            playerRigid.velocity = Vector3.up * jumpForce;
+        }
+
+        OnJump?.Invoke();
     }
 }

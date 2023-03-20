@@ -1,3 +1,4 @@
+using Cinemachine.Utility;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,9 +24,14 @@ public class StickyExplosion : MonoBehaviour
     [SerializeField]
     private Transform visual;
 
+    [SerializeField]
+    private float upPower = 5f;
+
+    private JumperObject jumper;
+
     private void Start()
     {
-        originalScale = visual.localScale;
+        jumper = GetComponent<JumperObject>();
     }
 
     private void OnCollisionStay(Collision collision)
@@ -71,20 +77,33 @@ public class StickyExplosion : MonoBehaviour
 
             if (rigid)
             {
-                rigid.AddExplosionForce(explosionForce * rigid.mass, transform.position, explosionRadius, 10f);
+                rigid.AddExplosionForce(explosionForce * rigid.mass, transform.position, explosionRadius, upPower);
             }
         }
 
         explosionParticles.ForEach(x => x.Play());
-        isExplosioning = false;
 
-        visual.DOScale(originalScale, 1f);
+        visual.DOScale(originalScale, 1f).OnComplete(() =>
+        {
+            isExplosioning = false;
+            if (jumper)
+                jumper.CanJump = true;
+
+        });
     }
 
     [ContextMenu("Explosion")]
     private void ExplosionAnimation()
     {
+        if (isExplosioning) return;
+
+        originalScale = visual.localScale;
+
         isExplosioning = true;
+
+        if (jumper)
+            jumper.CanJump = false;
+
         visual.DOScale(originalScale * 1.75f, 1.5f).SetEase(ease).OnComplete(Explosion);
     }
 

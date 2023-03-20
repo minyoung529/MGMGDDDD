@@ -4,22 +4,16 @@ using UnityEngine;
 
 public class Sticky : MonoBehaviour
 {
+    [SerializeField] private bool canMove = false;
     private bool isSticky = false;
     public bool IsSticky { get { return isSticky; } set { isSticky = value; } }
-
-    Rigidbody rigid;
-
-    private void Awake()
-    {
-        rigid = GetComponent<Rigidbody>();
-    }
+    public bool CanMove { get { return canMove; } }
 
     public void SetSticky()
     {
         if(isSticky) return;
 
         isSticky = true;
-       // rigid.useGravity = false;
     }
     
     public void NotSticky()
@@ -27,6 +21,5 @@ public class Sticky : MonoBehaviour
         if(!isSticky) return;
 
         isSticky = false;
-        rigid.useGravity = true;
     }
 }

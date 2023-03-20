@@ -2,10 +2,9 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SocialPlatforms;
+
 
 public abstract class Pet : MonoBehaviour
 {
@@ -29,6 +28,7 @@ public abstract class Pet : MonoBehaviour
     protected NavMeshAgent agent;
 
     private Vector3 destination = Vector3.zero;
+    private Vector3 originScale;
 
     #region Get
 
@@ -51,6 +51,9 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void Awake()
     {
+        isGet = false;
+        originScale = transform.localScale;
+
         camera = Camera.main;
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
@@ -60,8 +63,9 @@ public abstract class Pet : MonoBehaviour
     {
         if (isForceBlockMove) return;
         if (!IsGet) return;
+
         FollowTarget();
-        LookAtPlayer();
+        //LookAtPlayer();
         OnUpdate();
     }
 
@@ -71,12 +75,11 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ResetPet()
     {
-        isGet = false;
-        isFollow = false;
         isCoolTime = false;
+        IsNotMove = false;
+        transform.localScale = originScale;
 
-        rigid.velocity = Vector3.zero;
-        agent.velocity = Vector3.zero;
+        StartFollow();
     }
 
     public void GetPet(Transform obj)
@@ -154,6 +157,8 @@ public abstract class Pet : MonoBehaviour
 
     private void ClickSetDestination(Vector3 dest)
     {
+        if (IsNotMove) return;
+
         StopFollow();
 
         agent.SetDestination(dest);
@@ -186,7 +191,8 @@ public abstract class Pet : MonoBehaviour
     protected void FollowTarget()
     {
         if (IsNotMove) return;
-        if (isClickMove)
+
+        if(isClickMove)
         {
             ClickMove();
         }
@@ -199,13 +205,7 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void OnFollowTarget() { }
 
-    private void StartFollow(InputAction inputAction, float value)
-    {
-        isFollow = true;
-        agent.stoppingDistance = stopDistance;
-        //agent.isStopped = false;
 
-    }
     public void StartFollow()
     {
         isFollow = true;
@@ -225,11 +225,19 @@ public abstract class Pet : MonoBehaviour
     protected void StopFollow()
     {
         isFollow = false;
-        //agent.isStopped = true;
         agent.stoppingDistance = 0f;
 
         agent.ResetPath();
         agent.velocity = Vector3.zero;
+    }
+
+    #endregion
+
+    #region Withdraw
+
+    protected virtual void Withdraw(InputAction inputAction, float value)
+    {
+        ResetPet();
     }
 
     #endregion
@@ -239,14 +247,14 @@ public abstract class Pet : MonoBehaviour
     {
         InputManager.StartListeningInput(InputAction.Pet_Skill, Skill);
         InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
-        InputManager.StartListeningInput(InputAction.Pet_Follow, StartFollow);
+        InputManager.StartListeningInput(InputAction.Pet_Follow, Withdraw);
         InputManager.StartListeningInput(InputAction.Pet_Skill_Up, SkillUp);
     }
     private void StopListen()
     {
         InputManager.StopListeningInput(InputAction.Pet_Skill, Skill);
         InputManager.StopListeningInput(InputAction.Pet_Move, MovePoint);
-        InputManager.StopListeningInput(InputAction.Pet_Follow, StartFollow);
+        InputManager.StopListeningInput(InputAction.Pet_Follow, Withdraw);
         InputManager.StopListeningInput(InputAction.Pet_Skill_Up, SkillUp);
     }
     #endregion
