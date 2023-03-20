@@ -2,10 +2,9 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SocialPlatforms;
+
 
 public abstract class Pet : MonoBehaviour
 {
@@ -54,6 +53,7 @@ public abstract class Pet : MonoBehaviour
     {
         isGet = false;
         originScale = transform.localScale;
+
         camera = Camera.main;
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
@@ -63,8 +63,9 @@ public abstract class Pet : MonoBehaviour
     {
         if (isForceBlockMove) return;
         if (!IsGet) return;
+
         FollowTarget();
-        LookAtPlayer();
+        //LookAtPlayer();
         OnUpdate();
     }
 

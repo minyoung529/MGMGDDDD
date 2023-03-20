@@ -1,7 +1,4 @@
 using DG.Tweening;
-using System.Collections;
-using UnityEditor.SceneManagement;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class StickyPet : Pet
@@ -13,6 +10,8 @@ public class StickyPet : Pet
     private bool readySticky = false;
     private float moveSpeed = 1f;
 
+    private Vector3 smallDirection;
+    private Vector3 bigScale = new Vector3(3f, 1f, 3f);
     private Sticky sticky = null;
 
     protected override void Awake()
@@ -33,6 +32,8 @@ public class StickyPet : Pet
     {
         base.ResetPet();
 
+        NotSticky();
+        agent.enabled = true;
         jumpObject.transform.localScale = new Vector3(1, 1, 1);
         jumpObject.SetActive(false);
         skillEffect.Play();
@@ -53,17 +54,27 @@ public class StickyPet : Pet
 
     private void Billow()
     {
-        NotSticky();
-
         // 풍선처럼 부푸는 행동을 구현하는 함수
-        jumpObject.SetActive(true);
-        jumpObject.transform.DOScale(transform.localScale + new Vector3(3f, 3f, 3f), 0.5f);
-
         IsNotMove = true;
 
+        BillowAction();
         SetJump();
     }
 
+    private void BillowAction()
+    {
+        if(smallDirection == Vector3.zero) return;
+
+        transform.forward = smallDirection;
+        transform.DOScale(bigScale, 0.5f);
+
+        smallDirection = Vector3.zero;
+    }
+
+    private void SetBillow(Vector3 dir)
+    {
+        smallDirection = dir;
+    }
     private void SetJump()
     {
         // 점프대 점프할 수 있도록 설정하는 곳
@@ -72,6 +83,7 @@ public class StickyPet : Pet
 
     private void ReadySticky()
     {
+        if (readySticky) return;
         readySticky = true;
 
         Vector3 hit = GameManager.Instance.GetCameraHit();
@@ -105,12 +117,16 @@ public class StickyPet : Pet
 
     private void Sticky(Sticky stickyObject)
     {
-        isSticky = true;
+        if (isSticky) return;
 
+        skillEffect.Play();
+        agent.enabled = stickyObject.CanMove;
+        IsNotMove = !stickyObject.CanMove;
+
+        isSticky = true;
         stickyObject.SetSticky();
         sticky = stickyObject;
 
-        skillEffect.Play();
         Rigid.isKinematic = true;
 
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
@@ -122,8 +138,14 @@ public class StickyPet : Pet
         if (readySticky)
         {
             Sticky stickyObject = collision.collider.GetComponent<Sticky>();
-            if (stickyObject != null) Sticky(stickyObject);
+            if (stickyObject != null)
+            {
+                Vector3 dir = (collision.contacts[0].point - transform.position).normalized;
+                SetBillow(collision.transform.forward);
+                Sticky(stickyObject);
+            }
         }
+
     }
 
     #endregion
