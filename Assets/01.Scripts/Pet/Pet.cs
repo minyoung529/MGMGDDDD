@@ -35,7 +35,7 @@ public abstract class Pet : MonoBehaviour
     public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
-    public bool IsNotMove { get { return isNotMove; } set { isNotMove = value; } }
+    public bool CanMove { get { return isNotMove; } set { isNotMove = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
 
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
@@ -76,7 +76,7 @@ public abstract class Pet : MonoBehaviour
     protected virtual void ResetPet()
     {
         isCoolTime = false;
-        IsNotMove = false;
+        CanMove = false;
         transform.localScale = originScale;
 
         StartFollow();
@@ -157,7 +157,7 @@ public abstract class Pet : MonoBehaviour
 
     private void ClickSetDestination(Vector3 dest)
     {
-        if (IsNotMove) return;
+        if (CanMove) return;
 
         StopFollow();
 
@@ -190,7 +190,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void FollowTarget()
     {
-        if (IsNotMove) return;
+        if (CanMove) return;
 
         if(isClickMove)
         {

@@ -2,18 +2,23 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum StickyState
+{
+    Idle,
+    Move,
+    ReadySticky,
+    Sticky,
+    Billow
+}
 public class StickyPet : Pet
 {
     [SerializeField] private ParticleSystem skillEffect;
-    [SerializeField] private GameObject jumpObject;
 
-    private bool isSticky = false;
-    private bool readySticky = false;
     private float moveSpeed = 1f;
 
-    private Vector3 smallDirection = Vector3.zero;
+    private StickyState state = StickyState.Idle;
     private Vector3 bigScale = new Vector3(3f, 1f, 3f);
-    private Sticky sticky = null;
+    private Vector3 smallDirection;
 
     [SerializeField]
     private UnityEvent OnBillow;
@@ -41,11 +46,20 @@ public class StickyPet : Pet
 
         NotSticky();
         agent.enabled = true;
-        jumpObject.transform.localScale = new Vector3(1, 1, 1);
-        jumpObject.SetActive(false);
         skillEffect.Play();
 
         OnExitBillow?.Invoke();
+    }
+
+    private void SetMove(bool canMove)
+    {
+        CanMove = canMove;
+        agent.enabled = canMove;
+    }
+
+    private void ChangeState(StickyState setState)
+    {
+        state = setState;
     }
 
     #endregion
@@ -64,7 +78,7 @@ public class StickyPet : Pet
     private void Billow()
     {
         // 풍선처럼 부푸는 행동을 구현하는 함수
-        IsNotMove = true;
+        SetMove(false);
 
         OnBillow?.Invoke();
 
@@ -92,8 +106,8 @@ public class StickyPet : Pet
 
     private void ReadySticky()
     {
-        if (readySticky) return;
-        readySticky = true;
+        if (state == StickyState.ReadySticky) return;
+        ChangeState(StickyState.ReadySticky);
 
         Vector3 hit = GameManager.Instance.GetCameraHit();
         if (hit != Vector3.zero)
@@ -109,42 +123,37 @@ public class StickyPet : Pet
 
     private void NotSticky()
     {
-        if (!isSticky) return;
+        if (state != StickyState.Sticky) return;
 
-        IsNotMove = false;
+        CanMove = false;
         Destroy(GetComponent<FixedJoint>());
-        sticky.NotSticky();
 
         skillEffect.Play();
         Rigid.isKinematic = false;
         Rigid.useGravity = true;
-        readySticky = false;
 
-        isSticky = false;
-        sticky = null;
+        ChangeState(StickyState.Idle);
     }
 
     private void Sticky(Sticky stickyObject)
     {
-        if (isSticky) return;
+        if (state == StickyState.Sticky) return;
 
         skillEffect.Play();
         agent.enabled = stickyObject.CanMove;
-        IsNotMove = !stickyObject.CanMove;
+        CanMove = !stickyObject.CanMove;
 
-        isSticky = true;
-        stickyObject.SetSticky();
-        sticky = stickyObject;
+        ChangeState(StickyState.Sticky);
 
         Rigid.isKinematic = true;
 
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-        joint.connectedBody = sticky.GetComponent<Rigidbody>();
+        joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (readySticky)
+        if (state == StickyState.ReadySticky)
         {
             Sticky stickyObject = collision.collider.GetComponent<Sticky>();
             if (stickyObject != null)
