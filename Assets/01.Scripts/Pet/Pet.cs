@@ -28,6 +28,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     protected Rigidbody rigid;
     protected Collider coll;
     private Transform target;
+    private Vector3 targetPos;
     protected NavMeshAgent agent;
 
     private Vector3 destination = Vector3.zero;
@@ -74,6 +75,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     {
         ResetPet();
     }
+
     private void FixedUpdate()
     {
         if (isForceBlockMove) return;
@@ -207,6 +209,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     private bool SetButtonTarget() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (!target) return false;
+        targetPos = target.transform.position;
         Vector3 dest = (target.transform.position - transform.position).normalized;
         dest = target.transform.position - dest * 5f;
 
@@ -223,10 +226,10 @@ public abstract class Pet : MonoBehaviour, IFindable
             agent.isStopped = true;
             isButtonMove = false;
             Sequence seq = DOTween.Sequence();
-            seq.Append(transform.DOJump(transform.position + transform.forward * 5f, 5f, 1, 1f));
+            seq.Append(transform.DOLookAt(new Vector3(targetPos.x, transform.position.y, targetPos.z), 0.2f));
+            seq.Append(transform.DOJump(targetPos, 5f, 1, 1f));
             seq.AppendCallback(() => { 
-                agent.isStopped = true; 
-                isFollow = true;
+                CanMove = false;
                 seq.Kill();
             });
         }
