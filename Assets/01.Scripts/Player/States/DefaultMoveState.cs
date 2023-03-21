@@ -5,17 +5,14 @@ public class DefaultMoveState : MoveState
     #region abstarct 구현 부분
     public override StateName StateName => StateName.DefaultMove;
 
-    private PlayerMove player = null;
-    public override PlayerMove PlayerMove => player;
-
     public override void OnInput(Vector3 inputDir) {
         if (inputDir.sqrMagnitude <= 0) {
             Stop();
             return;
         }
-        player.Anim.SetBool(hash_bWalk, true);
-        player.Accelerate(inputDir, accel, brake, MaxSpeed);
-        player.SetRotate(inputDir, rotateTime);
+        Player.Anim.SetBool(hash_bWalk, true);
+        Player.Accelerate(inputDir, accel, brake, MaxSpeed);
+        Player.SetRotate(inputDir, rotateTime);
     }
     #endregion
 
@@ -36,7 +33,7 @@ public class DefaultMoveState : MoveState
     #endregion
 
     private void Awake() {
-        player = GetComponent<PlayerMove>();
+        Player = GetComponent<PlayerMove>();
 
         MaxSpeed = walkSpeed;
 
@@ -44,20 +41,20 @@ public class DefaultMoveState : MoveState
     }
 
     private void Sprint(InputAction action, float param) {
-        if (!player.Anim.GetBool(hash_bWalk)) return;
-        player.Anim.SetBool(hash_bSprint, true);
+        if (!Player.Anim.GetBool(hash_bWalk)) return;
+        Player.Anim.SetBool(hash_bSprint, true);
         MaxSpeed = sprintSpeed;
     }
 
     private void Stop() {
-        if (player.Anim.GetBool(hash_bSprint) && player.CurSpeed > (walkSpeed + sprintSpeed) / 2) {
-            player.Anim.SetTrigger(hash_tStop);
-            player.LockInput(0.3f);
+        if (Player.Anim.GetBool(hash_bSprint) && Player.CurSpeed > (walkSpeed + sprintSpeed) / 2) {
+            Player.Anim.SetTrigger(hash_tStop);
+            Player.LockInput(0.3f);
         }
         MaxSpeed = walkSpeed;
-        player.Anim.SetBool(hash_bSprint, false);
-        player.Anim.SetBool(hash_bWalk, false);
-        player.Decelerate(brake);
+        Player.Anim.SetBool(hash_bSprint, false);
+        Player.Anim.SetBool(hash_bWalk, false);
+        Player.Decelerate(brake);
     }
 
     private void OnDestroy() {

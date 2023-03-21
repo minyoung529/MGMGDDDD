@@ -48,7 +48,6 @@ public class PlayerMove : MonoBehaviour {
     [SerializeField] private MoveState curState;
 
     public bool isInputLock = false;
-    public bool IsDecelerate;
 
     [SerializeField] private LayerMask groundLayer;
     #endregion
@@ -74,6 +73,7 @@ public class PlayerMove : MonoBehaviour {
 
     private Dictionary<InputAction, Action<InputAction, float>> actions = new Dictionary<InputAction, Action<InputAction, float>>();
 
+    #region SetUp
     private void Awake() {
         mainCam = Camera.main;
 
@@ -91,8 +91,10 @@ public class PlayerMove : MonoBehaviour {
     private void SetUpStateDictionary() {
         foreach (MoveState item in stateList) {
             stateDictionary.Add(item.StateName, item);
+            item.Player = this;
         }
     }
+
     private void StartListen() {
         actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
@@ -108,11 +110,13 @@ public class PlayerMove : MonoBehaviour {
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(StateName.Jump);
         });
-
         foreach (var keyValue in actions) {
             InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
         }
     }
+    #endregion
+
+    #region Input
     private void GetInput(InputAction action, Vector3 input) {
         inputDir += input;
         inputDir = inputDir.normalized;
@@ -135,6 +139,7 @@ public class PlayerMove : MonoBehaviour {
         curState.OnInput(inputDir);
         inputDir = Vector3.zero;
     }
+    #endregion
 
     private void OnAnimatorIK(int layerIndex) {
         if (anim) {

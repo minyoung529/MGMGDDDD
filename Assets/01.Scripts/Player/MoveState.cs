@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class MoveState : MonoBehaviour
 {
     public abstract StateName StateName { get; }
-    public abstract PlayerMove PlayerMove { get; }
+    public PlayerMove Player { get; set; }
 
     /// <summary>
     /// PlayerMove에서 업데이트 시마다 호출

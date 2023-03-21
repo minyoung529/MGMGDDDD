@@ -18,6 +18,7 @@ public abstract class Pet : MonoBehaviour
     private bool isCoolTime = false;
     private bool isSelected = false;
     private bool isClickMove = false;
+    private bool isButtonMove = false;
     protected bool isMouseMove = false;
     protected bool isForceBlockMove = false;
     protected bool isNotMove = false;
@@ -174,9 +175,9 @@ public abstract class Pet : MonoBehaviour
             return;
         }
 
-        var dir = destination - transform.position;
-        dir.y = 0;
-        transform.position += dir.normalized * Time.deltaTime * 5f;
+        //var dir = destination - transform.position;
+        //dir.y = 0;
+        //transform.position += dir.normalized * Time.deltaTime * 5f;
     }
 
     protected void StopClickMove() {
@@ -185,23 +186,46 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
     }
 
+    public virtual void OnThrow() {
+
+    }
+
     public virtual void OnLanding() {
         SetButtonTarget();
     }
 
     private void SetButtonTarget() {
-        ButtonObject[] buttons = GameManager.Instance.GetButttons();
-        float min = float.MaxValue;
-        int index = 0;
-        for(int i = 0; i < buttons.Length; i++) {
-            if((buttons[i].transform.position - transform.position).sqrMagnitude < min) {
+        ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
+        Vector3 dest = (target.transform.position - transform.position).normalized;
+        dest = target.transform.position - dest * 5f;
 
-            }
+        StopFollow();
+
+        agent.SetDestination(dest); 
+        destination = dest;
+        isButtonMove = true;
+    }
+
+    private void MoveToButton() {
+        if (Vector3.Distance(destination, transform.position) <= 0.5f) {
+            agent.isStopped = true;
+            isButtonMove = false;
+            Sequence seq = DOTween.Sequence();
+            seq.Append(transform.DOJump(transform.position + transform.forward * 5f, 5f, 1, 1f));
+            seq.AppendCallback(() => { 
+                agent.isStopped = true; 
+                isFollow = true;
+                seq.Kill();
+            });
         }
     }
 
     protected void FollowTarget()
     {
+        if (isButtonMove)
+        {
+            MoveToButton();
+        }
         if (isClickMove)
         {
             ClickMove();
