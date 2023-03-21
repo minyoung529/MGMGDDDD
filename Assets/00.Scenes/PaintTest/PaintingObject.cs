@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
+using UnityEngine.UIElements;
 
 struct PaintStructure
 {
@@ -38,17 +40,15 @@ public class PaintingObject : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
-    [SerializeField]
-    private int eraseQueueSize = 20;
+    private const int OIL_MAX_SIZE = 100;
 
     private float distanceChecker = 0f;
     private Vector3 prevPosition = Vector3.zero;
-    Queue<PaintStructure> eraseQueue = new Queue<PaintStructure>();
+    PaintStructure[] paintLogs = new PaintStructure[OIL_MAX_SIZE];
 
     [SerializeField]
-    private SphereCollider oilTrigger;
-    private Queue<SphereCollider> colliders = new Queue<SphereCollider>();
-    private List<SphereCollider> colliderList = new List<SphereCollider>();
+    private PaintedOil oilTriggerPrefab;
+    private List<PaintedOil> oilList = new List<PaintedOil>();
 
     private readonly float OIL_PAINT_DURATION = 0.5f;
 
@@ -66,19 +66,25 @@ public class PaintingObject : MonoBehaviour
         }
     }
 
+    private bool isBurning = false;
+    private int curIdx = 0;
+
+    private WaitForSeconds fireDelay = new WaitForSeconds(0.35f);
+
     private void Start()
     {
         prevPosition = transform.position;
 
         Transform root = new GameObject("-- Oil Trigger Root --").transform;
 
-        for (int i = 0; i < eraseQueueSize; i++)
+        for (int i = 0; i < OIL_MAX_SIZE; i++)
         {
-            SphereCollider col = Instantiate(oilTrigger, root);
-            colliders.Enqueue(col);
-            colliderList.Add(col);
-            col.gameObject.SetActive(false);
-            col.radius = radius * 0.5f;
+            PaintedOil oil = Instantiate(oilTriggerPrefab, root);
+            oilList.Add(oil);
+
+            oil.OnContactFirePet += Burn;
+            oil.gameObject.SetActive(false);
+            oil.transform.localScale = Vector3.one * radius;
         }
     }
 
@@ -86,6 +92,7 @@ public class PaintingObject : MonoBehaviour
     {
         if (!isPainting) return;
         if (((1 << collision.gameObject.layer) & layerMask) == 0) return;
+        if (curIdx >= OIL_MAX_SIZE) return;
 
         Paintable p = collision.gameObject.GetComponent<Paintable>();
 
@@ -93,15 +100,17 @@ public class PaintingObject : MonoBehaviour
 
         if (distanceChecker > eraseDistance)
         {
-            if (eraseQueue.Count >= eraseQueueSize)
+            /*
+            if (paintLogs.Length >= OIL_MAX_SIZE && isAutoDelete)
             {
-                PaintStructure top = eraseQueue.Dequeue();
+                PaintStructure top = paintLogs;
 
                 if (!IsNear(top.point))
                 {
                     StartCoroutine(DryCoroutine(top));
                 }
             }
+            */
 
             if (IsNear(collision.GetContact(0).point)) return;
 
@@ -110,7 +119,7 @@ public class PaintingObject : MonoBehaviour
             PaintStructure paint = new();
             paint.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
 
-            eraseQueue.Enqueue(paint);
+            paintLogs[curIdx++] = paint;
             distanceChecker = 0f;
         }
 
@@ -120,10 +129,9 @@ public class PaintingObject : MonoBehaviour
 
     void CreateOilPaint(Collision collision, Paintable p)
     {
-        SphereCollider col = colliders.Dequeue();
-        col.transform.position = collision.GetContact(0).point;
-        col.gameObject.SetActive(true);
-        colliders.Enqueue(col);
+        PaintedOil oil = oilList[curIdx];
+        oil.transform.position = collision.GetContact(0).point;
+        oil.gameObject.SetActive(true);
 
         PaintStructure paintData = new PaintStructure();
         paintData.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
@@ -163,7 +171,7 @@ public class PaintingObject : MonoBehaviour
     private bool IsNear(Vector3 pos)
     {
         var cols =
-        colliderList.FindAll(x => x.gameObject.activeSelf).
+        oilList.FindAll(x => x.gameObject.activeSelf).
         OrderBy(x => Vector3.Distance(x.transform.position, pos));
 
         if (cols.ToList().Count < 2)
@@ -174,11 +182,47 @@ public class PaintingObject : MonoBehaviour
 
     public void ResetData()
     {
-        while (eraseQueue.Count > 0)
+        for (int i = 0; i < oilList.Count; i++)
         {
-            StartCoroutine(DryCoroutine(eraseQueue.Dequeue()));
+            if (oilList[i].gameObject.activeSelf)
+            {
+                StartCoroutine(DryCoroutine(paintLogs[i]));
+            }
         }
 
-        colliderList.ForEach(x => x.gameObject.SetActive(false));
+        curIdx = 0;
+        oilList.ForEach(x => x.ResetOil());
+        isBurning = false;
+    }
+
+    private void Burn(object sender, EventArgs eventArgs)
+    {
+        if (isBurning) return;
+        isBurning = true;
+
+        int index = oilList.IndexOf((PaintedOil)sender);
+        StartCoroutine(BurnCoroutine(index));
+    }
+
+    private IEnumerator BurnCoroutine(int index)
+    {
+        int maxInterval = Mathf.Max(Mathf.Abs(curIdx - index), index);
+        oilList[index].Burn();
+
+        for (int i = 1; i <= maxInterval; i++)
+        {
+            int left = index - i, right = index + i;
+
+            if (left >= 0)
+            {
+                oilList[left].Burn();
+            }
+            if (right < curIdx)
+            {
+                oilList[right].Burn();
+            }
+
+            yield return fireDelay;
+        }
     }
 }

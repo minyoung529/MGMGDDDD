@@ -25,7 +25,7 @@ public class OilPetSkill
     private float skillDistance;
 
     private readonly float MIN_PATH_DIST = 0.25f;
-    private readonly float MAX_OIL_DIST = 10f;
+    private readonly float MAX_OIL_DIST = 25f;
     #endregion
 
 
@@ -35,6 +35,8 @@ public class OilPetSkill
         this.pathAgent = pathAgent;
         agent = player;
         lineRenderer = line;
+
+        pathAgent.transform.SetParent(null);
     }
 
     public void OnClickSkill()
@@ -115,6 +117,13 @@ public class OilPetSkill
             }
 
             Vector3 cameraHit = GameManager.Instance.GetCameraHit();
+
+            if (!pathAgent.gameObject.activeSelf)
+            {
+                pathAgent.gameObject.SetActive(true);
+                return;
+            }
+
             pathAgent.SetDestination(cameraHit);
 
             float dist = Vector3.Distance(prevPosition, pathAgent.transform.position);
@@ -132,7 +141,7 @@ public class OilPetSkill
             ShowPath();
         }
 
-        if(!isSkilling)
+        if (!isSkilling)
         {
             lineRenderer.positionCount = 0;
             pathAgent.transform.position = GameManager.Instance.GetCameraHit();

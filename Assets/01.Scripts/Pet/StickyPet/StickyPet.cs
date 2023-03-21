@@ -1,27 +1,65 @@
 using DG.Tweening;
-using System.Collections;
-using UnityEditor.SceneManagement;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class StickyPet : Pet {
+public enum StickyState
+{
+    Idle,
+    Move,
+    ReadySticky,
+    Sticky,
+    Billow
+}
+public class StickyPet : Pet
+{
     [SerializeField] private ParticleSystem skillEffect;
 
-    private bool isSticky = false;
-    private bool isHardMove = false;
     private float moveSpeed = 1f;
 
-    private Sticky sticky = null;
+    private StickyState state = StickyState.Idle;
+    private Vector3 bigScale = new Vector3(3f, 1f, 3f);
+    private Vector3 smallDirection;
 
-    protected override void Awake() {
+    [SerializeField]
+    private UnityEvent OnBillow;
+
+    [SerializeField]
+    private UnityEvent OnExitBillow;
+
+    protected override void Awake()
+    {
         base.Awake();
 
     }
 
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if(Input.GetKeyDown(KeyCode.X)) ReadySticky();
+    }
+
     #region Set
-    protected override void ResetPet() {
+    protected override void ResetPet()
+    {
         base.ResetPet();
 
+        NotSticky();
+        agent.enabled = true;
+        skillEffect.Play();
+
+        OnExitBillow?.Invoke();
+    }
+
+    private void SetMove(bool canMove)
+    {
+        CanMove = canMove;
+        agent.enabled = canMove;
+    }
+
+    private void ChangeState(StickyState setState)
+    {
+        state = setState;
     }
 
     #endregion
@@ -29,83 +67,103 @@ public class StickyPet : Pet {
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value) {
+    protected override void Skill(InputAction inputAction, float value)
+    {
         if (CheckSkillActive) return;
         base.Skill(inputAction, value);
 
-        if (isSticky) {
-            NotSticky();
-        }
-        else {
-            SetSticky();
-        }
-
+        Billow();
     }
 
-    private void SetSticky() {
-        Vector3 hit = GameManager.Instance.GetCameraHit();
-        if (hit != Vector3.zero) {
-            isSticky = true;
+    private void Billow()
+    {
+        // 풍선처럼 부푸는 행동을 구현하는 함수
+        SetMove(false);
 
+        OnBillow?.Invoke();
+
+        BillowAction();
+        SetJump();
+    }
+
+    private void BillowAction()
+    {
+        transform.forward = smallDirection;
+        transform.DOScale(bigScale, 0.5f);
+
+        smallDirection = Vector3.zero;
+    }
+
+    private void SetBillow(Vector3 dir)
+    {
+        smallDirection = dir;
+    }
+    private void SetJump()
+    {
+        // 점프대 점프할 수 있도록 설정하는 곳
+        // 민영아 여기다가 하면 돼
+    }
+
+    private void ReadySticky()
+    {
+        if (state == StickyState.ReadySticky) return;
+        ChangeState(StickyState.ReadySticky);
+
+        Vector3 hit = GameManager.Instance.GetCameraHit();
+        if (hit != Vector3.zero)
+        {
             StopClickMove();
             StopFollow();
 
             transform.DOMoveX(hit.x, moveSpeed);
-            transform.DOMoveZ(hit.z, moveSpeed).OnComplete(() => {
-                StartCoroutine(CheckDelay());
-            });
+            transform.DOMoveY(hit.y, moveSpeed);
+            transform.DOMoveZ(hit.z, moveSpeed);
         }
     }
 
-    private IEnumerator CheckDelay() {
-        yield return new WaitForSeconds(0.2f);
-        if (sticky == null) {
-            isSticky = false;
-        }
-    }
+    private void NotSticky()
+    {
+        if (state != StickyState.Sticky) return;
 
-    private void NotSticky() {
-        if (!isSticky) return;
-        isSticky = false;
-
-        IsNotMove = false;
+        CanMove = false;
         Destroy(GetComponent<FixedJoint>());
-        sticky.NotSticky();
 
         skillEffect.Play();
         Rigid.isKinematic = false;
         Rigid.useGravity = true;
 
-        isSticky = false;
-        sticky = null;
+        ChangeState(StickyState.Idle);
     }
 
-    private void StickyToCollision(Sticky stickyObject) {
-        if (!isSticky) return;
-
-        stickyObject.SetSticky();
-        sticky = stickyObject;
+    private void Sticky(Sticky stickyObject)
+    {
+        if (state == StickyState.Sticky) return;
 
         skillEffect.Play();
+        agent.enabled = stickyObject.CanMove;
+        CanMove = !stickyObject.CanMove;
+
+        ChangeState(StickyState.Sticky);
+
         Rigid.isKinematic = true;
 
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-        joint.connectedBody = sticky.GetComponent<Rigidbody>();
+        joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
     }
 
-    private void IsHard(HardMoveObject hard) {
-        IsNotMove = !hard.CanMove;
-    }
-
-    private void OnCollisionEnter(Collision collision) {
-        if (isSticky) {
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (state == StickyState.ReadySticky)
+        {
             Sticky stickyObject = collision.collider.GetComponent<Sticky>();
-            if (stickyObject != null) StickyToCollision(stickyObject);
-            else isSticky = false;
-
-            HardMoveObject hardObj = collision.collider.GetComponent<HardMoveObject>();
-            if (hardObj != null) IsHard(hardObj);
+            if (stickyObject != null)
+            {
+                Vector3 dir = (collision.contacts[0].point - transform.position).normalized;
+                SetBillow(collision.transform.forward);
+                Sticky(stickyObject);
+            }
         }
+
     }
 
     #endregion

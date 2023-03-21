@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DefaultMoveState : MoveState 
+public class DefaultMoveState : MoveState
 {
     #region abstarct 구현 부분
     public override StateName StateName => StateName.DefaultMove;
@@ -23,7 +23,15 @@ public class DefaultMoveState : MoveState
     [SerializeField] private float rotateTime = 0.2f;
     [SerializeField] private float brake = 5f;
     [SerializeField] private float accel = 1f;
+
+    [SerializeField] private float oilWalkWeight = 1.2f;
+    [SerializeField] private float oilSprintWeight = 1.2f;
+
     public float MaxSpeed { get; private set; }
+
+    private float originSprintSpeed;
+    private float originWalkSpeed;
+    private float originBrake;
     #endregion
 
     #region 애니메이션
@@ -32,10 +40,11 @@ public class DefaultMoveState : MoveState
     private int hash_tStop = Animator.StringToHash("tStop");
     #endregion
 
-    private void Awake() {
-        Player = GetComponent<PlayerMove>();
-
-        MaxSpeed = walkSpeed;
+    private void Awake()
+    {
+        originWalkSpeed = walkSpeed;
+        originSprintSpeed = sprintSpeed;
+        originBrake = brake;
 
         InputManager.StartListeningInput(InputAction.Sprint, Sprint);
     }
@@ -57,7 +66,31 @@ public class DefaultMoveState : MoveState
         Player.Decelerate(brake);
     }
 
-    private void OnDestroy() {
+    public void OnEnterOil()
+    {
+        ChangeWalkSpeed(oilWalkWeight, oilSprintWeight, 0.3f);
+    }
+
+    public void OnExitOil()
+    {
+        ChangeWalkSpeed(1f, 1f, 1f);
+    }
+
+    private void ChangeWalkSpeed(float walkW, float sprintW, float brakeW)
+    {
+        walkSpeed = originWalkSpeed * walkW;
+        sprintSpeed = originSprintSpeed * sprintW;
+        brake = originBrake * brakeW;
+
+        if (player.Anim.GetBool(hash_bWalk))
+            MaxSpeed = walkSpeed;
+
+        else if (player.Anim.GetBool(hash_bSprint))
+            MaxSpeed = walkSpeed;
+    }
+
+    private void OnDestroy()
+    {
         InputManager.StopListeningInput(InputAction.Sprint, Sprint);
     }
 }
