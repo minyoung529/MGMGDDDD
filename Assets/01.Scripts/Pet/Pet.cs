@@ -149,7 +149,6 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsSelected) return;
 
-
         StopFollow();
         isMouseMove = true;
         ClickSetDestination(GameManager.Instance.GetCameraHit());
@@ -231,6 +230,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void StopFollow()
     {
+        if (!isFollow) return;
         isFollow = false;
         agent.ResetPath();
 

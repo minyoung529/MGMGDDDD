@@ -169,8 +169,27 @@ public class StickyPet : Pet
                 Sticky(stickyObject);
             }
         }
+        else if (state == StickyState.Billow)
+        {
+            Vector3 point = (collision.contacts[0].point - transform.position).normalized;
+            MoveScale(point);
+        }
 
     }
+
+    private void MoveScale(Vector3 point)
+    {
+        Vector3 remaining = bigScale - transform.localScale;
+        Debug.Log(point);
+
+        point.x *= remaining.x;
+        point.y *= remaining.y;
+        point.z *= remaining.z;
+        Vector3 targetPosition = point;
+
+        transform.DOMove(transform.position + targetPosition, 0.1f);
+    }
+
 
     #endregion
 
