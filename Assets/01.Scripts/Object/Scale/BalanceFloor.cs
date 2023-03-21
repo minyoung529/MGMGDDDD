@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BalanceFloor : MonoBehaviour
 {
-    private float curWeight = 0f;
+    [SerializeField] private float curWeight = 0f;
     public float GetWeight { get { return curWeight; } }
 
     private Balance mainBalance;
@@ -21,31 +21,46 @@ public class BalanceFloor : MonoBehaviour
 
     private void ResetWeight()
     {
-        curWeight = 0;
+       // curWeight = 0;
     }
 
-    private void IncreaseWeight(WeightObject weightObj)
+    public void IncreaseWeight(WeightObject weightObj)
     {
         if (weightObj.InWeight) return;
         weightObj.InWeight = true;
 
         curWeight += weightObj.GetMass;
+        
         mainBalance.CompareWeight();
-
-        Debug.Log("Up : " + curWeight + " " + gameObject.name);
     }
-    private void DecreaseWeight(WeightObject weightObj)
+    public void IncreaseWeight(float value)
+    {
+        curWeight += value;
+        
+        mainBalance.CompareWeight();
+    }
+    public void DecreaseWeight(WeightObject weightObj)
     {
         if (!weightObj.InWeight) return;
         weightObj.InWeight = false;
 
         curWeight -= weightObj.GetMass;
+        if (curWeight < 0)
+        {
+            curWeight = 0;
+        }
         mainBalance.CompareWeight();
-
-        Debug.Log("Down : " + curWeight + " " + gameObject.name);
+    }
+    public void DecreaseWeight(float value)
+    {
+        curWeight -= value;
+        if (curWeight < 0)
+        {
+            curWeight = 0;
+        }
+        mainBalance.CompareWeight();
     }
 
-    
     private void OnTriggerEnter(Collider other)
     {
         WeightObject weightObject = other.GetComponent<WeightObject>();
