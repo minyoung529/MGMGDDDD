@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour
+public abstract class Pet : MonoBehaviour, IFindable 
 {
     [SerializeField] protected PetTypeSO petInform;
     
@@ -18,6 +18,7 @@ public abstract class Pet : MonoBehaviour
     private bool isSelected = false;
     private bool isClickMove = false;
     private bool isButtonMove = false;
+    private bool isFindable = true;
     protected bool isMouseMove = false;
     protected bool isForceBlockMove = false;
     protected bool isNotMove = false;
@@ -25,6 +26,7 @@ public abstract class Pet : MonoBehaviour
 
     private Camera camera;
     protected Rigidbody rigid;
+    protected Collider coll;
     private Transform target;
     protected NavMeshAgent agent;
 
@@ -46,7 +48,10 @@ public abstract class Pet : MonoBehaviour
     public Vector3 MouseUpDestination { get; private set; }
     public Vector3 Destination => destination;
     public Rigidbody Rigid => rigid;
+    public Collider Coll => coll;
+    public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
+    bool IFindable.IsFindable { get => isFindable; }
 
     #endregion
 
@@ -60,6 +65,7 @@ public abstract class Pet : MonoBehaviour
         camera = Camera.main;
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        coll = GetComponent<Collider>();
         stopDistance = agent.stoppingDistance;
     }
     private void FixedUpdate()
@@ -191,16 +197,9 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
     }
 
-    public virtual void OnThrow() {
-
-    }
-
-    public virtual void OnLanding() {
-        SetButtonTarget();
-    }
-
-    private void SetButtonTarget() {
+    private bool SetButtonTarget() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
+        if (!target) return false;
         Vector3 dest = (target.transform.position - transform.position).normalized;
         dest = target.transform.position - dest * 5f;
 
@@ -209,6 +208,7 @@ public abstract class Pet : MonoBehaviour
         agent.SetDestination(dest); 
         destination = dest;
         isButtonMove = true;
+        return true;
     }
 
     private void MoveToButton() {
@@ -278,6 +278,36 @@ public abstract class Pet : MonoBehaviour
         agent.velocity = Vector3.zero;
     }
 
+    #endregion
+
+    #region Throw/Landing
+    public virtual void OnThrow() {
+        isFindable = false; 
+        StartCoroutine(LandingCoroutine());
+    }
+
+    private IEnumerator LandingCoroutine() {
+        while (!CheckOnGround()) {
+            yield return null;
+        }
+        OnLanding();
+    }
+    public bool CheckOnGround() {
+        RaycastHit hit;
+        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.5f, 1 << Define.BOTTOM_LAYER)) {
+            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
+        }
+        return false;
+    }
+
+    public virtual void OnLanding() {
+        CanMove = true;
+        agent.enabled = true;
+        rigid.constraints = RigidbodyConstraints.FreezeAll &~ RigidbodyConstraints.FreezePositionY;
+        if(!SetButtonTarget())
+            agent.SetDestination(transform.position);
+        isFindable = true;
+    }
     #endregion
 
     #region Withdraw

@@ -82,10 +82,10 @@ public class DefaultMoveState : MoveState
         sprintSpeed = originSprintSpeed * sprintW;
         brake = originBrake * brakeW;
 
-        if (player.Anim.GetBool(hash_bWalk))
+        if (Player.Anim.GetBool(hash_bWalk))
             MaxSpeed = walkSpeed;
 
-        else if (player.Anim.GetBool(hash_bSprint))
+        else if (Player.Anim.GetBool(hash_bSprint))
             MaxSpeed = walkSpeed;
     }
 

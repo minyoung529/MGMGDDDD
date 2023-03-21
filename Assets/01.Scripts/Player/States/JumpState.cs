@@ -11,8 +11,8 @@ public class JumpState : MoveState
             base.Player.Decelerate(brake);
             return;
         }
-        base.Player.Accelerate(inputDir, accel, brake, maxSpeed);
-        base.Player.SetRotate(inputDir);
+        Player.Accelerate(inputDir, accel, brake, maxSpeed);
+        Player.SetRotate(inputDir);
     }
     #endregion
 
@@ -30,7 +30,7 @@ public class JumpState : MoveState
 
     private IEnumerator LandingCoroutine() {
         yield return new WaitForSeconds(1f);
-        while(!base.Player.CheckOnGround()) {
+        while(!Player.CheckOnGround()) {
             yield return null;
         }
         Player.Anim.SetTrigger(hash_tLanding);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
@@ -81,10 +82,11 @@ public class GameManager : MonoSingleton<GameManager>
         return Vector3.zero;
     }
 
-    public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour {
+    public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable {
         T target = default;
         float min = Mathf.Pow(range, 2);
         foreach (T item in targets) {
+            if (!item.IsFindable) continue;
             float distance = (transform.position - item.transform.position).sqrMagnitude;
             if (distance < min) {
                 min = distance;

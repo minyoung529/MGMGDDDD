@@ -47,7 +47,7 @@ public class PlayerMove : MonoBehaviour {
     private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
     [SerializeField] private MoveState curState;
 
-    public bool isInputLock = false;
+    public bool IsInputLock = false;
 
     [SerializeField] private LayerMask groundLayer;
     #endregion
@@ -107,6 +107,7 @@ public class PlayerMove : MonoBehaviour {
         //        ChangeState(StateName.DefaultMove);
         //});
         actions.Add(InputAction.Jump, (action, value) => {
+            if (IsInputLock) return;
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(StateName.Jump);
         });
@@ -135,7 +136,7 @@ public class PlayerMove : MonoBehaviour {
     }
 
     private void SendInput() {
-        if (isInputLock) inputDir = Vector3.zero;
+        if (IsInputLock) inputDir = Vector3.zero;
         curState.OnInput(inputDir);
         inputDir = Vector3.zero;
     }
@@ -234,9 +235,9 @@ public class PlayerMove : MonoBehaviour {
     }
 
     private IEnumerator LockTimer(float time) {
-        isInputLock = true;
+        IsInputLock = true;
         yield return new WaitForSeconds(time);
-        isInputLock = false;
+        IsInputLock = false;
     }
     #endregion
 
