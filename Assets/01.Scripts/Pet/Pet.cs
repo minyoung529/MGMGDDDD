@@ -21,7 +21,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     private bool isFindable = true;
     protected bool isMouseMove = false;
     protected bool isForceBlockMove = false;
-    protected bool isNotMove = false;
+    protected bool canMove = false;
     #endregion
 
     private Camera camera;
@@ -40,7 +40,8 @@ public abstract class Pet : MonoBehaviour, IFindable
     public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
-    public bool CanMove { get { return isNotMove; } set { isNotMove = value; } }
+    public bool CanMove { get { return canMove; } set { canMove = value; } }
+    public bool IsFollow { get { return isFollow; } set { isFollow = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
 
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
@@ -68,6 +69,11 @@ public abstract class Pet : MonoBehaviour, IFindable
         coll = GetComponent<Collider>();
         stopDistance = agent.stoppingDistance;
     }
+
+    private void Start()
+    {
+        ResetPet();
+    }
     private void FixedUpdate()
     {
         if (isForceBlockMove) return;
@@ -85,7 +91,8 @@ public abstract class Pet : MonoBehaviour, IFindable
     protected virtual void ResetPet()
     {
         isCoolTime = false;
-        CanMove = false;
+        agent.enabled = true;
+        CanMove = true;
         transform.localScale = originScale;
 
         StartFollow();
@@ -151,8 +158,10 @@ public abstract class Pet : MonoBehaviour, IFindable
     {
         if (!IsSelected) return;
 
-        ClickSetDestination(GameManager.Instance.GetCameraHit());
+
+        StopFollow();
         isMouseMove = true;
+        ClickSetDestination(GameManager.Instance.GetCameraHit());
         transform.DOKill();
     }
 
@@ -166,9 +175,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     private void ClickSetDestination(Vector3 dest)
     {
-        if (CanMove) return;
-
-        StopFollow();
+        if (!CanMove) return;
 
         agent.SetDestination(dest);
         destination = dest;
@@ -227,13 +234,13 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     protected void FollowTarget()
     {
-        if (CanMove) return;
-        
+        if (!CanMove) return;
+
         if (isButtonMove)
         {
             MoveToButton();
         }
-        if(isClickMove)
+        if (isClickMove)
         {
             ClickMove();
         }
@@ -272,9 +279,9 @@ public abstract class Pet : MonoBehaviour, IFindable
     protected void StopFollow()
     {
         isFollow = false;
-        agent.stoppingDistance = 0f;
-
         agent.ResetPath();
+
+        agent.stoppingDistance = 0f;
         agent.velocity = Vector3.zero;
     }
 
