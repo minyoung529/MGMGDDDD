@@ -17,19 +17,25 @@ public class PlatformPiece : MonoBehaviour
     [SerializeField]
     private MeshRenderer boardRenderer;
 
+    [SerializeField]
+    private ParticleSystem destroyParticle;
+
     public int Index { get; set; } = -1;
     public Color Color { get; set; }
     private Color originalColor;
 
     private Fire fire;
-
     private bool isBurning = false;
+    private bool isLightOn = false;
 
     public Action OnDestroyPlatform { get; set; }
 
+    private MeshRenderer[] renderers;
+    private NavMeshSurface navmeshSurface;
+
     private void Start()
     {
-        NavMeshSurface navmeshSurface = GetComponent<NavMeshSurface>();
+        navmeshSurface = GetComponent<NavMeshSurface>();
         fire = GetComponentInChildren<Fire>();
         navmeshSurface.RemoveData();
         navmeshSurface.BuildNavMesh();
@@ -68,7 +74,7 @@ public class PlatformPiece : MonoBehaviour
 
             if (fire && fire.IsBurn)
             {
-                if (!isBurning)
+                if (!isBurning && isLightOn)
                 {
                     DestroyPlatform();
                 }
@@ -82,32 +88,70 @@ public class PlatformPiece : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(4f);
-        seq.AppendCallback(() => gameObject.SetActive(false));
-        seq.AppendCallback(() => isBurning = false);
+        seq.AppendCallback(Hide);
+        seq.AppendCallback(() => destroyParticle.Play());
         seq.AppendCallback(() => OnDestroyPlatform?.Invoke());
+        seq.AppendInterval(2f);
+        seq.AppendCallback(() => gameObject.SetActive(false));
+        seq.AppendCallback(() =>
+        {
+            navmeshSurface.RemoveData();
+            navmeshSurface.BuildNavMesh();
+        });
+    }
+
+    private void Hide()
+    {
+        renderers ??= transform.GetComponentsInChildren<MeshRenderer>();
+
+        foreach (MeshRenderer renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+
+        isBurning = false;
+    }
+
+    private void Show()
+    {
+        renderers ??= transform.GetComponentsInChildren<MeshRenderer>();
+        navmeshSurface.RemoveData();
+        navmeshSurface.BuildNavMesh();
+
+        foreach (MeshRenderer renderer in renderers)
+        {
+            renderer.enabled = true;
+        }
+
+        gameObject.SetActive(true);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag(Define.OIL_PET_TAG))
         {
-            boardRenderer.material.color = LinePuzzleController.CurrentPiece.Color;
+            isLightOn = true;
+            boardRenderer.material.DOColor(LinePuzzleController.CurrentPiece.Color, 1f);
         }
     }
 
-    private void ResetPuzzle()
+    public void ResetPuzzle()
     {
-        gameObject.SetActive(true);
-        boardRenderer.material.color = originalColor;
+        Show();
+        boardRenderer.material.DOColor(originalColor, 1f);
     }
 
     public void ResetOilSpread()
     {
-        boardRenderer.material.color = originalColor;
+        boardRenderer.material.DOColor(originalColor, 1f);
+        isLightOn = false;
     }
 
     public void Burn()
     {
-        fire?.Burn();
+        if (isLightOn)
+        {
+            fire?.Burn();
+        }
     }
 }

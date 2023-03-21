@@ -31,6 +31,7 @@ public class OilPetSkill
     public static bool IsCrosshair { get; set; } = true;
 
     public Action OnEndSpread_Once { get; set; }
+    public bool IsCheckDistance = true;
 
     public void Init(PaintingObject painting, LineRenderer line, NavMeshAgent pathAgent, NavMeshAgent player)
     {
@@ -42,9 +43,14 @@ public class OilPetSkill
         pathAgent.transform.SetParent(null);
     }
 
-    public void OnClickSkill()
+    public void ClearOil()
     {
         painting.ResetData();
+    }
+
+    public void OnClickSkill()
+    {
+        ClearOil();
         pathAgent.gameObject.SetActive(true);
 
         pathAgent.enabled = false;
@@ -125,7 +131,7 @@ public class OilPetSkill
     {
         if (isDragging)
         {
-            if (skillDistance > MAX_OIL_DIST)
+            if (IsCheckDistance && skillDistance > MAX_OIL_DIST)
             {
                 return;
             }

@@ -38,6 +38,8 @@ public class Fire : MonoBehaviour
 
     public void Burn()
     {
+        if (!gameObject.activeSelf) return;
+
         seq = DOTween.Sequence();
         seq.AppendInterval(burnDelay);
         seq.AppendCallback(() =>

@@ -14,7 +14,7 @@ public class FirePortal : ConnectionPortal
         {
             fire ??= other.GetComponent<Fire>();
 
-            if (fire.IsBurn)
+            if (fire.IsBurn && !LinePuzzleController.IsOilMove)
             {
                 OnFire?.Invoke();
             }

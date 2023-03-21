@@ -1,4 +1,5 @@
 using Cinemachine;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -29,7 +30,15 @@ public class LinePuzzleController : MonoBehaviour
     [SerializeField]
     private Transform trigger;
 
+    [SerializeField]
+    private Transform boardTransform;
+
+    [SerializeField]
+    private ParticleSystem oilTeleportParticle;
+
     public static PlatformPiece CurrentPiece { get; set; }
+
+    public static bool IsOilMove { get; set; } = false;
 
     private void Awake()
     {
@@ -44,6 +53,25 @@ public class LinePuzzleController : MonoBehaviour
     {
         CameraSwitcher.UnRegister(cmVcam);
         CameraSwitcher.Register(cmVcam);
+
+        foreach(LinePuzzle puzzle in linePuzzles)
+        {
+            puzzle.OnClear += ClearPuzzle;
+        }
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            ResetBoard();
+        }
+    }
+
+    private void ResetBoard()
+    {
+        oilPet.OilPetSkill.ClearOil();
+        CurrentPuzzle.ResetPuzzle();
     }
 
     public void EnterGame()
@@ -64,6 +92,8 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.IsDirectSpread = false;
         oilPet.OnEndSkill += AutoMoveOil;
         oilPet.OnStartSkill += CurrentPuzzle.ResetOil;
+        oilPet.OilPetSkill.IsCheckDistance = false;
+
 
         StartGame();
     }
@@ -80,7 +110,7 @@ public class LinePuzzleController : MonoBehaviour
 
         oilPet.OnEndSkill -= AutoMoveOil;
         oilPet.OnStartSkill -= CurrentPuzzle.ResetOil;
-
+        oilPet.OilPetSkill.IsCheckDistance = true;
     }
 
     private void StartGame()
@@ -102,6 +132,8 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (CurrentPiece)
         {
+            if (CurrentPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= CurrentPiece.Index) return;
+
             ConnectionPortal portal = CurrentPuzzle.OilPortals[CurrentPiece.Index];
             oilPet.MovePoint(portal.transform.position);
             oilPet.OnEndPointMove += ForceMoveBoard;
@@ -110,10 +142,39 @@ public class LinePuzzleController : MonoBehaviour
 
     private void ForceMoveBoard()
     {
+        IsOilMove = true;
         oilPet.SetForcePosition(oilPet.OilPetSkill.StartPoint);
+        oilTeleportParticle.transform.position = oilPet.OilPetSkill.StartPoint;
+        oilTeleportParticle.Play();
 
-        oilPet.OilPetSkill.OnEndSpread_Once += () => oilPet.SetForcePosition(oilSpawnPosition.position);
+        oilPet.OilPetSkill.OnEndSpread_Once += OilBack;
         oilPet.SpreadOil();
+    }
+
+    private void OilBack()
+    {
+        oilPet.SetForcePosition(oilSpawnPosition.position);
+        oilTeleportParticle.transform.position = oilSpawnPosition.position;
+        oilTeleportParticle.Play();
+
+        IsOilMove = false;
+    }
+
+    private void ClearPuzzle()
+    {
+        if (++idx >= linePuzzles.Length)
+        {
+            EndPuzzle();
+            return;
+        }
+
+        linePuzzles[idx].transform.DOMove(boardTransform.position, 1f);
+        linePuzzles[idx].StartGame();
+    }
+
+    private void EndPuzzle()
+    {
+
     }
 
     private void OnDestroy()

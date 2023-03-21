@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,12 +47,17 @@ public class LinePuzzle : MonoBehaviour
     #endregion
 
     private List<PlatformPiece> pieces = new();
-
     private int destroyPuzzleCnt = 0;
+
+    public Action OnClear { get; set; }
+
+    private void Awake()
+    {
+        Initilize();
+    }
 
     public void StartGame()
     {
-        Initilize();
         CreatePortal(oilPortal, oilPortals, oilPortalTransform);
         CreatePortal(firePortal, firePortals, firePortalTransform);
 
@@ -82,18 +88,21 @@ public class LinePuzzle : MonoBehaviour
                     new Vector3
                     (
                         weight / length * j,
-                        board.transform.position.y,
+                        0f,
                         -height / boardCnt * i
-                    );
+                    ) + offset;
 
-                newObj.transform.position += offset;
                 newObj.transform.SetParent(transform);
+
+                Vector3 scale = newObj.transform.localScale;
+                scale.x = 1 / (float)boardInformation.Count;
+                scale.z = 1 / (float)boardInformation[0].Length;
+
+                newObj.transform.localScale = scale;
 
                 pieces.Add(newObj);
             }
         }
-
-        platformPiece.gameObject.SetActive(false);
     }
 
     private void CreatePortal(ConnectionPortal portalPrefab, List<ConnectionPortal> portals, BoxCollider box)
@@ -138,6 +147,8 @@ public class LinePuzzle : MonoBehaviour
         if (++destroyPuzzleCnt == boardInformation.Count * boardInformation[0].Length)
         {
             Debug.Log("CLEAR");
+            EndPuzzle();
+            OnClear?.Invoke();
         }
     }
 
@@ -149,6 +160,7 @@ public class LinePuzzle : MonoBehaviour
     public void ResetPuzzle()
     {
         ResetOil();
+        pieces.ForEach(x => x.ResetPuzzle());
         destroyPuzzleCnt = 0;
     }
 }
