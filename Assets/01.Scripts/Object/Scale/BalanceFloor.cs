@@ -21,7 +21,9 @@ public class BalanceFloor : MonoBehaviour
 
     private void ResetWeight()
     {
-       // curWeight = 0;
+        // curWeight = 0;
+
+        mainBalance.CompareWeight();
     }
 
     public void IncreaseWeight(WeightObject weightObj)
