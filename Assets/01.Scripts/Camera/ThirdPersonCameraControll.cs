@@ -81,19 +81,18 @@ public class ThirdPersonCameraControll : MonoBehaviour
         transform.eulerAngles = eulerAngles;
     }
 
-    private void ActiveCrossHair()
+    public void ActiveCrossHair()
     {
-            crosshair.gameObject.SetActive(true);
+        crosshair.gameObject.SetActive(true);
     }
 
-    private void InactiveCrossHair()
+    public void InactiveCrossHair()
     {
         crosshair.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
     {
-
         CutSceneManager.RemoveStartCutscene(InactiveCrossHair);
         CutSceneManager.RemoveEndCutscene(ActiveCrossHair);
     }

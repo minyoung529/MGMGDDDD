@@ -45,8 +45,8 @@ public class GameManager : MonoSingleton<GameManager>
     public Vector3 GetMousePos()
     {
         Ray ray = MainCam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, MainCam.farClipPlane, Define.BOTTOM_LAYER))
+        
+        if (Physics.Raycast(ray, out RaycastHit hit, MainCam.farClipPlane, cameraHitLayerMask))
         {
             Debug.DrawRay(MainCam.transform.position, hit.point);
             Vector3 mouse = hit.point;

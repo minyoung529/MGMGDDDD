@@ -69,7 +69,7 @@ public class PaintingObject : MonoBehaviour
     private bool isBurning = false;
     private int curIdx = 0;
 
-    private WaitForSeconds fireDelay = new WaitForSeconds(0.35f);
+    private WaitForSeconds fireDelay = new WaitForSeconds(0.08f);
 
     private void Start()
     {

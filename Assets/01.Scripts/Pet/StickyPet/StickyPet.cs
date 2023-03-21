@@ -69,7 +69,6 @@ public class StickyPet : Pet
         OnBillow?.Invoke();
 
         BillowAction();
-        SetJump();
     }
 
     private void BillowAction()
@@ -83,11 +82,6 @@ public class StickyPet : Pet
     private void SetBillow(Vector3 dir)
     {
         smallDirection = dir;
-    }
-    private void SetJump()
-    {
-        // 점프대 점프할 수 있도록 설정하는 곳
-        // 민영아 여기다가 하면 돼
     }
 
     private void ReadySticky()

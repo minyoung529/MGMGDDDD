@@ -23,6 +23,9 @@ public class Fire : MonoBehaviour
 
     Sequence seq;
 
+    [SerializeField]
+    private bool isCool = false;
+
     private void Awake()
     {
         isBurn = playOnAwake;
@@ -44,13 +47,17 @@ public class Fire : MonoBehaviour
             FireParticlePlay();
             if (isDestroyType) DestroyBurn();
             fireEvent?.Invoke();
-            //StartCoroutine(CoolFire());
+
+            if (isCool)
+            {
+                StartCoroutine(CoolFire());
+            }
         });
     }
 
     private IEnumerator CoolFire()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(burningTime);
         StopBurn();
     }
     private void FireParticlePlay()

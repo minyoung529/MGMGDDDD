@@ -28,6 +28,9 @@ public class OilPetSkill
     private readonly float MAX_OIL_DIST = 25f;
     #endregion
 
+    public static bool IsCrosshair { get; set; } = true;
+
+    public Action OnEndSpread_Once { get; set; }
 
     public void Init(PaintingObject painting, LineRenderer line, NavMeshAgent pathAgent, NavMeshAgent player)
     {
@@ -42,13 +45,20 @@ public class OilPetSkill
     public void OnClickSkill()
     {
         painting.ResetData();
-        agent.isStopped = true;
-
         pathAgent.gameObject.SetActive(true);
-        pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetCameraHit();
+
+        pathAgent.enabled = false;
+
+        if(IsCrosshair)
+        {
+            pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetCameraHit();
+        }
+        else
+        {
+            pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetMousePos();
+        }
 
         points.Clear();
-        points.Add(oilStartPos);
     }
 
     public void ResetSkill()
@@ -73,10 +83,8 @@ public class OilPetSkill
 
         for (int i = 1; i < points.Count; i++)
         {
-        Debug.Log("ShowPath");
-            lineRenderer.SetPosition(i, points[i]);
+            lineRenderer.SetPosition(i, points[i - 1]);
         }
-
     }
 
     public void StartSpreadOil(Action onStartPath, Action onEndPath)
@@ -85,7 +93,7 @@ public class OilPetSkill
         {
             painting.IsPainting = true;
             onStartPath?.Invoke();
-            agent.isStopped = true;
+            pathAgent.enabled = false;
 
             for (int i = 0; i < points.Count; i++)
             {
@@ -98,12 +106,16 @@ public class OilPetSkill
             agent.transform.DOPath(points.ToArray(), speed).OnComplete(() =>
             {
                 onEndPath?.Invoke();
-                agent.isStopped = false;
+                OnEndSpread_Once?.Invoke();
+                OnEndSpread_Once = null;
+                pathAgent.enabled = true;
                 ResetSkill();
             }).OnKill(() =>
             {
                 onEndPath?.Invoke();
-                agent.isStopped = false;
+                OnEndSpread_Once?.Invoke();
+                OnEndSpread_Once = null;
+                pathAgent.enabled = true;
                 ResetSkill();
             });
         }
@@ -118,11 +130,21 @@ public class OilPetSkill
                 return;
             }
 
-            Vector3 cameraHit = GameManager.Instance.GetCameraHit();
+            Vector3 cameraHit;
 
-            if (!pathAgent.gameObject.activeSelf)
+            if (IsCrosshair)
+            {
+                cameraHit = GameManager.Instance.GetCameraHit();
+            }
+            else
+            {
+                cameraHit = GameManager.Instance.GetMousePos();
+            }
+
+            if (!pathAgent.gameObject.activeSelf || !pathAgent.enabled)
             {
                 pathAgent.gameObject.SetActive(true);
+                pathAgent.enabled = true;
                 return;
             }
 
@@ -146,7 +168,15 @@ public class OilPetSkill
         if (!isSkilling)
         {
             lineRenderer.positionCount = 0;
-            pathAgent.transform.position = GameManager.Instance.GetCameraHit();
+
+            if (IsCrosshair)
+            {
+                pathAgent.transform.position = GameManager.Instance.GetCameraHit();
+            }
+            else
+            {
+                pathAgent.transform.position = GameManager.Instance.GetMousePos();
+            }
         }
     }
 }
