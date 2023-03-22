@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class Balance : MonoBehaviour
 {
-    [SerializeField] private float maxRotation = 140f;
-    [SerializeField] private float minRotation = 0f;
+    [SerializeField] private float maxRotation = 40f;
     [SerializeField] private float rotationTime = 0.7f;
 
     [SerializeField] private BalanceFloor leftBalance;
@@ -25,7 +24,10 @@ public class Balance : MonoBehaviour
         leftAnchor = pillar.GetChild(0);
         rightAnchor = pillar.GetChild(1);
     }
-
+    private void Start()
+    {
+        CompareWeight();
+    }
     private void FixedUpdate()
     {
         leftPillar.position = leftAnchor.position;
@@ -36,13 +38,16 @@ public class Balance : MonoBehaviour
     {
         float val = rightBalance.GetWeight - leftBalance.GetWeight;
 
+        if (val > maxRotation) val = maxRotation;
+        else if(val < 0) val = 0;
+
         RotateWeight(val);
     }
 
     private void RotateWeight(float value)
     {
         Quaternion origin = Quaternion.Euler(pillar.rotation.x, pillar.rotation.y, value);
-        Quaternion q = Quaternion.Euler(pillar.rotation.x, pillar.rotation.y, value + 0.3f);
+        Quaternion q = Quaternion.Euler(pillar.rotation.x, pillar.rotation.y, value - 2f);
 
         pillar.DOKill();
         pillar.DOLocalRotateQuaternion(q, rotationTime).OnComplete(()=>

@@ -14,16 +14,6 @@ public class BalanceFloor : MonoBehaviour
         mainBalance = GetComponentInParent<Balance>();
     }
 
-    private void Start()
-    {
-        ResetWeight();
-    }
-
-    private void ResetWeight()
-    {
-        mainBalance.CompareWeight();
-    }
-
     public void IncreaseWeight(WeightObject weightObj)
     {
         if (weightObj.InWeight) return;
