@@ -6,19 +6,17 @@ public class ZoomState : MoveState
 {
     #region abstract ±¸ÇöºÎ
     public override StateName StateName => StateName.Zoom;
-    private PlayerMove player = null;
-    public override PlayerMove PlayerMove => player;
 
     public override void OnInput(Vector3 inputDir) {
-        player.SetRotate(player.Forward);
+        Player.SetRotate(Player.Forward);
         if (inputDir.sqrMagnitude <= 0) {
-            player.Decelerate();
+            Player.Decelerate();
         }
         else {
-            player.Accelerate(inputDir, maxSpeed: zoomSpeed);
+            Player.Accelerate(inputDir, maxSpeed: zoomSpeed);
             moveDir = inputDir;
         }
-        player.SetAnimInput(moveDir.normalized * (player.CurSpeed / zoomSpeed));
+        Player.SetAnimInput(moveDir.normalized * (Player.CurSpeed / zoomSpeed));
     }
     #endregion
 
@@ -26,6 +24,6 @@ public class ZoomState : MoveState
     private Vector3 moveDir = Vector3.zero;
 
     private void Awake() {
-        player = GetComponent<PlayerMove>();
+        Player = GetComponent<PlayerMove>();
     }
 }

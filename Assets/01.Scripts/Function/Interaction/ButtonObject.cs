@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ButtonObject : MonoBehaviour
+public class ButtonObject : MonoBehaviour, IFindable
 {
     [SerializeField]
     private LayerMask layerMask;
@@ -13,6 +13,8 @@ public class ButtonObject : MonoBehaviour
     private UnityEvent OnButton;
 
     private bool isButtonOn = false;
+
+    bool IFindable.IsFindable { get => true; }
 
     private void OnCollisionEnter(Collision collision)
     {

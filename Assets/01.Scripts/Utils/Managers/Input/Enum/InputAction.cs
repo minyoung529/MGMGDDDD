@@ -20,4 +20,5 @@ public enum InputAction
     Up_Pet = 17,
     Push_Object = 18,
     Pet_Skill_Up = 19,
+    PickUp = 20,
 }

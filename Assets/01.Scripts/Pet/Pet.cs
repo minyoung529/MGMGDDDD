@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour
+public abstract class Pet : MonoBehaviour, IFindable 
 {
     [SerializeField] protected PetTypeSO petInform;
 
@@ -17,17 +17,23 @@ public abstract class Pet : MonoBehaviour
     private bool isCoolTime = false;
     private bool isSelected = false;
     private bool isClickMove = false;
+    private bool isButtonMove = false;
+    private bool isFindable = true;
     protected bool isMouseMove = false;
     protected bool isForceBlockMove = false;
     protected bool canMove = false;
     #endregion
 
     protected Rigidbody rigid;
+    protected Collider coll;
     private Transform target;
+    private Vector3 targetPos;
     protected NavMeshAgent agent;
 
     private Vector3 destination = Vector3.zero;
     private Vector3 originScale;
+
+    [SerializeField] protected float sightRange = 5f;
 
     #region Get
 
@@ -43,7 +49,10 @@ public abstract class Pet : MonoBehaviour
     public Vector3 MouseUpDestination { get; private set; }
     public Vector3 Destination => destination;
     public Rigidbody Rigid => rigid;
+    public Collider Coll => coll;
+    public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
+    bool IFindable.IsFindable { get => isFindable & isGet; }
 
     #endregion
 
@@ -66,6 +75,7 @@ public abstract class Pet : MonoBehaviour
 
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        coll = GetComponent<Collider>();
         stopDistance = agent.stoppingDistance;
     }
 
@@ -73,6 +83,7 @@ public abstract class Pet : MonoBehaviour
     {
         ResetPet();
     }
+
     private void FixedUpdate()
     {
         if (isForceBlockMove) return;
@@ -195,13 +206,6 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
     }
 
-    protected void StopClickMove()
-    {
-        isClickMove = false;
-        destination = Vector3.zero;
-        rigid.velocity = Vector3.zero;
-    }
-
     private void ClickMove()
     {
         if (isClickMove && Vector3.Distance(destination, transform.position) <= 1f)
@@ -219,10 +223,49 @@ public abstract class Pet : MonoBehaviour
         //transform.position += dir.normalized * Time.deltaTime * 5f;
     }
 
+    protected void StopClickMove() {
+        isClickMove = false;
+        destination = Vector3.zero;
+        rigid.velocity = Vector3.zero;
+    }
+
+    private bool SetButtonTarget() {
+        ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
+        if (!target) return false;
+        targetPos = target.transform.position;
+        Vector3 dest = (target.transform.position - transform.position).normalized;
+        dest = target.transform.position - dest * 5f;
+
+        StopFollow();
+
+        agent.SetDestination(dest); 
+        destination = dest;
+        isButtonMove = true;
+        return true;
+    }
+
+    private void MoveToButton() {
+        if (Vector3.Distance(destination, transform.position) <= 0.5f) {
+            agent.isStopped = true;
+            isButtonMove = false;
+            Sequence seq = DOTween.Sequence();
+            seq.Append(transform.DOLookAt(new Vector3(targetPos.x, transform.position.y, targetPos.z), 0.2f));
+            seq.Append(transform.DOJump(targetPos, 5f, 1, 1f));
+            seq.AppendCallback(() => { 
+                CanMove = false;
+                seq.Kill();
+            });
+        }
+    }
+
     protected void FollowTarget()
     {
         if (!CanMove) return;
 
+        if (isButtonMove)
+        {
+            MoveToButton();
+        }
         if (isClickMove)
         {
             ClickMove();
@@ -236,6 +279,12 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void OnFollowTarget() { }
 
+    private void StartFollow(InputAction inputAction, float value)
+    {
+        isFollow = true;
+        agent.stoppingDistance = stopDistance;
+        //agent.isStopped = false;
+    }
 
     public void StartFollow()
     {
@@ -255,6 +304,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void StopFollow()
     {
+        if (!isFollow) return;
         isFollow = false;
         agent.ResetPath();
 
@@ -268,6 +318,36 @@ public abstract class Pet : MonoBehaviour
         agent.enabled = false;
         transform.position = position;
         agent.enabled = true;
+    }
+    #endregion
+
+    #region Throw/Landing
+    public virtual void OnThrow() {
+        isFindable = false; 
+        StartCoroutine(LandingCoroutine());
+    }
+
+    private IEnumerator LandingCoroutine() {
+        while (!CheckOnGround()) {
+            yield return null;
+        }
+        OnLanding();
+    }
+    public bool CheckOnGround() {
+        RaycastHit hit;
+        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.5f, 1 << Define.BOTTOM_LAYER)) {
+            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
+        }
+        return false;
+    }
+
+    public virtual void OnLanding() {
+        CanMove = true;
+        agent.enabled = true;
+        rigid.constraints = RigidbodyConstraints.FreezeAll &~ RigidbodyConstraints.FreezePositionY;
+        if(!SetButtonTarget())
+            agent.SetDestination(transform.position);
+        isFindable = true;
     }
     #endregion
 
