@@ -21,7 +21,7 @@ public class TogglePosition : MonoBehaviour
     [SerializeField]
     private bool isLocal = false;
 
-    private void Start()
+    private void Awake()
     {
         if (isLocal)
         {
