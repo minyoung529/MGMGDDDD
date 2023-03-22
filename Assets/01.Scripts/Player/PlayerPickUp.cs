@@ -40,9 +40,6 @@ public class PlayerPickUp : MonoBehaviour {
         dir.y = holdingPet.transform.position.y;
         targetPos = dir;
 
-        holdingPet.CanMove = false;
-        holdingPet.Rigid.isKinematic = true;
-        holdingPet.Coll.enabled = false;
         holdingPet.Agent.stoppingDistance = 0;
         holdingPet.Agent.SetDestination(dir);
 
@@ -62,8 +59,7 @@ public class PlayerPickUp : MonoBehaviour {
     }
 
     public void PickUpStart() {
-        holdingPet.Agent.enabled = false;
-        isHolding = true;
+        HoldPet();
         StartCoroutine(SetPetPos());
     }
 
@@ -90,10 +86,7 @@ public class PlayerPickUp : MonoBehaviour {
     }
 
     public void ThrowStart() {
-        isHolding = false;
-        holdingPet.Rigid.isKinematic = false;
-        holdingPet.Coll.enabled = true;
-        holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
+        ThrowPet();
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
         holdingPet.OnThrow();
@@ -103,5 +96,20 @@ public class PlayerPickUp : MonoBehaviour {
     public void ThrowEnd() {
         playerMove.ChangeState(StateName.DefaultMove);
         isPlaying = false;
+    }
+
+    private void HoldPet() {
+        isHolding = true;
+        holdingPet.Agent.enabled = false;
+        holdingPet.CanMove = false;
+        holdingPet.Rigid.isKinematic = true;
+        holdingPet.Coll.enabled = false;
+    }
+
+    private void ThrowPet() {
+        isHolding = false;
+        holdingPet.Rigid.isKinematic = false;
+        holdingPet.Coll.enabled = true;
+        holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
     }
 }
