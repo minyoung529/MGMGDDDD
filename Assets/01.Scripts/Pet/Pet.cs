@@ -254,6 +254,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void StopFollow()
     {
+        if (!isFollow) return;
         isFollow = false;
         agent.ResetPath();
 
