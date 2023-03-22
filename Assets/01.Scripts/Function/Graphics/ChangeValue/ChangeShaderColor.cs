@@ -1,0 +1,84 @@
+using DG.Tweening;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ChangeShaderColor : MonoBehaviour
+{
+    [SerializeField]
+    private float duration;
+
+    [SerializeField]
+    private float preDelay = 0f;
+    private bool isActive;
+
+    [SerializeField]
+    new private string name;
+
+    private int fillId;
+    private Material material = null;
+
+    [SerializeField]
+    private Ease ease = Ease.OutQuad;
+
+    [SerializeField]
+    private Color activeValue = Color.white;
+
+    [SerializeField]
+    private Color inactiveValue = Color.black;
+
+    private void Start()
+    {
+        if (GetComponent<Renderer>())
+        {
+            material = GetComponent<Renderer>().material;
+        }
+        material ??= GetComponent<RawImage>().material;
+        fillId = Shader.PropertyToID(name);
+    }
+
+    public void Trigger()
+    {
+        if (isActive)
+        {
+            Inactive();
+        }
+        else
+        {
+            Active();
+        }
+
+        isActive = !isActive;
+    }
+
+    public void Active()
+    {
+        Sequence seq = DOTween.Sequence();
+
+        if (preDelay != 0f)
+        {
+            seq.AppendInterval(preDelay);
+        }
+
+        seq.AppendCallback(() => ChangeValue(activeValue));
+    }
+
+    public void Inactive()
+    {
+        Sequence seq = DOTween.Sequence();
+
+        if (preDelay != 0f)
+        {
+            seq.AppendInterval(preDelay);
+        }
+
+        seq.AppendCallback(() => ChangeValue(inactiveValue));
+    }
+
+    private void ChangeValue(Color value)
+    {
+        material.DOKill();
+        material.DOColor(value, fillId, duration).SetEase(ease);
+    }
+}

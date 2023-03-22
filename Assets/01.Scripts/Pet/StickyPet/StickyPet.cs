@@ -17,13 +17,16 @@ public class StickyPet : Pet
     private float moveSpeed = 1f;
 
     private StickyState state = StickyState.Idle;
-    private Vector3 bigScale = new Vector3(3f, 1f, 3f);
+    private Vector3 bigScale = new Vector3(3f, 3f, 3f);
     private Vector3 smallDirection;
 
     [SerializeField]
     private UnityEvent OnBillow;
     [SerializeField]
     private UnityEvent OnExitBillow;
+
+    [SerializeField]
+    private Transform scaleObject;
 
     protected override void Awake()
     {
@@ -46,6 +49,8 @@ public class StickyPet : Pet
         NotSticky();
         skillEffect.Play();
         ChangeState(StickyState.Idle);
+
+        scaleObject.DOScale(Vector3.one, 0.5f);
 
         OnExitBillow?.Invoke();
     }
@@ -103,7 +108,7 @@ public class StickyPet : Pet
     private void BillowAction()
     {
         transform.forward = smallDirection;
-        transform.DOScale(bigScale, 0.5f);
+        scaleObject.DOScale(bigScale, 0.5f);
 
         smallDirection = Vector3.zero;
     }

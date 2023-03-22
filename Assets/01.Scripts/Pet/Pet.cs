@@ -9,7 +9,7 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour, IFindable 
 {
     [SerializeField] protected PetTypeSO petInform;
-    
+
     #region CheckList
 
     private bool isGet = false;
@@ -24,7 +24,6 @@ public abstract class Pet : MonoBehaviour, IFindable
     protected bool canMove = false;
     #endregion
 
-    private Camera camera;
     protected Rigidbody rigid;
     protected Collider coll;
     private Transform target;
@@ -46,7 +45,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
 
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
-    public bool CheckSkillActive {  get { return (!IsSelected || IsCoolTime); } }
+    public bool CheckSkillActive { get { return (!IsSelected || IsCoolTime); } }
     public Vector3 MouseUpDestination { get; private set; }
     public Vector3 Destination => destination;
     public Rigidbody Rigid => rigid;
@@ -59,12 +58,21 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     private float stopDistance;
 
+    public Action OnEndPointMove { get; set; }
+
+    private static bool isCameraAimPoint = true;
+    public static bool IsCameraAimPoint
+    {
+        get => isCameraAimPoint;
+        set => isCameraAimPoint = value;
+    }
+
+
     protected virtual void Awake()
     {
         isGet = false;
         originScale = transform.localScale;
 
-        camera = Camera.main;
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
@@ -121,7 +129,10 @@ public abstract class Pet : MonoBehaviour, IFindable
         isSelected = select;
     }
 
-
+    public void AgentEnabled(bool isEnabled)
+    {
+        agent.enabled = isEnabled;
+    }
     #endregion
 
     #region Skill
@@ -156,18 +167,26 @@ public abstract class Pet : MonoBehaviour, IFindable
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
-    protected void MovePoint(InputAction inputAction, float value)
+    public void MovePoint(InputAction inputAction, float value)
     {
         if (!IsSelected) return;
 
-
         StopFollow();
+
+        if (IsCameraAimPoint)
+        {
+            ClickSetDestination(GameManager.Instance.GetCameraHit());
+        }
+        else
+        {
+            ClickSetDestination(GameManager.Instance.GetMousePos());
+        }
+
         isMouseMove = true;
-        ClickSetDestination(GameManager.Instance.GetCameraHit());
         transform.DOKill();
     }
 
-    protected void MovePoint(Vector3 destination)
+    public void MovePoint(Vector3 destination)
     {
         if (!IsSelected) return;
 
@@ -186,11 +205,21 @@ public abstract class Pet : MonoBehaviour, IFindable
         rigid.velocity = Vector3.zero;
     }
 
+    protected void StopClickMove()
+    {
+        isClickMove = false;
+        destination = Vector3.zero;
+        rigid.velocity = Vector3.zero;
+    }
+
     private void ClickMove()
     {
         if (isClickMove && Vector3.Distance(destination, transform.position) <= 1f)
         {
             isClickMove = false;
+            OnEndPointMove?.Invoke();
+            OnEndPointMove = null;
+
             OnMoveEnd();
             return;
         }
@@ -288,6 +317,12 @@ public abstract class Pet : MonoBehaviour, IFindable
         agent.velocity = Vector3.zero;
     }
 
+    public void SetForcePosition(Vector3 position)
+    {
+        agent.enabled = false;
+        transform.position = position;
+        agent.enabled = true;
+    }
     #endregion
 
     #region Throw/Landing

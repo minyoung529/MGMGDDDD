@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
@@ -28,38 +27,27 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField]
     private LayerMask cameraHitLayerMask;
 
-    #region 퍼즐 관련 변수
-    private ButtonObject[] buttons;
-    public ButtonObject[] Buttons => buttons;
-    private Pet[] pets;
-    public Pet[] Pets => pets;
-    #endregion
-
     protected override void Awake()
     {
-        FindPuzzleObjects();
         st = Time.time;
         MainCam = Camera.main;
         base.Awake();
     }
 
-    private void Start() {
+    private void Start()
+    {
         // LATER FIX
         SceneController.ListeningEnter(SceneType.Clock, () => MainCam = Camera.main);
         RenderSettingController.Start();
         CameraSwitcher.Start();
     }
 
-
-    private void FindPuzzleObjects() {
-        buttons = FindObjectsOfType<ButtonObject>();
-        pets = FindObjectsOfType<Pet>();
-    }
-
-    public Vector3 GetMousePos() {
+    public Vector3 GetMousePos()
+    {
         Ray ray = MainCam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, MainCam.farClipPlane, Define.BOTTOM_LAYER)) {
+        
+        if (Physics.Raycast(ray, out RaycastHit hit, MainCam.farClipPlane, cameraHitLayerMask))
+        {
             Debug.DrawRay(MainCam.transform.position, hit.point);
             Vector3 mouse = hit.point;
             mouse.y = 0;
@@ -80,19 +68,5 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         return Vector3.zero;
-    }
-
-    public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable {
-        T target = default;
-        float min = Mathf.Pow(range, 2);
-        foreach (T item in targets) {
-            if (!item.IsFindable) continue;
-            float distance = (transform.position - item.transform.position).sqrMagnitude;
-            if (distance < min) {
-                min = distance;
-                target = item;
-            }
-        }
-        return target;
     }
 }

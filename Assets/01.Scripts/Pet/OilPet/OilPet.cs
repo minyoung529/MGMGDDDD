@@ -7,6 +7,7 @@ using Cinemachine;
 using UnityEngine.AI;
 using System.Reflection;
 using UnityEngine.UIElements;
+using System;
 
 public class OilPet : Pet
 {
@@ -25,6 +26,14 @@ public class OilPet : Pet
     private bool isSkilling;
     protected bool isSkillDragging;
 
+    #region Property
+    public Action OnStartSkill { get; set; }
+    public Action OnEndSkill { get; set; }
+
+    public bool IsDirectSpread { get; set; } = true;
+
+    public OilPetSkill OilPetSkill => oilPetSkill;
+    #endregion
 
     protected override void Awake()
     {
@@ -50,6 +59,7 @@ public class OilPet : Pet
 
         base.Skill(inputAction, value);
 
+        OnStartSkill?.Invoke();
         isSkillDragging = true;
         isSkilling = true;
         oilPetSkill.OnClickSkill();
@@ -99,8 +109,14 @@ public class OilPet : Pet
     {
         if (isSkilling && !isMouseMove)
         {
-            oilPetSkill.StartSpreadOil(() => isForceBlockMove = true, () => { isForceBlockMove = false; ResetSkill(); MovePoint(transform.position); });
+            if (IsDirectSpread)
+                SpreadOil();
         }
+    }
+
+    public void SpreadOil()
+    {
+        oilPetSkill.StartSpreadOil(() => isForceBlockMove = true, () => { isForceBlockMove = false; ResetSkill(); MovePoint(transform.position); });
     }
 
     protected override void OnFollowTarget()
@@ -114,7 +130,11 @@ public class OilPet : Pet
 
         if (!isSkilling || !isSkillDragging) return;
 
-        MovePoint(oilPetSkill.StartPoint);
+        if (IsDirectSpread)
+        {
+            MovePoint(oilPetSkill.StartPoint);
+        }
+        OnEndSkill?.Invoke();
 
         agent.isStopped = false;
         isSkillDragging = false;

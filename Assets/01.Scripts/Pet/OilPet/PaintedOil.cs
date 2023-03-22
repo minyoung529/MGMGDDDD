@@ -23,9 +23,17 @@ public class PaintedOil : MonoBehaviour
         {
             firePet ??= other.GetComponent<Fire>();
 
-            if (firePet.IsBurn)
+            if (firePet.gameObject == other.gameObject && firePet.IsBurn)
             {
                 OnContactFirePet?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                Fire fire = other.GetComponent<Fire>();
+                if(fire.IsBurn)
+                {
+                    OnContactFirePet?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
     }
