@@ -231,9 +231,10 @@ public abstract class Pet : MonoBehaviour, IFindable
     private bool SetButtonTarget() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (!target) return false;
-        targetPos = target.transform.position;
-        Vector3 dest = (target.transform.position - transform.position).normalized;
-        dest = target.transform.position - dest * 5f;
+        //targetPos = target.transform.position;
+        //Vector3 dest = (target.transform.position - transform.position).normalized;
+        //dest = target.transform.position - dest * 5f;
+        Vector3 dest = target.transform.position;
 
         StopFollow();
 
@@ -244,17 +245,17 @@ public abstract class Pet : MonoBehaviour, IFindable
     }
 
     private void MoveToButton() {
-        if (Vector3.Distance(destination, transform.position) <= 0.5f) {
-            agent.isStopped = true;
-            isButtonMove = false;
-            Sequence seq = DOTween.Sequence();
-            seq.Append(transform.DOLookAt(new Vector3(targetPos.x, transform.position.y, targetPos.z), 0.2f));
-            seq.Append(transform.DOJump(targetPos, 5f, 1, 1f));
-            seq.AppendCallback(() => { 
-                CanMove = false;
-                seq.Kill();
-            });
-        }
+        //if (Vector3.Distance(destination, transform.position) <= sightRange) {
+        //    agent.isStopped = true;
+        //    isButtonMove = false;
+        //    Sequence seq = DOTween.Sequence();
+        //    seq.Append(transform.DOLookAt(new Vector3(targetPos.x, transform.position.y, targetPos.z), 0.2f));
+        //    seq.Append(transform.DOJump(targetPos, 5f, 1, 1f));
+        //    seq.AppendCallback(() => { 
+        //        CanMove = false;
+        //        seq.Kill();
+        //    });
+        //}
     }
 
     protected void FollowTarget()
