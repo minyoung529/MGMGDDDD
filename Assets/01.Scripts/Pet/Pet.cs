@@ -19,7 +19,7 @@ public abstract class Pet : MonoBehaviour
     private bool isClickMove = false;
     protected bool isMouseMove = false;
     protected bool isForceBlockMove = false;
-    protected bool isNotMove = false;
+    protected bool canMove = false;
     #endregion
 
     protected Rigidbody rigid;
@@ -34,7 +34,8 @@ public abstract class Pet : MonoBehaviour
     public bool IsGet { get { return isGet; } }
     public bool IsCoolTime { get { return isCoolTime; } }
     public bool IsSelected { get { return isSelected; } }
-    public bool IsNotMove { get { return isNotMove; } set { isNotMove = value; } }
+    public bool CanMove { get { return canMove; } set { canMove = value; } }
+    public bool IsFollow { get { return isFollow; } set { isFollow = value; } }
     public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
 
     public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
@@ -50,7 +51,7 @@ public abstract class Pet : MonoBehaviour
 
     public Action OnEndPointMove { get; set; }
 
-    private static bool isCameraAimPoint;
+    private static bool isCameraAimPoint = true;
     public static bool IsCameraAimPoint
     {
         get => isCameraAimPoint;
@@ -66,6 +67,11 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         stopDistance = agent.stoppingDistance;
+    }
+
+    private void Start()
+    {
+        ResetPet();
     }
     private void FixedUpdate()
     {
@@ -84,7 +90,8 @@ public abstract class Pet : MonoBehaviour
     protected virtual void ResetPet()
     {
         isCoolTime = false;
-        IsNotMove = false;
+        agent.enabled = true;
+        CanMove = true;
         transform.localScale = originScale;
 
         StartFollow();
@@ -153,6 +160,8 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsSelected) return;
 
+        StopFollow();
+
         if (IsCameraAimPoint)
         {
             ClickSetDestination(GameManager.Instance.GetCameraHit());
@@ -176,9 +185,7 @@ public abstract class Pet : MonoBehaviour
 
     private void ClickSetDestination(Vector3 dest)
     {
-        if (IsNotMove) return;
-
-        StopFollow();
+        if (!CanMove) return;
 
         agent.SetDestination(dest);
         destination = dest;
@@ -213,7 +220,7 @@ public abstract class Pet : MonoBehaviour
 
     protected void FollowTarget()
     {
-        if (IsNotMove) return;
+        if (!CanMove) return;
 
         if (isClickMove)
         {
@@ -248,9 +255,9 @@ public abstract class Pet : MonoBehaviour
     protected void StopFollow()
     {
         isFollow = false;
-        agent.stoppingDistance = 0f;
-
         agent.ResetPath();
+
+        agent.stoppingDistance = 0f;
         agent.velocity = Vector3.zero;
     }
 

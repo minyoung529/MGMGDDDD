@@ -9,17 +9,17 @@ public class Sticky : MonoBehaviour
     public bool IsSticky { get { return isSticky; } set { isSticky = value; } }
     public bool CanMove { get { return canMove; } }
 
-    public void SetSticky()
-    {
-        if(isSticky) return;
+    //public void SetSticky()
+    //{
+    //    if(isSticky) return;
 
-        isSticky = true;
-    }
+    //    isSticky = true;
+    //}
     
-    public void NotSticky()
-    {
-        if(!isSticky) return;
+    //public void NotSticky()
+    //{
+    //    if(!isSticky) return;
 
-        isSticky = false;
-    }
+    //    isSticky = false;
+    //}
 }
