@@ -29,16 +29,17 @@ public class PlatformPiece : MonoBehaviour
     private bool isLightOn = false;
 
     public Action OnDestroyPlatform { get; set; }
+    public Action InactivePlatform { get; set; }
 
     private MeshRenderer[] renderers;
     private NavMeshSurface navmeshSurface;
 
-    private void Start()
+    Sequence seq;
+
+    private void Awake()
     {
         navmeshSurface = GetComponent<NavMeshSurface>();
         fire = GetComponentInChildren<Fire>();
-        navmeshSurface.RemoveData();
-        navmeshSurface.BuildNavMesh();
     }
 
     public void Initialize(int c, ref Color[] colors)
@@ -86,7 +87,7 @@ public class PlatformPiece : MonoBehaviour
     {
         isBurning = true;
 
-        Sequence seq = DOTween.Sequence();
+        seq = DOTween.Sequence();
         seq.AppendInterval(4f);
         seq.AppendCallback(Hide);
         seq.AppendCallback(() => destroyParticle.Play());
@@ -95,8 +96,7 @@ public class PlatformPiece : MonoBehaviour
         seq.AppendCallback(() => gameObject.SetActive(false));
         seq.AppendCallback(() =>
         {
-            navmeshSurface.RemoveData();
-            navmeshSurface.BuildNavMesh();
+            InactivePlatform.Invoke();
         });
     }
 
@@ -110,12 +110,12 @@ public class PlatformPiece : MonoBehaviour
         }
 
         isBurning = false;
+
     }
 
     private void Show()
     {
         renderers ??= transform.GetComponentsInChildren<MeshRenderer>();
-        navmeshSurface.RemoveData();
         navmeshSurface.BuildNavMesh();
 
         foreach (MeshRenderer renderer in renderers)
@@ -137,6 +137,8 @@ public class PlatformPiece : MonoBehaviour
 
     public void ResetPuzzle()
     {
+        seq.Kill();
+
         Show();
         boardRenderer.material.DOColor(originalColor, 1f);
     }
@@ -153,5 +155,10 @@ public class PlatformPiece : MonoBehaviour
         {
             fire?.Burn();
         }
+    }
+
+    public void BuildMesh()
+    {
+        navmeshSurface.BuildNavMesh();
     }
 }

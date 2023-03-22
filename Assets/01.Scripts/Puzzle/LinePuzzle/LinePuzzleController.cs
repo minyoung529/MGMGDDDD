@@ -57,6 +57,7 @@ public class LinePuzzleController : MonoBehaviour
         foreach(LinePuzzle puzzle in linePuzzles)
         {
             puzzle.OnClear += ClearPuzzle;
+            puzzle.OnFire += BuildAllMesh;
         }
     }
 
@@ -93,7 +94,6 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.OnEndSkill += AutoMoveOil;
         oilPet.OnStartSkill += CurrentPuzzle.ResetOil;
         oilPet.OilPetSkill.IsCheckDistance = false;
-
 
         StartGame();
     }
@@ -168,13 +168,30 @@ public class LinePuzzleController : MonoBehaviour
             return;
         }
 
-        linePuzzles[idx].transform.DOMove(boardTransform.position, 1f);
-        linePuzzles[idx].StartGame();
+        Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(2f);
+        seq.Append(linePuzzles[idx].transform.DOMove(boardTransform.position, 1f));
+        seq.AppendCallback(() => linePuzzles[idx].StartGame());
     }
 
     private void EndPuzzle()
     {
 
+    }
+
+    [ContextMenu("Dynamic Build All Mesh")]
+    public void BuildAllMesh()
+    {
+        Sequence seq = DOTween.Sequence();
+
+        seq.AppendInterval(8f);
+        seq.AppendCallback(() =>
+        {
+            foreach (LinePuzzle puzzle in linePuzzles)
+            {
+                puzzle.BuildAllMesh();
+            }
+        });
     }
 
     private void OnDestroy()

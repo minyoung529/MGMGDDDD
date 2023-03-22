@@ -50,10 +50,13 @@ public class LinePuzzle : MonoBehaviour
     private int destroyPuzzleCnt = 0;
 
     public Action OnClear { get; set; }
+    public Action OnBuildMesh { get; set; }
+    public Action OnFire { get; set; }
 
     private void Awake()
     {
         Initilize();
+        BuildAllMesh();
     }
 
     public void StartGame()
@@ -83,6 +86,7 @@ public class LinePuzzle : MonoBehaviour
                 newObj.Initialize(boardInformation[i][j] - '1', ref colors);
 
                 newObj.OnDestroyPlatform += DestroyPuzzle;
+                newObj.InactivePlatform += BuildAllMesh;
 
                 newObj.transform.position =
                     new Vector3
@@ -130,6 +134,7 @@ public class LinePuzzle : MonoBehaviour
             FirePortal fPortal = firePortals[i] as FirePortal;
             fPortal.Listen(pieces.Find(x => x.Index == i).Burn);
             fPortal.Listen(pieces.FindLast(x => x.Index == i).Burn);
+            fPortal.Listen(() => OnFire?.Invoke());
         }
     }
 
@@ -162,5 +167,10 @@ public class LinePuzzle : MonoBehaviour
         ResetOil();
         pieces.ForEach(x => x.ResetPuzzle());
         destroyPuzzleCnt = 0;
+    }
+
+    public void BuildAllMesh()
+    {
+        pieces.ForEach(x => x.BuildMesh());
     }
 }
