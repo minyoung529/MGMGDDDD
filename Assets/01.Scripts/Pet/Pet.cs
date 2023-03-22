@@ -310,6 +310,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     protected void StopFollow()
     {
+        if (!isFollow) return;
         isFollow = false;
         agent.ResetPath();
 
