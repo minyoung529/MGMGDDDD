@@ -52,7 +52,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public Collider Coll => coll;
     public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
-    bool IFindable.IsFindable { get => isFindable; }
+    bool IFindable.IsFindable { get => isFindable & isGet; }
 
     #endregion
 
@@ -202,13 +202,6 @@ public abstract class Pet : MonoBehaviour, IFindable
         destination = dest;
         isFollow = false;
         isClickMove = true;
-        rigid.velocity = Vector3.zero;
-    }
-
-    protected void StopClickMove()
-    {
-        isClickMove = false;
-        destination = Vector3.zero;
         rigid.velocity = Vector3.zero;
     }
 
