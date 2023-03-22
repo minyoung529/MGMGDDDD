@@ -85,6 +85,9 @@ public class PlatformPiece : MonoBehaviour
 
     private void DestroyPlatform()
     {
+        if (isBurning) return;
+        if (!gameObject.activeSelf) return;
+
         isBurning = true;
 
         seq = DOTween.Sequence();

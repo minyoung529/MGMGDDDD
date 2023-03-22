@@ -179,6 +179,7 @@ public abstract class Pet : MonoBehaviour
     {
         if (!IsSelected) return;
 
+        StopFollow();
         ClickSetDestination(destination);
         isMouseMove = false;
     }
@@ -258,6 +259,7 @@ public abstract class Pet : MonoBehaviour
         agent.ResetPath();
 
         agent.stoppingDistance = 0f;
+
         agent.velocity = Vector3.zero;
     }
 
