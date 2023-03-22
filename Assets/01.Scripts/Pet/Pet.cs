@@ -190,6 +190,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     {
         if (!IsSelected) return;
 
+        StopFollow();
         ClickSetDestination(destination);
         isMouseMove = false;
     }
@@ -309,6 +310,7 @@ public abstract class Pet : MonoBehaviour, IFindable
         agent.ResetPath();
 
         agent.stoppingDistance = 0f;
+
         agent.velocity = Vector3.zero;
     }
 
