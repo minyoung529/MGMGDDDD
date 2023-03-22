@@ -17,7 +17,7 @@ public class StickyPet : Pet
     private float moveSpeed = 1f;
 
     private StickyState state = StickyState.Idle;
-    private Vector3 bigScale = new Vector3(3f, 1f, 3f);
+    private Vector3 bigScale = new Vector3(3f, 3f, 3f);
     private Vector3 smallDirection;
 
     [SerializeField]

@@ -16,9 +16,21 @@ public class TogglePosition : MonoBehaviour
 
     [SerializeField] Ease ease = Ease.Unset;
 
+    [SerializeField] bool isPrevKill = true;
+
+    [SerializeField]
+    private bool isLocal = false;
+
     private void Start()
     {
-        originalPos = transform.position;
+        if (isLocal)
+        {
+            originalPos = transform.localPosition;
+        }
+        else
+        {
+            originalPos = transform.position;
+        }
     }
 
     public void Trigger()
@@ -44,15 +56,33 @@ public class TogglePosition : MonoBehaviour
 
     public void Open()
     {
-        transform.DOKill();
-        transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke()).SetEase(ease);
+        if (isPrevKill)
+            transform.DOKill();
+
+        if (isLocal)
+        {
+            transform.DOLocalMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke()).SetEase(ease);
+        }
+        else
+        {
+            transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke()).SetEase(ease);
+        }
 
         OnOpen?.Invoke();
     }
 
     public void Close()
     {
-        transform.DOKill();
-        transform.DOMove(originalPos, duration).SetEase(ease);
+        if (isPrevKill)
+            transform.DOKill();
+
+        if (isLocal)
+        {
+            transform.DOLocalMove(originalPos, duration).SetEase(ease);
+        }
+        else
+        {
+            transform.DOMove(originalPos, duration).SetEase(ease);
+        }
     }
 }

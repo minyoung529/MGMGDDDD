@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,12 @@ public class JumperObject : MonoBehaviour
     [SerializeField]
     private UnityEvent OnJump;
 
+    [SerializeField]
+    private Transform animationObject;
+
     public bool CanJump { get; set; } = true;
+
+    private bool isAnimation = false;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -33,6 +39,9 @@ public class JumperObject : MonoBehaviour
             //playerRigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
             Jump();
+
+            if (!isAnimation)
+                JumpAnimation();
         }
     }
 
@@ -48,5 +57,18 @@ public class JumperObject : MonoBehaviour
         }
 
         OnJump?.Invoke();
+    }
+
+    private void JumpAnimation()
+    {
+        isAnimation = true;
+
+        Sequence seq = DOTween.Sequence();
+
+        Vector3 originalScale = animationObject.localScale;
+
+        seq.Append(animationObject.DOScale(originalScale * 0.85f, 0.25f).SetEase(Ease.OutBounce));
+        seq.Append(animationObject.DOScale(originalScale, 0.2f));
+        seq.AppendCallback(() => isAnimation = false);
     }
 }
