@@ -110,8 +110,8 @@ NavMeshSettings:
     agentHeight: 2
     agentSlope: 45
     agentClimb: 0.4
-    ledgeDropHeight: 0
-    maxJumpAcrossDistance: 0
+    ledgeDropHeight: 4
+    maxJumpAcrossDistance: 5
     minRegionArea: 2
     manualCellSize: 0
     cellSize: 0.16666667
@@ -4029,7 +4029,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh27122
+  m_Name: pb_Mesh34508
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5709,7 +5709,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh26734
+  m_Name: pb_Mesh34118
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -11665,7 +11665,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh27444
+  m_Name: pb_Mesh34836
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -13633,6 +13633,58 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &1317416630
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1317416632}
+  - component: {fileID: 1317416631}
+  m_Layer: 0
+  m_Name: NavmeshLink
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1317416631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317416630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_StartPoint: {x: -20.577274, y: 29.596485, z: -12.398319}
+  m_EndPoint: {x: -14.080151, y: 27.350735, z: -12.463195}
+  m_Width: 9.122705
+  m_CostModifier: -1
+  m_Bidirectional: 1
+  m_AutoUpdatePosition: 0
+  m_Area: 2
+--- !u!4 &1317416632
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317416630}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1320695463
 GameObject:
   m_ObjectHideFlags: 0
@@ -15639,11 +15691,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466124033040, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000001982251
+      value: 0.00000001982251
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466124033040, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000014113371
+      value: -0.000000014113371
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466203279174, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.w
@@ -15655,11 +15707,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466203279174, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000007285661
+      value: 0.000000007285661
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466203279174, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000045753747
+      value: -0.0000000045753747
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466296705999, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15679,7 +15731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5094444676678175716, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: distance2Pet
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}

@@ -55,22 +55,6 @@ public class StickyPet : Pet
         OnExitBillow?.Invoke();
     }
 
-    private void SetMove(bool canMove)
-    {
-        if (canMove)
-        {
-           //StartFollow();
-            IsFollow = true;
-        }
-        else
-        {
-            IsFollow = false;
-        }
-
-        CanMove = canMove;
-        agent.enabled = canMove;
-    }
-
     private void ChangeState(StickyState setState)
     {
         state = setState;
@@ -99,7 +83,7 @@ public class StickyPet : Pet
         StopFollow();
 
         transform.DOKill();
-        SetMove(false);
+        StopNav(false);
 
         BillowAction();
         OnBillow?.Invoke();

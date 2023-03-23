@@ -13,51 +13,39 @@ public abstract class Pet : MonoBehaviour, IFindable
     #region CheckList
 
     private bool isGet = false;
-    private bool isFollow = false;
     private bool isCoolTime = false;
     private bool isSelected = false;
-    private bool isClickMove = false;
-    private bool isButtonMove = false;
-    private bool isFindable = true;
     protected bool isMouseMove = false;
-    protected bool isForceBlockMove = false;
-    protected bool canMove = false;
+
+    private bool isFindable = true;
+
     #endregion
 
     protected Rigidbody rigid;
     protected Collider coll;
+    private Transform player;
     private Transform target;
     protected NavMeshAgent agent;
 
-    private Vector3 destination = Vector3.zero;
     private Vector3 originScale;
 
     [SerializeField] protected float sightRange = 5f;
 
     #region Get
 
-    public bool IsGet { get { return isGet; } }
-    public bool IsCoolTime { get { return isCoolTime; } }
-    public bool IsSelected { get { return isSelected; } }
-    public bool CanMove { get { return canMove; } set { canMove = value; } }
-    public bool IsFollow { get { return isFollow; } set { isFollow = value; } }
-    public float Distance { get { return Vector3.Distance(transform.position, target.position); } }
-
-    public bool IsFollowDistance { get { return Vector3.Distance(transform.position, target.position) >= petInform.followDistance; } }
-    public bool CheckSkillActive { get { return (!IsSelected || IsCoolTime); } }
+    public bool IsGet => isGet;
+    public bool CheckSkillActive { get { return (!isSelected || isCoolTime); } }
     public Vector3 MouseUpDestination { get; private set; }
-    public Vector3 Destination => destination;
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
-    public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
     bool IFindable.IsFindable { get => isFindable & isGet; }
 
     #endregion
 
-    private float stopDistance = 5f;
+    private float distanceToPlayer = 5f;
 
-    public Action OnEndPointMove { get; set; }
+    public Action onArrive { get; set; }
 
     private static bool isCameraAimPoint = true;
     public static bool IsCameraAimPoint
@@ -68,13 +56,11 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     protected virtual void Awake()
     {
-        isGet = false;
         originScale = transform.localScale;
 
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
-        stopDistance = agent.stoppingDistance;
     }
 
     private void Start()
@@ -84,10 +70,9 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     private void FixedUpdate()
     {
-        if (isForceBlockMove) return;
-        if (!IsGet) return;
-
+        if (!isGet) return;
         FollowTarget();
+        CheckArrive();
         //LookAtPlayer();
         OnUpdate();
     }
@@ -100,19 +85,17 @@ public abstract class Pet : MonoBehaviour, IFindable
     {
         isCoolTime = false;
         agent.enabled = true;
-        CanMove = true;
         transform.localScale = originScale;
-        agent.stoppingDistance = stopDistance;
-
-        StartFollow();
+        agent.stoppingDistance = distanceToPlayer;
+        SetTargetPlayer();
     }
 
-    public void GetPet(Transform obj)
+    public void GetPet(Transform player)
     {
         isGet = true;
-        target = obj;
+        this.player = player;
 
-        StartFollow();
+        SetTargetPlayer();
         StartListen();
         PetManager.Instance.AddPet(this);
     }
@@ -148,10 +131,15 @@ public abstract class Pet : MonoBehaviour, IFindable
         isCoolTime = true;
         StartCoroutine(SkillCoolTime(petInform.skillDelayTime));
     }
+
     private IEnumerator SkillCoolTime(float t)
     {
         yield return new WaitForSeconds(t);
         isCoolTime = false;
+    }
+
+    protected virtual void SkillUp(InputAction inputAction, float value) {
+        MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
 
     #endregion
@@ -166,156 +154,48 @@ public abstract class Pet : MonoBehaviour, IFindable
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
     }
 
-    public void MovePoint(InputAction inputAction, float value)
-    {
-        if (!IsSelected) return;
-
-        StopFollow();
-
-        if (IsCameraAimPoint)
-        {
-            ClickSetDestination(GameManager.Instance.GetCameraHit());
-        }
-        else
-        {
-            ClickSetDestination(GameManager.Instance.GetMousePos());
-        }
-
-        isMouseMove = true;
-        transform.DOKill();
+    protected void FollowTarget() {
+        if (!target) return;
+        agent.SetDestination(target.position);
     }
 
-    public void MovePoint(Vector3 destination)
-    {
-        if (!IsSelected) return;
-
-        StopFollow();
-        ClickSetDestination(destination);
-        isMouseMove = false;
-    }
-
-    private void ClickSetDestination(Vector3 dest)
-    {
-        if (!CanMove) return;
-
-        agent.SetDestination(dest);
-        destination = dest;
-        isFollow = false;
-        isClickMove = true;
-        rigid.velocity = Vector3.zero;
-    }
-
-    private void ClickMove()
-    {
-        if (isClickMove && Vector3.Distance(destination, transform.position) <= 1f)
-        {
-            isClickMove = false;
-            OnEndPointMove?.Invoke();
-            OnEndPointMove = null;
-
-            OnMoveEnd();
+    public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null) {
+        if (!isSelected) return;
+        this.target = target;
+        agent.stoppingDistance = stopDistance;
+        if (!target) {
+            StopNav(true);
             return;
         }
-
-        //var dir = destination - transform.position;
-        //dir.y = 0;
-        //transform.position += dir.normalized * Time.deltaTime * 5f;
+        this.onArrive = onArrive;
     }
 
-    protected void StopClickMove()
-    {
-        isClickMove = false;
-        destination = Vector3.zero;
-        rigid.velocity = Vector3.zero;
+    public void SetTargetPlayer() {
+        if (!isSelected) return;
+        target = player;
+        agent.stoppingDistance = distanceToPlayer;
     }
 
-    private bool SetButtonTarget()
-    {
-        ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
-        if (target == null) return false;
-        //targetPos = target.transform.position;
-        //Vector3 dest = (target.transform.position - transform.position).normalized;
-        //dest = target.transform.position - dest * 5f;
-        Vector3 dest = target.transform.position;
-
-        StopFollow();
-
-        agent.SetDestination(dest);
-        destination = dest;
-        isButtonMove = true;
-        return true;
+    public void SetDestination(Vector3 target) {
+        if (!isSelected) return;
+        this.target = null;
+        agent.SetDestination(target);
     }
 
-    private void MoveToButton()
+    private void CheckArrive()
     {
-        //if (Vector3.Distance(destination, transform.position) <= 0.5f)
-        //{
-        //    agent.isStopped = true;
-        //    isButtonMove = false;
-        //    Sequence seq = DOTween.Sequence();
-        //    seq.Append(transform.DOLookAt(new Vector3(targetPos.x, transform.position.y, targetPos.z), 0.2f));
-        //    seq.Append(transform.DOJump(targetPos, 5f, 1, 1f));
-        //    seq.AppendCallback(() =>
-        //    {
-        //        CanMove = false;
-        //        seq.Kill();
-        //    });
-        //}
-    }
-
-    protected void FollowTarget()
-    {
-        if (!CanMove) return;
-
-        if (isButtonMove)
+        if (Vector3.Distance(agent.destination, transform.position) <= 1f)
         {
-            MoveToButton();
-        }
-        if (isClickMove)
-        {
-            ClickMove();
-        }
-        if (isFollow && agent.destination != target.position)
-        {
-            OnFollowTarget();
-            agent.SetDestination(target.position);
+            onArrive?.Invoke();
+            onArrive = null;
+            OnArrive();
         }
     }
 
-    protected virtual void OnFollowTarget() { }
+    protected virtual void OnArrive() { }
 
-    private void StartFollow(InputAction inputAction, float value)
-    {
-        isFollow = true;
-        agent.stoppingDistance = stopDistance;
-        //agent.isStopped = false;
-    }
-
-    public void StartFollow()
-    {
-        isFollow = true;
-        agent.stoppingDistance = stopDistance;
-        //agent.isStopped = false;
-    }
-
-    protected virtual void SkillUp(InputAction inputAction, float value)
-    {
-        MouseUpDestination = GameManager.Instance.GetCameraHit();
-    }
-
-    protected virtual void OnMoveEnd()
-    {
-    }
-
-    protected void StopFollow()
-    {
-        if (!isFollow) return;
-        isFollow = false;
-        agent.ResetPath();
-
-        agent.stoppingDistance = 0f;
-
-        agent.velocity = Vector3.zero;
+    public void StopNav(bool value) {
+        agent.isStopped = value;
     }
 
     public void SetForcePosition(Vector3 position)
@@ -325,6 +205,36 @@ public abstract class Pet : MonoBehaviour, IFindable
         agent.enabled = true;
     }
     #endregion
+
+    #region InputEvent
+    public void MovePoint(InputAction inputAction, float value) {
+        if (!isSelected) return;
+
+        if (IsCameraAimPoint) {
+            SetDestination(GameManager.Instance.GetCameraHit());
+        }
+        else {
+            SetDestination(GameManager.Instance.GetMousePos());
+        }
+
+        transform.DOKill();
+    }
+    protected virtual void Withdraw(InputAction inputAction, float value) {
+        ResetPet();
+    }
+    #endregion
+
+    /// <summary>
+    /// 맵에 존재하는 탐색 가능한 버튼을 찾음
+    /// </summary>
+    /// <returns>탐색 성공 여부</returns>
+    private bool FindButton() {
+        ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
+        if (target == null) return false;
+        Vector3 dest = target.transform.position;
+        agent.SetDestination(dest);
+        return true;
+    }
 
     #region Throw/Landing
     public virtual void OnThrow()
@@ -353,22 +263,12 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public virtual void OnLanding()
     {
-        CanMove = true;
         agent.enabled = true;
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
-        if (!SetButtonTarget())
+        if (!FindButton())
             agent.SetDestination(transform.position);
         isFindable = true;
     }
-    #endregion
-
-    #region Withdraw
-
-    protected virtual void Withdraw(InputAction inputAction, float value)
-    {
-        ResetPet();
-    }
-
     #endregion
 
     #region InputSystem
