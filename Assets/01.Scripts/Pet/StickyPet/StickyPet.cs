@@ -143,7 +143,7 @@ public class StickyPet : Pet
         skillEffect.Play();
         Rigid.isKinematic = true;
         SetMove(stickyObject.CanMove);
-        
+
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
     }
@@ -171,15 +171,10 @@ public class StickyPet : Pet
             if (stickyObject != null)
             {
                 SetBillow(collision.transform.forward);
+
                 Sticky(stickyObject);
             }
         }
-        else if (state == StickyState.Billow)
-        {
-            Vector3 point = (collision.contacts[0].point - transform.position).normalized;
-            MoveScale(point);
-        }
-
     }
 
     private void MoveScale(Vector3 point)
