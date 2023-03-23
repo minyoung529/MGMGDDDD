@@ -142,8 +142,9 @@ public class StickyPet : Pet
 
         skillEffect.Play();
         Rigid.isKinematic = true;
-        SetMove(stickyObject.CanMove);
-        
+        //SetMove(stickyObject.CanMove);
+        StopFollow();
+
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
     }

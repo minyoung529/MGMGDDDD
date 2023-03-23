@@ -13,13 +13,11 @@ GameObject:
   - component: {fileID: 896001081959153207}
   - component: {fileID: 932221862107939223}
   - component: {fileID: 2793911364475765387}
-  - component: {fileID: 4185515806060939968}
   - component: {fileID: 2093629652311290843}
-  - component: {fileID: 1866225946}
-  - component: {fileID: 1866225947}
-  - component: {fileID: 1866225948}
   - component: {fileID: 1866225954}
   - component: {fileID: 1866225961}
+  - component: {fileID: 1763002770235799755}
+  - component: {fileID: 5795845713713812465}
   m_Layer: 0
   m_Name: CubePuzzle
   m_TagString: CubePuzzle
@@ -36,8 +34,8 @@ Transform:
   m_GameObject: {fileID: 896001081959153202}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.32, z: 0}
-  m_LocalScale: {x: 2.8, y: 2.8, z: 2.8}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 2.8, y: 2.18, z: 2.8}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 896001082353816760}
   - {fileID: 6491281811764264616}
@@ -125,19 +123,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &4185515806060939968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896001081959153202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1956d3128aadb744d894a3e25a4aeb34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  extendsIslandOffset: 1
 --- !u!208 &2093629652311290843
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -154,84 +139,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.5, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &1866225946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896001081959153202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d24bdd9d403834bac057de5c4bb20d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1866225947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896001081959153202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b945bad070e49cf4fbab8e34ac61d5e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  oilObject: {fileID: 3592988113429102820}
-  oilMat: {fileID: 0}
---- !u!114 &1866225948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896001081959153202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 565c035c884ebd04a8c3a648841c536e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rustMaterial: {fileID: 0}
-  OnEnterOil:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1866225947}
-        m_TargetAssemblyTypeName: GenerateOil, Assembly-CSharp
-        m_MethodName: Generate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6491281811764264617}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Stop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1866225946}
-        m_TargetAssemblyTypeName: UnMovedObject, Assembly-CSharp
-        m_MethodName: OnEnterOil
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1866225954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,8 +184,34 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  distance: 1
+  distance: 0.5
   moveTime: 1
+  puzzleController: {fileID: 0}
+--- !u!114 &1763002770235799755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896001081959153202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeecb228c6cd9b64e8a2be91c8c09f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5795845713713812465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896001081959153202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a026692b9fe67164a9c45006824f3735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canMove: 1
 --- !u!1 &896001082353816761
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,7 +223,6 @@ GameObject:
   - component: {fileID: 896001082353816760}
   - component: {fileID: 896001082353816765}
   - component: {fileID: 896001082353816762}
-  - component: {fileID: 2704762291038247409}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -341,7 +273,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a168ade4b0b7162478277d884f75637f, type: 2}
+  - {fileID: 2100000, guid: 3ce1a7a1481bb0741a5162ce9c655439, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -363,21 +295,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2704762291038247409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896001082353816761}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 655b7c425835a574ab192f19410ae351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isChild: 1
-  useChildIdx: 1
-  tile: 2
 --- !u!1001 &668181484
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -454,11 +371,6 @@ PrefabInstance:
 --- !u!4 &6491281811764264616 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6491281812197350724, guid: 61368670ca54ec943910a40756981bee, type: 3}
-  m_PrefabInstance: {fileID: 668181484}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6491281811764264617 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6491281812197350725, guid: 61368670ca54ec943910a40756981bee, type: 3}
   m_PrefabInstance: {fileID: 668181484}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1335250030
@@ -538,11 +450,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 662a14d14d5594341ab11021b18e0484, type: 3}
---- !u!1 &3592988113429102820 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3592988114528947338, guid: 662a14d14d5594341ab11021b18e0484, type: 3}
-  m_PrefabInstance: {fileID: 1335250030}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3592988113429102821 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3592988114528947339, guid: 662a14d14d5594341ab11021b18e0484, type: 3}
