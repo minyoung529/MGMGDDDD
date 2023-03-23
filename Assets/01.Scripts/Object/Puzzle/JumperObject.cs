@@ -25,6 +25,7 @@ public class JumperObject : MonoBehaviour
 
     private bool isAnimation = false;
 
+    /*
     private void OnCollisionEnter(Collision collision)
     {
         if (!CanJump) return;
@@ -33,6 +34,28 @@ public class JumperObject : MonoBehaviour
         {
             playerRigid ??= collision.gameObject.GetComponent<Rigidbody>();
             playerOil ??= collision.gameObject.GetComponent<DetectOil>();
+
+            playerRigid.velocity = Vector3.zero;
+            playerRigid.angularVelocity = Vector3.zero;
+            //playerRigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            Jump();
+
+            if (!isAnimation)
+                JumpAnimation();
+        }
+    }
+    */
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (!CanJump) return;
+
+        if (collider.CompareTag(Define.PLAYER_TAG))
+        {
+            playerRigid ??= collider.gameObject.GetComponent<Rigidbody>();
+            playerOil ??= collider.gameObject.GetComponent<DetectOil>();
+            playerOil ??= collider.transform.parent.GetComponentInChildren<DetectOil>();
 
             playerRigid.velocity = Vector3.zero;
             playerRigid.angularVelocity = Vector3.zero;
