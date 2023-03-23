@@ -29,6 +29,8 @@ public class StickyExplosion : MonoBehaviour
 
     private JumperObject jumper;
 
+    [SerializeField]
+    private List<GameObject> ignoreList;
     private void Start()
     {
         jumper = GetComponent<JumperObject>();
@@ -64,7 +66,7 @@ public class StickyExplosion : MonoBehaviour
 
         foreach (Collider col in cols)
         {
-            if (col.gameObject == gameObject) continue;
+            if (ignoreList.Contains(col.gameObject)) continue;
 
             ExplosionReceiver receiver = col.GetComponent<ExplosionReceiver>();
 

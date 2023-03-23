@@ -177,9 +177,8 @@ public class StickyPet : Pet
         else if (state == StickyState.Billow)
         {
             Vector3 point = (collision.contacts[0].point - transform.position).normalized;
-            MoveScale(point);
+            //MoveScale(point);
         }
-
     }
 
     private void MoveScale(Vector3 point)

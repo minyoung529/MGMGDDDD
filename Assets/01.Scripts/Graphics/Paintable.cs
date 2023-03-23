@@ -20,18 +20,21 @@ public class Paintable : MonoBehaviour
     public RenderTexture GetSupport() => supportTexture;
     public Renderer GetRenderer() => rend;
 
+    [SerializeField]
+    private int scale = 1;
+
     void Start()
     {
-        maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        maskRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE* scale, 0);
         maskRenderTexture.filterMode = FilterMode.Bilinear;
 
-        extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE * scale, 0);
         extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE * scale, 0);
         uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        supportTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE * scale, 0);
         supportTexture.filterMode = FilterMode.Bilinear;
 
         rend = GetComponent<Renderer>();
