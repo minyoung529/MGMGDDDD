@@ -234,9 +234,10 @@ public abstract class Pet : MonoBehaviour, IFindable
     {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (!target) return false;
-        targetPos = target.transform.position;
-        Vector3 dest = (target.transform.position - transform.position).normalized;
-        dest = target.transform.position - dest * 5f;
+        //targetPos = target.transform.position;
+        //Vector3 dest = (target.transform.position - transform.position).normalized;
+        //dest = target.transform.position - dest * 5f;
+        Vector3 dest = target.transform.position;
 
         StopFollow();
 
