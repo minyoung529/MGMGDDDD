@@ -175,13 +175,20 @@ public class StickyPet : Pet
                 Sticky(stickyObject);
             }
         }
-        else if (state == StickyState.Billow)
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (state == StickyState.ReadySticky)
         {
-            Vector3 point = (collision.contacts[0].point - transform.position).normalized;
-            //MoveScale(point);
+            Sticky stickyObject = other.GetComponent<Sticky>();
+            if (stickyObject != null)
+            {
+                SetBillow(other.transform.forward);
+
+                Sticky(stickyObject);
+            }
         }
     }
-
     private void MoveScale(Vector3 point)
     {
         Vector3 remaining = bigScale - transform.localScale;
