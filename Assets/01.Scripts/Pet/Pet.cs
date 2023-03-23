@@ -27,7 +27,6 @@ public abstract class Pet : MonoBehaviour, IFindable
     protected Rigidbody rigid;
     protected Collider coll;
     private Transform target;
-    private Vector3 targetPos;
     protected NavMeshAgent agent;
 
     private Vector3 destination = Vector3.zero;
@@ -231,7 +230,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     private bool SetButtonTarget() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
-        if (!target) return false;
+        if (target == null) return false;
         //targetPos = target.transform.position;
         //Vector3 dest = (target.transform.position - transform.position).normalized;
         //dest = target.transform.position - dest * 5f;
