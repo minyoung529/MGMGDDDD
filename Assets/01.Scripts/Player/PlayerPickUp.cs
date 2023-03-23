@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerPickUp : MonoBehaviour {
@@ -31,8 +32,11 @@ public class PlayerPickUp : MonoBehaviour {
 
     private void PickUp() {
         holdingPet = GameManager.Instance.GetNearest(transform, GameManager.Instance.Pets);
-        if (!holdingPet) return;
-
+        if (!holdingPet) {
+            isPlaying = false;
+            return;
+        }
+        
         Vector3 dir = holdingPet.transform.position - transform.position;
         dir.y = 0;
         dir = dir.normalized;
@@ -40,18 +44,19 @@ public class PlayerPickUp : MonoBehaviour {
         dir.y = holdingPet.transform.position.y;
         targetPos = dir;
 
+        holdingPet.IsFollow = false;
         holdingPet.Agent.stoppingDistance = 0;
         holdingPet.Agent.SetDestination(dir);
 
         dir.y = transform.position.y;
         transform.DOLookAt(dir, 0.2f);
-
         StartCoroutine(WaitPet());
     }
 
     private IEnumerator WaitPet() {
         playerMove.IsInputLock = true;
         while (Vector3.Distance(holdingPet.transform.position, targetPos) >= 0.1f) {
+            Debug.Log("기다리는중");
             yield return null;
         }
         playerMove.IsInputLock = false;

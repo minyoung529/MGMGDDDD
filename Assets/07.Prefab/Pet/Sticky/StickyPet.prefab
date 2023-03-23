@@ -175,7 +175,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 122
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!195 &2611246238103810628
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -252,6 +252,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1961567388}
+        m_TargetAssemblyTypeName: TogglePosition, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnExitBillow:
     m_PersistentCalls:
       m_Calls:
@@ -291,6 +303,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1961567388}
+        m_TargetAssemblyTypeName: TogglePosition, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   scaleObject: {fileID: 1788196496585228096}
 --- !u!1 &5969439458487625808
 GameObject:
@@ -301,6 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1788196496585228096}
+  - component: {fileID: 1961567388}
   m_Layer: 8
   m_Name: Pivot
   m_TagString: Untagged
@@ -324,6 +349,29 @@ Transform:
   m_Father: {fileID: 2611246238103810627}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1961567388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969439458487625808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0
+  targetPos: {x: 0, y: -1, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 0
+  isLocal: 1
 --- !u!1001 &2018906288704621096
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -403,13 +451,25 @@ PrefabInstance:
       propertyPath: explosionForce
       value: 3300
       objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: ignoreList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: ignoreList.Array.data[0]
+      value: 
+      objectReference: {fileID: 2611246238103810629}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: ignoreList.Array.data[1]
+      value: 
+      objectReference: {fileID: 983100513}
     - target: {fileID: 2018906288344426057, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
       propertyPath: m_Name
       value: StickyExplosion
       objectReference: {fileID: 0}
     - target: {fileID: 2018906288344426057, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2018906288344426057, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
       propertyPath: m_IsActive
@@ -421,6 +481,7 @@ PrefabInstance:
       objectReference: {fileID: 1788196496585228096}
     m_RemovedComponents:
     - {fileID: 2018906288344426063, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+    - {fileID: 1909454976, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
 --- !u!1 &983100513 stripped
 GameObject:
@@ -435,7 +496,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983100513}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1.57, z: 1}
