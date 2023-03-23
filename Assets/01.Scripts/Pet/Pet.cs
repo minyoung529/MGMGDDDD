@@ -73,7 +73,6 @@ public abstract class Pet : MonoBehaviour, IFindable
         if (!isGet) return;
         FollowTarget();
         CheckArrive();
-        //LookAtPlayer();
         OnUpdate();
     }
 
@@ -145,14 +144,6 @@ public abstract class Pet : MonoBehaviour, IFindable
     #endregion
 
     #region Move
-    protected void LookAtPlayer()
-    {
-        Vector3 dir = target.position;
-        dir = GameManager.Instance.GetCameraHit();
-
-        Quaternion targetRot = Quaternion.LookRotation((dir - transform.position));
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.05f);
-    }
 
     protected void FollowTarget() {
         if (!target) return;
@@ -161,6 +152,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null) {
         if (!isSelected) return;
+        rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
         if (!target) {
@@ -172,20 +164,21 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public void SetTargetPlayer() {
         if (!isSelected) return;
+        rigid.velocity = Vector3.zero;
         target = player;
         agent.stoppingDistance = distanceToPlayer;
     }
 
-    public void SetDestination(Vector3 target) {
+    public void SetDestination(Vector3 target, float stopDistance = 0) {
         if (!isSelected) return;
+        rigid.velocity = Vector3.zero;
         this.target = null;
+        agent.stoppingDistance = stopDistance;
         agent.SetDestination(target);
     }
 
-    private void CheckArrive()
-    {
-        if (Vector3.Distance(agent.destination, transform.position) <= 1f)
-        {
+    private void CheckArrive() {
+        if (Vector3.Distance(agent.destination, transform.position) <= 1f) {
             onArrive?.Invoke();
             onArrive = null;
             OnArrive();
@@ -196,6 +189,9 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public void StopNav(bool value) {
         agent.isStopped = value;
+    }
+    public Vector3 GetDestination() {
+        return agent.destination;
     }
 
     public void SetForcePosition(Vector3 position)
@@ -219,6 +215,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
         transform.DOKill();
     }
+
     protected virtual void Withdraw(InputAction inputAction, float value) {
         ResetPet();
     }
@@ -261,9 +258,9 @@ public abstract class Pet : MonoBehaviour, IFindable
         return false;
     }
 
-    public virtual void OnLanding()
+    public virtual void OnLanding() 
     {
-        agent.enabled = true;
+        StopNav(false);
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         if (!FindButton())
             agent.SetDestination(transform.position);

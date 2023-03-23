@@ -79,11 +79,10 @@ public class StickyPet : Pet
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
-        StopClickMove();
-        StopFollow();
+        SetTarget(null);
 
         transform.DOKill();
-        StopNav(false);
+        StopNav(true);
 
         BillowAction();
         OnBillow?.Invoke();
@@ -110,8 +109,7 @@ public class StickyPet : Pet
         Vector3 hit = GameManager.Instance.GetCameraHit();
         if (hit != Vector3.zero)
         {
-            StopClickMove();
-            StopFollow();
+            SetTarget(null);
 
             transform.DOMoveX(hit.x, moveSpeed);
             transform.DOMoveY(hit.y, moveSpeed);
@@ -126,7 +124,7 @@ public class StickyPet : Pet
 
         skillEffect.Play();
         Rigid.isKinematic = true;
-        SetMove(stickyObject.CanMove);
+        StopNav(!stickyObject.CanMove);
         
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
@@ -140,7 +138,7 @@ public class StickyPet : Pet
         {
             Destroy(joints[i]);
         }
-        SetMove(true);
+        StopNav(false);
 
         skillEffect.Play();
         Rigid.isKinematic = false;
