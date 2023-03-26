@@ -105,14 +105,14 @@ public class OilPet : Pet
 
     #endregion
 
-    protected override void OnArrive()
-    {
-        if (isSkilling && !isMouseMove)
-        {
-            if (IsDirectSpread)
-                SpreadOil();
-        }
-    }
+    //protected override void OnArrive()
+    //{
+    //    if (isSkilling && !isMouseMove)
+    //    {
+    //        if (IsDirectSpread)
+    //            SpreadOil();
+    //    }
+    //}
 
     public void SpreadOil()
     {

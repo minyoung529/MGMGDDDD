@@ -13,17 +13,19 @@ public class ButtonObject : MonoBehaviour, IFindable {
     [SerializeField] private UnityEvent onRise;
     [SerializeField] bool isRerise = false;
 
+    private GameObject obj = null;
     private bool isButtonOn = false;
 
     private void OnTriggerEnter(Collider other) {
         if (((1 << other.gameObject.layer) & layerMask) != 0) {
             if (isButtonOn) return;
+            obj = other.gameObject;
             Press(true);
         }
     }
     private void OnTriggerExit(Collider other) {
         if (((1 << other.gameObject.layer) & layerMask) != 0) {
-            if (!isButtonOn || !isRerise) return;
+            if (!isButtonOn || !isRerise || obj != other.gameObject) return;
             Press(false);
         }
     }

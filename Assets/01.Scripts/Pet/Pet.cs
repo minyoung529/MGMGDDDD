@@ -181,14 +181,14 @@ public abstract class Pet : MonoBehaviour, IFindable
         if (Vector3.Distance(agent.destination, transform.position) <= 1f) {
             onArrive?.Invoke();
             onArrive = null;
-            OnArrive();
         }
     }
 
-    protected virtual void OnArrive() { }
-
     public void StopNav(bool value) {
         agent.isStopped = value;
+    }
+    public void SetNavEnabled(bool value) {
+        agent.enabled = value;
     }
     public Vector3 GetDestination() {
         return agent.destination;
@@ -251,7 +251,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public bool CheckOnGround()
     {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.5f, 1 << Define.BOTTOM_LAYER))
+        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.4f, 1 << Define.BOTTOM_LAYER))
         {
             if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
@@ -260,7 +260,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public virtual void OnLanding() 
     {
-        StopNav(false);
+        SetNavEnabled(true);
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         if (!FindButton())
             agent.SetDestination(transform.position);

@@ -52,7 +52,7 @@ public class PlayerPickUp : MonoBehaviour {
 
     private IEnumerator WaitPet() {
         playerMove.IsInputLock = true;
-        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) >= 0.1f) {
+        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 0.5f) {
             yield return null;
         }
         playerMove.IsInputLock = false;
@@ -88,7 +88,6 @@ public class PlayerPickUp : MonoBehaviour {
 
     public void ThrowStart() {
         ThrowPet();
-        holdingPet.StopNav(true);
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
         holdingPet.OnThrow();
@@ -101,6 +100,7 @@ public class PlayerPickUp : MonoBehaviour {
     }
 
     private void HoldPet() {
+        holdingPet.SetNavEnabled(false);
         isHolding = true;
         holdingPet.Rigid.isKinematic = true;
         holdingPet.Coll.enabled = false;
