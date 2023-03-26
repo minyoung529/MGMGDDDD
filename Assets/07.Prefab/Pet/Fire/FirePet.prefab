@@ -19264,8 +19264,8 @@ GameObject:
   - component: {fileID: 1337933975264670518}
   - component: {fileID: 1337933975264670516}
   - component: {fileID: 5238747358563090471}
-  - component: {fileID: 7197563383868028267}
   - component: {fileID: 2923300632945908935}
+  - component: {fileID: -6452518914013003632}
   m_Layer: 8
   m_Name: FirePet
   m_TagString: FirePet
@@ -19383,21 +19383,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petInform: {fileID: 11400000, guid: b5611ad453d625642a22a7de61dafb39, type: 2}
+  sightRange: 5
   fireBall: {fileID: 2765420991757548895, guid: ef3d3cfc74a0c524789939f06c4942a8, type: 3}
---- !u!136 &7197563383868028267
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337933975264670509}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.87568057
-  m_Height: 2.823124
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.91156197, z: 0}
 --- !u!114 &2923300632945908935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19419,7 +19406,22 @@ MonoBehaviour:
   isDestroyType: 0
   burnDelay: 0
   burningTime: 2
+  isTriggerBurn: 0
   isCool: 0
+--- !u!136 &-6452518914013003632
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337933975264670509}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.7541577
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.3770787, z: 0}
 --- !u!1001 &888930547
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19534,7 +19536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eb4c1c9a911b1224299d168db84e5460, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.13000107
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eb4c1c9a911b1224299d168db84e5460, type: 3}
       propertyPath: m_LocalPosition.z
@@ -19643,6 +19645,30 @@ PrefabInstance:
     - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].inSlope
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].inSlope
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].outSlope
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].outSlope
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157456988223111490, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[1].tangentMode
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 1157456988223111491, guid: 955c87cb933ec334ca11d8ebe7c95bf2, type: 3}
       propertyPath: m_RootOrder

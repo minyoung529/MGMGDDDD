@@ -35,17 +35,6 @@ public class FirePet : Pet
         base.Skill(inputAction, value);
 
         StartCoroutine(FireBurn());
-
-        //isOn = !isOn;
-        //if (isOn)
-        //{
-        //    OnSkill();
-        //}
-        //else
-        //{
-        //   OffSkill();
-        //}
-
     }
 
     public void OffSkill()
