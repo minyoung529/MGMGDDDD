@@ -1,10 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.ProBuilder.Shapes;
 
 public class CubePuzzle : MonoBehaviour
 {
@@ -61,6 +58,8 @@ public class CubePuzzle : MonoBehaviour
         {
             OnSuccess?.Invoke(transform.GetSiblingIndex());
         }
+
+        cubeRigid.GetComponent<Sticky>().NotSticky();
     }
 
     public void ResetPuzzle()

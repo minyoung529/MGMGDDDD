@@ -36,9 +36,7 @@ public class CubePuzzleController : MonoBehaviour
 
     private void OnChangeConnect(int v)
     {
-        FindObjectOfType<StickyPet>().NotSticky();
-
-        if(cubeCount== cubePuzzles.Count(x => x.IsSuccess))
+        if (cubeCount == cubePuzzles.Count(x => x.IsSuccess))
         {
             SolvePuzzle();
         }
