@@ -150,24 +150,16 @@ public abstract class Pet : MonoBehaviour, IFindable
     }
 
     public void SetTargetPlayer() {
-<<<<<<< HEAD
-        if (!isSelected) return;
         SetNavEnabled(true);
         SetNavIsStopped(false);
-=======
->>>>>>> develop
         rigid.velocity = Vector3.zero;
         target = player;
         agent.stoppingDistance = distanceToPlayer;
     }
 
     public void SetDestination(Vector3 target, float stopDistance = 0) {
-<<<<<<< HEAD
-        if (!isSelected) return;
         SetNavEnabled(true);
         SetNavIsStopped(false);
-=======
->>>>>>> develop
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
@@ -181,11 +173,7 @@ public abstract class Pet : MonoBehaviour, IFindable
         }
     }
 
-<<<<<<< HEAD
     public void SetNavIsStopped(bool value) {
-=======
-    public void StopNav(bool value) {
->>>>>>> develop
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value) {
