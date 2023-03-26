@@ -82,7 +82,7 @@ public class StickyPet : Pet
         SetTarget(null);
 
         transform.DOKill();
-        StopNav(true);
+        SetNavIsStopped(true);
 
         BillowAction();
         OnBillow?.Invoke();
@@ -124,7 +124,7 @@ public class StickyPet : Pet
 
         skillEffect.Play();
         Rigid.isKinematic = true;
-        StopNav(!stickyObject.CanMove);
+        SetNavIsStopped(!stickyObject.CanMove);
         
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
@@ -138,7 +138,7 @@ public class StickyPet : Pet
         {
             Destroy(joints[i]);
         }
-        StopNav(false);
+        SetNavIsStopped(false);
 
         skillEffect.Play();
         Rigid.isKinematic = false;

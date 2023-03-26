@@ -156,9 +156,10 @@ public abstract class Pet : MonoBehaviour, IFindable
         this.target = target;
         agent.stoppingDistance = stopDistance;
         if (!target) {
-            StopNav(true);
+            SetNavIsStopped(true);
             return;
         }
+        
         this.onArrive = onArrive;
     }
 
@@ -184,7 +185,7 @@ public abstract class Pet : MonoBehaviour, IFindable
         }
     }
 
-    public void StopNav(bool value) {
+    public void SetNavIsStopped(bool value) {
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value) {

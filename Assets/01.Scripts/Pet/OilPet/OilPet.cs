@@ -116,7 +116,7 @@ public class OilPet : Pet
 
     public void SpreadOil()
     {
-        oilPetSkill.StartSpreadOil(() => StopNav(true), () => { StopNav(false); ResetSkill(); SetTarget(null); });
+        oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetNavIsStopped(false); ResetSkill(); SetTarget(null); });
     }
 
     protected override void SkillUp(InputAction inputAction, float value)
