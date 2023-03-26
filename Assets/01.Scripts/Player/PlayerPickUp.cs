@@ -42,6 +42,8 @@ public class PlayerPickUp : MonoBehaviour {
         dir = transform.position + dir * distance2Pet;
         dir.y = holdingPet.transform.position.y;
 
+        holdingPet.Rigid.isKinematic = true;
+        holdingPet.Coll.enabled = false;
         holdingPet.SetDestination(dir);
 
         dir.y = transform.position.y;
@@ -52,15 +54,16 @@ public class PlayerPickUp : MonoBehaviour {
 
     private IEnumerator WaitPet() {
         playerMove.IsInputLock = true;
-        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) >= 0.1f) {
+        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 0.5f) {
             yield return null;
         }
+        isHolding = true;
+        holdingPet.SetNavEnabled(false);
         playerMove.IsInputLock = false;
         playerMove.ChangeState(StateName.PickUp);
     }
 
     public void PickUpStart() {
-        HoldPet();
         StartCoroutine(SetPetPos());
     }
 
@@ -88,7 +91,6 @@ public class PlayerPickUp : MonoBehaviour {
 
     public void ThrowStart() {
         ThrowPet();
-        holdingPet.StopNav(true);
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
         holdingPet.OnThrow();
@@ -98,12 +100,6 @@ public class PlayerPickUp : MonoBehaviour {
         playerMove.ChangeState(StateName.DefaultMove);
         holdingPet = null;
         isPlaying = false;
-    }
-
-    private void HoldPet() {
-        isHolding = true;
-        holdingPet.Rigid.isKinematic = true;
-        holdingPet.Coll.enabled = false;
     }
 
     private void ThrowPet() {
