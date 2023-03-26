@@ -148,7 +148,7 @@ public class StickyPet : Pet
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
     }
-    private void NotSticky()
+    public void NotSticky()
     {
         ChangeState(StickyState.Idle);
 
@@ -173,6 +173,7 @@ public class StickyPet : Pet
             {
                 SetBillow(collision.transform.forward);
                 Sticky(stickyObject);
+                stickyObject.StartListeningNotSticky(NotSticky);
             }
         }
         else if (state == StickyState.Billow)

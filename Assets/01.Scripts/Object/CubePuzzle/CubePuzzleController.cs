@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -29,20 +30,17 @@ public class CubePuzzleController : MonoBehaviour
         for (int i = 0; i < cubeCount; i++)
         {
             cubePuzzles.Add(transform.GetChild(i).GetComponent<CubePuzzle>());
-            cubePuzzles[i].ListeningOnSuccess(OnSuccess);
+            cubePuzzles[i].ListeningOnSuccess(OnChangeConnect);
         }
     }
 
-    private void OnSuccess(int v)
+    private void OnChangeConnect(int v)
     {
-        if (v > 1000)
+        FindObjectOfType<StickyPet>().NotSticky();
+
+        if(cubeCount== cubePuzzles.Count(x => x.IsSuccess))
         {
-            successCnt++;
-            visited[v - 1000] = true;
-        }
-        else
-        {
-            visited[v] = true;
+            SolvePuzzle();
         }
     }
 

@@ -10,28 +10,51 @@ public class CubePuzzle : MonoBehaviour
 {
     private Action<int> OnSuccess;
     private bool isSuccess = false;
+    public bool IsSuccess => isSuccess;
+    private bool hasCube = false;
     [SerializeField] private Renderer bottomRenderer;
-    [SerializeField] private Collider coverCollider;
 
     private Rigidbody cubeRigid;
+
+    private readonly string CUBE_PUZZPE_TAG = "CubePuzzle";
 
     private void Start()
     {
         OnSuccess += LightBottom;
     }
 
+    private void Update()
+    {
+        if (hasCube && cubeRigid)
+        {
+            Vector3 cubePos = cubeRigid.position;
+            cubePos.y = bottomRenderer.transform.position.y;
+
+            if (Vector3.Distance(cubePos, bottomRenderer.transform.position) > 0.1f)
+            {
+                ResetPuzzle();
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (isSuccess) return;
+        if (isSuccess || hasCube) return;
+        if (!other.CompareTag(CUBE_PUZZPE_TAG)) return;
 
-        if (!other.CompareTag("CubePuzzle")) return;
+        ConnectCube(other);
+    }
+
+    private void ConnectCube(Collider other)
+    {
+        if (hasCube || isSuccess) return;
+
         cubeRigid = other.attachedRigidbody;
-        MoveCubeToCenter(other.transform);
-        coverCollider.gameObject.SetActive(true);
+        MoveCubeToCenter(other.transform, () => hasCube = true);
 
         if (other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
         {
-            OnSuccess?.Invoke(transform.GetSiblingIndex()+1000);
+            OnSuccess?.Invoke(transform.GetSiblingIndex() + 1000);
             isSuccess = true;
         }
         else
@@ -42,13 +65,10 @@ public class CubePuzzle : MonoBehaviour
 
     public void ResetPuzzle()
     {
-        //if (!isSuccess) return;
-
+        hasCube = false;
         isSuccess = false;
-        bottomRenderer.material.SetColor("_EmissionColor", Color.black);
-        coverCollider.gameObject.SetActive(false);
-
-        //cubeRigid.constraints ^= RigidbodyConstraints.FreezePosition;
+        bottomRenderer.material.SetColor("_EmissionColor", Color.white);
+        cubeRigid = null;
     }
 
     #region SUCCESS
@@ -58,20 +78,14 @@ public class CubePuzzle : MonoBehaviour
         //StartCoroutine(Delay());
     }
 
-    private IEnumerator Delay()
-    {
-        yield return null;
-        bottomRenderer.material.SetColor("_BaseColor", Color.black);
-    }
-
-    private void MoveCubeToCenter(Transform cube)
+    private void MoveCubeToCenter(Transform cube, Action onEnd)
     {
         cubeRigid.constraints = RigidbodyConstraints.FreezeAll;
 
         Vector3 center = bottomRenderer.transform.position;
         center.y = bottomRenderer.transform.position.y;
 
-        cube.DOMove(center, 0.5f);
+        cube.DOMove(center, 0.5f).OnComplete(() => onEnd.Invoke());
         cube.DORotate(Vector3.zero, 0.5f);
     }
     #endregion
@@ -79,21 +93,12 @@ public class CubePuzzle : MonoBehaviour
     public void ListeningOnSuccess(Action<int> action, bool listen = true)
     {
         if (listen)
-        {
             OnSuccess += action;
-        }
         else
-        {
             OnSuccess -= action;
-        }
     }
 
-    public void ConnectCube(Transform cube)
-    {
-        cube.position += Vector3.up * 5f;
-        cube.DOMoveY(cube.position.y - 5f, 1f).SetEase(Ease.InExpo).OnComplete(() => MoveCubeToCenter(cube));
-    }
-
+    #region RESPAWN
     public void Respawn()
     {
         if (!cubeRigid) return;
@@ -113,4 +118,5 @@ public class CubePuzzle : MonoBehaviour
         cubeTransform.GetComponent<RespawnObject>().Respawn();
         cubeRigid = null;
     }
+    #endregion
 }

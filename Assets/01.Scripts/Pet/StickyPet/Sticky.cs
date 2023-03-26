@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,18 @@ public class Sticky : MonoBehaviour
     private bool isSticky = false;
     public bool IsSticky { get { return isSticky; } set { isSticky = value; } }
     public bool CanMove { get { return canMove; } }
+    private Action notSticky;
+
+    public void StartListeningNotSticky(Action action)
+    {
+        notSticky = action;
+    }
+
+    public void NotSticky()
+    {
+        notSticky?.Invoke();
+        notSticky = null;
+    }
 
     //public void SetSticky()
     //{
@@ -15,7 +28,7 @@ public class Sticky : MonoBehaviour
 
     //    isSticky = true;
     //}
-    
+
     //public void NotSticky()
     //{
     //    if(!isSticky) return;
