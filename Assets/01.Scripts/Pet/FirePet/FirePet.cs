@@ -35,7 +35,6 @@ public class FirePet : Pet
         base.Skill();
 
         StartCoroutine(FireBurn());
-
     }
 
     public void OffSkill()
