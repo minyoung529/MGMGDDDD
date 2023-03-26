@@ -71,8 +71,8 @@ public class PetManager : MonoSingleton<PetManager> {
 
         addIndex = 0;
 
-        if (input == InputAction.Up_Pet && !isSwitching) addIndex = 1;
-        else if (input == InputAction.Down_Pet && !isSwitching) addIndex = -1;
+        if (input == InputAction.Up_Pet && !isSwitching) addIndex = -1;
+        else if (input == InputAction.Down_Pet && !isSwitching) addIndex = 1;
         else return;
 
         SwitchPetIndex((int)addIndex);
