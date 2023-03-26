@@ -12,19 +12,24 @@ public class Fire : MonoBehaviour
     [SerializeField] UnityEvent fireEvent;
     [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
-    [SerializeField] private float burnDelay = 0f;
+    [SerializeField] float burnDelay = 0f;
     [SerializeField] float burningTime = 2f;
+    [SerializeField] bool isTriggerBurn = false;
 
     bool isReadyBurn = false;
     bool isBurn = false;
     float burningReadyTime = 2f;
 
     public bool IsBurn { get { return isBurn; } }
+    public bool IsTriggerBurn { get { return isTriggerBurn; } }
 
     Sequence seq;
 
     [SerializeField]
     private bool isCool = false;
+
+    [SerializeField]
+    private bool isClingTo = true;
 
     private void Awake()
     {
@@ -128,7 +133,7 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!IsBurn) return;
+        if (!IsBurn && IsTriggerBurn) return;
 
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
@@ -136,7 +141,8 @@ public class Fire : MonoBehaviour
             ice.Melt();
         }
 
-        /*
+        if (!isClingTo) return;
+
         Fire[] fires = other.GetComponents<Fire>();
         foreach (Fire f in fires)
         {
@@ -144,12 +150,12 @@ public class Fire : MonoBehaviour
             transform.DOKill();
             f.Burn();
         }
-        */
+
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if (!IsBurn) return;
+        if (!IsBurn && IsTriggerBurn) return;
 
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
@@ -157,7 +163,7 @@ public class Fire : MonoBehaviour
             ice.Melt();
         }
 
-        /*
+        if (!isClingTo) return;
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
         foreach (Fire f in fires)
@@ -166,7 +172,7 @@ public class Fire : MonoBehaviour
             transform.DOKill();
             f.Burn();
         }
-        */
+        
     }
 
     private void OnDestroy()

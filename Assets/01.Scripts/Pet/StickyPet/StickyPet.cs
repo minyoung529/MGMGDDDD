@@ -13,20 +13,22 @@ public enum StickyState
 public class StickyPet : Pet
 {
     [SerializeField] private ParticleSystem skillEffect;
-
-    private float moveSpeed = 1f;
+    [SerializeField] private Transform scaleObject;
 
     private StickyState state = StickyState.Idle;
     private Vector3 bigScale = new Vector3(3f, 3f, 3f);
     private Vector3 smallDirection;
 
+    private float moveSpeed = 1f;
+    
     [SerializeField]
     private UnityEvent OnBillow;
     [SerializeField]
     private UnityEvent OnExitBillow;
 
-    [SerializeField]
-    private Transform scaleObject;
+    private Sticky stickyObject = null;
+    private bool stickyKinematic = false;
+
 
     protected override void Awake()
     {
@@ -34,7 +36,7 @@ public class StickyPet : Pet
         smallDirection = transform.forward;
     }
 
-    protected override void OnUpdate()
+    public override void OnUpdate()
     {
         base.OnUpdate();
 
@@ -48,6 +50,7 @@ public class StickyPet : Pet
 
         NotSticky();
         skillEffect.Play();
+        stickyObject = null;
         ChangeState(StickyState.Idle);
 
         scaleObject.DOScale(Vector3.one, 0.5f);
@@ -65,24 +68,24 @@ public class StickyPet : Pet
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        base.Skill(inputAction, value);
+        if (IsCoolTime) return;
+        base.Skill();
 
         Billow();
     }
 
     private void Billow()
     {
-        // Ç³¼±Ã³·³ ºÎÇª´Â Çàµ¿À» ±¸ÇöÇÏ´Â ÇÔ¼ö
+        // Ç³ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½Çªï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
         SetTarget(null);
 
         transform.DOKill();
-        SetNavIsStopped(true);
+        StopNav(true);
 
         BillowAction();
         OnBillow?.Invoke();
@@ -117,29 +120,44 @@ public class StickyPet : Pet
         }
     }
 
-    private void Sticky(Sticky stickyObject)
+    private void Sticky(Sticky sticky)
     {
         if (state == StickyState.Sticky) return;
         ChangeState(StickyState.Sticky);
 
+        stickyObject = sticky;
         skillEffect.Play();
         Rigid.isKinematic = true;
 
-        SetTarget(null);
+        StopNav(true);
 
-        FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-        joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
+        stickyKinematic = stickyObject.GetComponent<Rigidbody>().isKinematic;
+        if (stickyKinematic)
+        {
+            stickyObject.transform.SetParent(transform);
+        }
+        else
+        {
+            FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+            joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
+        }
     }
+
     private void NotSticky()
     {
         ChangeState(StickyState.Idle);
 
-        FixedJoint[] joints = GetComponents<FixedJoint>();
-        for (int i = 0; i < joints.Length; i++)
+        if(stickyKinematic) stickyObject.transform.SetParent(null);
+        else
         {
-            Destroy(joints[i]);
+            FixedJoint[] joints = GetComponents<FixedJoint>();
+            for (int i = 0; i < joints.Length; i++)
+            {
+                Destroy(joints[i]);
+            }
         }
-        SetNavIsStopped(false);
+
+        StopNav(false);
 
         skillEffect.Play();
         Rigid.isKinematic = false;
@@ -154,16 +172,24 @@ public class StickyPet : Pet
             if (stickyObject != null)
             {
                 SetBillow(collision.transform.forward);
+
                 Sticky(stickyObject);
             }
         }
-        else if (state == StickyState.Billow)
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (state == StickyState.ReadySticky)
         {
-            Vector3 point = (collision.contacts[0].point - transform.position).normalized;
-            //MoveScale(point);
+            Sticky stickyObject = other.GetComponent<Sticky>();
+            if (stickyObject != null)
+            {
+                SetBillow(other.transform.forward);
+
+                Sticky(stickyObject);
+            }
         }
     }
-
     private void MoveScale(Vector3 point)
     {
         Vector3 remaining = bigScale - transform.localScale;

@@ -36,7 +36,7 @@ public class GetPet : MonoBehaviour
     private void Get(InputAction inputAction, float value)
     {
         if (pet == null) return;
-        if (pet.IsGet) return;
+        if (PetManager.Instance.IsGet(pet)) return;
 
         pet.GetPet(gameObject.transform);
         OnGetPet?.Invoke();
