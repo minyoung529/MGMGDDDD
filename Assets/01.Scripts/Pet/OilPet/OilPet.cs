@@ -52,12 +52,10 @@ public class OilPet : Pet
     #region Skill
 
     // Active skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        if (isSkillDragging || isSkillDragging) return;
-
-        base.Skill(inputAction, value);
+        if (IsCoolTime || isSkillDragging || isSkillDragging) return;
+        base.Skill();
 
         OnStartSkill?.Invoke();
         isSkillDragging = true;
@@ -113,9 +111,9 @@ public class OilPet : Pet
         }
     }
 
-    protected override void SkillUp(InputAction inputAction, float value)
+    public override void SkillUp()
     {
-        base.SkillUp(inputAction, value);
+        base.SkillUp();
 
         if (!isSkilling || !isSkillDragging) return;
 
@@ -133,10 +131,12 @@ public class OilPet : Pet
     protected void ResetSkill()
     {
         isSkilling = false;
+        SetDestination(transform.position);
     }
 
-    protected override void OnUpdate()
+    public override void OnUpdate()
     {
+        base.OnUpdate();
         oilPetSkill.Update(isSkilling, isSkillDragging);
     }
 }
