@@ -105,18 +105,12 @@ public class OilPet : Pet
 
     #endregion
 
-    protected override void OnArrive()
-    {
-        if (isSkilling && !isMouseMove)
-        {
-            if (IsDirectSpread)
-                SpreadOil();
-        }
-    }
-
     public void SpreadOil()
     {
-        oilPetSkill.StartSpreadOil(() => StopNav(true), () => { StopNav(false); ResetSkill(); SetTarget(null); });
+        if (isSkilling && !isMouseMove && IsDirectSpread)
+        {
+            oilPetSkill.StartSpreadOil(() => StopNav(true), () => { SetTarget(null); StopNav(false); ResetSkill(); });
+        }
     }
 
     protected override void SkillUp(InputAction inputAction, float value)
@@ -128,6 +122,7 @@ public class OilPet : Pet
         if (IsDirectSpread)
         {
             SetDestination(oilPetSkill.StartPoint);
+            onArrive += SpreadOil;
         }
         OnEndSkill?.Invoke();
 
@@ -137,11 +132,7 @@ public class OilPet : Pet
 
     protected void ResetSkill()
     {
-        if (isSkilling)
-        {
-            oilPetSkill.ResetSkill();
-            isSkilling = false;
-        }
+        isSkilling = false;
     }
 
     protected override void OnUpdate()

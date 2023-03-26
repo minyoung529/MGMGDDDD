@@ -171,6 +171,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public void SetDestination(Vector3 target, float stopDistance = 0) {
         if (!isSelected) return;
+
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
@@ -181,11 +182,8 @@ public abstract class Pet : MonoBehaviour, IFindable
         if (Vector3.Distance(agent.destination, transform.position) <= 1f) {
             onArrive?.Invoke();
             onArrive = null;
-            OnArrive();
         }
     }
-
-    protected virtual void OnArrive() { }
 
     public void StopNav(bool value) {
         agent.isStopped = value;
@@ -213,7 +211,7 @@ public abstract class Pet : MonoBehaviour, IFindable
             SetDestination(GameManager.Instance.GetMousePos());
         }
 
-        transform.DOKill();
+        //transform.DOKill();
     }
 
     protected virtual void Withdraw(InputAction inputAction, float value) {
