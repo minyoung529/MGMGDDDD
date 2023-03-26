@@ -34,7 +34,7 @@ public class StickyPet : Pet
         smallDirection = transform.forward;
     }
 
-    protected override void OnUpdate()
+    public override void OnUpdate()
     {
         base.OnUpdate();
 
@@ -65,10 +65,10 @@ public class StickyPet : Pet
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        base.Skill(inputAction, value);
+        if (IsCoolTime) return;
+        base.Skill();
 
         Billow();
     }

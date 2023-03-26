@@ -29,22 +29,12 @@ public class FirePet : Pet
     #region Skill
 
     // Active skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        base.Skill(inputAction, value);
+        if (IsCoolTime) return;
+        base.Skill();
 
         StartCoroutine(FireBurn());
-
-        //isOn = !isOn;
-        //if (isOn)
-        //{
-        //    OnSkill();
-        //}
-        //else
-        //{
-        //   OffSkill();
-        //}
 
     }
 

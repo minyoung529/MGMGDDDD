@@ -12,9 +12,7 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     #region CheckList
 
-    private bool isGet = false;
     private bool isCoolTime = false;
-    private bool isSelected = false;
     protected bool isMouseMove = false;
 
     private bool isFindable = true;
@@ -33,13 +31,12 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     #region Get
 
-    public bool IsGet => isGet;
-    public bool CheckSkillActive { get { return (!isSelected || isCoolTime); } }
+    public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
     public Sprite petSprite => petInform.petUISprite;
-    bool IFindable.IsFindable { get => isFindable & isGet; }
+    bool IFindable.IsFindable { get => isFindable; }
 
     #endregion
 
@@ -68,15 +65,11 @@ public abstract class Pet : MonoBehaviour, IFindable
         ResetPet();
     }
 
-    private void FixedUpdate()
+    public virtual void OnUpdate() 
     {
-        if (!isGet) return;
-        FollowTarget();
         CheckArrive();
-        OnUpdate();
+        FollowTarget();
     }
-
-    protected virtual void OnUpdate() { }
 
     #region Set
 
@@ -91,23 +84,15 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     public void GetPet(Transform player)
     {
-        isGet = true;
         this.player = player;
 
         SetTargetPlayer();
-        StartListen();
         PetManager.Instance.AddPet(this);
     }
     public void LosePet()
     {
         ResetPet();
-        StopListen();
         PetManager.Instance.DeletePet(this);
-    }
-
-    public void Select(bool select)
-    {
-        isSelected = select;
     }
 
     public void AgentEnabled(bool isEnabled)
@@ -118,14 +103,13 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     #region Skill
 
-    protected virtual void Skill(InputAction inputAction, float value)
+    public virtual void Skill()
     {
-        if (CheckSkillActive) return;
-
+        if (isCoolTime) return;
         SkillDelay();
     }
 
-    protected void SkillDelay()
+    private void SkillDelay()
     {
         isCoolTime = true;
         StartCoroutine(SkillCoolTime(petInform.skillDelayTime));
@@ -137,7 +121,7 @@ public abstract class Pet : MonoBehaviour, IFindable
         isCoolTime = false;
     }
 
-    protected virtual void SkillUp(InputAction inputAction, float value) {
+    public virtual void SkillUp() {
         MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
 
@@ -145,13 +129,12 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     #region Move
 
-    protected void FollowTarget() {
+    private void FollowTarget() {
         if (!target) return;
         agent.SetDestination(target.position);
     }
 
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null) {
-        if (!isSelected) return;
         rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
@@ -163,14 +146,12 @@ public abstract class Pet : MonoBehaviour, IFindable
     }
 
     public void SetTargetPlayer() {
-        if (!isSelected) return;
         rigid.velocity = Vector3.zero;
         target = player;
         agent.stoppingDistance = distanceToPlayer;
     }
 
     public void SetDestination(Vector3 target, float stopDistance = 0) {
-        if (!isSelected) return;
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
@@ -203,9 +184,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     #endregion
 
     #region InputEvent
-    public void MovePoint(InputAction inputAction, float value) {
-        if (!isSelected) return;
-
+    public void MovePoint() {
         if (IsCameraAimPoint) {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
@@ -216,7 +195,7 @@ public abstract class Pet : MonoBehaviour, IFindable
         transform.DOKill();
     }
 
-    protected virtual void Withdraw(InputAction inputAction, float value) {
+    public virtual void Withdraw() {
         ResetPet();
     }
     #endregion
@@ -265,23 +244,6 @@ public abstract class Pet : MonoBehaviour, IFindable
         if (!FindButton())
             agent.SetDestination(transform.position);
         isFindable = true;
-    }
-    #endregion
-
-    #region InputSystem
-    private void StartListen()
-    {
-        InputManager.StartListeningInput(InputAction.Pet_Skill, Skill);
-        InputManager.StartListeningInput(InputAction.Pet_Move, MovePoint);
-        InputManager.StartListeningInput(InputAction.Pet_Follow, Withdraw);
-        InputManager.StartListeningInput(InputAction.Pet_Skill_Up, SkillUp);
-    }
-    private void StopListen()
-    {
-        InputManager.StopListeningInput(InputAction.Pet_Skill, Skill);
-        InputManager.StopListeningInput(InputAction.Pet_Move, MovePoint);
-        InputManager.StopListeningInput(InputAction.Pet_Follow, Withdraw);
-        InputManager.StopListeningInput(InputAction.Pet_Skill_Up, SkillUp);
     }
     #endregion
 }
