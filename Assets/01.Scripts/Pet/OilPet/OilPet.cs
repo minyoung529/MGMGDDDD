@@ -52,12 +52,10 @@ public class OilPet : Pet
     #region Skill
 
     // Active skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        if (isSkillDragging || isSkillDragging) return;
-
-        base.Skill(inputAction, value);
+        if (IsCoolTime || isSkillDragging || isSkillDragging) return;
+        base.Skill();
 
         OnStartSkill?.Invoke();
         isSkillDragging = true;
@@ -105,34 +103,24 @@ public class OilPet : Pet
 
     #endregion
 
-    protected override void OnMoveEnd()
+    public void SpreadOil()
     {
-        if (isSkilling && !isMouseMove)
+        if (isSkilling && !isMouseMove && IsDirectSpread)
         {
-            if (IsDirectSpread)
-                SpreadOil();
+            oilPetSkill.StartSpreadOil(() => StopNav(true), () => { SetTarget(null); StopNav(false); ResetSkill(); });
         }
     }
 
-    public void SpreadOil()
+    public override void SkillUp()
     {
-        oilPetSkill.StartSpreadOil(() => isForceBlockMove = true, () => { isForceBlockMove = false; ResetSkill(); MovePoint(transform.position); });
-    }
-
-    protected override void OnFollowTarget()
-    {
-        //ResetSkill();
-    }
-
-    protected override void SkillUp(InputAction inputAction, float value)
-    {
-        base.SkillUp(inputAction, value);
+        base.SkillUp();
 
         if (!isSkilling || !isSkillDragging) return;
 
         if (IsDirectSpread)
         {
-            MovePoint(oilPetSkill.StartPoint);
+            SetDestination(oilPetSkill.StartPoint);
+            onArrive += SpreadOil;
         }
         OnEndSkill?.Invoke();
 
@@ -142,15 +130,13 @@ public class OilPet : Pet
 
     protected void ResetSkill()
     {
-        if (isSkilling)
-        {
-            oilPetSkill.ResetSkill();
-            isSkilling = false;
-        }
+        isSkilling = false;
+        SetDestination(transform.position);
     }
 
-    protected override void OnUpdate()
+    public override void OnUpdate()
     {
+        base.OnUpdate();
         oilPetSkill.Update(isSkilling, isSkillDragging);
     }
 }

@@ -13,7 +13,6 @@ public class PlayerPickUp : MonoBehaviour {
     private Pet holdingPet;
     private bool isHolding;
     private bool isPlaying = false;
-    private Vector3 targetPos = Vector3.zero;
 
     private void Awake() {
         playerMove = GetComponent<PlayerMove>();
@@ -42,21 +41,18 @@ public class PlayerPickUp : MonoBehaviour {
         dir = dir.normalized;
         dir = transform.position + dir * distance2Pet;
         dir.y = holdingPet.transform.position.y;
-        targetPos = dir;
 
-        holdingPet.IsFollow = false;
-        holdingPet.Agent.stoppingDistance = 0;
-        holdingPet.Agent.SetDestination(dir);
+        holdingPet.SetDestination(dir);
 
         dir.y = transform.position.y;
         transform.DOLookAt(dir, 0.2f);
+
         StartCoroutine(WaitPet());
     }
 
     private IEnumerator WaitPet() {
         playerMove.IsInputLock = true;
-        while (Vector3.Distance(holdingPet.transform.position, targetPos) >= 0.1f) {
-            Debug.Log("기다리는중");
+        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) >= 0.1f) {
             yield return null;
         }
         playerMove.IsInputLock = false;
@@ -92,21 +88,20 @@ public class PlayerPickUp : MonoBehaviour {
 
     public void ThrowStart() {
         ThrowPet();
+        holdingPet.StopNav(true);
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
         holdingPet.OnThrow();
-        holdingPet = null;
     }
 
     public void ThrowEnd() {
         playerMove.ChangeState(StateName.DefaultMove);
+        holdingPet = null;
         isPlaying = false;
     }
 
     private void HoldPet() {
         isHolding = true;
-        holdingPet.Agent.enabled = false;
-        holdingPet.CanMove = false;
         holdingPet.Rigid.isKinematic = true;
         holdingPet.Coll.enabled = false;
     }

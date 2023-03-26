@@ -55,7 +55,7 @@ public class OilPetSkill
 
         pathAgent.enabled = false;
 
-        if(IsCrosshair)
+        if (IsCrosshair)
         {
             pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetCameraHit();
         }
@@ -67,7 +67,7 @@ public class OilPetSkill
         points.Clear();
     }
 
-    public void ResetSkill()
+    private void ResetSkill()
     {
         skillDistance = oilDistance = 0f;
         painting.IsPainting = false;
@@ -106,25 +106,27 @@ public class OilPetSkill
                 points[i] += Vector3.up * 0.5f;
             }
 
-            float speed = skillDistance / agent.speed * 0.7f;
+            float duration = skillDistance / agent.speed * 0.7f;
 
             // ³ªÁß¿¡ ²÷±â
-            agent.transform.DOPath(points.ToArray(), speed).OnComplete(() =>
+            agent.transform.DOPath(points.ToArray(), duration).OnComplete(() =>
             {
                 onEndPath?.Invoke();
-                OnEndSpread_Once?.Invoke();
-                OnEndSpread_Once = null;
-                pathAgent.enabled = true;
-                ResetSkill();
+                KillSkill();
             }).OnKill(() =>
             {
                 onEndPath?.Invoke();
-                OnEndSpread_Once?.Invoke();
-                OnEndSpread_Once = null;
-                pathAgent.enabled = true;
-                ResetSkill();
+                KillSkill();
             });
         }
+    }
+
+    private void KillSkill()
+    {
+        OnEndSpread_Once?.Invoke();
+        OnEndSpread_Once = null;
+        pathAgent.enabled = true;
+        ResetSkill();
     }
 
     public void Update(bool isSkilling, bool isDragging)

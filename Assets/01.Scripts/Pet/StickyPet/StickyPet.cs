@@ -36,7 +36,7 @@ public class StickyPet : Pet
         smallDirection = transform.forward;
     }
 
-    protected override void OnUpdate()
+    public override void OnUpdate()
     {
         base.OnUpdate();
 
@@ -58,21 +58,6 @@ public class StickyPet : Pet
         OnExitBillow?.Invoke();
     }
 
-    private void SetMove(bool canMove)
-    {
-        if (canMove)
-        {
-           //StartFollow();
-            IsFollow = true;
-        }
-        else
-        {
-            IsFollow = false;
-        }
-
-        CanMove = canMove;
-        agent.enabled = canMove;
-    }
     private void ChangeState(StickyState setState)
     {
         state = setState;
@@ -83,25 +68,24 @@ public class StickyPet : Pet
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        base.Skill(inputAction, value);
+        if (IsCoolTime) return;
+        base.Skill();
 
         Billow();
     }
 
     private void Billow()
     {
-        // Ç³¼±Ã³·³ ºÎÇª´Â Çàµ¿À» ±¸ÇöÇÏ´Â ÇÔ¼ö
+        // Ç³ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½Çªï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
-        StopClickMove();
-        StopFollow();
+        SetTarget(null);
 
         transform.DOKill();
-        SetMove(false);
+        StopNav(true);
 
         BillowAction();
         OnBillow?.Invoke();
@@ -128,8 +112,7 @@ public class StickyPet : Pet
         Vector3 hit = GameManager.Instance.GetCameraHit();
         if (hit != Vector3.zero)
         {
-            StopClickMove();
-            StopFollow();
+            SetTarget(null);
 
             transform.DOMoveX(hit.x, moveSpeed);
             transform.DOMoveY(hit.y, moveSpeed);
@@ -145,7 +128,8 @@ public class StickyPet : Pet
         stickyObject = sticky;
         skillEffect.Play();
         Rigid.isKinematic = true;
-        SetMove(stickyObject.CanMove);
+
+        StopNav(true);
 
         stickyKinematic = stickyObject.GetComponent<Rigidbody>().isKinematic;
         if (stickyKinematic)
@@ -158,6 +142,7 @@ public class StickyPet : Pet
             joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
         }
     }
+
     private void NotSticky()
     {
         ChangeState(StickyState.Idle);
@@ -171,8 +156,8 @@ public class StickyPet : Pet
                 Destroy(joints[i]);
             }
         }
-       
-        SetMove(true);
+
+        StopNav(false);
 
         skillEffect.Play();
         Rigid.isKinematic = false;
