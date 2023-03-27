@@ -9,6 +9,7 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
+    [SerializeField] protected float sightRange = 5f;
 
     #region CheckList
 
@@ -27,7 +28,6 @@ public abstract class Pet : MonoBehaviour
 
     private Vector3 originScale;
 
-    [SerializeField] protected float sightRange = 5f;
 
     #region Get
 
@@ -129,7 +129,7 @@ public abstract class Pet : MonoBehaviour
     #region Move
 
     private void FollowTarget() {
-        if (!target) return;
+        if (!target || !agent.isOnNavMesh) return;
         agent.SetDestination(target.position);
     }
 
@@ -157,6 +157,7 @@ public abstract class Pet : MonoBehaviour
     }
 
     public void SetDestination(Vector3 target, float stopDistance = 0) {
+        if (!agent.isOnNavMesh) return;
         SetNavEnabled(true);
         SetNavIsStopped(false);
         rigid.velocity = Vector3.zero;
