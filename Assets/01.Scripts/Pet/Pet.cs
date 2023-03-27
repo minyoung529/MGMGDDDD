@@ -51,6 +51,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public Collider Coll => coll;
     public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
+    public PetType GetAbility => petInform.petType;
     bool IFindable.IsFindable { get => isFindable & isGet; }
 
     #endregion

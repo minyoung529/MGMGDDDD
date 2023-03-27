@@ -9,20 +9,20 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] CinemachineFreeLook defaultCamera;
     [SerializeField] Canvas crosshair;
 
-    [SerializeField] private float rotCamXAxisSpeed = 5f; // ???? x?? ??????
-    [SerializeField] private float rotCamYAxisSpeed = 3f; // ???? y?? ??????
+    [SerializeField] private float rotCamXAxisSpeed = 5f;
+    [SerializeField] private float rotCamYAxisSpeed = 3f;
 
     [SerializeField] private Transform lookTarget;
     [SerializeField] private Transform followTarget;
     private Animator animator;
 
-    private const float rotationSpeed = 20.0f; // ??? ???
+    private const float rotationSpeed = 20.0f; 
 
-    private const float limitMinX = -80; // ???? y?? ??? ???? (???)
-    private const float limitMaxX = 80; // ???? y?? ??? ???? (???)
+    private const float limitMinX = -80;
+    private const float limitMaxX = 80;
 
-    private float eulerAngleX; // ????J ?? / ?? ??????? ???? y?? ???
-    private float eulerAngleY; // ????J ?? / ??? ??????? ???? x?? ???
+    private float eulerAngleX; 
+    private float eulerAngleY; 
 
 
     private void Start()
