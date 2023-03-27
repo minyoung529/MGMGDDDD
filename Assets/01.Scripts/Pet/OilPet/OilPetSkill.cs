@@ -33,6 +33,8 @@ public class OilPetSkill
     public Action OnEndSpread_Once { get; set; }
     public bool IsCheckDistance = true;
 
+    public static Action OnClearOil;
+
     public void Init(PaintingObject painting, LineRenderer line, NavMeshAgent pathAgent, NavMeshAgent player)
     {
         this.painting = painting;
@@ -45,6 +47,7 @@ public class OilPetSkill
 
     public void ClearOil()
     {
+        OnClearOil?.Invoke();
         painting.ResetData();
     }
 
@@ -55,7 +58,7 @@ public class OilPetSkill
 
         pathAgent.enabled = false;
 
-        if(IsCrosshair)
+        if (IsCrosshair)
         {
             pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetCameraHit();
         }
@@ -67,7 +70,7 @@ public class OilPetSkill
         points.Clear();
     }
 
-    public void ResetSkill()
+    private void ResetSkill()
     {
         skillDistance = oilDistance = 0f;
         painting.IsPainting = false;
@@ -106,25 +109,27 @@ public class OilPetSkill
                 points[i] += Vector3.up * 0.5f;
             }
 
-            float speed = skillDistance / agent.speed * 0.7f;
+            float duration = skillDistance / agent.speed * 0.7f;
 
             // 나중에 끊기
-            agent.transform.DOPath(points.ToArray(), speed).OnComplete(() =>
+            agent.transform.DOPath(points.ToArray(), duration).OnComplete(() =>
             {
                 onEndPath?.Invoke();
-                OnEndSpread_Once?.Invoke();
-                OnEndSpread_Once = null;
-                pathAgent.enabled = true;
-                ResetSkill();
+                KillSkill();
             }).OnKill(() =>
             {
                 onEndPath?.Invoke();
-                OnEndSpread_Once?.Invoke();
-                OnEndSpread_Once = null;
-                pathAgent.enabled = true;
-                ResetSkill();
+                KillSkill();
             });
         }
+    }
+
+    private void KillSkill()
+    {
+        OnEndSpread_Once?.Invoke();
+        OnEndSpread_Once = null;
+        pathAgent.enabled = true;
+        ResetSkill();
     }
 
     public void Update(bool isSkilling, bool isDragging)
@@ -154,7 +159,14 @@ public class OilPetSkill
                 return;
             }
 
-            pathAgent.SetDestination(cameraHit);
+            try
+            {
+                pathAgent.SetDestination(cameraHit);
+            }
+            catch(Exception e)
+            {
+                Debug.Log("<b>PATH AGENT:</b> PATH가 없습니다.");
+            }
 
             float dist = Vector3.Distance(prevPosition, pathAgent.transform.position);
             oilDistance += dist;

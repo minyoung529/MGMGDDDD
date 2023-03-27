@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,8 +8,14 @@ public class CubePuzzleController : MonoBehaviour
 {
     [SerializeField]
     private int cubeCount = 9;
-    [SerializeField]
-    private int successCnt = 0;
+    private int SuccessCnt
+    {
+        get
+        {
+            return cubePuzzles.Count(x => x.IsSuccess);
+        }
+    }
+        
     [SerializeField]
     private int solvedPuzzleCount = 0;
 
@@ -29,33 +36,28 @@ public class CubePuzzleController : MonoBehaviour
         for (int i = 0; i < cubeCount; i++)
         {
             cubePuzzles.Add(transform.GetChild(i).GetComponent<CubePuzzle>());
-            cubePuzzles[i].ListeningOnSuccess(OnSuccess);
+            cubePuzzles[i].ListeningOnSuccess(OnChangeConnect);
         }
     }
 
-    private void OnSuccess(int v)
+    private void OnChangeConnect(int v)
     {
-        if (v > 1000)
+        if (cubeCount == SuccessCnt)
         {
-            successCnt++;
-            visited[v - 1000] = true;
-        }
-        else
-        {
-            visited[v] = true;
+            SolvePuzzle();
         }
     }
 
     [ContextMenu("ButtonTest")]
     public void CheckSuccess()
     {
-        if (successCnt == cubeCount)
+        if (SuccessCnt == cubeCount)
         {
             SolvePuzzle();
         }
         else
         {
-            OnPressButton?.Invoke(successCnt);
+            OnPressButton?.Invoke(SuccessCnt);
             ResetPuzzle();
         }
     }
@@ -63,7 +65,7 @@ public class CubePuzzleController : MonoBehaviour
     [ContextMenu("SolvePuzzle")]
     private void SolvePuzzle()
     {
-        OnSolvePuzzle?.Invoke(successCnt);
+        OnSolvePuzzle?.Invoke(SuccessCnt);
     }
 
     public void ResetPuzzle()
@@ -73,7 +75,6 @@ public class CubePuzzleController : MonoBehaviour
             visited[i] = false;
         }
 
-        successCnt = solvedPuzzleCount;
         foreach (CubePuzzle item in cubePuzzles)
         {
             item.ResetPuzzle();

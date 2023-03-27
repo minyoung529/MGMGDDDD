@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 2611246238103810631}
   - component: {fileID: 2611246238103810628}
   - component: {fileID: 4884736892528368307}
+  - component: {fileID: 3200471853253183780}
   m_Layer: 8
   m_Name: StickyPet
   m_TagString: StickyPet
@@ -213,6 +214,7 @@ MonoBehaviour:
   petInform: {fileID: 11400000, guid: 44204a8ab7f9d0e41a1b1bf3840dc187, type: 2}
   sightRange: 5
   skillEffect: {fileID: 7061654698569328266}
+  scaleObject: {fileID: 1788196496585228096}
   OnBillow:
     m_PersistentCalls:
       m_Calls:
@@ -315,7 +317,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  scaleObject: {fileID: 1788196496585228096}
+  stickyParent: {fileID: 1788196496585228096}
+--- !u!135 &3200471853253183780
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611246238103810629}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5969439458487625808
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +494,10 @@ PrefabInstance:
       propertyPath: animationObject
       value: 
       objectReference: {fileID: 1788196496585228096}
+    - target: {fileID: 2018906288344426062, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: layerMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2018906288344426063, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
     - {fileID: 1909454976, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}

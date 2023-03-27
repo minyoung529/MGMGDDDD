@@ -24,7 +24,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private float eulerAngleX; 
     private float eulerAngleY; 
 
-
     private void Start()
     {
         ResetCamera();

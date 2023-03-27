@@ -20,13 +20,19 @@ public class StickyPet : Pet
     private Vector3 smallDirection;
 
     private float moveSpeed = 1f;
-    
+
     [SerializeField]
     private UnityEvent OnBillow;
     [SerializeField]
     private UnityEvent OnExitBillow;
 
+    [SerializeField]
+    private Transform stickyParent;
+
     private Sticky stickyObject = null;
+    private Vector3 stickyOffset;
+    private Quaternion origianalRotation;
+    private Transform originalParent = null;
     private bool stickyKinematic = false;
 
 
@@ -36,11 +42,17 @@ public class StickyPet : Pet
         smallDirection = transform.forward;
     }
 
-    protected override void OnUpdate()
+    public override void OnUpdate()
     {
         base.OnUpdate();
 
         if (Input.GetKeyDown(KeyCode.X)) ReadySticky();
+
+        if (stickyObject && stickyObject.ApplyOffset) // ì˜¤í”„ì…‹ ë§žì¶”ê¸°
+        {
+            stickyObject.transform.position = stickyParent.position + stickyOffset;
+            stickyObject.MovableRoot.rotation = origianalRotation;
+        }
     }
 
     #region Set
@@ -58,21 +70,6 @@ public class StickyPet : Pet
         OnExitBillow?.Invoke();
     }
 
-    private void SetMove(bool canMove)
-    {
-        if (canMove)
-        {
-           //StartFollow();
-            IsFollow = true;
-        }
-        else
-        {
-            IsFollow = false;
-        }
-
-        CanMove = canMove;
-        agent.enabled = canMove;
-    }
     private void ChangeState(StickyState setState)
     {
         state = setState;
@@ -83,25 +80,24 @@ public class StickyPet : Pet
     #region Skill
 
     // Active Skill
-    protected override void Skill(InputAction inputAction, float value)
+    public override void Skill()
     {
-        if (CheckSkillActive) return;
-        base.Skill(inputAction, value);
+        if (IsCoolTime) return;
+        base.Skill();
 
         Billow();
     }
 
     private void Billow()
     {
-        // Ç³¼±Ã³·³ ºÎÇª´Â Çàµ¿À» ±¸ÇöÇÏ´Â ÇÔ¼ö
+        // Ç³ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½Çªï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
-        StopClickMove();
-        StopFollow();
+        SetTarget(null);
 
         transform.DOKill();
-        SetMove(false);
+        SetNavIsStopped(true);
 
         BillowAction();
         OnBillow?.Invoke();
@@ -122,14 +118,13 @@ public class StickyPet : Pet
 
     private void ReadySticky()
     {
-        if(state == StickyState.Billow || state == StickyState.Sticky) return;
+        if (state == StickyState.Billow || state == StickyState.Sticky) return;
         ChangeState(StickyState.ReadySticky);
 
         Vector3 hit = GameManager.Instance.GetCameraHit();
         if (hit != Vector3.zero)
         {
-            StopClickMove();
-            StopFollow();
+            SetTarget(null);
 
             transform.DOMoveX(hit.x, moveSpeed);
             transform.DOMoveY(hit.y, moveSpeed);
@@ -142,27 +137,71 @@ public class StickyPet : Pet
         if (state == StickyState.Sticky) return;
         ChangeState(StickyState.Sticky);
 
+        //if (!sticky.CanSticky) return;
+
         stickyObject = sticky;
         skillEffect.Play();
-        Rigid.isKinematic = true;
-        SetMove(stickyObject.CanMove);
 
-        stickyKinematic = stickyObject.GetComponent<Rigidbody>().isKinematic;
-        if (stickyKinematic)
+        if (sticky.CanMove)
         {
-            stickyObject.transform.SetParent(transform);
+            SetTarget(null);
+            Rigid.isKinematic = false;
+        }
+        else
+        {
+            //SetNavIsStopped(true);
+            SetNavEnabled(false);
+            Rigid.isKinematic = true;
+        }
+
+        if (stickyObject.Rigidbody)
+        {
+            stickyKinematic = stickyObject.Rigidbody.isKinematic;
+        }
+
+        if (stickyKinematic || stickyObject.Rigidbody == null)
+        {
+            originalParent = stickyObject.MovableRoot.parent;
+            stickyObject.MovableRoot.SetParent(stickyParent);
+
+            stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
+            origianalRotation = stickyObject.MovableRoot.rotation;
         }
         else
         {
             FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-            joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
+            joint.connectedBody = stickyObject.Rigidbody;
+        }
+
+        stickyObject.OnSticky();
+
+        sticky.StartListeningNotSticky(NotSticky);
+        sticky.StartListeningChangeCanMove(CanMove);
+    }
+
+    public void CanMove(bool canMove)
+    {
+        if (!stickyObject) return;
+
+        if (canMove)
+        {
+            SetNavEnabled(true);
+            SetTarget(null);
+        }
+        else
+        {
+            SetNavEnabled(false);
         }
     }
+
     private void NotSticky()
     {
         ChangeState(StickyState.Idle);
 
-        if(stickyKinematic) stickyObject.transform.SetParent(null);
+        if (stickyKinematic && stickyObject)
+        {
+            stickyObject.MovableRoot.SetParent(originalParent);
+        }
         else
         {
             FixedJoint[] joints = GetComponents<FixedJoint>();
@@ -171,12 +210,14 @@ public class StickyPet : Pet
                 Destroy(joints[i]);
             }
         }
-       
-        SetMove(true);
+
+        //SetNavIsStopped(false);
+        SetNavEnabled(true);
 
         skillEffect.Play();
         Rigid.isKinematic = false;
         Rigid.useGravity = true;
+        stickyObject = null;
     }
 
     private void OnCollisionEnter(Collision collision)

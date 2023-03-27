@@ -134,8 +134,8 @@ public class LinePuzzleController : MonoBehaviour
             if (CurrentPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= CurrentPiece.Index) return;
 
             ConnectionPortal portal = CurrentPuzzle.OilPortals[CurrentPiece.Index];
-            oilPet.MovePoint(portal.transform.position);
-            oilPet.OnEndPointMove += ForceMoveBoard;
+            oilPet.SetDestination(portal.transform.position);
+            oilPet.onArrive += ForceMoveBoard;
         }
     }
 

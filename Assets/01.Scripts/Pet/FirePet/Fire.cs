@@ -28,6 +28,9 @@ public class Fire : MonoBehaviour
     [SerializeField]
     private bool isCool = false;
 
+    [SerializeField]
+    private bool isClingTo = true;
+
     private void Awake()
     {
         isBurn = playOnAwake;
@@ -138,6 +141,7 @@ public class Fire : MonoBehaviour
             ice.Melt();
         }
 
+        if (!isClingTo) return;
 
         Fire[] fires = other.GetComponents<Fire>();
         foreach (Fire f in fires)
@@ -158,7 +162,9 @@ public class Fire : MonoBehaviour
         {
             ice.Melt();
         }
-        
+
+        if (!isClingTo) return;
+
         Fire[] fires = collision.collider.GetComponents<Fire>();
         foreach (Fire f in fires)
         {

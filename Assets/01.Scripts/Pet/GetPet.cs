@@ -36,7 +36,7 @@ public class GetPet : MonoBehaviour
     private void Get(InputAction inputAction, float value)
     {
         if (pet == null) return;
-        if (IsMine(pet)) return;
+        if (PetManager.Instance.IsGet(pet)) return;
 
         pet.GetPet(gameObject.transform);
         OnGetPet?.Invoke();
@@ -45,17 +45,12 @@ public class GetPet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == Define.PET_LAYER)  pet = other.GetComponent<Pet>();
+        if (((1 << other.gameObject.layer) & petLayer) != 0)
+            pet = other.GetComponent<Pet>();
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == Define.PET_LAYER) pet = null;
+        if (((1 << other.gameObject.layer) & petLayer) != 0)
+            pet = null;
     }
-
-    #region Boolean
-    private bool IsMine(Pet p)
-    {
-        return p.IsGet;
-    }
-    #endregion
 }
