@@ -25,33 +25,34 @@ public class JumperObject : MonoBehaviour
 
     private bool isAnimation = false;
 
-    /*
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!CanJump) return;
+    [SerializeField]
+    private LayerMask layerMask;
 
-        if (collision.transform.CompareTag(Define.PLAYER_TAG))
-        {
-            playerRigid ??= collision.gameObject.GetComponent<Rigidbody>();
-            playerOil ??= collision.gameObject.GetComponent<DetectOil>();
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (!CanJump) return;
 
-            playerRigid.velocity = Vector3.zero;
-            playerRigid.angularVelocity = Vector3.zero;
-            //playerRigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    //    if (collision.transform.CompareTag(Define.PLAYER_TAG))
+    //    {
+    //        playerRigid ??= collision.gameObject.GetComponent<Rigidbody>();
+    //        playerOil ??= collision.gameObject.GetComponent<DetectOil>();
 
-            Jump();
+    //        playerRigid.velocity = Vector3.zero;
+    //        playerRigid.angularVelocity = Vector3.zero;
+    //        //playerRigid.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-            if (!isAnimation)
-                JumpAnimation();
-        }
-    }
-    */
+    //        Jump();
+
+    //        if (!isAnimation)
+    //            JumpAnimation();
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider collider)
     {
         if (!CanJump) return;
 
-        if (collider.CompareTag(Define.PLAYER_TAG))
+        if (collider.CompareTag(Define.PLAYER_TAG) && ((1 << collider.gameObject.layer) & layerMask) != 0)
         {
             playerRigid ??= collider.gameObject.GetComponent<Rigidbody>();
             playerOil ??= collider.gameObject.GetComponent<DetectOil>();
