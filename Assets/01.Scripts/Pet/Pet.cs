@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour, IFindable
+public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
 
@@ -36,7 +36,6 @@ public abstract class Pet : MonoBehaviour, IFindable
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
     public Sprite petSprite => petInform.petUISprite;
-    bool IFindable.IsFindable { get => isFindable; }
 
     #endregion
 
@@ -238,7 +237,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public bool CheckOnGround()
     {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.4f, 1 << Define.BOTTOM_LAYER))
+        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.5f, 1 << Define.BOTTOM_LAYER))
         {
             if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
@@ -248,6 +247,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public virtual void OnLanding() 
     {
         SetNavEnabled(true);
+        coll.enabled = true;
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         if (!FindButton())
             agent.SetDestination(transform.position);
