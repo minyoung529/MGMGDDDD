@@ -20,13 +20,16 @@ public class StickyPet : Pet
     private Vector3 smallDirection;
 
     private float moveSpeed = 1f;
-    
+
     [SerializeField]
     private UnityEvent OnBillow;
     [SerializeField]
     private UnityEvent OnExitBillow;
 
     private Sticky stickyObject = null;
+    private Vector3 stickyOffset;
+    private Quaternion origianalRotation;
+    private Transform originalParent = null;
     private bool stickyKinematic = false;
 
 
@@ -41,6 +44,12 @@ public class StickyPet : Pet
         base.OnUpdate();
 
         if (Input.GetKeyDown(KeyCode.X)) ReadySticky();
+
+        if (stickyObject && stickyObject.ApplyOffset) // 오프셋 맞추기
+        {
+            stickyObject.transform.position = transform.position + stickyOffset;
+            stickyObject.MovableRoot.rotation = origianalRotation;
+        }
     }
 
     #region Set
@@ -106,7 +115,7 @@ public class StickyPet : Pet
 
     private void ReadySticky()
     {
-        if(state == StickyState.Billow || state == StickyState.Sticky) return;
+        if (state == StickyState.Billow || state == StickyState.Sticky) return;
         ChangeState(StickyState.ReadySticky);
 
         Vector3 hit = GameManager.Instance.GetCameraHit();
@@ -131,23 +140,38 @@ public class StickyPet : Pet
 
         SetNavIsStopped(true);
 
-        stickyKinematic = stickyObject.GetComponent<Rigidbody>().isKinematic;
-        if (stickyKinematic)
+        if (stickyObject.Rigidbody)
         {
-            stickyObject.transform.SetParent(transform);
+            stickyKinematic = stickyObject.Rigidbody.isKinematic;
+        }
+
+        if (stickyKinematic || stickyObject.Rigidbody == null)
+        {
+            originalParent = stickyObject.MovableRoot.parent;
+            stickyObject.MovableRoot.SetParent(transform);
+
+            stickyOffset = stickyObject.MovableRoot.position - transform.position;
+            origianalRotation = stickyObject.MovableRoot.rotation;
         }
         else
         {
             FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-            joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
+            joint.connectedBody = stickyObject.Rigidbody;
         }
+
+        stickyObject.OnSticky();
+
+        sticky.StartListeningNotSticky(NotSticky);
     }
 
     private void NotSticky()
     {
         ChangeState(StickyState.Idle);
 
-        if(stickyKinematic && stickyObject) stickyObject.transform.SetParent(null);
+        if (stickyKinematic && stickyObject)
+        {
+            stickyObject.MovableRoot.SetParent(originalParent);
+        }
         else
         {
             FixedJoint[] joints = GetComponents<FixedJoint>();
@@ -162,6 +186,7 @@ public class StickyPet : Pet
         skillEffect.Play();
         Rigid.isKinematic = false;
         Rigid.useGravity = true;
+        stickyObject = null;
     }
 
     private void OnCollisionEnter(Collision collision)

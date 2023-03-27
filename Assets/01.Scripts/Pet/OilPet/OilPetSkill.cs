@@ -156,7 +156,14 @@ public class OilPetSkill
                 return;
             }
 
-            pathAgent.SetDestination(cameraHit);
+            try
+            {
+                pathAgent.SetDestination(cameraHit);
+            }
+            catch(Exception e)
+            {
+                Debug.Log("<b>PATH AGENT:</b> PATH가 없습니다.");
+            }
 
             float dist = Vector3.Distance(prevPosition, pathAgent.transform.position);
             oilDistance += dist;

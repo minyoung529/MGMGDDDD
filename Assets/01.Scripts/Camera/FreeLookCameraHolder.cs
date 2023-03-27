@@ -1,6 +1,8 @@
 using Cinemachine;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static Cinemachine.CinemachineFreeLook;
 
@@ -9,31 +11,48 @@ public class FreeLookCameraHolder : MonoBehaviour
     new private CinemachineFreeLook camera;
     private Orbit[] originalOrbits;
 
-    private void Start()
+    private bool isChanging = false;
+
+    private void Awake()
     {
         camera = GetComponent<CinemachineFreeLook>();
-        originalOrbits = camera.m_Orbits;
+        originalOrbits = camera.m_Orbits.ToArray();
     }
 
-    public void ChangeCameraRig(Orbit[] orbit)
+    public void ChangeCameraRig(Orbit[] orbit, float duration)
     {
-        for(int i = 0; i < orbit.Length; i++)
+        if (isChanging) return;
+        isChanging = true;
+
+        Debug.Log("CAMERA CHANGING");
+        for (int i = 0; i < orbit.Length; i++)
         {
-            SetZeroValueOriginal(ref orbit[i].m_Height, originalOrbits[i].m_Height);
-            SetZeroValueOriginal(ref orbit[i].m_Radius, originalOrbits[i].m_Radius);
+            ChangeOrbit(orbit[i], originalOrbits[i], duration, i);
         }
-
-        camera.m_Orbits = orbit;
     }
 
-    public void SetCameraRigOriginal()
+    public void SetCameraRigOriginal(float duration)
     {
-        camera.m_Orbits = originalOrbits;
+        if (isChanging) return;
+        isChanging = true;
+
+        Debug.Log("CHAINGING ORIGINAL");
+
+        for (int i = 0; i < originalOrbits.Length; i++)
+        {
+            ChangeOrbit(originalOrbits[i], originalOrbits[i], duration, i);
+        }
     }
 
-    private void SetZeroValueOriginal(ref float val, float original)
+    private void ChangeOrbit(Orbit orbit, Orbit original, float duration, int index)
     {
-        if (val <= 0f)
-            val = original;
+        if (orbit.m_Height <= 0f)
+            orbit.m_Height = original.m_Height;
+
+        if (orbit.m_Radius <= 0f)
+            orbit.m_Radius = original.m_Radius;
+
+        DOTween.To(() => camera.m_Orbits[index].m_Height, (x) => camera.m_Orbits[index].m_Height = x, orbit.m_Height, duration);
+        DOTween.To(() => camera.m_Orbits[index].m_Radius, (x) => camera.m_Orbits[index].m_Radius = x, orbit.m_Radius, duration).OnComplete(() => isChanging = false);
     }
 }
