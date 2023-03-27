@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 1866225961}
   - component: {fileID: 1763002770235799755}
   - component: {fileID: 9035939788630615776}
+  - component: {fileID: 4848590945336588120}
+  - component: {fileID: 7682177461584635383}
   m_Layer: 0
   m_Name: CubePuzzle
   m_TagString: CubePuzzle
@@ -198,6 +200,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeecb228c6cd9b64e8a2be91c8c09f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onMove:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnMove:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &9035939788630615776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,7 +219,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canMove: 1
+  applyRotatationOffset: 1
   movableRoot: {fileID: 0}
+  <ApplyOffset>k__BackingField: 1
+--- !u!114 &4848590945336588120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896001081959153202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94f87872df5074428fb566f440b06d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conditions:
+  - {fileID: 7682177461584635383}
+--- !u!114 &7682177461584635383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896001081959153202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bdf2c88db26b0c468d68997764587af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &896001082353816761
 GameObject:
   m_ObjectHideFlags: 0

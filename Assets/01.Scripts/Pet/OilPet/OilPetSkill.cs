@@ -33,6 +33,8 @@ public class OilPetSkill
     public Action OnEndSpread_Once { get; set; }
     public bool IsCheckDistance = true;
 
+    public static Action OnClearOil;
+
     public void Init(PaintingObject painting, LineRenderer line, NavMeshAgent pathAgent, NavMeshAgent player)
     {
         this.painting = painting;
@@ -45,6 +47,7 @@ public class OilPetSkill
 
     public void ClearOil()
     {
+        OnClearOil?.Invoke();
         painting.ResetData();
     }
 

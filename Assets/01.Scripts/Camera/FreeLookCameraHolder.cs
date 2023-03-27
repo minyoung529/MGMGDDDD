@@ -24,7 +24,6 @@ public class FreeLookCameraHolder : MonoBehaviour
         if (isChanging) return;
         isChanging = true;
 
-        Debug.Log("CAMERA CHANGING");
         for (int i = 0; i < orbit.Length; i++)
         {
             ChangeOrbit(orbit[i], originalOrbits[i], duration, i);
@@ -35,8 +34,6 @@ public class FreeLookCameraHolder : MonoBehaviour
     {
         if (isChanging) return;
         isChanging = true;
-
-        Debug.Log("CHAINGING ORIGINAL");
 
         for (int i = 0; i < originalOrbits.Length; i++)
         {

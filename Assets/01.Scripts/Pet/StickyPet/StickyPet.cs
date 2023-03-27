@@ -26,6 +26,9 @@ public class StickyPet : Pet
     [SerializeField]
     private UnityEvent OnExitBillow;
 
+    [SerializeField]
+    private Transform stickyParent;
+
     private Sticky stickyObject = null;
     private Vector3 stickyOffset;
     private Quaternion origianalRotation;
@@ -47,7 +50,7 @@ public class StickyPet : Pet
 
         if (stickyObject && stickyObject.ApplyOffset) // 오프셋 맞추기
         {
-            stickyObject.transform.position = transform.position + stickyOffset;
+            stickyObject.transform.position = stickyParent.position + stickyOffset;
             stickyObject.MovableRoot.rotation = origianalRotation;
         }
     }
@@ -134,11 +137,22 @@ public class StickyPet : Pet
         if (state == StickyState.Sticky) return;
         ChangeState(StickyState.Sticky);
 
+        //if (!sticky.CanSticky) return;
+
         stickyObject = sticky;
         skillEffect.Play();
-        Rigid.isKinematic = true;
 
-        SetNavIsStopped(true);
+        if (sticky.CanMove)
+        {
+            SetTarget(null);
+            Rigid.isKinematic = false;
+        }
+        else
+        {
+            //SetNavIsStopped(true);
+            SetNavEnabled(false);
+            Rigid.isKinematic = true;
+        }
 
         if (stickyObject.Rigidbody)
         {
@@ -148,9 +162,9 @@ public class StickyPet : Pet
         if (stickyKinematic || stickyObject.Rigidbody == null)
         {
             originalParent = stickyObject.MovableRoot.parent;
-            stickyObject.MovableRoot.SetParent(transform);
+            stickyObject.MovableRoot.SetParent(stickyParent);
 
-            stickyOffset = stickyObject.MovableRoot.position - transform.position;
+            stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
             origianalRotation = stickyObject.MovableRoot.rotation;
         }
         else
@@ -162,6 +176,22 @@ public class StickyPet : Pet
         stickyObject.OnSticky();
 
         sticky.StartListeningNotSticky(NotSticky);
+        sticky.StartListeningChangeCanMove(CanMove);
+    }
+
+    public void CanMove(bool canMove)
+    {
+        if (!stickyObject) return;
+
+        if (canMove)
+        {
+            SetNavEnabled(true);
+            SetTarget(null);
+        }
+        else
+        {
+            SetNavEnabled(false);
+        }
     }
 
     private void NotSticky()
@@ -181,7 +211,8 @@ public class StickyPet : Pet
             }
         }
 
-        SetNavIsStopped(false);
+        //SetNavIsStopped(false);
+        SetNavEnabled(true);
 
         skillEffect.Play();
         Rigid.isKinematic = false;

@@ -15,8 +15,11 @@ public class CubePuzzle : MonoBehaviour
 
     private readonly string CUBE_PUZZPE_TAG = "CubePuzzle";
 
+    private int index = 0;
+
     private void Start()
     {
+        index = transform.GetSiblingIndex();
         OnSuccess += LightBottom;
     }
 
@@ -49,14 +52,14 @@ public class CubePuzzle : MonoBehaviour
         cubeRigid = other.attachedRigidbody;
         MoveCubeToCenter(other.transform, () => hasCube = true);
 
-        if (other.transform.GetSiblingIndex() == transform.GetSiblingIndex())
+        if (int.Parse(other.gameObject.name) == index)
         {
-            OnSuccess?.Invoke(transform.GetSiblingIndex() + 1000);
+            OnSuccess?.Invoke(index + 1000);
             isSuccess = true;
         }
         else
         {
-            OnSuccess?.Invoke(transform.GetSiblingIndex());
+            OnSuccess?.Invoke(index);
         }
 
         cubeRigid.GetComponent<Sticky>().NotSticky();

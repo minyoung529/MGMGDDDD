@@ -8,8 +8,14 @@ public class CubePuzzleController : MonoBehaviour
 {
     [SerializeField]
     private int cubeCount = 9;
-    [SerializeField]
-    private int successCnt = 0;
+    private int SuccessCnt
+    {
+        get
+        {
+            return cubePuzzles.Count(x => x.IsSuccess);
+        }
+    }
+        
     [SerializeField]
     private int solvedPuzzleCount = 0;
 
@@ -36,7 +42,7 @@ public class CubePuzzleController : MonoBehaviour
 
     private void OnChangeConnect(int v)
     {
-        if (cubeCount == cubePuzzles.Count(x => x.IsSuccess))
+        if (cubeCount == SuccessCnt)
         {
             SolvePuzzle();
         }
@@ -45,13 +51,13 @@ public class CubePuzzleController : MonoBehaviour
     [ContextMenu("ButtonTest")]
     public void CheckSuccess()
     {
-        if (successCnt == cubeCount)
+        if (SuccessCnt == cubeCount)
         {
             SolvePuzzle();
         }
         else
         {
-            OnPressButton?.Invoke(successCnt);
+            OnPressButton?.Invoke(SuccessCnt);
             ResetPuzzle();
         }
     }
@@ -59,7 +65,7 @@ public class CubePuzzleController : MonoBehaviour
     [ContextMenu("SolvePuzzle")]
     private void SolvePuzzle()
     {
-        OnSolvePuzzle?.Invoke(successCnt);
+        OnSolvePuzzle?.Invoke(SuccessCnt);
     }
 
     public void ResetPuzzle()
@@ -69,7 +75,6 @@ public class CubePuzzleController : MonoBehaviour
             visited[i] = false;
         }
 
-        successCnt = solvedPuzzleCount;
         foreach (CubePuzzle item in cubePuzzles)
         {
             item.ResetPuzzle();

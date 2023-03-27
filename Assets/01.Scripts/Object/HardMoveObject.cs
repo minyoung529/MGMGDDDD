@@ -1,29 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HardMoveObject : MonoBehaviour
 {
     private Rigidbody rigid;
     private int enterIdx = 0;
-    private bool canMove  = false;
+    private bool canMove = false;
     private RigidbodyConstraints rigidbodyConstraints;
-    public bool CanMove { get { return canMove; }  }
+    public bool CanMove { get { return canMove; } }
 
-    private float mass = 0f;
+    [SerializeField]
+    private UnityEvent onMove;
+
+    [SerializeField]
+    private UnityEvent onUnMove;
 
     private void Start()
     {
         rigid = GetComponent<Rigidbody>();
         rigid.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodyConstraints = rigid.constraints;
-        mass = rigid.mass;
+
+        OilPetSkill.OnClearOil += UnMove;
         UnMove();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("OilBullet"))
+        if (other.CompareTag(Define.OIL_BULLET_TAG))
         {
             if (enterIdx++ == 0)
             {
@@ -34,7 +40,7 @@ public class HardMoveObject : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("OilBullet"))
+        if (other.CompareTag(Define.OIL_BULLET_TAG))
         {
             if (--enterIdx == 0)
             {
@@ -45,7 +51,7 @@ public class HardMoveObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("OilBullet"))
+        if (collision.gameObject.CompareTag(Define.OIL_BULLET_TAG))
         {
             if (enterIdx++ == 0)
             {
@@ -56,7 +62,7 @@ public class HardMoveObject : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("OilBullet"))
+        if (collision.gameObject.CompareTag(Define.OIL_BULLET_TAG))
         {
             if (--enterIdx == 0)
             {
@@ -67,18 +73,21 @@ public class HardMoveObject : MonoBehaviour
 
     private void Move()
     {
+        onMove?.Invoke();
         rigid.constraints = rigidbodyConstraints;
-        //rigid.drag = drag;
-        //rigid.angularDrag = angular;
         canMove = true;
     }
 
     private void UnMove()
     {
+        onUnMove?.Invoke();
+
         rigid.constraints = RigidbodyConstraints.FreezeAll;
-        //rigid.mass = 100000;
-        //rigid.drag = 50000;
-        //rigid.angularDrag = 50000;
         canMove = false;
+    }
+
+    private void OnDestroy()
+    {
+        OilPetSkill.OnClearOil -= UnMove;
     }
 }

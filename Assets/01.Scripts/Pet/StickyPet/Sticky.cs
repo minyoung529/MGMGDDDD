@@ -11,14 +11,16 @@ public class Sticky : MonoBehaviour
     [SerializeField] private bool applyRotatationOffset = true;
     private bool isSticky = false;
     private Action notSticky;
+    private Action<bool> onChangeCanMove;
 
     [SerializeField] private Transform movableRoot;
 
     private NavMeshObstacle obstacle;
+    private Conditions stickyConditions;
 
     #region Property
     public bool IsSticky { get { return isSticky; } set { isSticky = value; } }
-    public bool CanMove { get { return canMove; } }
+    public bool CanMove { get { return canMove; } set { canMove = value; OnMoveChange(value); } }
     public Transform MovableRoot
     {
         get
@@ -31,6 +33,16 @@ public class Sticky : MonoBehaviour
     public Rigidbody Rigidbody { get; private set; }
     [field: SerializeField]
     public bool ApplyOffset { get; set; } = true;
+    public bool Condition
+    {
+        get
+        {
+            if (stickyConditions)
+                return stickyConditions.Condition();
+
+            return true;
+        }
+    }
     #endregion
 
     private void Awake()
@@ -42,6 +54,18 @@ public class Sticky : MonoBehaviour
 
         Rigidbody = movableRoot.GetComponentInChildren<Rigidbody>();
         obstacle = movableRoot.GetComponentInChildren<NavMeshObstacle>();
+        stickyConditions = GetComponent<Conditions>();
+    }
+
+    private void Update()
+    {
+        if (stickyConditions)
+        {
+            bool condition = stickyConditions.Condition();
+
+            if (condition != canMove)
+                CanMove = condition;
+        }
     }
 
     public void StartListeningNotSticky(Action action)
@@ -49,8 +73,16 @@ public class Sticky : MonoBehaviour
         notSticky = action;
     }
 
+    public void StartListeningChangeCanMove(Action<bool> action)
+    {
+        onChangeCanMove = action;
+    }
+
     public void NotSticky()
     {
+        if (!IsSticky) return;
+
+        isSticky = false;
         notSticky?.Invoke();
         notSticky = null;
 
@@ -60,8 +92,16 @@ public class Sticky : MonoBehaviour
 
     public void OnSticky()
     {
+        if (IsSticky) return;
+
+        isSticky = true;
         if (obstacle)
             obstacle.enabled = false;
+    }
+
+    public void OnMoveChange(bool canMove)
+    {
+        onChangeCanMove?.Invoke(canMove);
     }
 
     //public void SetSticky()
