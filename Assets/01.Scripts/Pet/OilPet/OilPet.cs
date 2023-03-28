@@ -24,6 +24,7 @@ public class OilPet : Pet
     private NavMeshAgent pathAgent;
     private OilPetSkill oilPetSkill = new OilPetSkill();
     private bool isSkilling;
+    private bool pauseSkilling = false;
     protected bool isSkillDragging;
 
     #region Property
@@ -54,7 +55,7 @@ public class OilPet : Pet
     // Active skill
     public override void Skill()
     {
-        if (IsCoolTime || isSkillDragging || isSkillDragging) return;
+        if (IsCoolTime || isSkillDragging || isSkillDragging || pauseSkilling) return;
         base.Skill();
 
         OnStartSkill?.Invoke();
@@ -107,7 +108,6 @@ public class OilPet : Pet
     {
         if (isSkilling && (!isMouseMove || IsDirectSpread))
         {
-            Debug.Log("START");
             oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetTarget(null); SetNavIsStopped(false); ResetSkill(); });
         }
     }
@@ -127,6 +127,7 @@ public class OilPet : Pet
 
         agent.isStopped = false;
         isSkillDragging = false;
+        pauseSkilling = false;
     }
 
     protected void ResetSkill()
@@ -138,6 +139,15 @@ public class OilPet : Pet
     public override void OnUpdate()
     {
         base.OnUpdate();
-        oilPetSkill.Update(isSkilling, isSkillDragging);
+
+        if (!pauseSkilling)
+        {
+            oilPetSkill.Update(isSkilling, isSkillDragging);
+        }
+    }
+
+    public void PauseSkill(bool pause)
+    {
+        pauseSkilling = pause;
     }
 }

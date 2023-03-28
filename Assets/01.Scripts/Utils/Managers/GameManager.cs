@@ -34,6 +34,8 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField]
     private LayerMask cameraHitLayerMask;
 
+    private Vector3 mouseHit;
+
     protected override void Awake()
     {
         FindFindableObject();
@@ -61,9 +63,11 @@ public class GameManager : MonoSingleton<GameManager>
         
         if (Physics.Raycast(ray, out RaycastHit hit, MainCam.farClipPlane, cameraHitLayerMask))
         {
-            Debug.DrawRay(MainCam.transform.position, hit.point);
+            Debug.DrawRay(MainCam.transform.position, ray.direction * hit.distance, Color.cyan);
             Vector3 mouse = hit.point;
-            mouse.y = 0;
+            //mouse.y = 0;
+
+            mouseHit = hit.point;
             return mouse;
         }
         return Vector3.zero;
@@ -94,5 +98,11 @@ public class GameManager : MonoSingleton<GameManager>
             }
         }
         return target;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(mouseHit, 0.2f);
     }
 }

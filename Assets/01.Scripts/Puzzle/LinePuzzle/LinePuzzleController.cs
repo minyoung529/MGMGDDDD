@@ -37,16 +37,15 @@ public class LinePuzzleController : MonoBehaviour
     private ParticleSystem oilTeleportParticle;
 
     public static PlatformPiece CurrentPiece { get; set; }
-
     public static bool IsOilMove { get; set; } = false;
+
+    private bool isPlaying = false;
 
     private void Awake()
     {
         cameraController = FindObjectOfType<ThirdPersonCameraControll>();
         firePet = FindObjectOfType<FirePet>();
         oilPet = FindObjectOfType<OilPet>();
-
-        InputManager.StartListeningInput(InputAction.Pet_Skill, Select);
     }
 
     private void Start()
@@ -56,17 +55,20 @@ public class LinePuzzleController : MonoBehaviour
 
         foreach(LinePuzzle puzzle in linePuzzles)
         {
-            puzzle.OnClear += ClearPuzzle;
-            puzzle.OnFire += BuildAllMesh;
+            puzzle.OnClear += GetNextPuzzle;
         }
     }
 
     private void Update()
     {
+        if (!isPlaying) return;
+
         if(Input.GetKeyDown(KeyCode.F))
         {
             ResetBoard();
         }
+
+        trigger.transform.position = GameManager.Instance.GetMousePos();
     }
 
     private void ResetBoard()
@@ -77,6 +79,7 @@ public class LinePuzzleController : MonoBehaviour
 
     public void EnterGame()
     {
+        isPlaying = true;
         CameraSwitcher.SwitchCamera(cmVcam);
 
         Cursor.lockState = CursorLockMode.None;
@@ -102,6 +105,7 @@ public class LinePuzzleController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        isPlaying = false;
 
         cameraController.ActiveCrossHair();
         OilPetSkill.IsCrosshair = true;
@@ -118,16 +122,6 @@ public class LinePuzzleController : MonoBehaviour
         linePuzzles[idx].StartGame();
     }
 
-    public void ClearGame()
-    {
-        InputManager.StopListeningInput(InputAction.Pet_Skill, Select);
-    }
-
-    private void Select(InputAction action, float value)
-    {
-        trigger.transform.position = GameManager.Instance.GetMousePos();
-    }
-
     private void MoveToPortal()
     {
         if (CurrentPiece)
@@ -137,6 +131,10 @@ public class LinePuzzleController : MonoBehaviour
             ConnectionPortal portal = CurrentPuzzle.OilPortals[CurrentPiece.Index];
             oilPet.SetDestination(portal.transform.position);
             oilPet.onArrive += ForceMoveBoard;
+        }
+        else
+        {
+            Debug.Log("CurrentPiece가 NULL입니다.");
         }
     }
 
@@ -160,7 +158,7 @@ public class LinePuzzleController : MonoBehaviour
         IsOilMove = false;
     }
 
-    private void ClearPuzzle()
+    private void GetNextPuzzle()
     {
         if (++idx >= linePuzzles.Length)
         {
@@ -176,26 +174,12 @@ public class LinePuzzleController : MonoBehaviour
 
     private void EndPuzzle()
     {
-
+        EnterGame();
+        oilPet.PauseSkill(false);
     }
 
-    [ContextMenu("Dynamic Build All Mesh")]
-    public void BuildAllMesh()
+    public void PauseOilPet(bool pause)
     {
-        Sequence seq = DOTween.Sequence();
-
-        seq.AppendInterval(8f);
-        seq.AppendCallback(() =>
-        {
-            foreach (LinePuzzle puzzle in linePuzzles)
-            {
-                puzzle.BuildAllMesh();
-            }
-        });
-    }
-
-    private void OnDestroy()
-    {
-        InputManager.StopListeningInput(InputAction.Pet_Skill, Select);
+        oilPet.PauseSkill(pause);
     }
 }

@@ -50,13 +50,10 @@ public class LinePuzzle : MonoBehaviour
     private int destroyPuzzleCnt = 0;
 
     public Action OnClear { get; set; }
-    public Action OnBuildMesh { get; set; }
-    public Action OnFire { get; set; }
 
     private void Awake()
     {
         Initilize();
-        BuildAllMesh();
     }
 
     public void StartGame()
@@ -74,7 +71,7 @@ public class LinePuzzle : MonoBehaviour
 
         int boardCnt = boardInformation.Count;
 
-        Vector3 offset = board.transform.position /*+ new Vector3(weight / boardCnt * 0.5f, 0, -height / boardCnt * 0.5f)*/;
+        Vector3 offset = board.transform.position + Vector3.up * 0.7f /*+ new Vector3(weight / boardCnt * 0.5f, 0, -height / boardCnt * 0.5f)*/;
 
         for (int i = 0; i < boardCnt; i++)
         {
@@ -85,8 +82,7 @@ public class LinePuzzle : MonoBehaviour
                 newObj.name = $"({i}, {j}) : {boardInformation[i][j]}";
                 newObj.Initialize(boardInformation[i][j] - '1', ref colors);
 
-                newObj.OnDestroyPlatform += DestroyPuzzle;
-                newObj.InactivePlatform += BuildAllMesh;
+                newObj.OnDestroyPlatform += CheckSolve;
 
                 newObj.transform.position =
                     new Vector3
@@ -134,7 +130,6 @@ public class LinePuzzle : MonoBehaviour
             FirePortal fPortal = firePortals[i] as FirePortal;
             fPortal.Listen(pieces.Find(x => x.Index == i).Burn);
             fPortal.Listen(pieces.FindLast(x => x.Index == i).Burn);
-            fPortal.Listen(() => OnFire?.Invoke());
         }
     }
 
@@ -147,11 +142,16 @@ public class LinePuzzle : MonoBehaviour
         }
     }
 
-    private void DestroyPuzzle()
+    private void CheckSolve()
     {
+        // »ö±ò ¹Ù²î´Â ¹ö±×
+        // Trigger ¶§¹®¿¡~~
+
+        // Oil Paint ¾ÈµÊ
+        // ¤À°¡¤³
+
         if (++destroyPuzzleCnt == boardInformation.Count * boardInformation[0].Length)
         {
-            Debug.Log("CLEAR");
             EndPuzzle();
             OnClear?.Invoke();
         }
@@ -167,10 +167,5 @@ public class LinePuzzle : MonoBehaviour
         ResetOil();
         pieces.ForEach(x => x.ResetPuzzle());
         destroyPuzzleCnt = 0;
-    }
-
-    public void BuildAllMesh()
-    {
-        pieces.ForEach(x => x.BuildMesh());
     }
 }

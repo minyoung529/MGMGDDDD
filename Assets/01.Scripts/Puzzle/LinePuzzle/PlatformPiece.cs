@@ -20,25 +20,30 @@ public class PlatformPiece : MonoBehaviour
     [SerializeField]
     private ParticleSystem destroyParticle;
 
-    public int Index { get; set; } = -1;
-    public Color Color { get; set; }
     private Color originalColor;
 
     private Fire fire;
     private bool isBurning = false;
     private bool isLightOn = false;
-
-    public Action OnDestroyPlatform { get; set; }
-    public Action InactivePlatform { get; set; }
+    private bool isDestroyed = false;
 
     private MeshRenderer[] renderers;
     private NavMeshSurface navmeshSurface;
 
     Sequence seq;
 
+    #region Property
+    public Action OnDestroyPlatform { get; set; }
+    public int Index { get; set; } = -1;
+    public Color Color { get; set; }
+    #endregion
+
+    private LinePuzzleController controller;
+
     private void Awake()
     {
         navmeshSurface = GetComponent<NavMeshSurface>();
+        controller = FindObjectOfType<LinePuzzleController>();
         fire = GetComponentInChildren<Fire>();
     }
 
@@ -52,6 +57,7 @@ public class PlatformPiece : MonoBehaviour
         {
             connectPoint.SetActive(true);
             pointRenderer.material = Instantiate(pointRenderer.sharedMaterial);
+            pointRenderer.material.SetColor("_EmissionColor", colors[c] - Color.white * 0.3f);
             pointRenderer.material.color = Color = colors[c];
             Index = c;
         }
@@ -63,7 +69,15 @@ public class PlatformPiece : MonoBehaviour
     {
         if (!isBurning && other.name == "Trigger")
         {
-            LinePuzzleController.CurrentPiece = this;
+            if(isDestroyed)
+            {
+                controller.PauseOilPet(true);
+            }
+            else
+            {
+                controller.PauseOilPet(false);
+                LinePuzzleController.CurrentPiece = this;
+            }
         }
     }
 
@@ -81,25 +95,29 @@ public class PlatformPiece : MonoBehaviour
                 }
             }
         }
+
+        else if (other.CompareTag(Define.OIL_PET_TAG))
+        {
+            isLightOn = true;
+            boardRenderer.material.DOColor(LinePuzzleController.CurrentPiece.Color, 1f);
+        }
     }
 
     private void DestroyPlatform()
     {
-        if (isBurning) return;
+        if (isBurning || isDestroyed) return;
         if (!gameObject.activeSelf) return;
 
         isBurning = true;
+        isDestroyed = true;
 
         seq = DOTween.Sequence();
         seq.AppendInterval(4f);
         seq.AppendCallback(Hide);
-        seq.AppendCallback(() => destroyParticle.Play());
-        seq.AppendCallback(() => OnDestroyPlatform?.Invoke());
-        seq.AppendInterval(2f);
-        seq.AppendCallback(() => gameObject.SetActive(false));
         seq.AppendCallback(() =>
         {
-            InactivePlatform.Invoke();
+            destroyParticle.Play();
+            OnDestroyPlatform?.Invoke();
         });
     }
 
@@ -111,9 +129,7 @@ public class PlatformPiece : MonoBehaviour
         {
             renderer.enabled = false;
         }
-
         isBurning = false;
-
     }
 
     private void Show()
@@ -126,7 +142,9 @@ public class PlatformPiece : MonoBehaviour
             renderer.enabled = true;
         }
 
-        gameObject.SetActive(true);
+        //gameObject.SetActive(true);
+        isDestroyed = false;
+        isBurning = false;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -155,13 +173,6 @@ public class PlatformPiece : MonoBehaviour
     public void Burn()
     {
         if (isLightOn)
-        {
             fire?.Burn();
-        }
-    }
-
-    public void BuildMesh()
-    {
-        navmeshSurface.BuildNavMesh();
     }
 }
