@@ -91,7 +91,7 @@ public class LinePuzzleController : MonoBehaviour
         Pet.IsCameraAimPoint = false;
 
         oilPet.IsDirectSpread = false;
-        oilPet.OnEndSkill += AutoMoveOil;
+        oilPet.OnEndSkill += MoveToPortal;
         oilPet.OnStartSkill += CurrentPuzzle.ResetOil;
         oilPet.OilPetSkill.IsCheckDistance = false;
 
@@ -108,7 +108,7 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.IsDirectSpread = true;
         Pet.IsCameraAimPoint = true;
 
-        oilPet.OnEndSkill -= AutoMoveOil;
+        oilPet.OnEndSkill -= MoveToPortal;
         oilPet.OnStartSkill -= CurrentPuzzle.ResetOil;
         oilPet.OilPetSkill.IsCheckDistance = true;
     }
@@ -128,7 +128,7 @@ public class LinePuzzleController : MonoBehaviour
         trigger.transform.position = GameManager.Instance.GetMousePos();
     }
 
-    private void AutoMoveOil()
+    private void MoveToPortal()
     {
         if (CurrentPiece)
         {

@@ -105,8 +105,9 @@ public class OilPet : Pet
 
     public void SpreadOil()
     {
-        if (isSkilling && !isMouseMove && IsDirectSpread)
+        if (isSkilling && (!isMouseMove || IsDirectSpread))
         {
+            Debug.Log("START");
             oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetTarget(null); SetNavIsStopped(false); ResetSkill(); });
         }
     }
