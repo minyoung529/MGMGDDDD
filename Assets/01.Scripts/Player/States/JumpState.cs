@@ -8,7 +8,7 @@ public class JumpState : MoveState
 
     public override void OnInput(Vector3 inputDir) {
         if (inputDir.sqrMagnitude <= 0) {
-            base.Player.Decelerate(brake);
+            Player.Decelerate(brake);
             return;
         }
         Player.Accelerate(inputDir, accel, brake, maxSpeed);

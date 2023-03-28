@@ -5,5 +5,6 @@ public enum StateName
     Zoom,
     Sit,
     PickUp,
-    Throw
+    Throw,
+    Drop
 }

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,68 +13,81 @@ public class PlayerPickUp : MonoBehaviour {
     private PlayerMove playerMove;
     private Pet holdingPet;
     private bool isHolding;
-    private bool isPlaying = false;
 
     private void Awake() {
         playerMove = GetComponent<PlayerMove>();
-        InputManager.StartListeningInput(InputAction.PickUp, GetInput);
+        InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
+        InputManager.StartListeningInput(InputAction.Throw, GetInput);
     }
 
     private void GetInput(InputAction action, float value) {
-        if (isPlaying) return;
-        isPlaying = true;
+        if (playerMove.IsInputLock) return;
+        InputLock(true);
         playerMove.Rigid.velocity = Vector3.zero;
-        if (!holdingPet)
-            PickUp();
-        else
-            Throw();
+
+        switch (action) {
+            case InputAction.PickUp_And_Drop:
+                if (!holdingPet) {
+                    holdingPet = FindPet();
+                    if (!holdingPet) {
+                        InputLock(false);
+                        break;
+                    }
+                    Vector3 dest = CallPet(holdingPet);
+                    StartCoroutine(WaitPet(dest, () => playerMove.ChangeState(StateName.PickUp)));
+                }
+                else
+                    playerMove.ChangeState(StateName.Drop);
+                break;
+            case InputAction.Throw:
+                if (!holdingPet) {
+                    InputLock(false);
+                    return;
+                }
+                playerMove.ChangeState(StateName.Throw);
+                break;
+            default:
+                Debug.LogError($"올바르지 않은 입력이 감지되었습니다! 입력명:{action}");
+                break;
+        }
     }
 
-    private void PickUp() {
-        holdingPet = PetManager.Instance.GetSelectedPet();
-        if (!holdingPet || !holdingPet.CheckOnGround()) {
-            isPlaying = false;
-            holdingPet = null;
-            return;
+    #region PickUp 관련
+    public Pet FindPet() {
+        Pet pet = PetManager.Instance.GetSelectedPet();
+        if (!pet || !pet.CheckOnGround()) {
+            return null;
         }
+        return pet;
+    }
 
-        Vector3 dir = holdingPet.transform.position - transform.position;
+    public Vector3 CallPet(Pet pet) {
+        Vector3 dir = pet.transform.position - transform.position;
         dir.y = 0;
         dir = dir.normalized;
         dir = transform.position + dir * distance2Pet;
-        dir.y = holdingPet.transform.position.y;
+        dir.y = pet.transform.position.y;
 
-        holdingPet.Rigid.isKinematic = true;
-        holdingPet.Coll.enabled = false;
-        holdingPet.SetDestination(dir);
+        pet.Rigid.isKinematic = true;
+        pet.Coll.enabled = false;
+        pet.SetDestination(dir);
 
-        dir.y = transform.position.y;
-        transform.DOLookAt(dir, 0.2f);
-
-        StartCoroutine(WaitPet());
+        return pet.GetDestination();
     }
 
-    private IEnumerator WaitPet() {
+    private IEnumerator WaitPet(Vector3 destination, Action onArrive) {
         playerMove.IsInputLock = true;
+        destination.y = transform.position.y;
+        transform.DOLookAt(destination, 0.2f);
         while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 0.5f) {
             yield return null;
         }
+        onArrive?.Invoke();
+    }
+
+    private IEnumerator MovePetToHand() {
         isHolding = true;
         holdingPet.SetNavEnabled(false);
-        playerMove.IsInputLock = false;
-        playerMove.ChangeState(StateName.PickUp);
-    }
-
-    public void PickUpStart() {
-        StartCoroutine(SetPetPos());
-    }
-
-    public void PickUpEnd() {
-        playerMove.ChangeState(StateName.DefaultMove);
-        isPlaying = false;
-    }
-
-    private IEnumerator SetPetPos() {
         while (isHolding) {
             holdingPet.transform.position =
                 Vector3.Lerp(
@@ -85,27 +99,40 @@ public class PlayerPickUp : MonoBehaviour {
             yield return null;
         }
     }
+    #endregion
 
-    private void Throw() {
-        playerMove.ChangeState(StateName.Throw);
+    #region Anim Events
+    public void OnPickUp() {
+        StartCoroutine(MovePetToHand());
     }
 
-    public void ThrowStart() {
-        ThrowPet();
-        Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
-        holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
+    private void OnDrop() {
+        isHolding = false;
+        holdingPet.Rigid.isKinematic = false;
         holdingPet.OnThrow();
-    }
-
-    public void ThrowEnd() {
-        playerMove.ChangeState(StateName.DefaultMove);
         holdingPet = null;
-        isPlaying = false;
     }
 
-    private void ThrowPet() {
+    public void OnThrow() {
         isHolding = false;
         holdingPet.Rigid.isKinematic = false;
         holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
+
+        Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
+        holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
+        holdingPet.OnThrow();
+        holdingPet = null;
+    }
+
+    public void OnAnimEnd() {
+        playerMove.IsInputLock = false;
+        playerMove.ChangeState(StateName.DefaultMove);
+    }
+    #endregion
+
+    private void InputLock(bool value) {
+        playerMove.IsInputLock = value;
+        if (holdingPet)
+            holdingPet.IsInputLock = value;
     }
 }
