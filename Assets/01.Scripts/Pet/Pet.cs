@@ -141,7 +141,6 @@ public abstract class Pet : MonoBehaviour {
         agent.stoppingDistance = stopDistance;
         if (!target) {
             agent.ResetPath();
-            SetNavIsStopped(true);
             return;
         }
 
@@ -222,7 +221,15 @@ public abstract class Pet : MonoBehaviour {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (target == null) return false;
         Vector3 dest = target.transform.position;
-        agent.SetDestination(dest);
+
+        try
+        {
+            agent.SetDestination(dest);
+        }
+        catch(Exception e)
+        {
+            Debug.Log("PATH가 없습니다.");
+        }
         return true;
     }
 

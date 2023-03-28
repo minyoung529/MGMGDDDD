@@ -20,13 +20,19 @@ public class StickyPet : Pet
     private Vector3 smallDirection;
 
     private float moveSpeed = 1f;
-    
+
     [SerializeField]
     private UnityEvent OnBillow;
     [SerializeField]
     private UnityEvent OnExitBillow;
 
+    [SerializeField]
+    private Transform stickyParent;
+
     private Sticky stickyObject = null;
+    private Vector3 stickyOffset;
+    private Quaternion origianalRotation;
+    private Transform originalParent = null;
     private bool stickyKinematic = false;
 
 
@@ -41,6 +47,12 @@ public class StickyPet : Pet
         base.OnUpdate();
 
         if (Input.GetKeyDown(KeyCode.X)) ReadySticky();
+
+        if (stickyObject && stickyObject.ApplyOffset) // 오프셋 맞추기
+        {
+            stickyObject.transform.position = stickyParent.position + stickyOffset;
+            stickyObject.MovableRoot.rotation = origianalRotation;
+        }
     }
 
     #region Set
@@ -106,7 +118,7 @@ public class StickyPet : Pet
 
     private void ReadySticky()
     {
-        if(state == StickyState.Billow || state == StickyState.Sticky) return;
+        if (state == StickyState.Billow || state == StickyState.Sticky) return;
         ChangeState(StickyState.ReadySticky);
 
         Vector3 hit = GameManager.Instance.GetCameraHit();
@@ -125,21 +137,60 @@ public class StickyPet : Pet
         if (state == StickyState.Sticky) return;
         ChangeState(StickyState.Sticky);
 
+        //if (!sticky.CanSticky) return;
+
         stickyObject = sticky;
         skillEffect.Play();
-        Rigid.isKinematic = true;
 
-        SetNavIsStopped(true);
-
-        stickyKinematic = stickyObject.GetComponent<Rigidbody>().isKinematic;
-        if (stickyKinematic)
+        if (sticky.CanMove)
         {
-            stickyObject.transform.SetParent(transform);
+            SetTarget(null);
+            Rigid.isKinematic = false;
+        }
+        else
+        {
+            //SetNavIsStopped(true);
+            SetNavEnabled(false);
+            Rigid.isKinematic = true;
+        }
+
+        if (stickyObject.Rigidbody)
+        {
+            stickyKinematic = stickyObject.Rigidbody.isKinematic;
+        }
+
+        if (stickyKinematic || stickyObject.Rigidbody == null)
+        {
+            originalParent = stickyObject.MovableRoot.parent;
+            stickyObject.MovableRoot.SetParent(stickyParent);
+
+            stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
+            origianalRotation = stickyObject.MovableRoot.rotation;
         }
         else
         {
             FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-            joint.connectedBody = stickyObject.GetComponent<Rigidbody>();
+            joint.connectedBody = stickyObject.Rigidbody;
+        }
+
+        stickyObject.OnSticky();
+
+        sticky.StartListeningNotSticky(NotSticky);
+        sticky.StartListeningChangeCanMove(CanMove);
+    }
+
+    public void CanMove(bool canMove)
+    {
+        if (!stickyObject) return;
+
+        if (canMove)
+        {
+            SetNavEnabled(true);
+            SetTarget(null);
+        }
+        else
+        {
+            SetNavEnabled(false);
         }
     }
 
@@ -147,7 +198,10 @@ public class StickyPet : Pet
     {
         ChangeState(StickyState.Idle);
 
-        if(stickyKinematic && stickyObject) stickyObject.transform.SetParent(null);
+        if (stickyKinematic && stickyObject)
+        {
+            stickyObject.MovableRoot.SetParent(originalParent);
+        }
         else
         {
             FixedJoint[] joints = GetComponents<FixedJoint>();
@@ -157,11 +211,13 @@ public class StickyPet : Pet
             }
         }
 
-        SetNavIsStopped(false);
+        //SetNavIsStopped(false);
+        SetNavEnabled(true);
 
         skillEffect.Play();
         Rigid.isKinematic = false;
         Rigid.useGravity = true;
+        stickyObject = null;
     }
 
     private void OnCollisionEnter(Collision collision)

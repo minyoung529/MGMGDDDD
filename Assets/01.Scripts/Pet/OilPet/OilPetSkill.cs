@@ -33,6 +33,8 @@ public class OilPetSkill
     public Action OnEndSpread_Once { get; set; }
     public bool IsCheckDistance = true;
 
+    public static Action OnClearOil;
+
     public void Init(PaintingObject painting, LineRenderer line, NavMeshAgent pathAgent, NavMeshAgent player)
     {
         this.painting = painting;
@@ -45,6 +47,7 @@ public class OilPetSkill
 
     public void ClearOil()
     {
+        OnClearOil?.Invoke();
         painting.ResetData();
     }
 
@@ -156,7 +159,14 @@ public class OilPetSkill
                 return;
             }
 
-            pathAgent.SetDestination(cameraHit);
+            try
+            {
+                pathAgent.SetDestination(cameraHit);
+            }
+            catch(Exception e)
+            {
+                Debug.Log("<b>PATH AGENT:</b> PATH가 없습니다.");
+            }
 
             float dist = Vector3.Distance(prevPosition, pathAgent.transform.position);
             oilDistance += dist;
