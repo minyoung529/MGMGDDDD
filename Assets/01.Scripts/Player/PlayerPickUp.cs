@@ -22,7 +22,7 @@ public class PlayerPickUp : MonoBehaviour {
 
     private void GetInput(InputAction action, float value) {
         if (playerMove.IsInputLock) return;
-        InputLock(true);
+        playerMove.IsInputLock = true;
         playerMove.Rigid.velocity = Vector3.zero;
 
         switch (action) {
@@ -30,9 +30,11 @@ public class PlayerPickUp : MonoBehaviour {
                 if (!holdingPet) {
                     holdingPet = FindPet();
                     if (!holdingPet) {
-                        InputLock(false);
+                        playerMove.IsInputLock = false;
                         break;
                     }
+                    holdingPet.IsInputLock = true;
+                    holdingPet.Coll.enabled = false;
                     Vector3 dest = CallPet(holdingPet);
                     StartCoroutine(WaitPet(dest, () => playerMove.ChangeState(StateName.PickUp)));
                 }
@@ -41,7 +43,7 @@ public class PlayerPickUp : MonoBehaviour {
                 break;
             case InputAction.Throw:
                 if (!holdingPet) {
-                    InputLock(false);
+                    playerMove.IsInputLock = false;
                     return;
                 }
                 playerMove.ChangeState(StateName.Throw);
@@ -55,7 +57,8 @@ public class PlayerPickUp : MonoBehaviour {
     #region PickUp ฐüทร
     public Pet FindPet() {
         Pet pet = PetManager.Instance.GetSelectedPet();
-        if (!pet || !pet.CheckOnGround()) {
+        if (!pet || !pet.CheckCollision()) {
+            Debug.Log(pet.CheckCollision());
             return null;
         }
         return pet;
@@ -68,8 +71,6 @@ public class PlayerPickUp : MonoBehaviour {
         dir = transform.position + dir * distance2Pet;
         dir.y = pet.transform.position.y;
 
-        pet.Rigid.isKinematic = true;
-        pet.Coll.enabled = false;
         pet.SetDestination(dir);
 
         return pet.GetDestination();
@@ -109,15 +110,19 @@ public class PlayerPickUp : MonoBehaviour {
     private void OnDrop() {
         isHolding = false;
         holdingPet.Rigid.isKinematic = false;
-        holdingPet.OnThrow();
-        holdingPet = null;
+        Sequence seq = DOTween.Sequence();
+        seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
+        seq.AppendCallback(() => {
+            holdingPet.OnLanding();
+            holdingPet = null;
+            seq.Kill();
+        });
     }
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.Rigid.isKinematic = false;
         holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
-
+        holdingPet.Rigid.velocity = Vector3.zero;
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
         holdingPet.OnThrow();
@@ -129,10 +134,4 @@ public class PlayerPickUp : MonoBehaviour {
         playerMove.ChangeState(StateName.DefaultMove);
     }
     #endregion
-
-    private void InputLock(bool value) {
-        playerMove.IsInputLock = value;
-        if (holdingPet)
-            holdingPet.IsInputLock = value;
-    }
 }

@@ -9,7 +9,7 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour {
     [SerializeField] protected PetTypeSO petInform;
     [SerializeField] protected float sightRange = 5f;
-    [SerializeField] protected Transform footPos;
+    [SerializeField] protected float collRadius = 0.7f;
 
     #region CheckList
 
@@ -197,6 +197,7 @@ public abstract class Pet : MonoBehaviour {
     #region InputEvent
     public void MovePoint() {
         if (isInputLock) return;
+        Debug.Log("Click");
         if (IsCameraAimPoint) {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
@@ -233,20 +234,19 @@ public abstract class Pet : MonoBehaviour {
 
     private IEnumerator LandingCoroutine()
     {
-        while (!CheckOnGround())
+        int t = 0;
+        while (!CheckCollision())
         {
+            t++;
             yield return null;
         }
         OnLanding();
     }
 
-    public bool CheckOnGround()
+    public bool CheckCollision()
     {
-        RaycastHit hit;
-        if (Physics.BoxCast(footPos.position + Vector3.up * 0.5f, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.7f, 1 << Define.BOTTOM_LAYER))
-        {
-            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
-        }
+        if (Physics.OverlapSphere(transform.position, collRadius, 1 << Define.BOTTOM_LAYER).Length > 0)
+            return true;
         return false;
     }
 
