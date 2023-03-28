@@ -94,14 +94,6 @@ public class OilPet : Pet
             splatGunNozzle.DOPunchScale(new Vector3(0, 1, 1) / 1.5f, .15f, 10, 1);
         }
     }
-
-    private GameObject CreateOil()
-    {
-        Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
-        GameObject oil = Instantiate(oilSkill, spawnPoint, Quaternion.identity);
-        return oil;
-    }
-
     #endregion
 
     public void SpreadOil()

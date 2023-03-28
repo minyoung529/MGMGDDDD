@@ -36,10 +36,13 @@ public class LinePuzzleController : MonoBehaviour
     [SerializeField]
     private ParticleSystem oilTeleportParticle;
 
+    private bool isPlaying = false;
+
+    #region Property
     public static PlatformPiece CurrentPiece { get; set; }
     public static bool IsOilMove { get; set; } = false;
-
-    private bool isPlaying = false;
+    public static Color SelectedColor { get; set; } = Color.white;
+    #endregion
 
     private void Awake()
     {
@@ -53,7 +56,7 @@ public class LinePuzzleController : MonoBehaviour
         CameraSwitcher.UnRegister(cmVcam);
         CameraSwitcher.Register(cmVcam);
 
-        foreach(LinePuzzle puzzle in linePuzzles)
+        foreach (LinePuzzle puzzle in linePuzzles)
         {
             puzzle.OnClear += GetNextPuzzle;
         }
@@ -63,7 +66,7 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (!isPlaying) return;
 
-        if(Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             ResetBoard();
         }
@@ -96,9 +99,16 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.IsDirectSpread = false;
         oilPet.OnEndSkill += MoveToPortal;
         oilPet.OnStartSkill += CurrentPuzzle.ResetOil;
+        oilPet.OnStartSkill += SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = false;
 
         StartGame();
+    }
+
+    private void SetSelectedColor()
+    {
+        if (CurrentPiece)
+            SelectedColor = CurrentPiece.Color;
     }
 
     public void ExitGame()
@@ -114,6 +124,7 @@ public class LinePuzzleController : MonoBehaviour
 
         oilPet.OnEndSkill -= MoveToPortal;
         oilPet.OnStartSkill -= CurrentPuzzle.ResetOil;
+        oilPet.OnStartSkill -= SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = true;
     }
 
@@ -168,7 +179,13 @@ public class LinePuzzleController : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
-        seq.Append(linePuzzles[idx].transform.DOMove(boardTransform.position, 1f));
+        seq.Append(linePuzzles[idx].transform.DOMove(linePuzzles[0].transform.position, 1f));
+
+        if (idx - 1 >= 0)
+        {
+            linePuzzles[idx - 1].gameObject.SetActive(false);
+        }
+
         seq.AppendCallback(() => linePuzzles[idx].StartGame());
     }
 

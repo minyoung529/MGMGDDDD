@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -47,7 +48,7 @@ public class PlatformPiece : MonoBehaviour
         fire = GetComponentInChildren<Fire>();
     }
 
-    public void Initialize(int c, ref Color[] colors)
+    public void Initialize(int c, ref Color[] colors, ref Color[] matColors)
     {
         if (c < 0)
         {
@@ -57,8 +58,10 @@ public class PlatformPiece : MonoBehaviour
         {
             connectPoint.SetActive(true);
             pointRenderer.material = Instantiate(pointRenderer.sharedMaterial);
-            pointRenderer.material.SetColor("_EmissionColor", colors[c] - Color.white * 0.3f);
-            pointRenderer.material.color = Color = colors[c];
+
+            pointRenderer.material.SetColor("_EmissionColor", matColors[c]);
+            pointRenderer.material.color = matColors[c];
+            Color = colors[c];
             Index = c;
         }
 
@@ -69,7 +72,7 @@ public class PlatformPiece : MonoBehaviour
     {
         if (!isBurning && other.name == "Trigger")
         {
-            if(isDestroyed)
+            if (isDestroyed)
             {
                 controller.PauseOilPet(true);
             }
@@ -99,7 +102,7 @@ public class PlatformPiece : MonoBehaviour
         else if (other.CompareTag(Define.OIL_PET_TAG))
         {
             isLightOn = true;
-            boardRenderer.material.DOColor(LinePuzzleController.CurrentPiece.Color, 1f);
+            boardRenderer.material.DOColor(LinePuzzleController.SelectedColor, 1f);
         }
     }
 
@@ -152,7 +155,7 @@ public class PlatformPiece : MonoBehaviour
         if (collision.gameObject.CompareTag(Define.OIL_PET_TAG))
         {
             isLightOn = true;
-            boardRenderer.material.DOColor(LinePuzzleController.CurrentPiece.Color, 1f);
+            boardRenderer.material.DOColor(LinePuzzleController.SelectedColor, 1f);
         }
     }
 

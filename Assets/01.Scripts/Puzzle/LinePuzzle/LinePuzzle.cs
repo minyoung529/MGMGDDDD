@@ -15,6 +15,8 @@ public class LinePuzzle : MonoBehaviour
     private int connectCount = 0;
     [SerializeField]
     private Color[] colors;
+    [SerializeField]
+    private Color[] matColors;
 
     [Header("BOARD")]
     [SerializeField]
@@ -53,7 +55,7 @@ public class LinePuzzle : MonoBehaviour
 
     private void Awake()
     {
-        Initilize();
+        Initialize();
     }
 
     public void StartGame()
@@ -61,17 +63,17 @@ public class LinePuzzle : MonoBehaviour
         CreatePortal(oilPortal, oilPortals, oilPortalTransform);
         CreatePortal(firePortal, firePortals, firePortalTransform);
 
-        InitilizeFirePortal();
+        InitializeFirePortal();
     }
 
-    private void Initilize()
+    private void Initialize()
     {
         float weight = boardCollider.size.x;
         float height = boardCollider.size.z;
 
         int boardCnt = boardInformation.Count;
 
-        Vector3 offset = board.transform.position + Vector3.up * 0.7f /*+ new Vector3(weight / boardCnt * 0.5f, 0, -height / boardCnt * 0.5f)*/;
+        Vector3 offset = board.transform.position;
 
         for (int i = 0; i < boardCnt; i++)
         {
@@ -80,7 +82,7 @@ public class LinePuzzle : MonoBehaviour
             {
                 PlatformPiece newObj = Instantiate(platformPiece);
                 newObj.name = $"({i}, {j}) : {boardInformation[i][j]}";
-                newObj.Initialize(boardInformation[i][j] - '1', ref colors);
+                newObj.Initialize(boardInformation[i][j] - '1', ref colors, ref matColors);
 
                 newObj.OnDestroyPlatform += CheckSolve;
 
@@ -123,7 +125,7 @@ public class LinePuzzle : MonoBehaviour
         }
     }
 
-    private void InitilizeFirePortal()
+    private void InitializeFirePortal()
     {
         for (int i = 0; i < connectCount; i++)
         {
@@ -144,12 +146,6 @@ public class LinePuzzle : MonoBehaviour
 
     private void CheckSolve()
     {
-        // »ö±ò ¹Ù²î´Â ¹ö±×
-        // Trigger ¶§¹®¿¡~~
-
-        // Oil Paint ¾ÈµÊ
-        // ¤À°¡¤³
-
         if (++destroyPuzzleCnt == boardInformation.Count * boardInformation[0].Length)
         {
             EndPuzzle();
