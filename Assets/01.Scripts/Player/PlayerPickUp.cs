@@ -30,12 +30,13 @@ public class PlayerPickUp : MonoBehaviour {
     }
 
     private void PickUp() {
-        holdingPet = GameManager.Instance.GetNearest(transform, GameManager.Instance.Pets);
-        if (!holdingPet) {
+        holdingPet = PetManager.Instance.GetSelectedPet();
+        if (!holdingPet || !holdingPet.CheckOnGround()) {
             isPlaying = false;
+            holdingPet = null;
             return;
         }
-        
+
         Vector3 dir = holdingPet.transform.position - transform.position;
         dir.y = 0;
         dir = dir.normalized;
@@ -105,7 +106,6 @@ public class PlayerPickUp : MonoBehaviour {
     private void ThrowPet() {
         isHolding = false;
         holdingPet.Rigid.isKinematic = false;
-        holdingPet.Coll.enabled = true;
         holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
     }
 }

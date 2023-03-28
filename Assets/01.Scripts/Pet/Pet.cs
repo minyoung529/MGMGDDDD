@@ -6,9 +6,10 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour, IFindable
+public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
+    [SerializeField] protected float sightRange = 5f;
 
     #region CheckList
 
@@ -27,7 +28,6 @@ public abstract class Pet : MonoBehaviour, IFindable
 
     private Vector3 originScale;
 
-    [SerializeField] protected float sightRange = 5f;
 
     #region Get
 
@@ -36,7 +36,6 @@ public abstract class Pet : MonoBehaviour, IFindable
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
     public Sprite petSprite => petInform.petUISprite;
-    bool IFindable.IsFindable { get => isFindable; }
 
     #endregion
 
@@ -130,7 +129,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     #region Move
 
     private void FollowTarget() {
-        if (!target) return;
+        if (!target || !agent.isOnNavMesh) return;
         agent.SetDestination(target.position);
     }
 
@@ -159,6 +158,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public void SetDestination(Vector3 target, float stopDistance = 0) {
         //SetNavEnabled(true);
         //SetNavIsStopped(false);
+        if (!agent.isOnNavMesh) return;
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
@@ -253,7 +253,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public bool CheckOnGround()
     {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.4f, 1 << Define.BOTTOM_LAYER))
+        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.5f, 1 << Define.BOTTOM_LAYER))
         {
             if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
         }
@@ -263,6 +263,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public virtual void OnLanding() 
     {
         SetNavEnabled(true);
+        coll.enabled = true;
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         if (!FindButton())
             agent.SetDestination(transform.position);
