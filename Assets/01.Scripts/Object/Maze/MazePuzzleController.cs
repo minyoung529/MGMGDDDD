@@ -1,4 +1,5 @@
 using Cinemachine;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -79,7 +80,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         mazeCanvas.gameObject.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.visible = false;
 
         Pet.IsCameraAimPoint = false;
         playerMove.enabled = false;
