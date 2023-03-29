@@ -47,7 +47,8 @@ public class PlayerMove : MonoBehaviour {
     private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
     [SerializeField] private MoveState curState;
 
-    public bool IsInputLock = false;
+    private bool isInputLock = false;
+    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
 
     [SerializeField] private LayerMask groundLayer;
     #endregion

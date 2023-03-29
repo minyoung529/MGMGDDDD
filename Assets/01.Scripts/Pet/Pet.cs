@@ -6,25 +6,26 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour
-{
+public abstract class Pet : MonoBehaviour {
     [SerializeField] protected PetTypeSO petInform;
     [SerializeField] protected float sightRange = 5f;
+    [SerializeField] protected float collRadius = 0.7f;
 
     #region CheckList
 
     private bool isCoolTime = false;
     protected bool isMouseMove = false;
-
-    private bool isFindable = true;
+    private bool isInputLock = false;
+    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
 
     #endregion
 
     protected Rigidbody rigid;
     protected Collider coll;
-    private Transform player;
-    private Transform target;
+    protected Transform player;
+    protected Transform target;
     protected NavMeshAgent agent;
+    protected PetHold hold; 
 
     private Vector3 originScale;
 
@@ -35,6 +36,7 @@ public abstract class Pet : MonoBehaviour
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
+    public PetHold Hold => hold;
     public Sprite petSprite => petInform.petUISprite;
 
     #endregion
@@ -155,22 +157,15 @@ public abstract class Pet : MonoBehaviour
         agent.stoppingDistance = distanceToPlayer;
     }
 
-    public void SetDestination(Vector3 target, float stopDistance = 0) {
-        //SetNavEnabled(true);
-        //SetNavIsStopped(false);
+    public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null) {
         if (!agent.isOnNavMesh) return;
+        this.onArrive = onArrive;
+        SetNavEnabled(true);
+        SetNavIsStopped(false);
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
-
-        try
-        {
-            agent.SetDestination(target);
-        }
-        catch(Exception e)
-        {
-            Debug.Log(e.Message);
-        }
+        agent.SetDestination(target);
     }
 
     private void CheckArrive() {
@@ -200,6 +195,8 @@ public abstract class Pet : MonoBehaviour
 
     #region InputEvent
     public void MovePoint() {
+        if (isInputLock) return;
+        Debug.Log("Click");
         if (IsCameraAimPoint) {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
@@ -211,6 +208,7 @@ public abstract class Pet : MonoBehaviour
     }
 
     public virtual void Withdraw() {
+        if (isInputLock) return;
         ResetPet();
     }
     #endregion
@@ -238,25 +236,24 @@ public abstract class Pet : MonoBehaviour
     #region Throw/Landing
     public virtual void OnThrow()
     {
-        isFindable = false;
         StartCoroutine(LandingCoroutine());
     }
 
     private IEnumerator LandingCoroutine()
     {
-        while (!CheckOnGround())
+        int t = 0;
+        while (!CheckCollision())
         {
+            t++;
             yield return null;
         }
         OnLanding();
     }
-    public bool CheckOnGround()
+
+    public bool CheckCollision()
     {
-        RaycastHit hit;
-        if (Physics.BoxCast(transform.position, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 0.5f, 1 << Define.BOTTOM_LAYER))
-        {
-            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
-        }
+        if (Physics.OverlapSphere(transform.position, collRadius, 1 << Define.BOTTOM_LAYER).Length > 0)
+            return true;
         return false;
     }
 
@@ -265,9 +262,9 @@ public abstract class Pet : MonoBehaviour
         SetNavEnabled(true);
         coll.enabled = true;
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
+        isInputLock = false;
         if (!FindButton())
-            agent.SetDestination(transform.position);
-        isFindable = true;
+            SetTarget(null);
     }
     #endregion
 }
