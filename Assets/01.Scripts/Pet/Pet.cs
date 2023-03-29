@@ -38,7 +38,7 @@ public abstract class Pet : MonoBehaviour {
     public Collider Coll => coll;
     public PetHold Hold => hold;
     public Sprite petSprite => petInform.petUISprite;
-
+    public PetType GetPetType => petInform.petType;
     #endregion
 
     private float distanceToPlayer = 5f;
@@ -184,7 +184,10 @@ public abstract class Pet : MonoBehaviour {
     public Vector3 GetDestination() {
         return agent.destination;
     }
-
+    public void ResetNav()
+    {
+        agent.ResetPath();
+    }
     public void SetForcePosition(Vector3 position)
     {
         agent.enabled = false;
@@ -196,7 +199,7 @@ public abstract class Pet : MonoBehaviour {
     #region InputEvent
     public void MovePoint() {
         if (isInputLock) return;
-        Debug.Log("Click");
+
         if (IsCameraAimPoint) {
             SetDestination(GameManager.Instance.GetCameraHit());
         }

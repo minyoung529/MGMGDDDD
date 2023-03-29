@@ -15,6 +15,7 @@ public class ButtonObject : MonoBehaviour, IFindable {
 
     private GameObject obj = null;
     private bool isButtonOn = false;
+    public GameObject EnterObject => obj;
 
     private void OnTriggerEnter(Collider other) {
         if (((1 << other.gameObject.layer) & layerMask) != 0) {
@@ -26,6 +27,7 @@ public class ButtonObject : MonoBehaviour, IFindable {
     private void OnTriggerExit(Collider other) {
         if (((1 << other.gameObject.layer) & layerMask) != 0) {
             if (!isButtonOn || !isRerise || obj != other.gameObject) return;
+            obj = null;
             Press(false);
         }
     }
@@ -39,4 +41,9 @@ public class ButtonObject : MonoBehaviour, IFindable {
     private void OnButtonAnimation(bool value) {
         cap.DOLocalMoveY(value ? -0.2f : 0, 0.3f);
     }
+
+    public void PressButton(bool value) {
+        Press(value);
+    }
+
 }
