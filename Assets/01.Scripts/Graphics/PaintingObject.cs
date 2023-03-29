@@ -158,8 +158,6 @@ public class PaintingObject : MonoBehaviour
     {
         float timer = 0f;
 
-        Debug.Log("PAINT");
-
         while (timer < OIL_PAINT_DURATION)
         {
             Color blend = Color.Lerp(Color.clear, top.color.Value, timer / OIL_PAINT_DURATION);

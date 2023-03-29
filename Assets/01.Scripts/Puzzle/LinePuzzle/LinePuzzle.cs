@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder;
 
 public class LinePuzzle : MonoBehaviour
@@ -68,7 +69,8 @@ public class LinePuzzle : MonoBehaviour
 
     private void Initialize()
     {
-        float weight = boardCollider.size.x;
+        float scaleWeight = boardCollider.transform.localScale.x;
+        float width = boardCollider.size.x;
         float height = boardCollider.size.z;
 
         int boardCnt = boardInformation.Count;
@@ -89,16 +91,16 @@ public class LinePuzzle : MonoBehaviour
                 newObj.transform.position =
                     new Vector3
                     (
-                        weight / length * j,
+                        width / length * j * scaleWeight,
                         0f,
-                        -height / boardCnt * i
+                        -height / boardCnt * i* scaleWeight
                     ) + offset;
 
                 newObj.transform.SetParent(transform);
 
                 Vector3 scale = newObj.transform.localScale;
-                scale.x = 1 / (float)boardInformation.Count;
-                scale.z = 1 / (float)boardInformation[0].Length;
+                scale.x = 1 / (float)boardInformation.Count     * scaleWeight;
+                scale.z = 1 / (float)boardInformation[0].Length * scaleWeight;
 
                 newObj.transform.localScale = scale;
 

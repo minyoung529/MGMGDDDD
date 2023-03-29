@@ -4,15 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LinePuzzleController : MonoBehaviour
 {
     [SerializeField]
     private LinePuzzle[] linePuzzles;
     private LinePuzzle CurrentPuzzle => linePuzzles[idx];
-
-    [SerializeField]
-    private CinemachineVirtualCamera cmVcam;
 
     private ThirdPersonCameraControll cameraController;
 
@@ -38,10 +36,13 @@ public class LinePuzzleController : MonoBehaviour
 
     private bool isPlaying = false;
 
+    [Header("EVENTS")]
+    [SerializeField] private UnityEvent onEnterGame;
+
     #region Property
     public static PlatformPiece CurrentPiece { get; set; }
     public static bool IsOilMove { get; set; } = false;
-    public static Color SelectedColor { get; set; } = Color.white;
+    public static PlatformPiece SelectedPiece { get; set; }
     #endregion
 
     private void Awake()
@@ -53,9 +54,6 @@ public class LinePuzzleController : MonoBehaviour
 
     private void Start()
     {
-        CameraSwitcher.UnRegister(cmVcam);
-        CameraSwitcher.Register(cmVcam);
-
         foreach (LinePuzzle puzzle in linePuzzles)
         {
             puzzle.OnClear += GetNextPuzzle;
@@ -71,6 +69,12 @@ public class LinePuzzleController : MonoBehaviour
             ResetBoard();
         }
 
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            CurrentPuzzle.EndPuzzle();
+            GetNextPuzzle();
+        }
+
         trigger.transform.position = GameManager.Instance.GetMousePos();
     }
 
@@ -83,7 +87,7 @@ public class LinePuzzleController : MonoBehaviour
     public void EnterGame()
     {
         isPlaying = true;
-        CameraSwitcher.SwitchCamera(cmVcam);
+        onEnterGame?.Invoke();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -98,7 +102,7 @@ public class LinePuzzleController : MonoBehaviour
 
         oilPet.IsDirectSpread = false;
         oilPet.OnEndSkill += MoveToPortal;
-        oilPet.OnStartSkill += CurrentPuzzle.ResetOil;
+        oilPet.OnStartSkill += ResetOil;
         oilPet.OnStartSkill += SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = false;
 
@@ -108,7 +112,9 @@ public class LinePuzzleController : MonoBehaviour
     private void SetSelectedColor()
     {
         if (CurrentPiece)
-            SelectedColor = CurrentPiece.Color;
+        {
+            SelectedPiece = CurrentPiece;
+        }
     }
 
     public void ExitGame()
@@ -123,7 +129,7 @@ public class LinePuzzleController : MonoBehaviour
         Pet.IsCameraAimPoint = true;
 
         oilPet.OnEndSkill -= MoveToPortal;
-        oilPet.OnStartSkill -= CurrentPuzzle.ResetOil;
+        oilPet.OnStartSkill -= ResetOil;
         oilPet.OnStartSkill -= SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = true;
     }
@@ -135,11 +141,11 @@ public class LinePuzzleController : MonoBehaviour
 
     private void MoveToPortal()
     {
-        if (CurrentPiece)
+        if (SelectedPiece)
         {
-            if (CurrentPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= CurrentPiece.Index) return;
+            if (SelectedPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= SelectedPiece.Index) return;
 
-            ConnectionPortal portal = CurrentPuzzle.OilPortals[CurrentPiece.Index];
+            ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
             oilPet.SetDestination(portal.transform.position);
             oilPet.onArrive += ForceMoveBoard;
         }
@@ -179,19 +185,24 @@ public class LinePuzzleController : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
-        seq.Append(linePuzzles[idx].transform.DOMove(linePuzzles[0].transform.position, 1f));
-
-        if (idx - 1 >= 0)
+        seq.AppendCallback(() =>
         {
-            linePuzzles[idx - 1].gameObject.SetActive(false);
-        }
+            if (idx - 1 >= 0)
+                linePuzzles[idx - 1].gameObject.SetActive(false);
+        });
+        seq.Append(linePuzzles[idx].transform.DOMove(linePuzzles[0].transform.position, 1f));
 
         seq.AppendCallback(() => linePuzzles[idx].StartGame());
     }
 
+    private void ResetOil()
+    {
+        CurrentPuzzle.ResetOil();
+    }
+
     private void EndPuzzle()
     {
-        EnterGame();
+        ExitGame();
         oilPet.PauseSkill(false);
     }
 

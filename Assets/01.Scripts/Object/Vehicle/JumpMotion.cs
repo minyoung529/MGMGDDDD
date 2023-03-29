@@ -20,12 +20,12 @@ public class JumpMotion
         return points;
     }
 
-    public void StartJump(Transform player, Action OnStartJump, Action OnEndJump, bool isSit = false)
+    public void StartJump(Transform player, Action OnStartJump, Action OnEndJump, bool isSit = false, float duration = 0.75f)
     {
         OnStartJump?.Invoke();
         StartAnimation(player);
 
-        player.DOPath(GetWayPoints(player), 0.75f, PathType.CatmullRom).OnComplete(() =>
+        player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
         {
             if (isSit)
             {

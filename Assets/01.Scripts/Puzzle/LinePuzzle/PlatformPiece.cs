@@ -102,7 +102,7 @@ public class PlatformPiece : MonoBehaviour
         else if (other.CompareTag(Define.OIL_PET_TAG))
         {
             isLightOn = true;
-            boardRenderer.material.DOColor(LinePuzzleController.SelectedColor, 1f);
+            boardRenderer.material.DOColor(LinePuzzleController.SelectedPiece.Color, 1f);
         }
     }
 
@@ -155,7 +155,7 @@ public class PlatformPiece : MonoBehaviour
         if (collision.gameObject.CompareTag(Define.OIL_PET_TAG))
         {
             isLightOn = true;
-            boardRenderer.material.DOColor(LinePuzzleController.SelectedColor, 1f);
+            boardRenderer.material.DOColor(LinePuzzleController.SelectedPiece.Color, 1f);
         }
     }
 
