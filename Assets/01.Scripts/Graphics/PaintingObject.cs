@@ -137,7 +137,7 @@ public class PaintingObject : MonoBehaviour
         paintData.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
 
         StartCoroutine(SpreadCoroutine(paintData));
-        //PaintManager.instance.Paint(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
+        //PaintManager.Instance.Paint(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
     }
 
     private IEnumerator DryCoroutine(PaintStructure p)

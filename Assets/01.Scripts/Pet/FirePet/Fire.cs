@@ -172,7 +172,6 @@ public class Fire : MonoBehaviour
             transform.DOKill();
             f.Burn();
         }
-        
     }
 
     private void OnDestroy()

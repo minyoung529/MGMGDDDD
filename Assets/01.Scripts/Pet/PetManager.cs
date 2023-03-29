@@ -199,6 +199,10 @@ public class PetManager : MonoSingleton<PetManager>
         OffSelectPetUI();
     }
 
+    public Pet GetSelectedPet() {
+        if (PetCount < 1) return null;
+        return pets[selectIndex];
+    }
     #endregion
 
     #region Set

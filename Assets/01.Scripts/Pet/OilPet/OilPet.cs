@@ -24,6 +24,7 @@ public class OilPet : Pet
     private NavMeshAgent pathAgent;
     private OilPetSkill oilPetSkill = new OilPetSkill();
     private bool isSkilling;
+    private bool pauseSkilling = false;
     protected bool isSkillDragging;
 
     #region Property
@@ -54,7 +55,7 @@ public class OilPet : Pet
     // Active skill
     public override void Skill()
     {
-        if (IsCoolTime || isSkillDragging || isSkillDragging) return;
+        if (IsCoolTime || isSkillDragging || isSkillDragging || pauseSkilling) return;
         base.Skill();
 
         OnStartSkill?.Invoke();
@@ -93,19 +94,11 @@ public class OilPet : Pet
             splatGunNozzle.DOPunchScale(new Vector3(0, 1, 1) / 1.5f, .15f, 10, 1);
         }
     }
-
-    private GameObject CreateOil()
-    {
-        Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
-        GameObject oil = Instantiate(oilSkill, spawnPoint, Quaternion.identity);
-        return oil;
-    }
-
     #endregion
 
     public void SpreadOil()
     {
-        if (isSkilling && !isMouseMove && IsDirectSpread)
+        if (isSkilling && (!isMouseMove || IsDirectSpread))
         {
             oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetTarget(null); SetNavIsStopped(false); ResetSkill(); });
         }
@@ -126,6 +119,7 @@ public class OilPet : Pet
 
         agent.isStopped = false;
         isSkillDragging = false;
+        pauseSkilling = false;
     }
 
     protected void ResetSkill()
@@ -137,6 +131,15 @@ public class OilPet : Pet
     public override void OnUpdate()
     {
         base.OnUpdate();
-        oilPetSkill.Update(isSkilling, isSkillDragging);
+
+        if (!pauseSkilling)
+        {
+            oilPetSkill.Update(isSkilling, isSkillDragging);
+        }
+    }
+
+    public void PauseSkill(bool pause)
+    {
+        pauseSkilling = pause;
     }
 }
