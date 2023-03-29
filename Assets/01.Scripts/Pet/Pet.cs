@@ -39,8 +39,6 @@ public abstract class Pet : MonoBehaviour {
     public PetHold Hold => hold;
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
-    bool IFindable.IsFindable { get => isFindable; }
-
     #endregion
 
     private float distanceToPlayer = 5f;
@@ -201,7 +199,7 @@ public abstract class Pet : MonoBehaviour {
     #region InputEvent
     public void MovePoint() {
         if (isInputLock) return;
-        Debug.Log("Click");
+
         if (IsCameraAimPoint) {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
