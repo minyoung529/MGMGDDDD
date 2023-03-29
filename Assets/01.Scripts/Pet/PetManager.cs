@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PetManager : MonoSingleton<PetManager>
@@ -21,6 +22,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     #region Get
     public int PetCount { get { return pets.Count; } }
+    public Pet GetSelectPet { get { return pets[selectIndex]; } }
     #endregion 
 
     protected override void Awake()
@@ -103,6 +105,7 @@ public class PetManager : MonoSingleton<PetManager>
     private void OnClickMove(InputAction input, float value)
     {
         if (selectIndex < 0) return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         pets[selectIndex].MovePoint();
     }
 

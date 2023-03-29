@@ -1,4 +1,5 @@
 using Cinemachine;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,8 @@ public class ThirdPersonCameraControll : MonoBehaviour
 {
     [SerializeField] Texture2D skillCursor;
     [SerializeField] CinemachineFreeLook defaultCamera;
-    [SerializeField] Canvas crosshair;
+    [SerializeField] Canvas crosshairCanvas;
+    private GameObject crosshair;
 
     [SerializeField] private float rotCamXAxisSpeed = 5f;
     [SerializeField] private float rotCamYAxisSpeed = 3f;
@@ -22,13 +24,15 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private const float limitMaxX = 80;
 
     private float eulerAngleX; 
-    private float eulerAngleY; 
+    private float eulerAngleY;
+    private static bool crossHairMove = false;
 
     private void Start()
     {
         ResetCamera();
 
         animator = GetComponent<Animator>();
+        crosshair = crosshairCanvas.transform.GetChild(0).gameObject;
     }
 
     #region Camera Set
@@ -45,6 +49,10 @@ public class ThirdPersonCameraControll : MonoBehaviour
         CameraSwitcher.SwitchCamera(defaultCamera);
     }
     #endregion
+    private void Update()
+    {
+        CrossHairMove();
+    }
 
     private void UpdateRotate()
     {
@@ -82,12 +90,23 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     public void ActiveCrossHair()
     {
-        crosshair.gameObject.SetActive(true);
+        crosshairCanvas.gameObject.SetActive(true);
     }
 
     public void InactiveCrossHair()
     {
-        crosshair.gameObject.SetActive(false);
+        crosshairCanvas.gameObject.SetActive(false);
+    }
+
+    public static void OnCrossHairMove(bool value)
+    {
+        crossHairMove = value;
+    }
+
+    private void CrossHairMove()
+    {
+        if (!crossHairMove) return;
+        crosshair.transform.position = Input.mousePosition;
     }
 
     private void OnDestroy()

@@ -36,6 +36,7 @@ public abstract class Pet : MonoBehaviour, IFindable
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
     public Sprite petSprite => petInform.petUISprite;
+    public PetType GetPetType => petInform.petType;
     bool IFindable.IsFindable { get => isFindable; }
 
     #endregion
@@ -189,7 +190,10 @@ public abstract class Pet : MonoBehaviour, IFindable
     public Vector3 GetDestination() {
         return agent.destination;
     }
-
+    public void ResetNav()
+    {
+        agent.ResetPath();
+    }
     public void SetForcePosition(Vector3 position)
     {
         agent.enabled = false;
