@@ -201,7 +201,7 @@ public abstract class Pet : MonoBehaviour
     #region InputEvent
     public void MovePoint() {
         if (isInputLock) return;
-        Debug.Log("Click");
+
         if (IsCameraAimPoint) {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
@@ -219,9 +219,9 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     /// <summary>
-    /// ¸Ê¿¡ Á¸ÀçÇÏ´Â Å½»ö °¡´ÉÇÑ ¹öÆ°À» Ã£À½
+    /// ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ Ã£ï¿½ï¿½
     /// </summary>
-    /// <returns>Å½»ö ¼º°ø ¿©ºÎ</returns>
+    /// <returns>Å½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</returns>
     private bool FindButton() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (target == null) return false;
@@ -233,7 +233,7 @@ public abstract class Pet : MonoBehaviour
         }
         catch(Exception e)
         {
-            Debug.Log("PATH°¡ ¾ø½À´Ï´Ù.");
+            Debug.Log("PATHï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
         return true;
     }

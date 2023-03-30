@@ -105,7 +105,7 @@ public class PetManager : MonoSingleton<PetManager>
     private void OnClickMove(InputAction input, float value)
     {
         if (selectIndex < 0) return;
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
         pets[selectIndex].MovePoint();
     }
 
