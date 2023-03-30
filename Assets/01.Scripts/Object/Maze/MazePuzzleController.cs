@@ -4,29 +4,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 {
+    [SerializeField] UnityEvent enterEvent;
+    [SerializeField] UnityEvent exitEvent;
+
     [SerializeField] CinemachineFreeLook defaultCam;
     [SerializeField] CinemachineVirtualCamera fireCam;
     [SerializeField] CinemachineVirtualCamera oilCam;
 
-    [SerializeField] GameObject exitTrigger;
-
-    [SerializeField] PlayerMove playerMove;
-    [SerializeField] Canvas mazeCanvas;
+    [SerializeField] Canvas crosshairCanvas;
     [SerializeField] Text countText;
 
-    Stack<MazeButton> buttons = new Stack<MazeButton>();
-
     private const int maxUndoCount = 2;
-    private int undoCount = 2;
+    private bool crossHairMove = false;
     private int exitPetCount = 0;
+    private int undoCount = 2;
+
+    private RectTransform crosshair;
+    Stack<MazeButton> buttons = new Stack<MazeButton>();
 
     private void Start()
     {
+        crosshair = crosshairCanvas.transform.GetChild(0).GetComponent<RectTransform>();
         RegisterCamera();
         ResetController();
     }
@@ -35,11 +39,17 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
         InputManager.StartListeningInput(InputAction.Down_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_First_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_Second_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_Third_Pet, SwitchPet);
     }
     private void StopListen()
     {
         InputManager.StopListeningInput(InputAction.Up_Pet, SwitchPet);
         InputManager.StopListeningInput(InputAction.Down_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_First_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_Second_Pet, SwitchPet);
+        InputManager.StartListeningInput(InputAction.Select_Third_Pet, SwitchPet);
     }
 
     private void SwitchPet(InputAction input, float action)
@@ -62,7 +72,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     private void ResetController()
     {
-        mazeCanvas.gameObject.SetActive(false);
         undoCount = maxUndoCount;
         exitPetCount = 0;
         countText.text = string.Format($"{undoCount}");
@@ -76,16 +85,34 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
         StartListen();
         ChangeCam();
-        ThirdPersonCameraControll.OnCrossHairMove(true);
-        mazeCanvas.gameObject.SetActive(true);
+        OnCrossHairMove(true);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
 
         Pet.IsCameraAimPoint = false;
-        playerMove.enabled = false;
     }
 
+
+    public void OnCrossHairMove(bool value)
+    {
+        if (crossHairMove == value) return;
+
+        crossHairMove = value;
+        if (value == true) StartCoroutine(CrossHairMove());
+    }
+
+    private IEnumerator CrossHairMove()
+    {
+        while (true)
+        {
+            if (!crossHairMove) break;
+            crosshair.transform.position = Input.mousePosition;
+            yield return new WaitForSeconds(0.01f);
+        }
+        crosshair.anchoredPosition = new Vector3(0, 0, 0);
+        yield return null;
+    }
     #endregion
 
     #region Do
@@ -130,7 +157,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         exitPetCount++;
         if (exitPetCount >= 2) ExitGame();
     }
-
     public void ExitPet()
     {
         exitPetCount--;
@@ -138,17 +164,16 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     public void ExitGame()
     {
+        exitEvent?.Invoke();
+
         StopListen();
         CameraSwitcher.SwitchCamera(defaultCam);
-        ThirdPersonCameraControll.OnCrossHairMove(false);
-        mazeCanvas.gameObject.SetActive(false);
-        exitTrigger.gameObject.SetActive(false);
+        OnCrossHairMove(false);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         Pet.IsCameraAimPoint = true;
-        playerMove.enabled = true;
     }
 
     #endregion

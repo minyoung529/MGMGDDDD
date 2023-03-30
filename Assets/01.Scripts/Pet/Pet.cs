@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour {
+public abstract class Pet : MonoBehaviour
+{
     [SerializeField] protected PetTypeSO petInform;
     [SerializeField] protected float sightRange = 5f;
     [SerializeField] protected float collRadius = 0.7f;
@@ -39,7 +40,6 @@ public abstract class Pet : MonoBehaviour {
     public PetHold Hold => hold;
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
-    bool IFindable.IsFindable { get => isFindable; }
 
     #endregion
 
