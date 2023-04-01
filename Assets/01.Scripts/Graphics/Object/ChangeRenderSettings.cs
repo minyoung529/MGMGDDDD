@@ -14,6 +14,7 @@ public class ChangeRenderSettings : MonoBehaviour
     [SerializeField]
     private bool isFirstState = false;
 
+    [Header("VARIABLE")]
     [SerializeField]
     private Color ambientLight;
     [SerializeField]
@@ -34,6 +35,9 @@ public class ChangeRenderSettings : MonoBehaviour
 
     private bool onceChange = false;
 
+    [SerializeField]
+    private bool[] changeVariable = new bool[5] { true, true, true, true, true };
+
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
@@ -44,13 +48,15 @@ public class ChangeRenderSettings : MonoBehaviour
             }
             else
             {
-                if (transform.position.x > other.transform.position.x)
+                //if (transform.position.x > other.transform.position.x)
+                //{
+                //    if (!onceChange) return;
+                //    Back();
+                //}
+                //else
                 {
-                    if (!onceChange) return;
-                    Back();
-                }
-                else
-                {
+                    if (onceChange) return;
+
                     onceChange = true;
                     Change();
                 }
@@ -66,19 +72,29 @@ public class ChangeRenderSettings : MonoBehaviour
 
     public void Change()
     {
-        oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
-        oAmbientLight = RenderSettingController.SetAmbientLight(ambientLight, duration);
-        oFog = RenderSettingController.Setfog(fog);
-        oFogColor = RenderSettingController.SetFogColor(fogColor, duration);
-        oFogDensity = RenderSettingController.SetFogDensity(fogDensity, duration);
+        if (changeVariable[0])
+            oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
+        if (changeVariable[1])
+            oAmbientLight = RenderSettingController.SetAmbientLight(ambientLight, duration);
+        if (changeVariable[2])
+            oFog = RenderSettingController.Setfog(fog);
+        if (changeVariable[3])
+            oFogColor = RenderSettingController.SetFogColor(fogColor, duration);
+        if (changeVariable[4])
+            oFogDensity = RenderSettingController.SetFogDensity(fogDensity, duration);
     }
 
     public void Back()
     {
-        RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
-        RenderSettingController.SetAmbientLight(oAmbientLight, duration);
-        RenderSettingController.Setfog(oFog);
-        RenderSettingController.SetFogColor(oFogColor, duration);
-        RenderSettingController.SetFogDensity(oFogDensity, duration);
+        if (changeVariable[0])
+            RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
+        if (changeVariable[1])
+            RenderSettingController.SetAmbientLight(oAmbientLight, duration);
+        if (changeVariable[2])
+            RenderSettingController.Setfog(oFog);
+        if (changeVariable[3])
+            RenderSettingController.SetFogColor(oFogColor, duration);
+        if (changeVariable[4])
+            RenderSettingController.SetFogDensity(oFogDensity, duration);
     }
 }

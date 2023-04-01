@@ -2,24 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class ToggleRotation : MonoBehaviour
 {
     [SerializeField] private float duration = 4f;
     [SerializeField] private Vector3 targetAngles;
     [SerializeField] private bool isLocal = false;
-    private Vector3 originalAngles;
+    private Quaternion originalAngles;
     private bool isOpen = false;
+
+    [SerializeField]
+    private float predelay = 0f;
 
     private void Start()
     {
         if (isLocal)
         {
-            originalAngles = transform.localEulerAngles;
+            originalAngles = transform.localRotation;
         }
         else
         {
-            originalAngles = transform.eulerAngles;
+            originalAngles = transform.rotation;
         }
     }
 
@@ -39,9 +43,13 @@ public class ToggleRotation : MonoBehaviour
         transform.DOKill();
 
         if (isLocal)
-            transform.DOLocalRotate(targetAngles, duration);
+        {
+            Delay(() => transform.DOLocalRotateQuaternion(Quaternion.Euler(targetAngles), duration));
+        }
         else
-            transform.DORotate(targetAngles, duration);
+        {
+            Delay(() => transform.DORotateQuaternion(Quaternion.Euler(targetAngles), duration));
+        }
     }
 
     public void Close()
@@ -49,8 +57,26 @@ public class ToggleRotation : MonoBehaviour
         transform.DOKill();
 
         if (isLocal)
-            transform.DOLocalRotate(originalAngles, duration);
+        {
+            Delay(() => transform.DOLocalRotateQuaternion(originalAngles, duration));
+        }
         else
-            transform.DORotate(originalAngles, duration);
+        {
+            Delay(() => transform.DORotateQuaternion(originalAngles, duration));
+        }
+    }
+
+    private void Delay(Action action)
+    {
+        if (predelay > 0f)
+        {
+            Sequence seq = DOTween.Sequence();
+            seq.AppendInterval(predelay);
+            seq.AppendCallback(() => action?.Invoke());
+        }
+        else
+        {
+            action?.Invoke();
+        }
     }
 }
