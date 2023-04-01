@@ -16,11 +16,12 @@ public class ChangeScene : MonoBehaviour
     [SerializeField] private SceneType sceneType;
     [SerializeField] private ChangeType changeType;
     [SerializeField] private LayerMask collideLayer;
+    [SerializeField] private bool loading = true;
 
     public void GoTo()
     {
         if (go) return;
-        SceneController.ChangeScene(sceneType);
+        SceneController.ChangeScene(sceneType, loading);
         go = true;
     }
 

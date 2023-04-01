@@ -36,15 +36,18 @@ public class SceneController : MonoBehaviour
         loadingScene.gameObject.SetActive(false);
     }
 
-    public static void ChangeScene(SceneType sceneType)
+    public static void ChangeScene(SceneType sceneType, bool isLoading = true)
     {
         Check(curScene, OnExitScene);
         OnExitScene[curScene]?.Invoke();
         prevScene = curScene;
         curScene = sceneType;
 
-        loadingScene.gameObject.SetActive(true);
-        loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
+        if(isLoading)
+        {
+            loadingScene.gameObject.SetActive(true);
+            loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
+        }
     }
 
     public static void ChangeScene(AsyncOperation op)
