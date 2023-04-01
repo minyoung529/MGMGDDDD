@@ -48,13 +48,15 @@ public class ChangeRenderSettings : MonoBehaviour
             }
             else
             {
-                if (transform.position.x > other.transform.position.x)
+                //if (transform.position.x > other.transform.position.x)
+                //{
+                //    if (!onceChange) return;
+                //    Back();
+                //}
+                //else
                 {
-                    if (!onceChange) return;
-                    Back();
-                }
-                else
-                {
+                    if (onceChange) return;
+
                     onceChange = true;
                     Change();
                 }
