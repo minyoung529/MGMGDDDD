@@ -37,6 +37,9 @@ public class LinePuzzleController : MonoBehaviour
 
     [Header("EVENTS")]
     [SerializeField] private UnityEvent onEnterGame;
+    [SerializeField] private UnityEvent onExitGame;
+
+    public CinemachineVirtualCameraBase topCamera;
 
     #region Property
     public static PlatformPiece CurrentPiece { get; set; }
@@ -47,6 +50,7 @@ public class LinePuzzleController : MonoBehaviour
     private void Awake()
     {
         cameraController = FindObjectOfType<ThirdPersonCameraControll>();
+        topCamera = GetComponentInChildren<CinemachineVirtualCameraBase>();
         firePet = FindObjectOfType<FirePet>();
         oilPet = FindObjectOfType<OilPet>();
     }
@@ -131,6 +135,8 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.OnStartSkill -= ResetOil;
         oilPet.OnStartSkill -= SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = true;
+
+        onExitGame?.Invoke();
     }
 
     private void StartGame()
@@ -182,6 +188,8 @@ public class LinePuzzleController : MonoBehaviour
             return;
         }
 
+        
+
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
         seq.AppendCallback(() =>
@@ -190,6 +198,7 @@ public class LinePuzzleController : MonoBehaviour
                 linePuzzles[idx - 1].gameObject.SetActive(false);
         });
         seq.Append(linePuzzles[idx].transform.DOMove(linePuzzles[0].transform.position, 1f));
+        seq.Join(topCamera.transform.DOShakePosition(1.2f, 0.75f));
 
         seq.AppendCallback(() => linePuzzles[idx].StartGame());
     }

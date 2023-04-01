@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,6 +55,7 @@ public class LinePuzzle : MonoBehaviour
 
     public Action OnClear { get; set; }
 
+
     private void Awake()
     {
         Initialize();
@@ -93,13 +95,13 @@ public class LinePuzzle : MonoBehaviour
                     (
                         width / length * j * scaleWeight,
                         0f,
-                        -height / boardCnt * i* scaleWeight
+                        -height / boardCnt * i * scaleWeight
                     ) + offset;
 
                 newObj.transform.SetParent(transform);
 
                 Vector3 scale = newObj.transform.localScale;
-                scale.x = 1 / (float)boardInformation.Count     * scaleWeight;
+                scale.x = 1 / (float)boardInformation.Count * scaleWeight;
                 scale.z = 1 / (float)boardInformation[0].Length * scaleWeight;
 
                 newObj.transform.localScale = scale;
