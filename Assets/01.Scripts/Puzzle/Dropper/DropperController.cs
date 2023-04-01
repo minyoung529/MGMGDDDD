@@ -16,6 +16,9 @@ public class DropperController : MonoBehaviour
     private UnityEvent onDropperReset;
 
     [SerializeField]
+    private UnityEvent onDropperClear;
+
+    [SerializeField]
     private Transform playerSpawnPosition;
 
     private Animator player;
@@ -95,11 +98,10 @@ public class DropperController : MonoBehaviour
         ResetDropperData();
     }
 
-    public void EndDropper()
+    public void Clear()
     {
-        // Å¬¸®¾î
-
         ResetDropperData();
+        onDropperClear?.Invoke();
     }
 
     private void ResetDropperData()
@@ -160,5 +162,7 @@ public class DropperController : MonoBehaviour
             yield return new WaitForSeconds(1.6f);
             patterns[shuffles[i]].ExitPatternAnimation();
         }
+
+        Clear();
     }
 }
