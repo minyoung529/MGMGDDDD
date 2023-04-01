@@ -151,6 +151,11 @@ public abstract class Pet : MonoBehaviour
         this.onArrive = onArrive;
     }
 
+    public void SetDestination(Transform target)
+    {
+        SetTarget(target);
+    }
+
     public void SetTargetPlayer() {
         SetNavEnabled(true);
         SetNavIsStopped(false);

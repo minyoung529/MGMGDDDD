@@ -83,6 +83,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         if (PetManager.Instance.PetCount < 2) return;
 
+        enterEvent?.Invoke();
         StartListen();
         ChangeCam();
         OnCrossHairMove(true);
