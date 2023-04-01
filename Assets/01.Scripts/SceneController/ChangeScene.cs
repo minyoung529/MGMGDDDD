@@ -40,7 +40,6 @@ public class ChangeScene : MonoBehaviour
     {
         if (IsRight(ChangeType.OnCollisionExit) && ((1 << collision.gameObject.layer) & collideLayer) != 0)
         {
-            Debug.Log("dd");
             GoTo();
         }
     }
