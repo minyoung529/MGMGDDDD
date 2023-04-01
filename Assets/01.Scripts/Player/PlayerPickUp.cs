@@ -57,8 +57,7 @@ public class PlayerPickUp : MonoBehaviour {
     #region PickUp ฐüทร
     public Pet FindPet() {
         Pet pet = PetManager.Instance.GetSelectedPet();
-        if (!pet || !pet.CheckCollision()) {
-            Debug.Log(pet.CheckCollision());
+        if (!pet || !pet.GetIsOnNavMesh()) {
             return null;
         }
         return pet;
@@ -100,6 +99,12 @@ public class PlayerPickUp : MonoBehaviour {
             yield return null;
         }
     }
+
+    private IEnumerator EnablePetColl(Pet pet, float distance) {
+        while (Vector3.Distance(transform.position, pet.transform.position) <= distance)
+            yield return null;
+        pet.Coll.enabled = true;
+    }
     #endregion
 
     #region Anim Events
@@ -113,7 +118,8 @@ public class PlayerPickUp : MonoBehaviour {
         Sequence seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() => {
-            holdingPet.OnLanding();
+            holdingPet.Coll.enabled = true;
+            holdingPet.SetNavEnabled(true);
             holdingPet = null;
             seq.Kill();
         });
@@ -125,7 +131,7 @@ public class PlayerPickUp : MonoBehaviour {
         holdingPet.Rigid.velocity = Vector3.zero;
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
-        holdingPet.OnThrow();
+        StartCoroutine(EnablePetColl(holdingPet, 1f));
         holdingPet = null;
     }
 

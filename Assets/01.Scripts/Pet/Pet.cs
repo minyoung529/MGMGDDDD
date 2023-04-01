@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public abstract class Pet : MonoBehaviour {
+public abstract class Pet : MonoBehaviour
+{
     [SerializeField] protected PetTypeSO petInform;
     [SerializeField] protected float sightRange = 5f;
     [SerializeField] protected float collRadius = 0.7f;
@@ -175,21 +176,26 @@ public abstract class Pet : MonoBehaviour {
         }
     }
 
+    public void SetForcePosition(Vector3 position)
+    {
+        agent.enabled = false;
+        transform.position = position;
+        agent.enabled = true;
+    }
+    #endregion
+
+    #region Nav_Get/Set
     public void SetNavIsStopped(bool value) {
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value) {
         agent.enabled = value;
     }
+    public bool GetIsOnNavMesh() {
+        return agent.isOnNavMesh;
+    }
     public Vector3 GetDestination() {
         return agent.destination;
-    }
-
-    public void SetForcePosition(Vector3 position)
-    {
-        agent.enabled = false;
-        transform.position = position;
-        agent.enabled = true;
     }
     #endregion
 
@@ -213,6 +219,7 @@ public abstract class Pet : MonoBehaviour {
     }
     #endregion
 
+    #region AI
     /// <summary>
     /// 맵에 존재하는 탐색 가능한 버튼을 찾음
     /// </summary>
@@ -232,35 +239,11 @@ public abstract class Pet : MonoBehaviour {
         }
         return true;
     }
+    #endregion
 
     #region Throw/Landing
-    public virtual void OnThrow()
-    {
-        StartCoroutine(LandingCoroutine());
-    }
-
-    private IEnumerator LandingCoroutine()
-    {
-        int t = 0;
-        while (!CheckCollision())
-        {
-            t++;
-            yield return null;
-        }
-        OnLanding();
-    }
-
-    public bool CheckCollision()
-    {
-        if (Physics.OverlapSphere(transform.position, collRadius, 1 << Define.BOTTOM_LAYER).Length > 0)
-            return true;
-        return false;
-    }
-
     public virtual void OnLanding() 
     {
-        SetNavEnabled(true);
-        coll.enabled = true;
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         isInputLock = false;
         if (!FindButton())
