@@ -17,10 +17,6 @@ public class CannonScript : MonoBehaviour
     private bool isPlay = false;
     #endregion
 
-    private void Awake() {
-        seq = DOTween.Sequence();
-    }
-
     private void Update() {
         Collider[] petColls = Physics.OverlapSphere(transform.position, radius, 1 << Define.PET_LAYER);
         foreach (Collider item in petColls) {
@@ -34,26 +30,31 @@ public class CannonScript : MonoBehaviour
     }
 
     public void GetInCannon(Pet pet) {
+        pets.Add(pet);
         pet.Coll.enabled = false;
         pet.Rigid.isKinematic = true;
-        seq.Kill();
-        seq.Append(transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f));
-        seq.Join(pet.transform.DOMove(barrel.position, 0.5f));
-        seq.Append(transform.DOScale(new Vector3(1f, 1f, 1f), 0.5f));
+        seq = DOTween.Sequence();
+        seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));
+        seq.Join(pet.transform.DOMove(barrel.position, 0.1f));
+        seq.Append(barrel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.1f));
     }
 
+    [ContextMenu("Test1")]
     public void TriggerCannon() {
         if (isPlay) return;
         isPlay = true;
-        seq.Kill();
-        seq.Append(transform.DOScale(new Vector3(1.1f, 0.7f, 1.1f), 2f));
-        seq.Append(transform.DOScale(new Vector3(0.9f, 1.1f, 0.9f), 1f));
-        seq.Append(transform.DOScale(new Vector3(1f, 1f, 1f), 0.5f));
+        seq = DOTween.Sequence();
+        seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 0.6f, 1.2f), 0.5f));
+        seq.AppendInterval(0.1f);
+        seq.Append(barrel.transform.DOScale(new Vector3(0.9f, 1.3f, 0.9f), 0.2f));
         seq.AppendCallback(FireCannon);
+        seq.Append(barrel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.2f));
+        isPlay = false;
     }
 
+    [ContextMenu("Test2")]
     private void FireCannon() {
-        isPlay = false;
+        if (pets.Count < 1) return;
         CannonCaliber caliber = Instantiate(caliberPref, barrel);
         caliber.transform.SetParent(null);
         Vector3[] path = new Vector3[4];
@@ -62,5 +63,9 @@ public class CannonScript : MonoBehaviour
         path[2] = Vector3.Lerp(transform.position, destination.position, 0.6f) + Vector3.up;
         path[3] = destination.position;
         caliber.Fire(pets.ToArray(), path);
+    }
+
+    private void OnDisable() {
+        seq.Kill();
     }
 }

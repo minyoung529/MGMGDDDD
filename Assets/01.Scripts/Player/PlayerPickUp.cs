@@ -112,7 +112,7 @@ public class PlayerPickUp : MonoBehaviour {
         StartCoroutine(MovePetToHand());
     }
 
-    private void OnDrop() {
+    public void OnDrop() {
         isHolding = false;
         holdingPet.Rigid.isKinematic = false;
         Sequence seq = DOTween.Sequence();
