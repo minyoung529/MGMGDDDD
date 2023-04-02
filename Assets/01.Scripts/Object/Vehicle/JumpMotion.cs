@@ -46,9 +46,6 @@ public class JumpMotion
 
         player.DOKill();
 
-        player.position = Vector3.zero;
-
-        Debug.Log("jump");
         player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
         {
             endEvent?.Invoke();
