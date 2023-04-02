@@ -58,7 +58,6 @@ public class PlayerPickUp : MonoBehaviour {
     public Pet FindPet() {
         Pet pet = PetManager.Instance.GetSelectedPet();
         if (!pet || !pet.CheckCollision()) {
-            Debug.Log(pet.CheckCollision());
             return null;
         }
         return pet;
