@@ -133,5 +133,11 @@ public class PlayerPickUp : MonoBehaviour {
         playerMove.IsInputLock = false;
         playerMove.ChangeState(StateName.DefaultMove);
     }
+
     #endregion
+    private void OnDestroy()
+    {
+        InputManager.StopListeningInput(InputAction.PickUp_And_Drop, GetInput);
+        InputManager.StopListeningInput(InputAction.Throw, GetInput);
+    }
 }

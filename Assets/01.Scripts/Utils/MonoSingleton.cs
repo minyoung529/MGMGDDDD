@@ -28,12 +28,14 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
                         instance = new GameObject(typeof(T).ToString()).AddComponent<T>();
                     }
 
-                    //DontDestroyOnLoad(instance);
                 }
             }
+
             return instance;
         }
     }
+
+    public void Register() { }
 
     protected virtual void Awake()
     {
@@ -44,11 +46,11 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
-        shuttingDown = true;
+        //shuttingDown = true;
     }
 
     private void OnDestroy()
     {
-        shuttingDown = true;
+        //shuttingDown = true;
     }
 }

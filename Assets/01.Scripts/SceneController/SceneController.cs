@@ -9,6 +9,7 @@ public enum SceneType
     LivingRoom = 0,
     Clock = 1,
     LoadingScene = 2,
+    LinePuzzle = 3,
     Count
 }
 
