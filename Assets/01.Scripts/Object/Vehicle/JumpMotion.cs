@@ -49,7 +49,7 @@ public class JumpMotion
         player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
         {
             endEvent?.Invoke();
-        }).SetEase(Ease.InOutQuint);
+        }).SetEase(Ease.InOutSine);
     }
 
     private void StartAnimation(Transform player)
