@@ -7,14 +7,14 @@ using UnityEngine.Events;
 
 public class JumpMotion
 {
-    public Vector3 targetPos;
+    public Vector3 TargetPos { get; set; }
 
     private Animator animator;
 
     private Vector3[] GetWayPoints(Transform player)
     {
-        Vector3[] points = { player.position, Vector3.zero, targetPos };
-        Vector3 dir = targetPos - player.position;
+        Vector3[] points = { player.position, Vector3.zero, TargetPos };
+        Vector3 dir = TargetPos - player.position;
         points[1] = player.position + (dir * 0.5f) + Vector3.up * 3f;
 
         return points;
@@ -37,6 +37,21 @@ public class JumpMotion
                 EndAnimation(player);
             }
             OnEndJump?.Invoke();
+        }).SetEase(Ease.InOutQuint);
+    }
+
+    public void Jump(Transform player, Transform target, float duration, UnityEvent endEvent = null)
+    {
+        TargetPos = target.position;
+
+        player.DOKill();
+
+        player.position = Vector3.zero;
+
+        Debug.Log("jump");
+        player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
+        {
+            endEvent?.Invoke();
         }).SetEase(Ease.InOutQuint);
     }
 

@@ -87,7 +87,7 @@ public class Train : MonoBehaviour
     {
         playerTransform.DORotateQuaternion(Quaternion.LookRotation(transform.forward, Vector3.up), 1f);
 
-        jumpMotion.targetPos = playerPos.position;
+        jumpMotion.TargetPos = playerPos.position;
         jumpMotion.StartJump(playerTransform, null, Boarding);
     }
 
@@ -99,7 +99,7 @@ public class Train : MonoBehaviour
 
     private void QuitAnimation()
     {
-        jumpMotion.targetPos = exitPos.position;
+        jumpMotion.TargetPos = exitPos.position;
 
         jumpMotion.StartJump(playerTransform, null, Quit);
     }

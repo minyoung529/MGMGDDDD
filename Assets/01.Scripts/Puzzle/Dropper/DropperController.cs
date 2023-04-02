@@ -54,7 +54,7 @@ public class DropperController : MonoBehaviour
     {
         player = FindObjectOfType<PlayerMove>().GetComponent<Animator>();
         cameraController = player.GetComponentInChildren<ThirdPersonCameraControll>();
-        jumpMotion.targetPos = playerSpawnPosition.position;
+        jumpMotion.TargetPos = playerSpawnPosition.position;
 
         patterns = patternRoot.GetComponentsInChildren<DropperPattern>().ToList();
 
