@@ -182,6 +182,7 @@ public class OilPetSkill
 
             if (IsCrosshair)
             {
+                //  ------------------------------------- GameManager NULL ---------------------------------
                 pathAgent.transform.position = GameManager.Instance.GetCameraHit();
             }
             else

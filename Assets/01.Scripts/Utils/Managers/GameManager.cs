@@ -41,6 +41,7 @@ public class GameManager : MonoSingleton<GameManager>
         FindFindableObject();
         st = Time.time;
         MainCam = Camera.main;
+
         base.Awake();
     }
 
@@ -48,6 +49,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         // LATER FIX
         SceneController.ListeningEnter(SceneType.Clock, () => MainCam = Camera.main);
+        SceneController.ListeningEnter(SceneType.LinePuzzle, () => MainCam = Camera.main);
         RenderSettingController.Start();
         CameraSwitcher.Start();
     }
