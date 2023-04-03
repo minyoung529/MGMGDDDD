@@ -29,7 +29,6 @@ public class PlatformPiece : MonoBehaviour
     private bool isDestroyed = false;
 
     private MeshRenderer[] renderers;
-    private NavMeshSurface navmeshSurface;
 
     Sequence seq;
 
@@ -43,7 +42,6 @@ public class PlatformPiece : MonoBehaviour
 
     private void Awake()
     {
-        navmeshSurface = GetComponent<NavMeshSurface>();
         controller = FindObjectOfType<LinePuzzleController>();
         fire = GetComponentInChildren<Fire>();
     }
@@ -138,7 +136,6 @@ public class PlatformPiece : MonoBehaviour
     private void Show()
     {
         renderers ??= transform.GetComponentsInChildren<MeshRenderer>();
-        navmeshSurface.BuildNavMesh();
 
         foreach (MeshRenderer renderer in renderers)
         {

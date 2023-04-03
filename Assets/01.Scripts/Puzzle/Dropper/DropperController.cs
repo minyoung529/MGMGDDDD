@@ -27,7 +27,7 @@ public class DropperController : MonoBehaviour
 
     [Header("PATTERN")]
     [SerializeField] private Transform patternRoot;
-    private List<DropperPattern> patterns;
+    private List<DropperPattern> patterns = new List<DropperPattern>();
 
     [Header("DECO")]
     [SerializeField]
@@ -56,7 +56,11 @@ public class DropperController : MonoBehaviour
         cameraController = player.GetComponentInChildren<ThirdPersonCameraControll>();
         jumpMotion.targetPos = playerSpawnPosition.position;
 
-        patterns = patternRoot.GetComponentsInChildren<DropperPattern>().ToList();
+        for (int i = 0; i < patternRoot.childCount; i++)
+        {
+            patterns.Add(patternRoot.GetChild(i).GetComponent<DropperPattern>());
+            patterns[i].gameObject.SetActive(true);
+        }
 
         DieTrigger[] triggers = patternRoot.GetComponentsInChildren<DieTrigger>();
         foreach (DieTrigger trigger in triggers)
@@ -115,7 +119,6 @@ public class DropperController : MonoBehaviour
 
     private IEnumerator DelayReset()
     {
-        yield return new WaitForSecondsRealtime(1f);
         isPlaying = false;
 
         renderSettings.Back();
@@ -125,13 +128,9 @@ public class DropperController : MonoBehaviour
         particleSystems.ForEach(x => x.Stop());
         patterns.ForEach(x => x.ResetPattern());
 
-        cameraController.ActiveCrossHair();
+        yield return new WaitForSecondsRealtime(1f);
 
-        // TEST
-        CameraSwitcher.SwitchCamera(player.GetComponentInChildren<CinemachineVirtualCameraBase>());
-
-        player.SetTrigger("tStateChange");
-        player.SetInteger("iStateNum", (int)StateName.DefaultMove);
+        StartDropper();
     }
 
     private IEnumerator StartPattern()
