@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum SceneType
 {
@@ -47,6 +48,10 @@ public class SceneController : MonoBehaviour
         {
             loadingScene.gameObject.SetActive(true);
             loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneType.ToString());
         }
     }
 
