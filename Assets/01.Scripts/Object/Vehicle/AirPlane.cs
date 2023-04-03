@@ -86,14 +86,14 @@ public class AirPlane : MonoBehaviour
 
     private void BoardingAnimation()
     {
-        jumpMotion.targetPos = playerPos.position;
+        jumpMotion.TargetPos = playerPos.position;
         jumpMotion.StartJump(playerTransform, null, () => OnBoarding?.Invoke(), true);
     }
 
 
     private void QuitAnimation()
     {
-        jumpMotion.targetPos = exitPos.position;
+        jumpMotion.TargetPos = exitPos.position;
         jumpMotion.StartJump(playerTransform, null, () => OnQuit?.Invoke());
     }
 
