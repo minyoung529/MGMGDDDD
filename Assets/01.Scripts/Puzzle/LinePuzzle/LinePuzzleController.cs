@@ -45,6 +45,7 @@ public class LinePuzzleController : MonoBehaviour
     public static PlatformPiece CurrentPiece { get; set; }
     public static bool IsOilMove { get; set; } = false;
     public static PlatformPiece SelectedPiece { get; set; }
+    public static PlatformPiece EndPiece { get; set; }
     #endregion
 
     private void Awake()
@@ -104,6 +105,7 @@ public class LinePuzzleController : MonoBehaviour
         Pet.IsCameraAimPoint = false;
 
         oilPet.IsDirectSpread = false;
+        oilPet.OnEndSkill += SetEndPiece;
         oilPet.OnEndSkill += MoveToPortal;
         oilPet.OnStartSkill += ResetOil;
         oilPet.OnStartSkill += SetSelectedColor;
@@ -115,9 +117,13 @@ public class LinePuzzleController : MonoBehaviour
     private void SetSelectedColor()
     {
         if (CurrentPiece)
-        {
             SelectedPiece = CurrentPiece;
-        }
+    }
+
+    private void SetEndPiece()
+    {
+        if (CurrentPiece)
+            EndPiece = CurrentPiece;
     }
 
     public void ExitGame()
@@ -132,6 +138,7 @@ public class LinePuzzleController : MonoBehaviour
         Pet.IsCameraAimPoint = true;
 
         oilPet.OnEndSkill -= MoveToPortal;
+        oilPet.OnEndSkill -= SetEndPiece;
         oilPet.OnStartSkill -= ResetOil;
         oilPet.OnStartSkill -= SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = true;
@@ -146,18 +153,15 @@ public class LinePuzzleController : MonoBehaviour
 
     private void MoveToPortal()
     {
-        if (SelectedPiece)
-        {
-            if (SelectedPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= SelectedPiece.Index) return;
+        if (SelectedPiece == null || EndPiece == null) return;
+        if (SelectedPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= SelectedPiece.Index) return;
+        if (EndPiece.Index != SelectedPiece.Index) return;
 
-            ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
-            oilPet.SetDestination(portal.transform.position);
-            oilPet.onArrive += ForceMoveBoard;
-        }
-        else
-        {
-            Debug.Log("CurrentPiece가 NULL입니다.");
-        }
+        Debug.Log($"MOVE TO PORTAL");
+
+        ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
+        oilPet.SetDestination(portal.transform.position);
+        oilPet.onArrive += ForceMoveBoard;
     }
 
     private void ForceMoveBoard()
@@ -187,8 +191,6 @@ public class LinePuzzleController : MonoBehaviour
             EndPuzzle();
             return;
         }
-
-        
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
