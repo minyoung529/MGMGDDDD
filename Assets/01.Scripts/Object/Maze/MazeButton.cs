@@ -2,10 +2,12 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MazeButton : MonoBehaviour
 {
     [SerializeField] TogglePosition[] wallToggle;
+    private NavMeshObstacle[] navMeshObstacles;
     [SerializeField] Transform undoPosition;
     [SerializeField] Light buttonLight;
 
@@ -15,6 +17,13 @@ public class MazeButton : MonoBehaviour
     {
         button = GetComponent<ButtonObject>();
         buttonLight.intensity = 0f;
+
+        navMeshObstacles = new NavMeshObstacle[wallToggle.Length];
+
+        for (int i = 0; i < wallToggle.Length; i++)
+        {
+            navMeshObstacles[i] = wallToggle[i].GetComponent<NavMeshObstacle>();
+        }
     }
 
     public void DoButton()
@@ -37,13 +46,13 @@ public class MazeButton : MonoBehaviour
 
     public void ButtonAction()
     {
-        if(buttonLight.intensity == 0f) buttonLight.intensity = 10f;
+        if (buttonLight.intensity == 0f) buttonLight.intensity = 10f;
         else buttonLight.intensity = 0f;
 
         for (int i = 0; i < wallToggle.Length; i++)
         {
             wallToggle[i].Trigger();
+            navMeshObstacles[i].enabled = !navMeshObstacles[i].enabled;
         }
     }
-
 }
