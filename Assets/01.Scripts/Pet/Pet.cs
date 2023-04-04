@@ -26,7 +26,13 @@ public abstract class Pet : MonoBehaviour
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
-    protected PetHold hold; 
+    private float beginAcceleration;
+    public float AgentAcceleration
+    {
+        get => agent.acceleration;
+        set { agent.acceleration = value; }
+    }
+    protected PetHold hold;
 
     private Vector3 originScale;
 
@@ -61,6 +67,8 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
+
+        beginAcceleration = agent.acceleration;
     }
 
     private void Start()
@@ -68,7 +76,7 @@ public abstract class Pet : MonoBehaviour
         ResetPet();
     }
 
-    public virtual void OnUpdate() 
+    public virtual void OnUpdate()
     {
         CheckArrive();
         FollowTarget();
@@ -124,7 +132,8 @@ public abstract class Pet : MonoBehaviour
         isCoolTime = false;
     }
 
-    public virtual void SkillUp() {
+    public virtual void SkillUp()
+    {
         MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
 
@@ -132,16 +141,19 @@ public abstract class Pet : MonoBehaviour
 
     #region Move
 
-    private void FollowTarget() {
+    private void FollowTarget()
+    {
         if (!target || !agent.isOnNavMesh) return;
         agent.SetDestination(target.position);
     }
 
-    public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null) {
+    public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
+    {
         rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
-        if (!target) {
+        if (!target)
+        {
             agent.ResetPath();
             return;
         }
@@ -156,7 +168,8 @@ public abstract class Pet : MonoBehaviour
         SetTarget(target);
     }
 
-    public void SetTargetPlayer() {
+    public void SetTargetPlayer()
+    {
         SetNavEnabled(true);
         SetNavIsStopped(false);
         rigid.velocity = Vector3.zero;
@@ -164,7 +177,8 @@ public abstract class Pet : MonoBehaviour
         agent.stoppingDistance = distanceToPlayer;
     }
 
-    public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null) {
+    public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
+    {
         if (!agent.isOnNavMesh) return;
         this.onArrive = onArrive;
         SetNavEnabled(true);
@@ -175,20 +189,25 @@ public abstract class Pet : MonoBehaviour
         agent.SetDestination(target);
     }
 
-    private void CheckArrive() {
-        if (Vector3.Distance(agent.destination, transform.position) <= 1f) {
+    private void CheckArrive()
+    {
+        if (Vector3.Distance(agent.destination, transform.position) <= 1f)
+        {
             onArrive?.Invoke();
             onArrive = null;
         }
     }
 
-    public void SetNavIsStopped(bool value) {
+    public void SetNavIsStopped(bool value)
+    {
         agent.isStopped = value;
     }
-    public void SetNavEnabled(bool value) {
+    public void SetNavEnabled(bool value)
+    {
         agent.enabled = value;
     }
-    public Vector3 GetDestination() {
+    public Vector3 GetDestination()
+    {
         return agent.destination;
     }
     public void ResetNav()
@@ -204,20 +223,24 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     #region InputEvent
-    public void MovePoint() {
+    public void MovePoint()
+    {
         if (isInputLock) return;
 
-        if (IsCameraAimPoint) {
+        if (IsCameraAimPoint)
+        {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
-        else {
+        else
+        {
             SetDestination(GameManager.Instance.GetMousePos());
         }
 
         //transform.DOKill();
     }
 
-    public virtual void Withdraw() {
+    public virtual void Withdraw()
+    {
         if (isInputLock) return;
         ResetPet();
     }
@@ -227,7 +250,8 @@ public abstract class Pet : MonoBehaviour
     /// �ʿ� �����ϴ� Ž�� ������ ��ư�� ã��
     /// </summary>
     /// <returns>Ž�� ���� ����</returns>
-    private bool FindButton() {
+    private bool FindButton()
+    {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (target == null) return false;
         Vector3 dest = target.transform.position;
@@ -236,7 +260,7 @@ public abstract class Pet : MonoBehaviour
         {
             agent.SetDestination(dest);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Debug.Log("PATH�� �����ϴ�.");
         }
@@ -267,7 +291,7 @@ public abstract class Pet : MonoBehaviour
         return false;
     }
 
-    public virtual void OnLanding() 
+    public virtual void OnLanding()
     {
         SetNavEnabled(true);
         coll.enabled = true;
@@ -277,4 +301,9 @@ public abstract class Pet : MonoBehaviour
             SetTarget(null);
     }
     #endregion
+
+    public void ResetAgentValue()
+    {
+        agent.acceleration = beginAcceleration;
+    }
 }

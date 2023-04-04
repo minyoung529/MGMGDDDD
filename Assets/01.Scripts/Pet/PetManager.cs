@@ -61,7 +61,6 @@ public class PetManager : MonoSingleton<PetManager>
         return pets.Contains(p);
     }
 
-
     private void OnDestroy()
     {
         CutSceneManager.RemoveStartCutscene(InactivePetCanvas);
@@ -70,7 +69,6 @@ public class PetManager : MonoSingleton<PetManager>
     }
 
     #region Listen
-
     private void StartListen()
     {
         InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
@@ -295,6 +293,13 @@ public class PetManager : MonoSingleton<PetManager>
     private void InactivePetCanvas()
     {
         transform.GetChild(0).gameObject.SetActive(false);
+    }
+    #endregion
+
+    #region ACCESS
+    public void AllPetActions(Action<Pet> action)
+    {
+        pets.ForEach(action);
     }
     #endregion
 }
