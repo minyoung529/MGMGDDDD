@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class SelectedObject : MonoBehaviour
 {
-    OutlineScript selectObj;
+    [SerializeField] private LayerMask layerMask;
 
-    [SerializeField]
-    private LayerMask layerMask;
+    public bool IsSelected { get { return selectObj != null; } }
+    public GameObject SelectObject { get { return selectObj.gameObject; } }
+    private OutlineScript selectObj = null;
 
     private void Update()
     {
         CheckObject();
     }
-
+    
     private void CheckObject()
     {
         RaycastHit hit;
