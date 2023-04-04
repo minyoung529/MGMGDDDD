@@ -7,12 +7,14 @@ public class MazeButton : MonoBehaviour
 {
     [SerializeField] TogglePosition[] wallToggle;
     [SerializeField] Transform undoPosition;
+    [SerializeField] Light buttonLight;
 
     private ButtonObject button;
 
     private void Awake()
     {
         button = GetComponent<ButtonObject>();
+        buttonLight.intensity = 0f;
     }
 
     public void DoButton()
@@ -35,6 +37,9 @@ public class MazeButton : MonoBehaviour
 
     public void ButtonAction()
     {
+        if(buttonLight.intensity == 0f) buttonLight.intensity = 10f;
+        else buttonLight.intensity = 0f;
+
         for (int i = 0; i < wallToggle.Length; i++)
         {
             wallToggle[i].Trigger();
