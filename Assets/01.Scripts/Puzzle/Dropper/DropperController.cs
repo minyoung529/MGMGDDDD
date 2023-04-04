@@ -75,17 +75,6 @@ public class DropperController : MonoBehaviour
         });
     }
 
-    private void Update()
-    {
-        if (isPlaying && !isClear)
-        {
-            if(Input.GetKeyDown(KeyCode.G))
-            {
-                Clear();
-            }
-        }
-    }
-
     [ContextMenu("Start Dropper")]
     public void StartDropper()
     {

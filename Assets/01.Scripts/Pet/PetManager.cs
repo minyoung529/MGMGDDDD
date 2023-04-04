@@ -301,5 +301,10 @@ public class PetManager : MonoSingleton<PetManager>
     {
         pets.ForEach(action);
     }
+
+    public bool Contain(Pet pet)
+    {
+        return pets.Contains(pet);
+    }
     #endregion
 }

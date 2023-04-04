@@ -157,8 +157,6 @@ public class LinePuzzleController : MonoBehaviour
         if (SelectedPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= SelectedPiece.Index) return;
         if (EndPiece.Index != SelectedPiece.Index) return;
 
-        Debug.Log($"MOVE TO PORTAL");
-
         ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
         oilPet.SetDestination(portal.transform.position);
         oilPet.onArrive += ForceMoveBoard;
