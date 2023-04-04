@@ -9,6 +9,8 @@ public class Propeller : MonoBehaviour
     [SerializeField] private float speedDuration = 1f;
     private float curSpeed = 0f;
 
+    private Sequence seq;
+
     private void Start()
     {
         StartPropeller();
@@ -26,12 +28,14 @@ public class Propeller : MonoBehaviour
 
     private void StartPropeller()
     {
-        DOTween.To(() => curSpeed, (x) => curSpeed = x, speed, speedDuration);
+        seq = DOTween.Sequence();
+        seq.Append(DOTween.To(() => curSpeed, (x) => curSpeed = x, speed, speedDuration));
     }
 
     private void StopPropeller()
     {
-        DOTween.To(() => curSpeed, (x) => curSpeed = x, 0f, speedDuration);
+        seq = DOTween.Sequence();
+        seq.Append(DOTween.To(() => curSpeed, (x) => curSpeed = x, 0f, speedDuration));
     }
 
     public void Arrive(bool isDown)
@@ -46,5 +50,10 @@ public class Propeller : MonoBehaviour
     {
         if (curSpeed < 0.01f)
             StartPropeller();
+    }
+
+    private void OnDestroy()
+    {
+        seq.Kill();
     }
 }

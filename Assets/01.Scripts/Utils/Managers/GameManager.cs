@@ -62,6 +62,15 @@ public class GameManager : MonoSingleton<GameManager>
         CameraSwitcher.Start();
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
     private void FindFindableObject()
     {
         buttons = FindObjectsOfType<ButtonObject>();

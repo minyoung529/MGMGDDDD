@@ -22,7 +22,7 @@ public class LinePuzzle : MonoBehaviour
 
     [Header("BOARD")]
     [SerializeField]
-    private ProBuilderMesh board;
+    private Transform board;
 
     [SerializeField]
     private BoxCollider boardCollider;
@@ -77,7 +77,7 @@ public class LinePuzzle : MonoBehaviour
 
         int boardCnt = boardInformation.Count;
 
-        Vector3 offset = board.transform.position;
+        Vector3 offset = board.position;
 
         for (int i = 0; i < boardCnt; i++)
         {

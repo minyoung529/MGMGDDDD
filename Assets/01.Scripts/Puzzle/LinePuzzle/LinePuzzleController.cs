@@ -90,6 +90,8 @@ public class LinePuzzleController : MonoBehaviour
 
     public void EnterGame()
     {
+        if (PetManager.Instance.PetCount < 2) return;
+
         isPlaying = true;
         onEnterGame?.Invoke();
 

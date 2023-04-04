@@ -34,7 +34,7 @@ public class CameraSwitcher
 
     public static void SwitchCamera(CinemachineVirtualCameraBase cam)
     {
-        ChangeSwitchBlend(0.5f);
+        //ChangeSwitchBlend(0.5f);
 
         cam.Priority = 10;
         activeCamera = cam;

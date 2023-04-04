@@ -177,6 +177,11 @@ public abstract class Pet : MonoBehaviour
         agent.stoppingDistance = distanceToPlayer;
     }
 
+    public void SetPlayerTransform(Transform player)
+    {
+        this.player = player;
+    }
+
     public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
     {
         if (!agent.isOnNavMesh) return;

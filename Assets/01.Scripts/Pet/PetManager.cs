@@ -46,13 +46,14 @@ public class PetManager : MonoSingleton<PetManager>
             if (pets[i] == null)
             {
                 pets[i] = FindObjectOfType(pets[i].GetType()) as Pet;
+                pets[i].SetPlayerTransform(FindObjectOfType<PlayerMove>().transform);
+                pets[i].SetTargetPlayer();
 
                 if (pets[i] == null) continue;
             }
-            else
-            {
+
+            if (pets[i])
                 pets[i].OnUpdate();
-            }
         }
     }
 
