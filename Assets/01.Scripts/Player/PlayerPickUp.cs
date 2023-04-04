@@ -99,12 +99,6 @@ public class PlayerPickUp : MonoBehaviour {
             yield return null;
         }
     }
-
-    private IEnumerator EnablePetColl(Pet pet, float distance) {
-        while (Vector3.Distance(transform.position, pet.transform.position) <= distance)
-            yield return null;
-        pet.Coll.enabled = true;
-    }
     #endregion
 
     #region Anim Events
@@ -127,11 +121,9 @@ public class PlayerPickUp : MonoBehaviour {
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
         holdingPet.Rigid.velocity = Vector3.zero;
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
-        holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
-        StartCoroutine(EnablePetColl(holdingPet, 1f));
+        holdingPet.PetThrow.Throw(transform.position, dir * throwPow);
         holdingPet = null;
     }
 

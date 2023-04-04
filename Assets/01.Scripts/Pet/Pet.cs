@@ -26,7 +26,7 @@ public abstract class Pet : MonoBehaviour
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
-    protected PetHold hold; 
+    protected PetThrow petThrow; 
 
     private Vector3 originScale;
 
@@ -37,7 +37,7 @@ public abstract class Pet : MonoBehaviour
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
-    public PetHold Hold => hold;
+    public PetThrow PetThrow => petThrow;
     public Sprite petSprite => petInform.petUISprite;
 
     #endregion
@@ -60,6 +60,7 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
+        petThrow = GetComponent<PetThrow>();
     }
 
     private void Start()
@@ -224,7 +225,7 @@ public abstract class Pet : MonoBehaviour
     /// 맵에 존재하는 탐색 가능한 버튼을 찾음
     /// </summary>
     /// <returns>탐색 성공 여부</returns>
-    private bool FindButton() {
+    public bool FindButton() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (target == null) return false;
         Vector3 dest = target.transform.position;
@@ -238,16 +239,6 @@ public abstract class Pet : MonoBehaviour
             Debug.Log("PATH가 없습니다.");
         }
         return true;
-    }
-    #endregion
-
-    #region Throw/Landing
-    public virtual void OnLanding() 
-    {
-        rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
-        isInputLock = false;
-        if (!FindButton())
-            SetTarget(null);
     }
     #endregion
 }

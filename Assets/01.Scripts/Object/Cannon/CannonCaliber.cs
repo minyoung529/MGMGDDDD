@@ -12,23 +12,31 @@ public class CannonCaliber : MonoBehaviour
 
     private Pet[] pets;
     private bool isFire = false;
+    private Rigidbody rigid;
+    private CannonScript cannon;
 
-    public void Fire(Pet[] pets, Vector3[] path) {
-        isFire = true;
+    private void Awake() {
+        rigid = GetComponent<Rigidbody>();
+    }
+
+    public void Fire(CannonScript cannon, Pet[] pets, Vector3 dir) {
+        this.cannon = cannon;
         this.pets = pets;
-        Vector3 dir = Vector3.up;
-        foreach(Pet item in pets) {
-            item.transform.position = transform.position + dir * radius;
-            dir = Quaternion.AngleAxis(360 / pets.Length, transform.forward) * dir;
+        Vector3 pos = Vector3.up;
+        foreach (Pet item in pets) {
+            item.transform.position = transform.position + pos * radius;
+            pos = Quaternion.AngleAxis(360 / pets.Length, transform.forward) * pos;
+            item.transform.SetParent(transform);
         }
-        transform.DOPath(path, 2f, PathType.CubicBezier);
+        rigid.AddForce(dir, ForceMode.Impulse);
+        isFire = true;
     }
 
     private void Update() {
         if (!isFire) return;
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x + spinSpeed * Time.deltaTime, 0, 0));
-        Collider[] others = Physics.OverlapSphere(transform.position, radius + 0.1f, bumpLayer);
-        if (others.Length > 0) {
+        Collider[] others = Physics.OverlapSphere(transform.position, radius, bumpLayer);
+        if (others.Length > 0 && Vector3.Distance(transform.position, cannon.transform.position) > 5f) {
             Vector3 hitPoint = others[0].ClosestPoint(transform.position);
             Pop(pets, hitPoint);
             pets = null;
@@ -36,10 +44,11 @@ public class CannonCaliber : MonoBehaviour
     }
 
     public void Pop(Pet[] pets, Vector3 hitPoint) {
+        isFire = false;
         foreach (Pet item in pets) {
             item.transform.SetParent(null);
-            item.Rigid.velocity = Vector3.zero;
-            item.Rigid.AddForce((transform.position - hitPoint).normalized * bumpPow, ForceMode.Impulse);
+            Debug.Log(item.Rigid.velocity);
+            item.PetThrow.Throw(hitPoint, (transform.position - hitPoint).normalized * bumpPow, 0.1f);
         }
     }
 }
