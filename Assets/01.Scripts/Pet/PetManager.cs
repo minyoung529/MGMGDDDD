@@ -41,10 +41,8 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void Update()
     {
-        for (int i = 0; i < pets.Count; i++)
-        {
-            pets[i].OnUpdate();
-        }
+        if(selectIndex < 0) return;
+            pets[selectIndex].OnUpdate();
     }
 
     public bool IsGet(Pet p)
@@ -106,6 +104,12 @@ public class PetManager : MonoSingleton<PetManager>
     {
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
+
+        if(pets[selectIndex].Interactive.IsInteraction)
+        {
+            pets[selectIndex].InteractionPoint();
+            return;
+        }
         pets[selectIndex].MovePoint();
     }
 

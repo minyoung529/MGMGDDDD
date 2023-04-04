@@ -15,7 +15,7 @@ public class OutlineScript : MonoBehaviour
         outlineRenderer = CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor);
     }
 
-    #region OnOff_Outline
+    #region Set
 
     [ContextMenu("OnOutline")]
     public void OnOutline()
@@ -28,6 +28,11 @@ public class OutlineScript : MonoBehaviour
     {
         if (outlineRenderer != null)
             outlineRenderer.enabled = false;
+    }
+
+    public void SetColor(Color color)
+    {
+        outlineRenderer.material.SetColor("_OutlineColor", color);
     }
 
     #endregion

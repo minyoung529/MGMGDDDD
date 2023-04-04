@@ -5,17 +5,18 @@ using UnityEngine;
 public class SelectedObject : MonoBehaviour
 {
     [SerializeField] private LayerMask layerMask;
+    [SerializeField] private Color outlineColor = Color.blue;
 
-    public bool IsSelected { get { return selectObj != null; } }
-    public GameObject SelectObject { get { return selectObj.gameObject; } }
-    private OutlineScript selectObj = null;
+    public bool IsInteraction { get { return interactionObj != null; } }
+    public LayerMask InterationLayer { get { return layerMask; } }
+    public GameObject InteractiveObj { get { return interactionObj.gameObject; } }
+    private OutlineScript interactionObj = null;
 
-    private void Update()
+    private void Awake()
     {
-        CheckObject();
     }
-    
-    private void CheckObject()
+
+    public void CheckObject()
     {
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
@@ -26,24 +27,25 @@ public class SelectedObject : MonoBehaviour
 
             if (selected != null)
             {
-                selectObj = selected;
-                selectObj.OnOutline();
+                interactionObj = selected;
+                interactionObj.SetColor(outlineColor);
+                interactionObj.OnOutline();
             }
             else
             {
-                if (selectObj != null)
+                if (interactionObj != null)
                 {
-                    selectObj.OffOutline();
-                    selectObj = null;
+                    interactionObj.OffOutline();
+                    interactionObj = null;
                 }
             }
         }
         else
         {
-            if (selectObj != null)
+            if (interactionObj != null)
             {
-                selectObj.OffOutline();
-                selectObj = null;
+                interactionObj.OffOutline();
+                interactionObj = null;
             }
         }
     }
