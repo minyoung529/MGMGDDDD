@@ -47,8 +47,14 @@ public class MazeButton : MonoBehaviour
 
     public void ButtonAction()
     {
-        if (buttonLight.intensity == 0f) buttonLight.intensity = 10f;
-        else buttonLight.intensity = 0f;
+        if (buttonLight.intensity == 0f)
+        {
+            buttonLight.DOIntensity(7f, 0.3f);
+        }
+        else
+        {
+            buttonLight.DOIntensity(0f, 0.3f);
+        }
 
         for (int i = 0; i < wallToggle.Length; i++)
         {
