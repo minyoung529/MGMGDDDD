@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,7 +46,7 @@ public class SceneController : MonoBehaviour
         prevScene = curScene;
         curScene = sceneType;
 
-        if(isLoading)
+        if (isLoading)
         {
             loadingScene.gameObject.SetActive(true);
             loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
@@ -68,6 +69,40 @@ public class SceneController : MonoBehaviour
         Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] += onEnter;
     }
+
+    #region ALL
+    public static void ListeningEnter(Action onEnter)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnEnterScene[key] += onEnter;
+    }
+
+    public static void ListeningExit(Action onExit)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnExitScene[key] += onExit;
+    }
+
+    public static void StopListeningEnter(Action onEnter)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnEnterScene[key] -= onEnter;
+    }
+
+    public static void StopListeningExit(Action onExit)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnExitScene[key] -= onExit;
+    }
+    #endregion
 
     public static void ListningExit(SceneType sceneType, Action onExit)
     {
@@ -93,5 +128,10 @@ public class SceneController : MonoBehaviour
         {
             map.Add(type, null);
         }
+    }
+
+    private static List<SceneType> Keys(Dictionary<SceneType, Action>.KeyCollection keys)
+    {
+        return new List<SceneType>(keys);
     }
 }

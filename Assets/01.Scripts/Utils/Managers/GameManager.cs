@@ -4,7 +4,17 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    public Camera MainCam { get; private set; }
+    private Camera mainCam = null;
+    public Camera MainCam
+    {
+        get
+        {
+            if (mainCam == null)
+                mainCam = Camera.main;
+            return mainCam;
+        }
+    }
+
     private CutSceneManager cutSceneManager;
     public CutSceneManager CutSceneManager
     {
@@ -40,7 +50,6 @@ public class GameManager : MonoSingleton<GameManager>
     {
         FindFindableObject();
         st = Time.time;
-        MainCam = Camera.main;
 
         base.Awake();
     }
@@ -48,21 +57,26 @@ public class GameManager : MonoSingleton<GameManager>
     private void Start()
     {
         // LATER FIX
-        SceneController.ListeningEnter(SceneType.Clock, () => MainCam = Camera.main);
-        SceneController.ListeningEnter(SceneType.LinePuzzle, () => MainCam = Camera.main);
+        SceneController.ListeningEnter(SetMainCamera);
         RenderSettingController.Start();
         CameraSwitcher.Start();
     }
 
-    private void FindFindableObject() {
+    private void FindFindableObject()
+    {
         buttons = FindObjectsOfType<ButtonObject>();
         pets = FindObjectsOfType<Pet>();
+    }
+
+    private void SetMainCamera()
+    {
+        mainCam = Camera.main;
     }
 
     public Vector3 GetMousePos()
     {
         Ray ray = MainCam.ScreenPointToRay(Input.mousePosition);
-        
+
         if (Physics.Raycast(ray, out RaycastHit hit, MainCam.farClipPlane, cameraHitLayerMask))
         {
             Debug.DrawRay(MainCam.transform.position, ray.direction * hit.distance, Color.cyan);
@@ -88,13 +102,16 @@ public class GameManager : MonoSingleton<GameManager>
 
         return Vector3.zero;
     }
-    public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable {
+    public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable
+    {
         T target = default;
         float min = Mathf.Pow(range, 2);
-        foreach (T item in targets) {
+        foreach (T item in targets)
+        {
             if (!item.IsFindable) continue;
             float distance = (transform.position - item.transform.position).sqrMagnitude;
-            if (distance < min) {
+            if (distance < min)
+            {
                 min = distance;
                 target = item;
             }
@@ -106,5 +123,10 @@ public class GameManager : MonoSingleton<GameManager>
     {
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(mouseHit, 0.2f);
+    }
+
+    private void OnDestroy()
+    {
+        SceneController.StopListeningEnter(SetMainCamera);
     }
 }

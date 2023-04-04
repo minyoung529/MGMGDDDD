@@ -43,7 +43,16 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < pets.Count; i++)
         {
-            pets[i].OnUpdate();
+            if (pets[i] == null)
+            {
+                pets[i] = FindObjectOfType(pets[i].GetType()) as Pet;
+
+                if (pets[i] == null) continue;
+            }
+            else
+            {
+                pets[i].OnUpdate();
+            }
         }
     }
 
@@ -199,7 +208,8 @@ public class PetManager : MonoSingleton<PetManager>
         OffSelectPetUI();
     }
 
-    public Pet GetSelectedPet() {
+    public Pet GetSelectedPet()
+    {
         if (PetCount < 1) return null;
         return pets[selectIndex];
     }
