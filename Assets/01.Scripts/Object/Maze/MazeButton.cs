@@ -23,6 +23,7 @@ public class MazeButton : MonoBehaviour
         for (int i = 0; i < wallToggle.Length; i++)
         {
             navMeshObstacles[i] = wallToggle[i].GetComponent<NavMeshObstacle>();
+            navMeshObstacles[i].enabled = wallToggle[i].MoveDir.y < 0f;
         }
     }
 
