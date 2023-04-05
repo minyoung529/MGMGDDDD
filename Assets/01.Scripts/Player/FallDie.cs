@@ -9,14 +9,10 @@ public class FallDie : MonoBehaviour
 {
     private Vector3 hitPoint;
 
-    [Header("Prefab")]
-    [SerializeField] private CanvasGroup dieCanvas;
-
     [Header("Fall Check")]
     [SerializeField] private LayerMask bottomLayer;
     [SerializeField] private float dieDistance = 10f;
 
-    private GameObject[] respawnTransforms;
     private bool respawning = false;
 
     private float[] originalRadius = new float[3];
@@ -27,8 +23,6 @@ public class FallDie : MonoBehaviour
 
     void Start()
     {
-        respawnTransforms = GameObject.FindGameObjectsWithTag("SpawnPoint");
-        dieCanvas = Instantiate(dieCanvas);
         hitPoint = transform.position;
     }
 
@@ -53,29 +47,10 @@ public class FallDie : MonoBehaviour
         respawning = true;
 
         FarCamera();
-        dieCanvas.gameObject.SetActive(true);
-        dieCanvas.DOFade(1f, 1f).OnComplete(Respawn);
-    }
+        //dieCanvas.gameObject.SetActive(true);
+        //dieCanvas.DOFade(1f, 1f).OnComplete(Respawn);
 
-    public void Respawn()
-    {
-        IOrderedEnumerable<GameObject> sorted = respawnTransforms.OrderBy(x => Vector3.Distance(x.transform.position, hitPoint));
-        transform.position = sorted.First().transform.position;
-
-        hitPoint = transform.position;
-
-        for (int i = 0; i < cams.Count; i++)
-        {
-            cams[i].Follow = followTargets[i];
-            cams[i].transform.SetParent(parents[i]);
-        }
-
-        dieCanvas.alpha = 1f;
-        dieCanvas.DOFade(0f, 2f).OnComplete(() =>
-        {
-            dieCanvas.gameObject.SetActive(false);
-            respawning = false;
-        });
+        // ¼ö¸®Áß!~~~
     }
 
     private void FarCamera()

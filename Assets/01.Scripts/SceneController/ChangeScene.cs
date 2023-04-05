@@ -16,11 +16,12 @@ public class ChangeScene : MonoBehaviour
     [SerializeField] private SceneType sceneType;
     [SerializeField] private ChangeType changeType;
     [SerializeField] private LayerMask collideLayer;
+    [SerializeField] private bool loading = true;
 
     public void GoTo()
     {
         if (go) return;
-        SceneController.ChangeScene(sceneType);
+        SceneController.ChangeScene(sceneType, loading);
         go = true;
     }
 
@@ -40,7 +41,6 @@ public class ChangeScene : MonoBehaviour
     {
         if (IsRight(ChangeType.OnCollisionExit) && ((1 << collision.gameObject.layer) & collideLayer) != 0)
         {
-            Debug.Log("dd");
             GoTo();
         }
     }

@@ -5,57 +5,60 @@ using UnityEngine;
 
 public class GearRotation : MonoBehaviour
 {
-    [SerializeField] bool isRotate = false;
+    [SerializeField] bool playOnAwake = false;
     [SerializeField] Vector3 dir = Vector3.back;
+
     private readonly float rotSpeed = 0.7f;
     private float curRotSpeed = 0f;
-
-    [SerializeField]
-    private Animator animator;
+    private bool isRotate = false;
+    //private Animator animator;
 
     private void Awake()
     {
-        if (isRotate) StartGear();
+      //  animator = GetComponent<Animator>();
+        if (playOnAwake) StartGear();
     }
 
     public void StartGear()
     {
+        if (isRotate) return;
         isRotate = true;
-
-        if (animator == null)
-        {
-            DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, rotSpeed, 0.6f).SetEase(Ease.InQuad);
-            StartCoroutine(RotateGear());
-        }
-        else
-        {
-            animator.SetBool("Rotate", true);
-        }
+        StartCoroutine(RotateGear());
+        //if (animator == null)
+        //{
+        //    DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, rotSpeed, 0.6f).SetEase(Ease.InQuad);
+        //}
+        //else
+        //{
+        //    animator.SetBool("Rotate", true);
+        //}
     }
     public void StopGear()
     {
         isRotate = false;
 
-        if(animator == null)
-        {
-            DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, 0f, 0.5f).SetEase(Ease.InQuad).OnComplete(() =>
-            {
-                StopCoroutine(RotateGear());
-            });
-        }
-        else
-        {
-            animator.SetBool("Rotate", false);
-        }
+        Debug.Log("StopGear");
+           // StopCoroutine(RotateGear());
+        //DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, 0f, 0.5f).SetEase(Ease.InQuad).OnComplete(() =>
+        //{
+        //});
+        //if (animator == null)
+        //{
+           
+        //}
+        //else
+        //{
+        //    animator.SetBool("Rotate", false);
+        //}
     }
 
     IEnumerator RotateGear()
     {
         while (isRotate)
         {
-            yield return null;
             transform.Rotate(dir * curRotSpeed);
         }
+            yield return null;
     }
 
 }

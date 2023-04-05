@@ -2,13 +2,17 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum SceneType
 {
     LivingRoom = 0,
     Clock = 1,
     LoadingScene = 2,
+    Maze = 3,
+    LinePuzzle = 4,
     Count
 }
 
@@ -35,15 +39,22 @@ public class SceneController : MonoBehaviour
         loadingScene.gameObject.SetActive(false);
     }
 
-    public static void ChangeScene(SceneType sceneType)
+    public static void ChangeScene(SceneType sceneType, bool isLoading = true)
     {
         Check(curScene, OnExitScene);
         OnExitScene[curScene]?.Invoke();
         prevScene = curScene;
         curScene = sceneType;
 
-        loadingScene.gameObject.SetActive(true);
-        loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
+        if (isLoading)
+        {
+            loadingScene.gameObject.SetActive(true);
+            loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneType.ToString());
+        }
     }
 
     public static void ChangeScene(AsyncOperation op)
@@ -58,6 +69,40 @@ public class SceneController : MonoBehaviour
         Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] += onEnter;
     }
+
+    #region ALL
+    public static void ListeningEnter(Action onEnter)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnEnterScene[key] += onEnter;
+    }
+
+    public static void ListeningExit(Action onExit)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnExitScene[key] += onExit;
+    }
+
+    public static void StopListeningEnter(Action onEnter)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnEnterScene[key] -= onEnter;
+    }
+
+    public static void StopListeningExit(Action onExit)
+    {
+        List<SceneType> scenes = Keys(OnEnterScene.Keys);
+
+        foreach (var key in scenes)
+            OnExitScene[key] -= onExit;
+    }
+    #endregion
 
     public static void ListningExit(SceneType sceneType, Action onExit)
     {
@@ -83,5 +128,10 @@ public class SceneController : MonoBehaviour
         {
             map.Add(type, null);
         }
+    }
+
+    private static List<SceneType> Keys(Dictionary<SceneType, Action>.KeyCollection keys)
+    {
+        return new List<SceneType>(keys);
     }
 }

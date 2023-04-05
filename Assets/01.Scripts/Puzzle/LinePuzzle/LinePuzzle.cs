@@ -1,9 +1,11 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder;
 
 public class LinePuzzle : MonoBehaviour
@@ -15,10 +17,12 @@ public class LinePuzzle : MonoBehaviour
     private int connectCount = 0;
     [SerializeField]
     private Color[] colors;
+    [SerializeField]
+    private Color[] matColors;
 
     [Header("BOARD")]
     [SerializeField]
-    private ProBuilderMesh board;
+    private Transform board;
 
     [SerializeField]
     private BoxCollider boardCollider;
@@ -50,13 +54,11 @@ public class LinePuzzle : MonoBehaviour
     private int destroyPuzzleCnt = 0;
 
     public Action OnClear { get; set; }
-    public Action OnBuildMesh { get; set; }
-    public Action OnFire { get; set; }
+
 
     private void Awake()
     {
-        Initilize();
-        BuildAllMesh();
+        Initialize();
     }
 
     public void StartGame()
@@ -64,17 +66,18 @@ public class LinePuzzle : MonoBehaviour
         CreatePortal(oilPortal, oilPortals, oilPortalTransform);
         CreatePortal(firePortal, firePortals, firePortalTransform);
 
-        InitilizeFirePortal();
+        InitializeFirePortal();
     }
 
-    private void Initilize()
+    private void Initialize()
     {
-        float weight = boardCollider.size.x;
+        float scaleWeight = boardCollider.transform.localScale.x;
+        float width = boardCollider.size.x;
         float height = boardCollider.size.z;
 
         int boardCnt = boardInformation.Count;
 
-        Vector3 offset = board.transform.position /*+ new Vector3(weight / boardCnt * 0.5f, 0, -height / boardCnt * 0.5f)*/;
+        Vector3 offset = board.position;
 
         for (int i = 0; i < boardCnt; i++)
         {
@@ -83,24 +86,23 @@ public class LinePuzzle : MonoBehaviour
             {
                 PlatformPiece newObj = Instantiate(platformPiece);
                 newObj.name = $"({i}, {j}) : {boardInformation[i][j]}";
-                newObj.Initialize(boardInformation[i][j] - '1', ref colors);
+                newObj.Initialize(boardInformation[i][j] - '1', ref colors, ref matColors);
 
-                newObj.OnDestroyPlatform += DestroyPuzzle;
-                newObj.InactivePlatform += BuildAllMesh;
+                newObj.OnDestroyPlatform += CheckSolve;
 
                 newObj.transform.position =
                     new Vector3
                     (
-                        weight / length * j,
+                        width / length * j * scaleWeight,
                         0f,
-                        -height / boardCnt * i
+                        -height / boardCnt * i * scaleWeight
                     ) + offset;
 
                 newObj.transform.SetParent(transform);
 
                 Vector3 scale = newObj.transform.localScale;
-                scale.x = 1 / (float)boardInformation.Count;
-                scale.z = 1 / (float)boardInformation[0].Length;
+                scale.x = 1 / (float)boardInformation.Count * scaleWeight;
+                scale.z = 1 / (float)boardInformation[0].Length * scaleWeight;
 
                 newObj.transform.localScale = scale;
 
@@ -127,14 +129,13 @@ public class LinePuzzle : MonoBehaviour
         }
     }
 
-    private void InitilizeFirePortal()
+    private void InitializeFirePortal()
     {
         for (int i = 0; i < connectCount; i++)
         {
             FirePortal fPortal = firePortals[i] as FirePortal;
             fPortal.Listen(pieces.Find(x => x.Index == i).Burn);
             fPortal.Listen(pieces.FindLast(x => x.Index == i).Burn);
-            fPortal.Listen(() => OnFire?.Invoke());
         }
     }
 
@@ -147,11 +148,10 @@ public class LinePuzzle : MonoBehaviour
         }
     }
 
-    private void DestroyPuzzle()
+    private void CheckSolve()
     {
         if (++destroyPuzzleCnt == boardInformation.Count * boardInformation[0].Length)
         {
-            Debug.Log("CLEAR");
             EndPuzzle();
             OnClear?.Invoke();
         }
@@ -167,10 +167,5 @@ public class LinePuzzle : MonoBehaviour
         ResetOil();
         pieces.ForEach(x => x.ResetPuzzle());
         destroyPuzzleCnt = 0;
-    }
-
-    public void BuildAllMesh()
-    {
-        pieces.ForEach(x => x.BuildMesh());
     }
 }

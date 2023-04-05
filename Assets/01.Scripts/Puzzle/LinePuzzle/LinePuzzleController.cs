@@ -2,17 +2,14 @@ using Cinemachine;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LinePuzzleController : MonoBehaviour
 {
     [SerializeField]
     private LinePuzzle[] linePuzzles;
     private LinePuzzle CurrentPuzzle => linePuzzles[idx];
-
-    [SerializeField]
-    private CinemachineVirtualCamera cmVcam;
 
     private ThirdPersonCameraControll cameraController;
 
@@ -36,37 +33,53 @@ public class LinePuzzleController : MonoBehaviour
     [SerializeField]
     private ParticleSystem oilTeleportParticle;
 
-    public static PlatformPiece CurrentPiece { get; set; }
+    private bool isPlaying = false;
 
+    [Header("EVENTS")]
+    [SerializeField] private UnityEvent onEnterGame;
+    [SerializeField] private UnityEvent onExitGame;
+
+    public CinemachineVirtualCameraBase topCamera;
+
+    #region Property
+    public static PlatformPiece CurrentPiece { get; set; }
     public static bool IsOilMove { get; set; } = false;
+    public static PlatformPiece SelectedPiece { get; set; }
+    public static PlatformPiece EndPiece { get; set; }
+    #endregion
 
     private void Awake()
     {
         cameraController = FindObjectOfType<ThirdPersonCameraControll>();
+        topCamera = GetComponentInChildren<CinemachineVirtualCameraBase>();
         firePet = FindObjectOfType<FirePet>();
         oilPet = FindObjectOfType<OilPet>();
-
-        InputManager.StartListeningInput(InputAction.Pet_Skill, Select);
     }
 
     private void Start()
     {
-        CameraSwitcher.UnRegister(cmVcam);
-        CameraSwitcher.Register(cmVcam);
-
-        foreach(LinePuzzle puzzle in linePuzzles)
+        foreach (LinePuzzle puzzle in linePuzzles)
         {
-            puzzle.OnClear += ClearPuzzle;
-            puzzle.OnFire += BuildAllMesh;
+            puzzle.OnClear += GetNextPuzzle;
         }
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F))
+        if (!isPlaying) return;
+
+        if (Input.GetKeyDown(KeyCode.F))
         {
             ResetBoard();
         }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            CurrentPuzzle.EndPuzzle();
+            GetNextPuzzle();
+        }
+
+        trigger.transform.position = GameManager.Instance.GetMousePos();
     }
 
     private void ResetBoard()
@@ -77,7 +90,10 @@ public class LinePuzzleController : MonoBehaviour
 
     public void EnterGame()
     {
-        CameraSwitcher.SwitchCamera(cmVcam);
+        if (PetManager.Instance.PetCount < 2) return;
+
+        isPlaying = true;
+        onEnterGame?.Invoke();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -91,26 +107,45 @@ public class LinePuzzleController : MonoBehaviour
         Pet.IsCameraAimPoint = false;
 
         oilPet.IsDirectSpread = false;
-        oilPet.OnEndSkill += AutoMoveOil;
-        oilPet.OnStartSkill += CurrentPuzzle.ResetOil;
+        oilPet.OnEndSkill += SetEndPiece;
+        oilPet.OnEndSkill += MoveToPortal;
+        oilPet.OnStartSkill += ResetOil;
+        oilPet.OnStartSkill += SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = false;
 
         StartGame();
+    }
+
+    private void SetSelectedColor()
+    {
+        if (CurrentPiece)
+            SelectedPiece = CurrentPiece;
+    }
+
+    private void SetEndPiece()
+    {
+        if (CurrentPiece)
+            EndPiece = CurrentPiece;
     }
 
     public void ExitGame()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        isPlaying = false;
 
         cameraController.ActiveCrossHair();
         OilPetSkill.IsCrosshair = true;
         oilPet.IsDirectSpread = true;
         Pet.IsCameraAimPoint = true;
 
-        oilPet.OnEndSkill -= AutoMoveOil;
-        oilPet.OnStartSkill -= CurrentPuzzle.ResetOil;
+        oilPet.OnEndSkill -= MoveToPortal;
+        oilPet.OnEndSkill -= SetEndPiece;
+        oilPet.OnStartSkill -= ResetOil;
+        oilPet.OnStartSkill -= SetSelectedColor;
         oilPet.OilPetSkill.IsCheckDistance = true;
+
+        onExitGame?.Invoke();
     }
 
     private void StartGame()
@@ -118,26 +153,15 @@ public class LinePuzzleController : MonoBehaviour
         linePuzzles[idx].StartGame();
     }
 
-    public void ClearGame()
+    private void MoveToPortal()
     {
-        InputManager.StopListeningInput(InputAction.Pet_Skill, Select);
-    }
+        if (SelectedPiece == null || EndPiece == null) return;
+        if (SelectedPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= SelectedPiece.Index) return;
+        if (EndPiece.Index != SelectedPiece.Index) return;
 
-    private void Select(InputAction action, float value)
-    {
-        trigger.transform.position = GameManager.Instance.GetMousePos();
-    }
-
-    private void AutoMoveOil()
-    {
-        if (CurrentPiece)
-        {
-            if (CurrentPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= CurrentPiece.Index) return;
-
-            ConnectionPortal portal = CurrentPuzzle.OilPortals[CurrentPiece.Index];
-            oilPet.SetDestination(portal.transform.position);
-            oilPet.onArrive += ForceMoveBoard;
-        }
+        ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
+        oilPet.SetDestination(portal.transform.position);
+        oilPet.onArrive += ForceMoveBoard;
     }
 
     private void ForceMoveBoard()
@@ -160,7 +184,7 @@ public class LinePuzzleController : MonoBehaviour
         IsOilMove = false;
     }
 
-    private void ClearPuzzle()
+    private void GetNextPuzzle()
     {
         if (++idx >= linePuzzles.Length)
         {
@@ -170,32 +194,30 @@ public class LinePuzzleController : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
-        seq.Append(linePuzzles[idx].transform.DOMove(boardTransform.position, 1f));
+        seq.AppendCallback(() =>
+        {
+            if (idx - 1 >= 0)
+                linePuzzles[idx - 1].gameObject.SetActive(false);
+        });
+        seq.Append(linePuzzles[idx].transform.DOMove(linePuzzles[0].transform.position, 1f));
+        seq.Join(topCamera.transform.DOShakePosition(1.2f, 0.75f));
+
         seq.AppendCallback(() => linePuzzles[idx].StartGame());
+    }
+
+    private void ResetOil()
+    {
+        CurrentPuzzle.ResetOil();
     }
 
     private void EndPuzzle()
     {
-
+        ExitGame();
+        oilPet.PauseSkill(false);
     }
 
-    [ContextMenu("Dynamic Build All Mesh")]
-    public void BuildAllMesh()
+    public void PauseOilPet(bool pause)
     {
-        Sequence seq = DOTween.Sequence();
-
-        seq.AppendInterval(8f);
-        seq.AppendCallback(() =>
-        {
-            foreach (LinePuzzle puzzle in linePuzzles)
-            {
-                puzzle.BuildAllMesh();
-            }
-        });
-    }
-
-    private void OnDestroy()
-    {
-        InputManager.StopListeningInput(InputAction.Pet_Skill, Select);
+        oilPet.PauseSkill(pause);
     }
 }

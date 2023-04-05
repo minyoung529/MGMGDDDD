@@ -159,14 +159,7 @@ public class OilPetSkill
                 return;
             }
 
-            try
-            {
-                pathAgent.SetDestination(cameraHit);
-            }
-            catch(Exception e)
-            {
-                Debug.Log("<b>PATH AGENT:</b> PATH가 없습니다.");
-            }
+            pathAgent.SetDestination(cameraHit);
 
             float dist = Vector3.Distance(prevPosition, pathAgent.transform.position);
             oilDistance += dist;
@@ -189,6 +182,7 @@ public class OilPetSkill
 
             if (IsCrosshair)
             {
+                //  ------------------------------------- GameManager NULL ---------------------------------
                 pathAgent.transform.position = GameManager.Instance.GetCameraHit();
             }
             else

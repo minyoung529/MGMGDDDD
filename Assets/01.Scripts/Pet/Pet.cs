@@ -27,6 +27,12 @@ public abstract class Pet : MonoBehaviour
     protected Transform target;
     protected NavMeshAgent agent;
     protected PetThrow petThrow; 
+    private float beginAcceleration;
+    public float AgentAcceleration
+    {
+        get => agent.acceleration;
+        set { agent.acceleration = value; }
+    }
 
     private Vector3 originScale;
 
@@ -39,6 +45,7 @@ public abstract class Pet : MonoBehaviour
     public Collider Coll => coll;
     public PetThrow PetThrow => petThrow;
     public Sprite petSprite => petInform.petUISprite;
+    public PetType GetPetType => petInform.petType;
 
     #endregion
 
@@ -61,6 +68,8 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         petThrow = GetComponent<PetThrow>();
+
+        beginAcceleration = agent.acceleration;
     }
 
     private void Start()
@@ -68,7 +77,7 @@ public abstract class Pet : MonoBehaviour
         ResetPet();
     }
 
-    public virtual void OnUpdate() 
+    public virtual void OnUpdate()
     {
         CheckArrive();
         FollowTarget();
@@ -124,7 +133,8 @@ public abstract class Pet : MonoBehaviour
         isCoolTime = false;
     }
 
-    public virtual void SkillUp() {
+    public virtual void SkillUp()
+    {
         MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
 
@@ -132,16 +142,19 @@ public abstract class Pet : MonoBehaviour
 
     #region Move
 
-    private void FollowTarget() {
+    private void FollowTarget()
+    {
         if (!target || !agent.isOnNavMesh) return;
         agent.SetDestination(target.position);
     }
 
-    public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null) {
+    public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
+    {
         rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
-        if (!target) {
+        if (!target)
+        {
             agent.ResetPath();
             return;
         }
@@ -151,7 +164,13 @@ public abstract class Pet : MonoBehaviour
         this.onArrive = onArrive;
     }
 
-    public void SetTargetPlayer() {
+    public void SetDestination(Transform target)
+    {
+        SetTarget(target);
+    }
+
+    public void SetTargetPlayer()
+    {
         SetNavEnabled(true);
         SetNavIsStopped(false);
         rigid.velocity = Vector3.zero;
@@ -159,7 +178,13 @@ public abstract class Pet : MonoBehaviour
         agent.stoppingDistance = distanceToPlayer;
     }
 
-    public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null) {
+    public void SetPlayerTransform(Transform player)
+    {
+        this.player = player;
+    }
+
+    public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
+    {
         if (!agent.isOnNavMesh) return;
         this.onArrive = onArrive;
         SetNavEnabled(true);
@@ -170,26 +195,23 @@ public abstract class Pet : MonoBehaviour
         agent.SetDestination(target);
     }
 
-    private void CheckArrive() {
-        if (Vector3.Distance(agent.destination, transform.position) <= 1f) {
+    private void CheckArrive()
+    {
+        if (Vector3.Distance(agent.destination, transform.position) <= 1f)
+        {
             onArrive?.Invoke();
             onArrive = null;
         }
     }
-
-    public void SetForcePosition(Vector3 position)
-    {
-        agent.enabled = false;
-        transform.position = position;
-        agent.enabled = true;
-    }
     #endregion
 
     #region Nav_Get/Set
-    public void SetNavIsStopped(bool value) {
+    public void SetNavIsStopped(bool value)
+    {
         agent.isStopped = value;
     }
-    public void SetNavEnabled(bool value) {
+    public void SetNavEnabled(bool value)
+    {
         agent.enabled = value;
     }
     public bool GetIsOnNavMesh() {
@@ -198,23 +220,38 @@ public abstract class Pet : MonoBehaviour
     public Vector3 GetDestination() {
         return agent.destination;
     }
+    public void ResetNav()
+    {
+        agent.ResetPath();
+    }
+    public void SetForcePosition(Vector3 position)
+    {
+        agent.enabled = false;
+        transform.position = position;
+        agent.enabled = true;
+    }
+>>>>>>> develop2
     #endregion
 
     #region InputEvent
-    public void MovePoint() {
+    public void MovePoint()
+    {
         if (isInputLock) return;
-        Debug.Log("Click");
-        if (IsCameraAimPoint) {
+
+        if (IsCameraAimPoint)
+        {
             SetDestination(GameManager.Instance.GetCameraHit());
         }
-        else {
+        else
+        {
             SetDestination(GameManager.Instance.GetMousePos());
         }
 
         //transform.DOKill();
     }
 
-    public virtual void Withdraw() {
+    public virtual void Withdraw()
+    {
         if (isInputLock) return;
         ResetPet();
     }
@@ -222,7 +259,7 @@ public abstract class Pet : MonoBehaviour
 
     #region AI
     /// <summary>
-    /// ¸Ê¿¡ Á¸ÀçÇÏ´Â Å½»ö °¡´ÉÇÑ ¹öÆ°À» Ã£À½
+    /// ½Ã¾ß ¹üÀ§¿¡ Á¸ÀçÇÏ´Â È°¼ºÈ­ µÇÁö ¾ÊÀº ¹öÆ°À» Ã£¾Æ³½ ÈÄ Å¸°ÙÀ¸·Î ¼³Á¤
     /// </summary>
     /// <returns>Å½»ö ¼º°ø ¿©ºÎ</returns>
     public bool FindButton() {
@@ -232,5 +269,56 @@ public abstract class Pet : MonoBehaviour
         agent.SetDestination(dest);
         return true;
     }
+
+        try
+        {
+            agent.SetDestination(dest);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("PATHï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
+        }
+        return true;
+    }
+
+    #region Throw/Landing
+    public virtual void OnThrow()
+    {
+        StartCoroutine(LandingCoroutine());
+    }
+
+    private IEnumerator LandingCoroutine()
+    {
+        int t = 0;
+        while (!CheckCollision())
+        {
+            t++;
+            yield return null;
+        }
+        OnLanding();
+    }
+
+    public bool CheckCollision()
+    {
+        if (Physics.OverlapSphere(transform.position, collRadius, 1 << Define.BOTTOM_LAYER).Length > 0)
+            return true;
+        return false;
+    }
+
+    public virtual void OnLanding()
+    {
+        SetNavEnabled(true);
+        coll.enabled = true;
+        rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
+        isInputLock = false;
+        if (!FindButton())
+            SetTarget(null);
+    }
+>>>>>>> develop2
     #endregion
+
+    public void ResetAgentValue()
+    {
+        agent.acceleration = beginAcceleration;
+    }
 }

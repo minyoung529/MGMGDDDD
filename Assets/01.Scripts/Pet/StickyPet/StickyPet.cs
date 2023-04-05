@@ -198,6 +198,8 @@ public class StickyPet : Pet
     {
         ChangeState(StickyState.Idle);
 
+        //SetNavIsStopped(false);
+        SetNavEnabled(true);
         if (stickyKinematic && stickyObject)
         {
             stickyObject.MovableRoot.SetParent(originalParent);
@@ -210,9 +212,6 @@ public class StickyPet : Pet
                 Destroy(joints[i]);
             }
         }
-
-        //SetNavIsStopped(false);
-        SetNavEnabled(true);
 
         skillEffect.Play();
         Rigid.isKinematic = false;
@@ -259,6 +258,9 @@ public class StickyPet : Pet
         transform.DOMove(transform.position + targetPosition, 0.1f);
     }
 
+    public void SetAnimation(bool value)
+    {
+    }
 
     #endregion
 

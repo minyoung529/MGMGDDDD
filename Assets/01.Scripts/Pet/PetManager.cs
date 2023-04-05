@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PetManager : MonoSingleton<PetManager>
@@ -21,6 +22,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     #region Get
     public int PetCount { get { return pets.Count; } }
+    public Pet GetSelectPet { get { return pets[selectIndex]; } }
     #endregion 
 
     protected override void Awake()
@@ -41,7 +43,17 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < pets.Count; i++)
         {
-            pets[i].OnUpdate();
+            if (pets[i] == null)
+            {
+                pets[i] = FindObjectOfType(pets[i].GetType()) as Pet;
+                pets[i].SetPlayerTransform(FindObjectOfType<PlayerMove>().transform);
+                pets[i].SetTargetPlayer();
+
+                if (pets[i] == null) continue;
+            }
+
+            if (pets[i])
+                pets[i].OnUpdate();
         }
     }
 
@@ -49,7 +61,6 @@ public class PetManager : MonoSingleton<PetManager>
     {
         return pets.Contains(p);
     }
-
 
     private void OnDestroy()
     {
@@ -59,7 +70,6 @@ public class PetManager : MonoSingleton<PetManager>
     }
 
     #region Listen
-
     private void StartListen()
     {
         InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
@@ -103,6 +113,7 @@ public class PetManager : MonoSingleton<PetManager>
     private void OnClickMove(InputAction input, float value)
     {
         if (selectIndex < 0) return;
+        if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
         pets[selectIndex].MovePoint();
     }
 
@@ -196,7 +207,8 @@ public class PetManager : MonoSingleton<PetManager>
         OffSelectPetUI();
     }
 
-    public Pet GetSelectedPet() {
+    public Pet GetSelectedPet()
+    {
         if (PetCount < 1) return null;
         return pets[selectIndex];
     }
@@ -282,6 +294,18 @@ public class PetManager : MonoSingleton<PetManager>
     private void InactivePetCanvas()
     {
         transform.GetChild(0).gameObject.SetActive(false);
+    }
+    #endregion
+
+    #region ACCESS
+    public void AllPetActions(Action<Pet> action)
+    {
+        pets.ForEach(action);
+    }
+
+    public bool Contain(Pet pet)
+    {
+        return pets.Contains(pet);
     }
     #endregion
 }
