@@ -32,7 +32,6 @@ public abstract class Pet : MonoBehaviour
         get => agent.acceleration;
         set { agent.acceleration = value; }
     }
-    protected PetHold hold;
 
     private Vector3 originScale;
 
