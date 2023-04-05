@@ -3,7 +3,8 @@ using UnityEngine;
 public class DefaultMoveState : MoveState
 {
     #region abstarct 구현 부분
-    public override StateName StateName => StateName.DefaultMove;
+    [SerializeField] private StateName stateName = StateName.DefaultMove;
+    public override StateName StateName => stateName;
 
     public override void OnInput(Vector3 inputDir) {
         if (inputDir.sqrMagnitude <= 0) {
