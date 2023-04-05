@@ -227,17 +227,9 @@ public abstract class Pet : MonoBehaviour
     /// <returns>탐색 성공 여부</returns>
     public bool FindButton() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
-        if (target == null) return false;
+        if (!target) return false;
         Vector3 dest = target.transform.position;
-
-        try
-        {
-            agent.SetDestination(dest);
-        }
-        catch(Exception e)
-        {
-            Debug.Log("PATH가 없습니다.");
-        }
+        agent.SetDestination(dest);
         return true;
     }
     #endregion

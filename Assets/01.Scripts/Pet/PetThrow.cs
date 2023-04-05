@@ -7,12 +7,18 @@ using DG.Tweening;
 public class PetThrow : MonoBehaviour {
     [SerializeField] private float landingTime = 1f;
 
-    private Pet pet;
-    private bool isThrow;
+    private Pet pet = null;
+    private bool isThrow = false;
+    private bool isWake = false;
     private float elapsedLandingTime = 0;
 
     private void Awake() {
         pet = GetComponent<Pet>();
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (!isWake || collision.gameObject.layer != Define.BOTTOM_LAYER) return;
+        OnLanding();
     }
 
     private void OnCollisionStay(Collision collision) {
@@ -20,8 +26,7 @@ public class PetThrow : MonoBehaviour {
 
         elapsedLandingTime += Time.deltaTime;
         if (elapsedLandingTime > landingTime) {
-            OnLanding();
-            isThrow = false;
+            WakeUp();
             elapsedLandingTime = 0f;
         }
     }
@@ -42,13 +47,20 @@ public class PetThrow : MonoBehaviour {
         pet.Coll.enabled = true;
     }
 
-    public virtual void OnLanding() {
-        pet.IsInputLock = false;
+    private void WakeUp() {
+        isThrow = false;
         pet.Rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
-        transform.DOMove(transform.position + Vector3.up * 3f, 1f);
-        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 1f).OnComplete(() => {
-            pet.SetNavEnabled(true);
-            pet.FindButton();
-        });
+        pet.Rigid.AddForce(Vector3.up * 100, ForceMode.Impulse);
+        pet.Coll.enabled = false;    
+        StartCoroutine(EnableColl(transform.position, 2f));
+        transform.DOMove(transform.position + Vector3.up * 3f, 0.5f).OnComplete(() => pet.Rigid.velocity = Vector3.zero);
+        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 0.5f);
+        isWake = true;
+    }
+
+    private void OnLanding() {
+        isWake = false;
+        pet.SetNavEnabled(true);
+        pet.FindButton();
     }
 }

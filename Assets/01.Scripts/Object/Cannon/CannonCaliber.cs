@@ -40,6 +40,7 @@ public class CannonCaliber : MonoBehaviour
             Vector3 hitPoint = others[0].ClosestPoint(transform.position);
             Pop(pets, hitPoint);
             pets = null;
+            Destroy(gameObject);
         }
     }
 
@@ -47,8 +48,12 @@ public class CannonCaliber : MonoBehaviour
         isFire = false;
         foreach (Pet item in pets) {
             item.transform.SetParent(null);
-            Debug.Log(item.Rigid.velocity);
-            item.PetThrow.Throw(hitPoint, (transform.position - hitPoint).normalized * bumpPow, 0.1f);
+            Vector3 dir = (item.transform.position - hitPoint).normalized;
+            float angle = Mathf.Abs(Vector3.Angle(Vector3.up, dir));
+            if (angle > 10) {
+                dir = Vector3.RotateTowards(dir, Vector3.up, Mathf.Deg2Rad * (angle - 10) , 0).normalized;
+            }
+            item.PetThrow.Throw(hitPoint,  dir * bumpPow);
         }
     }
 }

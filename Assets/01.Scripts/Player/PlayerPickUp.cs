@@ -10,6 +10,7 @@ public class PlayerPickUp : MonoBehaviour {
     [SerializeField] private float distance2Pet = 2;
     [SerializeField] private float throwPow;
 
+    private Sequence seq;
     private PlayerMove playerMove;
     private Pet holdingPet;
     private bool isHolding;
@@ -109,13 +110,12 @@ public class PlayerPickUp : MonoBehaviour {
     public void OnDrop() {
         isHolding = false;
         holdingPet.Rigid.isKinematic = false;
-        Sequence seq = DOTween.Sequence();
+        seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() => {
             holdingPet.Coll.enabled = true;
             holdingPet.SetNavEnabled(true);
             holdingPet = null;
-            seq.Kill();
         });
     }
 
@@ -132,4 +132,8 @@ public class PlayerPickUp : MonoBehaviour {
         playerMove.ChangeState(StateName.DefaultMove);
     }
     #endregion
+
+    private void OnDisable() {
+        seq.Kill();
+    }
 }
