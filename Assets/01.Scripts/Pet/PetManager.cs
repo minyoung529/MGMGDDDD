@@ -23,6 +23,7 @@ public class PetManager : MonoSingleton<PetManager>
     #region Get
     public int PetCount { get { return pets.Count; } }
     public Pet GetSelectPet { get { return pets[selectIndex]; } }
+    public List<Pet> GetPetList { get { return pets; } }
     #endregion 
 
     protected override void Awake()
@@ -105,7 +106,7 @@ public class PetManager : MonoSingleton<PetManager>
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
-        if(pets[selectIndex].Interactive.IsInteraction)
+        if(pets[selectIndex].IsInteraction)
         {
             pets[selectIndex].InteractionPoint();
             return;

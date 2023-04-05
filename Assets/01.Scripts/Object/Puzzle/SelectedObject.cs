@@ -1,19 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SelectedObject : MonoBehaviour
 {
-    [SerializeField] private LayerMask layerMask;
-    [SerializeField] private Color outlineColor = Color.blue;
-
     public bool IsInteraction { get { return interactionObj != null; } }
-    public LayerMask InterationLayer { get { return layerMask; } }
     public GameObject InteractiveObj { get { return interactionObj.gameObject; } }
     private OutlineScript interactionObj = null;
 
-    private void Awake()
+    private void Update()
     {
+        if (PetManager.Instance.GetSelectedPet() == null) return;
+
+        CheckObject();
     }
 
     public void CheckObject()
@@ -21,32 +22,45 @@ public class SelectedObject : MonoBehaviour
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
 
-        if (Physics.Raycast(ray, out hit, 100f, layerMask))
+        if (Physics.Raycast(ray, out hit, 100f))
         {
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
+            Pet pet = PetManager.Instance.GetSelectedPet();
 
-            if (selected != null)
+            if (selected == null || pet == null)
             {
-                interactionObj = selected;
-                interactionObj.SetColor(outlineColor);
-                interactionObj.OnOutline();
+                OffInteration();
+                return;
             }
-            else
+            if ((selected.PetType.GetHashCode() & pet.GetPetType.GetHashCode()) == 0)
             {
-                if (interactionObj != null)
-                {
-                    interactionObj.OffOutline();
-                    interactionObj = null;
-                }
+                OffInteration();
+                return;
             }
+
+            pet.IsInteraction = true;
+            interactionObj = selected;
+            interactionObj.SetColor(pet.petColor);
+            interactionObj.OnOutline();
         }
         else
         {
-            if (interactionObj != null)
-            {
-                interactionObj.OffOutline();
-                interactionObj = null;
-            }
+            OffInteration();
         }
     }
+
+    public void OffInteration()
+    {
+        if (interactionObj != null)
+        {
+            for (int i = 0; i < PetManager.Instance.PetCount; i++)
+            {
+                PetManager.Instance.GetPetList[i].IsInteraction = false;
+            }
+            interactionObj.OffOutline();
+            interactionObj = null;
+        }
+    }
+
+
 }

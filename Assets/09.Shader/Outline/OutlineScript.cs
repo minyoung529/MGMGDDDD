@@ -1,18 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+[Flags]
+public enum PetFlag
+{
+    None = 0
+
+    , OilPet = 1 << 0
+    , FirePet = 1 << 1
+    , StickyPet = 1 << 2
+}
 
 public class OutlineScript : MonoBehaviour
 {
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private float outlineScaleFactor = -1.1f;
-    [SerializeField] private Color outlineColor = Color.blue;
+    [SerializeField] private PetFlag petType;
+    public PetFlag PetType => petType;
 
     private Renderer outlineRenderer;
 
     void Start()
     {
-        outlineRenderer = CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor);
+        outlineRenderer = CreateOutline(outlineMaterial, outlineScaleFactor, Color.white);
     }
 
     #region Set

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(SelectedObject))]
 public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
@@ -27,10 +26,10 @@ public abstract class Pet : MonoBehaviour
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
-    protected SelectedObject interactive;
-
+    
     private Vector3 originScale;
 
+    public bool IsInteraction { get; set; }
     #region Get
 
     public bool IsCoolTime => isCoolTime;
@@ -39,8 +38,8 @@ public abstract class Pet : MonoBehaviour
     public Collider Coll => coll;
     public PetHold Hold => hold;
     public Sprite petSprite => petInform.petUISprite;
-    public SelectedObject Interactive => interactive;
     public PetType GetPetType => petInform.petType;
+    public Color petColor => petInform.outlineColor;
 
     #endregion
 
@@ -62,7 +61,6 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
-        interactive = GetComponent<SelectedObject>();
     }
 
     private void Start()
@@ -74,7 +72,6 @@ public abstract class Pet : MonoBehaviour
     {
         CheckArrive();
         FollowTarget();
-        interactive.CheckObject();
     }
 
     #region Set

@@ -54,11 +54,11 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     private void SwitchPet(InputAction input, float action)
     {
-        if(PetManager.Instance.GetSelectPet.GetPetType == PetType.FIRE)
+        if(PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet)
         {
             CameraSwitcher.SwitchCamera(fireCam);
         }
-        else if(PetManager.Instance.GetSelectPet.GetPetType == PetType.OIL)
+        else if(PetManager.Instance.GetSelectPet.GetPetType == PetType.OilPet)
         {
             CameraSwitcher.SwitchCamera(oilCam);
         }
@@ -184,11 +184,11 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     private void ChangeCam()
     {
         Pet p = PetManager.Instance.GetSelectPet;
-        if (p.GetPetType == PetType.FIRE)
+        if (p.GetPetType == PetType.FirePet)
         {
             CameraSwitcher.SwitchCamera(fireCam);
         }
-        else if (p.GetPetType == PetType.OIL)
+        else if (p.GetPetType == PetType.OilPet)
         {
             CameraSwitcher.SwitchCamera(oilCam);
         }
