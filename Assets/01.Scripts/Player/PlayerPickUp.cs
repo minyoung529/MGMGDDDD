@@ -10,6 +10,7 @@ public class PlayerPickUp : MonoBehaviour {
     [SerializeField] private float distance2Pet = 2;
     [SerializeField] private float throwPow;
 
+    private Sequence seq;
     private PlayerMove playerMove;
     private Pet holdingPet;
     private bool isHolding;
@@ -57,7 +58,7 @@ public class PlayerPickUp : MonoBehaviour {
     #region PickUp ฐüทร
     public Pet FindPet() {
         Pet pet = PetManager.Instance.GetSelectedPet();
-        if (!pet || !pet.CheckCollision()) {
+        if (!pet || !pet.GetIsOnNavMesh()) {
             return null;
         }
         return pet;
@@ -106,25 +107,23 @@ public class PlayerPickUp : MonoBehaviour {
         StartCoroutine(MovePetToHand());
     }
 
-    private void OnDrop() {
+    public void OnDrop() {
         isHolding = false;
         holdingPet.Rigid.isKinematic = false;
-        Sequence seq = DOTween.Sequence();
+        seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() => {
-            holdingPet.OnLanding();
+            holdingPet.Coll.enabled = true;
+            holdingPet.SetNavEnabled(true);
             holdingPet = null;
-            seq.Kill();
         });
     }
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.Rigid.constraints = RigidbodyConstraints.FreezeRotation;
         holdingPet.Rigid.velocity = Vector3.zero;
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
-        holdingPet.Rigid.AddForce(dir * throwPow, ForceMode.Impulse);
-        holdingPet.OnThrow();
+        holdingPet.PetThrow.Throw(transform.position, dir * throwPow);
         holdingPet = null;
     }
 
@@ -134,8 +133,12 @@ public class PlayerPickUp : MonoBehaviour {
     }
 
     #endregion
-    private void OnDestroy()
-    {
+
+    private void OnDisable() {
+        seq.Kill();
+    }
+
+    private void OnDestroy() {
         InputManager.StopListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StopListeningInput(InputAction.Throw, GetInput);
     }
