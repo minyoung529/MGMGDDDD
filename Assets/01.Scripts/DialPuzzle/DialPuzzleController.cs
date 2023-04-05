@@ -16,6 +16,6 @@ public class DialPuzzleController : MonoBehaviour
     */
 
     private string hintString = "";
-    private 
+    //private 
 
 }
