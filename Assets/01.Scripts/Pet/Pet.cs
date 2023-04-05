@@ -20,7 +20,6 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    protected PetHold hold;
     protected Collider coll;
     protected Rigidbody rigid;
     protected Transform player;
