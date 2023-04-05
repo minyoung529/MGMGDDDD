@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-
 public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
@@ -21,31 +20,32 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    protected Rigidbody rigid;
     protected Collider coll;
+    protected Rigidbody rigid;
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
+    protected PetThrow petThrow; 
     private float beginAcceleration;
     public float AgentAcceleration
     {
         get => agent.acceleration;
         set { agent.acceleration = value; }
     }
-    protected PetHold hold;
 
     private Vector3 originScale;
 
-
+    public bool IsInteraction { get; set; }
     #region Get
 
     public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
-    public PetHold Hold => hold;
+    public PetThrow PetThrow => petThrow;
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
+    public Color petColor => petInform.outlineColor;
 
     #endregion
 
@@ -67,6 +67,7 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
+        petThrow = GetComponent<PetThrow>();
 
         beginAcceleration = agent.acceleration;
     }
@@ -202,7 +203,9 @@ public abstract class Pet : MonoBehaviour
             onArrive = null;
         }
     }
+    #endregion
 
+    #region Nav_Get/Set
     public void SetNavIsStopped(bool value)
     {
         agent.isStopped = value;
@@ -211,8 +214,10 @@ public abstract class Pet : MonoBehaviour
     {
         agent.enabled = value;
     }
-    public Vector3 GetDestination()
-    {
+    public bool GetIsOnNavMesh() {
+        return agent.isOnNavMesh;
+    }
+    public Vector3 GetDestination() {
         return agent.destination;
     }
     public void ResetNav()
@@ -228,9 +233,15 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     #region InputEvent
-    public void MovePoint()
+    public void MovePoint(bool selected = false)
     {
         if (isInputLock) return;
+
+        if (selected)
+        {
+            InteractionPoint();
+            return;
+        }
 
         if (IsCameraAimPoint)
         {
@@ -244,6 +255,11 @@ public abstract class Pet : MonoBehaviour
         //transform.DOKill();
     }
 
+    public virtual void InteractionPoint()
+    {
+
+    }
+
     public virtual void Withdraw()
     {
         if (isInputLock) return;
@@ -251,26 +267,19 @@ public abstract class Pet : MonoBehaviour
     }
     #endregion
 
+    #region AI
     /// <summary>
-    /// ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ Ã£ï¿½ï¿½
+    /// ½Ã¾ß ¹üÀ§¿¡ Á¸ÀçÇÏ´Â È°¼ºÈ­ µÇÁö ¾ÊÀº ¹öÆ°À» Ã£¾Æ³½ ÈÄ Å¸°ÙÀ¸·Î ¼³Á¤
     /// </summary>
-    /// <returns>Å½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</returns>
-    private bool FindButton()
-    {
+    /// <returns>Å½»ö ¼º°ø ¿©ºÎ</returns>
+    public bool FindButton() {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
-        if (target == null) return false;
+        if (!target) return false;
         Vector3 dest = target.transform.position;
-
-        try
-        {
-            agent.SetDestination(dest);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("PATHï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
-        }
+        agent.SetDestination(dest);
         return true;
     }
+    #endregion
 
     #region Throw/Landing
     public virtual void OnThrow()

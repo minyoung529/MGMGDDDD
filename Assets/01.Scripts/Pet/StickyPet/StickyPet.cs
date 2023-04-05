@@ -46,8 +46,6 @@ public class StickyPet : Pet
     {
         base.OnUpdate();
 
-        if (Input.GetKeyDown(KeyCode.X)) ReadySticky();
-
         if (stickyObject && stickyObject.ApplyOffset) // 오프셋 맞추기
         {
             stickyObject.transform.position = stickyParent.position + stickyOffset;
@@ -101,6 +99,12 @@ public class StickyPet : Pet
 
         BillowAction();
         OnBillow?.Invoke();
+    }
+
+    public override void InteractionPoint()
+    {
+        base.InteractionPoint();
+        ReadySticky();
     }
 
     private void BillowAction()
