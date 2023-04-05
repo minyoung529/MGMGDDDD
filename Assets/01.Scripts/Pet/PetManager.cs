@@ -42,7 +42,6 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void Update()
     {
-        if(selectIndex > -1) pets[selectIndex].OnUpdate();
         for (int i = 0; i < pets.Count; i++)
         {
             if (pets[i] == null)
@@ -53,6 +52,8 @@ public class PetManager : MonoSingleton<PetManager>
 
                 if (pets[i] == null) continue;
             }
+
+            pets[i].OnUpdate();
         }
 
     }
