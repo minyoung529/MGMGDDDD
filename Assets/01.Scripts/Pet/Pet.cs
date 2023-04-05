@@ -230,7 +230,6 @@ public abstract class Pet : MonoBehaviour
         transform.position = position;
         agent.enabled = true;
     }
->>>>>>> develop2
     #endregion
 
     #region InputEvent
@@ -269,17 +268,7 @@ public abstract class Pet : MonoBehaviour
         agent.SetDestination(dest);
         return true;
     }
-
-        try
-        {
-            agent.SetDestination(dest);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("PATH�� �����ϴ�.");
-        }
-        return true;
-    }
+    #endregion
 
     #region Throw/Landing
     public virtual void OnThrow()
@@ -314,7 +303,6 @@ public abstract class Pet : MonoBehaviour
         if (!FindButton())
             SetTarget(null);
     }
->>>>>>> develop2
     #endregion
 
     public void ResetAgentValue()
