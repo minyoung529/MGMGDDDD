@@ -81,7 +81,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732353069}
   m_LocalRotation: {x: -0, y: -0.763766, z: -0, w: 0.6454933}
-  m_LocalPosition: {x: 0, y: -0.167, z: 0}
+  m_LocalPosition: {x: 0, y: -0.391, z: 0}
   m_LocalScale: {x: 0.8333331, y: 0.83333325, z: 0.8333331}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -96,7 +96,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732353069}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 4586198276244333049}
   - component: {fileID: 1009855031}
   - component: {fileID: 1009855026}
+  - component: {fileID: 945534706}
   m_Layer: 8
   m_Name: OilPet
   m_TagString: OilPet
@@ -289,6 +290,7 @@ Transform:
   - {fileID: 732353070}
   - {fileID: 377824538}
   - {fileID: 2555435789304613409}
+  - {fileID: 3028213742513663885}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -331,17 +333,17 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 6
+  m_Speed: 10
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 360
   m_StoppingDistance: 5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 0.63
   m_BaseOffset: 0.35
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 21
   m_ObstacleAvoidanceType: 4
 --- !u!114 &4586198276244333049
 MonoBehaviour:
@@ -479,6 +481,26 @@ MonoBehaviour:
     m_Bits: 0
   tutorialType: 0
   tutorialName: 
+--- !u!95 &945534706
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4586198276244333025}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1001 &3437776999065935891
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -639,4 +661,91 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}
   m_PrefabInstance: {fileID: 4881320968481792479}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2899592358760943771 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7746336965991592260, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+  m_PrefabInstance: {fileID: 4881320968481792479}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1070401904
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2899592358760943771}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 6080e6fa85b40fe47b138e9ed746d2ec, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!1001 &5496561999625600614
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4586198276244333030}
+    m_Modifications:
+    - target: {fileID: 3827877123055959373, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_Name
+      value: Pet Obtain Tutorial Trigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+--- !u!4 &3028213742513663885 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7368406166917059051, guid: f53c51d5bfe97ce408397106032f60a2, type: 3}
+  m_PrefabInstance: {fileID: 5496561999625600614}
   m_PrefabAsset: {fileID: 0}

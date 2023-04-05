@@ -15,13 +15,13 @@ MonoBehaviour:
   active: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0.13
+    m_Value: 0.29
   intensity:
     m_OverrideState: 1
-    m_Value: 0.87
+    m_Value: 0.46
   scatter:
     m_OverrideState: 1
-    m_Value: 0.7
+    m_Value: 0.85
   clamp:
     m_OverrideState: 1
     m_Value: 65472
@@ -33,12 +33,28 @@ MonoBehaviour:
     m_Value: 0
   skipIterations:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   dirtTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
     dimension: 1
   dirtIntensity:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-8128453420650922343
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
+  m_Name: ChromaticAberration
+  m_EditorClassIdentifier: 
+  active: 0
+  intensity:
     m_OverrideState: 1
     m_Value: 0
 --- !u!114 &-1787348149632742326
@@ -80,6 +96,24 @@ MonoBehaviour:
   - {fileID: 3943820253603284290}
   - {fileID: -1787348149632742326}
   - {fileID: 5232546486984313835}
+  - {fileID: -8128453420650922343}
+  - {fileID: 1387197186080557367}
+--- !u!114 &1387197186080557367
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
+  m_Name: Tonemapping
+  m_EditorClassIdentifier: 
+  active: 1
+  mode:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &3943820253603284290
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -120,13 +154,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {x: 0.9773672, y: 0.98997927, z: 1, w: 0.018404862}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {x: 0.97279954, y: 0.98651516, z: 1, w: -0.012270102}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.0030676734}
   shadowsStart:
     m_OverrideState: 1
     m_Value: 0

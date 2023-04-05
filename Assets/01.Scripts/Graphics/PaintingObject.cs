@@ -71,9 +71,12 @@ public class PaintingObject : MonoBehaviour
 
     private WaitForSeconds fireDelay = new WaitForSeconds(0.08f);
 
+    new private SphereCollider collider;
+
     private void Start()
     {
         prevPosition = transform.position;
+        collider = GetComponent<SphereCollider>();
 
         Transform root = new GameObject("-- Oil Trigger Root --").transform;
 
@@ -94,7 +97,22 @@ public class PaintingObject : MonoBehaviour
         if (((1 << collision.gameObject.layer) & layerMask) == 0) return;
         if (curIdx >= OIL_MAX_SIZE) return;
 
-        Paintable p = collision.gameObject.GetComponent<Paintable>();
+        UpdateSkill(collision.gameObject, collision.contacts[0].point);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!isPainting) return;
+        if (((1 << other.gameObject.layer) & layerMask) == 0) return;
+        if (curIdx >= OIL_MAX_SIZE) return;
+
+
+        UpdateSkill(other.gameObject, other.ClosestPoint(transform.position + collider.center));
+    }
+
+    private void UpdateSkill(GameObject obj, Vector3 contact)
+    {
+        Paintable p = obj.GetComponent<Paintable>();
 
         if (!p) return;
 
@@ -112,12 +130,12 @@ public class PaintingObject : MonoBehaviour
             }
             */
 
-            if (IsNear(collision.GetContact(0).point)) return;
+            if (IsNear(contact)) return;
 
-            CreateOilPaint(collision, p);
+            CreateOilPaint(contact, p);
 
             PaintStructure paint = new();
-            paint.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
+            paint.DataSet(p, contact, radius, 0.2f, 1f, color);
 
             paintLogs[curIdx++] = paint;
             distanceChecker = 0f;
@@ -127,14 +145,14 @@ public class PaintingObject : MonoBehaviour
         prevPosition = transform.position;
     }
 
-    void CreateOilPaint(Collision collision, Paintable p)
+    void CreateOilPaint(Vector3 point, Paintable p)
     {
         PaintedOil oil = oilList[curIdx];
-        oil.transform.position = collision.GetContact(0).point;
+        oil.transform.position = point;
         oil.gameObject.SetActive(true);
 
         PaintStructure paintData = new PaintStructure();
-        paintData.DataSet(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
+        paintData.DataSet(p, point, radius, 0.2f, 1f, color);
 
         StartCoroutine(SpreadCoroutine(paintData));
         //PaintManager.Instance.Paint(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);

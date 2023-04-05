@@ -42,15 +42,25 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void Update()
     {
-        if(selectIndex < 0) return;
-            pets[selectIndex].OnUpdate();
+        if(selectIndex > -1) pets[selectIndex].OnUpdate();
+        for (int i = 0; i < pets.Count; i++)
+        {
+            if (pets[i] == null)
+            {
+                pets[i] = FindObjectOfType(pets[i].GetType()) as Pet;
+                pets[i].SetPlayerTransform(FindObjectOfType<PlayerMove>().transform);
+                pets[i].SetTargetPlayer();
+
+                if (pets[i] == null) continue;
+            }
+        }
+
     }
 
     public bool IsGet(Pet p)
     {
         return pets.Contains(p);
     }
-
 
     private void OnDestroy()
     {
@@ -60,7 +70,6 @@ public class PetManager : MonoSingleton<PetManager>
     }
 
     #region Listen
-
     private void StartListen()
     {
         InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
@@ -204,7 +213,8 @@ public class PetManager : MonoSingleton<PetManager>
         OffSelectPetUI();
     }
 
-    public Pet GetSelectedPet() {
+    public Pet GetSelectedPet()
+    {
         if (PetCount < 1) return null;
         return pets[selectIndex];
     }
@@ -290,6 +300,18 @@ public class PetManager : MonoSingleton<PetManager>
     private void InactivePetCanvas()
     {
         transform.GetChild(0).gameObject.SetActive(false);
+    }
+    #endregion
+
+    #region ACCESS
+    public void AllPetActions(Action<Pet> action)
+    {
+        pets.ForEach(action);
+    }
+
+    public bool Contain(Pet pet)
+    {
+        return pets.Contains(pet);
     }
     #endregion
 }

@@ -10,6 +10,7 @@ public class TogglePosition : MonoBehaviour
     [SerializeField] private Vector3 targetPos;
     private Vector3 originalPos;
     private bool isOpen = false;
+    public Vector3 MoveDir => targetPos;
 
     [SerializeField] private UnityEvent OnOpen;
     [SerializeField] private UnityEvent OnClose;

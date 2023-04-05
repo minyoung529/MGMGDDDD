@@ -57,7 +57,7 @@ public class TutorialTrigger : MonoBehaviour
 
         if (controller)
         {
-            controller.StartTutorial(tutorialType, tutorialName);
+            StartTutorial(controller);
         }
     }
 
@@ -68,7 +68,7 @@ public class TutorialTrigger : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(preDelay);
-        seq.AppendCallback(() => controller.StartTutorial(tutorialType, tutorialName));
+        seq.AppendCallback(() => StartTutorial(controller));
     }
 
     private TutorialController ReadyTutorialStart()
@@ -87,8 +87,19 @@ public class TutorialTrigger : MonoBehaviour
         return null;
     }
 
+    private void StartTutorial(TutorialController controller)
+    {
+        controller.StartTutorial(tutorialType, tutorialName);
+        OnStartTrigger();
+    }
+
     protected virtual bool Condition(Transform player)
     {
         return true;
+    }
+
+    protected virtual void OnStartTrigger()
+    {
+
     }
 }

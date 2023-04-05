@@ -48,7 +48,7 @@ public class DropperController : MonoBehaviour
     private ThirdPersonCameraControll cameraController;
 
     private bool isPlaying = false;
-
+    private bool isClear = false;
 
     private void Awake()
     {
@@ -78,6 +78,7 @@ public class DropperController : MonoBehaviour
     [ContextMenu("Start Dropper")]
     public void StartDropper()
     {
+        if (isClear) return;
         if (isPlaying) return;
         isPlaying = true;
         onDropperStart?.Invoke();
@@ -99,6 +100,7 @@ public class DropperController : MonoBehaviour
 
     public void StopDropper()
     {
+        if (isClear) return;
         ResetDropperData();
     }
 
@@ -106,6 +108,7 @@ public class DropperController : MonoBehaviour
     {
         ResetDropperData();
         onDropperClear?.Invoke();
+        isClear = true;
     }
 
     private void ResetDropperData()

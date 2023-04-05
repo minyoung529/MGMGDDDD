@@ -26,7 +26,14 @@ public abstract class Pet : MonoBehaviour
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
-    
+    private float beginAcceleration;
+    public float AgentAcceleration
+    {
+        get => agent.acceleration;
+        set { agent.acceleration = value; }
+    }
+    protected PetHold hold;
+
     private Vector3 originScale;
 
     public bool IsInteraction { get; set; }
@@ -61,6 +68,8 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
+
+        beginAcceleration = agent.acceleration;
     }
 
     private void Start()
@@ -167,6 +176,11 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         target = player;
         agent.stoppingDistance = distanceToPlayer;
+    }
+
+    public void SetPlayerTransform(Transform player)
+    {
+        this.player = player;
     }
 
     public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
@@ -304,4 +318,9 @@ public abstract class Pet : MonoBehaviour
             SetTarget(null);
     }
     #endregion
+
+    public void ResetAgentValue()
+    {
+        agent.acceleration = beginAcceleration;
+    }
 }
