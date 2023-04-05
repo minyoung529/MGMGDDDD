@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-
 public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
@@ -21,8 +20,9 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    protected Rigidbody rigid;
+    protected PetHold hold;
     protected Collider coll;
+    protected Rigidbody rigid;
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
@@ -36,7 +36,7 @@ public abstract class Pet : MonoBehaviour
 
     private Vector3 originScale;
 
-
+    public bool IsInteraction { get; set; }
     #region Get
 
     public bool IsCoolTime => isCoolTime;
@@ -46,6 +46,7 @@ public abstract class Pet : MonoBehaviour
     public PetThrow PetThrow => petThrow;
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
+    public Color petColor => petInform.outlineColor;
 
     #endregion
 
@@ -233,9 +234,15 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     #region InputEvent
-    public void MovePoint()
+    public void MovePoint(bool selected = false)
     {
         if (isInputLock) return;
+
+        if (selected)
+        {
+            InteractionPoint();
+            return;
+        }
 
         if (IsCameraAimPoint)
         {
@@ -247,6 +254,11 @@ public abstract class Pet : MonoBehaviour
         }
 
         //transform.DOKill();
+    }
+
+    public virtual void InteractionPoint()
+    {
+
     }
 
     public virtual void Withdraw()
