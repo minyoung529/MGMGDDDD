@@ -31,6 +31,10 @@ public class DialPuzzleController : MonoBehaviour
     {
         answer.Enqueue(ans);
     }
+    public void OutAnswer()
+    {
+        answer.Dequeue();
+    }
     #endregion
 
     #region State
