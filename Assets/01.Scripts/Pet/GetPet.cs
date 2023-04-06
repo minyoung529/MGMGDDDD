@@ -48,6 +48,11 @@ public class GetPet : MonoBehaviour
         if (((1 << other.gameObject.layer) & petLayer) != 0)
             pet = other.GetComponent<Pet>();
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & petLayer) != 0)
+            pet = other.GetComponent<Pet>();
+    }
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & petLayer) != 0)
