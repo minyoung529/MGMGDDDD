@@ -60,6 +60,7 @@ public class PetThrow : MonoBehaviour {
 
     private void OnLanding() {
         isWake = false;
+        pet.IsInputLock = false;
         pet.SetNavEnabled(true);
         pet.FindButton();
     }
