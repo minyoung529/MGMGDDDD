@@ -41,8 +41,7 @@ public class DialPuzzleController : MonoBehaviour
     [ContextMenu("ChangeState")]
     public void Test()
     {
-        ChangeState(TimeType.Evening);
-        Debug.Log((TimeType)((int)curState + 1));
+        ChangeState((TimeType)((int)curState + 1));
     }
     public void ChangeState(TimeType state)
     {
@@ -57,7 +56,6 @@ public class DialPuzzleController : MonoBehaviour
     private void CheckCurrentState()
     {
         double stateValue = Math.Truncate(map.transform.rotation.y / 90);
-        Debug.Log(stateValue);
         curState = (TimeType)((int)stateValue);
     }
 
