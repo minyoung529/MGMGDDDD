@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum TimeType
 {
@@ -16,6 +17,7 @@ public enum TimeType
 public class DialPuzzleController : MonoBehaviour
 {
     [SerializeField] private float lessTimer = 30f;
+    [SerializeField] private float lessSpeed = 1.5f;
     [SerializeField] private string hintString = "";
     [SerializeField] private GameObject map;
 
@@ -25,6 +27,9 @@ public class DialPuzzleController : MonoBehaviour
     public string Hint => hintString;
     public TimeType CurState => curState;
 
+    private bool pause = false;
+    private float remainTime = 0;
+    private Coroutine timerCoroutine;
 
     #region Answer
     public void InputAnswer()
@@ -58,14 +63,54 @@ public class DialPuzzleController : MonoBehaviour
 
     #endregion
 
-        #region Start/Stop
+    #region Timer
+    public void StartTimer()
+    {
+        ClearTimer();
+        timerCoroutine = StartCoroutine(GameTimer());
+    }
+
+    private IEnumerator GameTimer()
+    {
+        while (remainTime >= 0)
+        {
+            while (pause)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(1f * lessSpeed);
+            remainTime--;
+        }
+    }
+
+    private void SetPause(bool _pause)
+    {
+        pause = _pause;
+    }
+
+    private void ClearTimer()
+    {
+        pause = false;
+        remainTime = lessTimer;
+    }
+    private void StopTimer()
+    {
+        ClearTimer();
+        StopCoroutine(GameTimer());
+    }
+
+    #endregion
+
+    #region Start/Stop
     public void StartDialPuzzle()
     {
-
+        StartTimer();
     }
+
     public void StopDialPuzzle()
     {
-
+        StopTimer();
     }
     #endregion
 }
