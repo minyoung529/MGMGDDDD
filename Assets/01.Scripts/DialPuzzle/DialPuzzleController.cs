@@ -2,16 +2,15 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public enum TimeType
 {
-    None = 0,
-
-    Morning = 1,
-    Afternoon = 2,
-    Evening = 3,
-    Night = 4,
+    Morning = 0,
+    Afternoon = 1,
+    Evening = 2,
+    Night = 3,
 }
 
 public class DialPuzzleController : MonoBehaviour
@@ -21,15 +20,16 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private GameObject map;
 
     private Queue<TimeType> answer = new Queue<TimeType>();
-    private TimeType curState = TimeType.None;
+    private TimeType curState = TimeType.Morning;
 
     public string Hint => hintString;
     public TimeType CurState => curState;
 
+
     #region Answer
-    public void InputAnswer(TimeType ans)
+    public void InputAnswer()
     {
-        answer.Enqueue(ans);
+        answer.Enqueue(curState);
     }
     public void OutAnswer()
     {
@@ -45,24 +45,20 @@ public class DialPuzzleController : MonoBehaviour
     }
     public void ChangeState(TimeType state)
     {
-        Debug.Log((int)state);
         Vector3 rot = new Vector3(0, (int)state * 90f, 0);
         map.transform.DORotate(rot, 0.5f).OnComplete(() =>
-            {
-                CheckCurrentState();
-            });
-
+        {
+            CheckRotationState();
+        });
     }
-    private void CheckCurrentState()
+    private void CheckRotationState()
     {
-        double stateValue = Math.Truncate(map.transform.rotation.y / 90);
-        curState = (TimeType)((int)stateValue);
+        curState = (TimeType)(map.transform.eulerAngles.y/90);
     }
-
 
     #endregion
 
-    #region Start/Stop
+        #region Start/Stop
     public void StartDialPuzzle()
     {
 
