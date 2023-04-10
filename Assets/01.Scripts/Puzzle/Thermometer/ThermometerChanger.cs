@@ -15,8 +15,10 @@ public class ThermometerChanger : MonoBehaviour
         }
     }
 
-    private float maxValue;
+    private float maxValue = 6f;
+    private float minValue;
 
+    [SerializeField]
     private Transform pivot;
 
     public void Initialize(float maxValue)
@@ -25,12 +27,24 @@ public class ThermometerChanger : MonoBehaviour
         pivot = transform.parent;
     }
 
+    public void SetMinimum(float min)
+    {
+        minValue = min * maxValue;
+    }
+
+    private void LateUpdate()
+    {
+        // SET LIMIT
+        Vector3 localPos = pivot.InverseTransformPoint(transform.position);
+        localPos.y = Mathf.Clamp(localPos.y, minValue, maxValue);
+        transform.position = pivot.TransformPoint(localPos);
+    }
+
     public void SetLiquidValue(float value)
     {
         Vector3 localPos = transform.localPosition;
-        localPos.y = value * maxValue;
-
-        transform.localPosition = localPos;
+        localPos.y = Mathf.Clamp(value * maxValue, minValue, maxValue);
+        transform.position = pivot.TransformPoint(localPos);
     }
 
     public float GetNormalizeValue()

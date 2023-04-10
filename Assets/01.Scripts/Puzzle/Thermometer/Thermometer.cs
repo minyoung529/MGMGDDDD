@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +44,8 @@ public class Thermometer : MonoBehaviour
     [SerializeField]
     private ThermometerChanger changer;
 
+    public Action OnChangeValue { get; set; }
+
     private void Start()
     {
         SetLiquidValueBy01_R(redBeginLiquidValue);
@@ -55,10 +58,12 @@ public class Thermometer : MonoBehaviour
 
     private void Update()
     {
+        changer.SetMinimum(NormalizedYellow);
+
         if (changer.ControlLiquid)
         {
-            RedScaleY = MAX_LIQUID_SCALE_Y;
-            SetLiquidValueBy01_R(changer.GetNormalizeValue());
+            SetLiquidValueBy01_R(changer.GetNormalizeValue() - NormalizedYellow);
+            OnChangeValue?.Invoke();
         }
         else
         {
@@ -92,7 +97,7 @@ public class Thermometer : MonoBehaviour
             (x) => SetLiquidValueByScale(x, trn),
             scaleY,
             LIQUID_MOVE_SPEED * distance).SetEase(Ease.Linear)
-        );
+        ).OnComplete(() => OnChangeValue?.Invoke());
 
         seq.onUpdate += UpdateYellow;
         seq.onUpdate += UpdateRedPosition;
@@ -170,5 +175,7 @@ public class Thermometer : MonoBehaviour
 
         UpdateYellow();
         UpdateRedPosition();
+
+        changer.SetLiquidValue(NormalizedLiquid);
     }
 }
