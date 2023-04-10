@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,7 +25,7 @@ public abstract class Pet : MonoBehaviour
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
-    protected PetThrow petThrow; 
+    protected PetThrow petThrow;
     private float beginAcceleration;
     public float AgentAcceleration
     {
@@ -34,9 +35,12 @@ public abstract class Pet : MonoBehaviour
 
     private Vector3 originScale;
 
-    public bool IsInteraction { get; set; }
+    protected Dictionary<Material, Color> materialDictionary = new Dictionary<Material, Color>();
+    private readonly int _Emission = Shader.PropertyToID("_Emission");
+
     #region Get
 
+    public bool IsInteraction { get; set; }
     public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
@@ -67,6 +71,8 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         petThrow = GetComponent<PetThrow>();
+
+        //GetMaterials();
 
         beginAcceleration = agent.acceleration;
     }
@@ -109,6 +115,12 @@ public abstract class Pet : MonoBehaviour
     public void AgentEnabled(bool isEnabled)
     {
         agent.enabled = isEnabled;
+    }
+
+    private void GetMaterials() {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        for (int i = 0; i < renderers.Length; i++)
+            materialDictionary.Add(renderers[i].material, renderers[i].material.GetColor(_Emission));
     }
     #endregion
 
@@ -202,6 +214,33 @@ public abstract class Pet : MonoBehaviour
             onArrive = null;
         }
     }
+
+    public void ReCall() {
+        if (!player) return;
+        SetNavEnabled(false);
+        coll.enabled = false;
+        rigid.isKinematic = true;
+
+        foreach (Material item in materialDictionary.Keys) {
+            item.SetColor(_Emission, Color.white);
+        }
+
+        //Darw Bezier
+        Vector3 dest = player.position + (transform.position - player.position).normalized * 2f;
+        dest = GetNearestNavMeshPosition(dest) + Vector3.up * 2f;
+
+        Vector3[] path = new Vector3[3];
+        path[0] = dest + Vector3.up;
+        path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 5f;
+        path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
+
+        transform.DOPath(path, 3f, PathType.CubicBezier).OnComplete(() => {
+            foreach (KeyValuePair<Material, Color> pair in materialDictionary) {
+                pair.Key.SetColor(_Emission, pair.Value);
+            }
+            petThrow.Throw(dest, Vector3.up * 300, 1f);
+        });
+    }
     #endregion
 
     #region Nav_Get/Set
@@ -228,6 +267,15 @@ public abstract class Pet : MonoBehaviour
         agent.enabled = false;
         transform.position = position;
         agent.enabled = true;
+    }
+    public Vector3 GetNearestNavMeshPosition(Vector3 position) {
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(position, out hit, 5f, NavMesh.AllAreas)) {
+            return hit.position;
+        }
+        else {
+            return position;
+        }
     }
     #endregion
 
@@ -277,41 +325,6 @@ public abstract class Pet : MonoBehaviour
         Vector3 dest = target.transform.position;
         agent.SetDestination(dest);
         return true;
-    }
-    #endregion
-
-    #region Throw/Landing
-    public virtual void OnThrow()
-    {
-        StartCoroutine(LandingCoroutine());
-    }
-
-    private IEnumerator LandingCoroutine()
-    {
-        int t = 0;
-        while (!CheckCollision())
-        {
-            t++;
-            yield return null;
-        }
-        OnLanding();
-    }
-
-    public bool CheckCollision()
-    {
-        if (Physics.OverlapSphere(transform.position, collRadius, 1 << Define.BOTTOM_LAYER).Length > 0)
-            return true;
-        return false;
-    }
-
-    public virtual void OnLanding()
-    {
-        SetNavEnabled(true);
-        coll.enabled = true;
-        rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
-        isInputLock = false;
-        if (!FindButton())
-            SetTarget(null);
     }
     #endregion
 

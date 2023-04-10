@@ -44,12 +44,15 @@ public class Fire : MonoBehaviour
     public void Burn()
     {
         if (!gameObject.activeSelf) return;
+        Debug.Log("BURN" + gameObject.name);
+
+        isBurn = true;
 
         seq = DOTween.Sequence();
         seq.AppendInterval(burnDelay);
         seq.AppendCallback(() =>
         {
-            isBurn = true;
+            //isBurn = true;
 
             FireParticlePlay();
             if (isDestroyType) DestroyBurn();
@@ -133,7 +136,7 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!IsBurn && IsTriggerBurn) return;
+        if (!IsBurn /*&& IsTriggerBurn*/) return;
 
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
@@ -148,14 +151,14 @@ public class Fire : MonoBehaviour
         {
             if (f.IsBurn) continue;
             transform.DOKill();
+
             f.Burn();
         }
-
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if (!IsBurn && IsTriggerBurn) return;
+        if (!IsBurn /*&& IsTriggerBurn*/) return;
 
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)

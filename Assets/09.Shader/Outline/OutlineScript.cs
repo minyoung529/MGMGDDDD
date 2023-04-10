@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.ProBuilder;
 
 [Flags]
 public enum PetFlag
@@ -34,7 +34,9 @@ public class OutlineScript : MonoBehaviour
     public void OnOutline()
     {
         if (outlineRenderer != null)
+        {
             outlineRenderer.enabled = true;
+        }
     }
     [ContextMenu("OffOutline")]
     public void OffOutline()
@@ -57,13 +59,17 @@ public class OutlineScript : MonoBehaviour
         GameObject outlineObject = Instantiate(new GameObject(), transform.position, transform.rotation, transform);
 
         MeshFilter originFilter = gameObject.GetComponent<MeshFilter>();
-        MeshFilter filter = outlineObject.AddComponent<MeshFilter>();
+        ProBuilderMesh originProFilter = gameObject.GetComponent<ProBuilderMesh>();
 
-        MeshRenderer originMesh = gameObject.GetComponent<MeshRenderer>();
+        if (originProFilter)
+        {
+            //AddProbuilderMesh(outlineObject, originProFilter);
+            Debug.Log("PROBUILDER MESH!");
+        }
+
+        AddMesh(outlineObject, originFilter);
+
         MeshRenderer render = outlineObject.AddComponent<MeshRenderer>();
-
-        filter.mesh = originFilter.mesh;
-
         render.material = outlineMat;
         render.material.SetColor("_OutlineColor", color);
         render.material.SetFloat("_Scale", scaleFactor);
@@ -77,6 +83,11 @@ public class OutlineScript : MonoBehaviour
         return render;
     }
 
+    private void AddMesh(GameObject newObj, MeshFilter meshFilter)
+    {
+        MeshFilter filter = newObj.AddComponent<MeshFilter>();
+        filter.mesh = meshFilter.mesh;
+    }
     #endregion
 
 }

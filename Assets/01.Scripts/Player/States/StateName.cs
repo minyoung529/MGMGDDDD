@@ -7,5 +7,5 @@ public enum StateName
     PickUp,
     Throw,
     Drop,
-    Fall,
+    Fall
 }
