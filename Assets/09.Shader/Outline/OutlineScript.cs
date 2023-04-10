@@ -94,7 +94,7 @@ public class OutlineScript : MonoBehaviour
         GameObject outlineObject = Instantiate(new GameObject(), origin.position, origin.rotation, origin);
         MeshFilter originFilter = origin.GetComponent<MeshFilter>();
 
-        if(originProFilter == null && originFilter == null)
+        if (originFilter == null)
         {
             return null;
         }
