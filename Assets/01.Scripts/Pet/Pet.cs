@@ -48,9 +48,9 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    private float distanceToPlayer = 5f;
+    private readonly float distanceToPlayer = 5f;
 
-    public Action onArrive { get; set; }
+    public Action OnArrive { get; set; }
 
     private static bool isCameraAimPoint = true;
     public static bool IsCameraAimPoint
@@ -154,6 +154,7 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
+        
         if (!target)
         {
             agent.ResetPath();
@@ -162,7 +163,7 @@ public abstract class Pet : MonoBehaviour
 
         SetNavEnabled(true);
         SetNavIsStopped(false);
-        this.onArrive = onArrive;
+        this.OnArrive = onArrive;
     }
 
     public void SetDestination(Transform target)
@@ -187,7 +188,7 @@ public abstract class Pet : MonoBehaviour
     public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
     {
         if (!agent.isOnNavMesh) return;
-        this.onArrive = onArrive;
+        this.OnArrive = onArrive;
         SetNavEnabled(true);
         SetNavIsStopped(false);
         rigid.velocity = Vector3.zero;
@@ -200,8 +201,8 @@ public abstract class Pet : MonoBehaviour
     {
         if (Vector3.Distance(agent.destination, transform.position) <= 1f)
         {
-            onArrive?.Invoke();
-            onArrive = null;
+            OnArrive?.Invoke();
+            OnArrive = null;
         }
     }
     #endregion

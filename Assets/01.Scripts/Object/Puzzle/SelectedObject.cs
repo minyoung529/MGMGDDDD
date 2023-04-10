@@ -10,6 +10,8 @@ public class SelectedObject : MonoBehaviour
     public GameObject InteractiveObj { get { return interactionObj.gameObject; } }
     private OutlineScript interactionObj = null;
 
+    public static OutlineScript CurInteractObject;
+
     private void Update()
     {
         if (PetManager.Instance.GetSelectedPet() == null) return;
@@ -43,6 +45,7 @@ public class SelectedObject : MonoBehaviour
 
             pet.IsInteraction = true;
             interactionObj = selected;
+            CurInteractObject = selected;
             interactionObj.SetColor(pet.petColor);
             interactionObj.OnOutline();
         }
@@ -63,7 +66,7 @@ public class SelectedObject : MonoBehaviour
             interactionObj.OffOutline();
             interactionObj = null;
         }
+
+        CurInteractObject = null;
     }
-
-
 }

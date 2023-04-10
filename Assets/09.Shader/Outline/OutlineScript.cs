@@ -61,13 +61,6 @@ public class OutlineScript : MonoBehaviour
         GameObject outlineObject = Instantiate(new GameObject(), transform.position, transform.rotation, transform);
 
         MeshFilter originFilter = gameObject.GetComponent<MeshFilter>();
-        ProBuilderMesh originProFilter = gameObject.GetComponent<ProBuilderMesh>();
-
-        if (originProFilter)
-        {
-            //AddProbuilderMesh(outlineObject, originProFilter);
-            Debug.Log("PROBUILDER MESH!");
-        }
 
         AddMesh(outlineObject, originFilter);
 
@@ -92,4 +85,9 @@ public class OutlineScript : MonoBehaviour
     }
     #endregion
 
+    public void OnInteract()
+    {
+        Debug.Log("ON INTERACT");
+        onInteractPet?.Invoke();
+    }
 }
