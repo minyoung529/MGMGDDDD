@@ -24,7 +24,7 @@ public abstract class Pet : MonoBehaviour
     protected Transform player;
     protected Transform target;
     protected NavMeshAgent agent;
-    protected PetThrow petThrow; 
+    protected PetThrow petThrow;
     private float beginAcceleration;
     public float AgentAcceleration
     {
@@ -59,6 +59,8 @@ public abstract class Pet : MonoBehaviour
         set => isCameraAimPoint = value;
     }
 
+    public AxisController AxisController { get; set; }
+
     protected virtual void Awake()
     {
         originScale = transform.localScale;
@@ -67,7 +69,7 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         petThrow = GetComponent<PetThrow>();
-
+        AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
     }
 
@@ -191,7 +193,7 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
-        agent.SetDestination(target);
+        agent.SetDestination(AxisController.CalculateDestination(target));
     }
 
     private void CheckArrive()
@@ -213,10 +215,12 @@ public abstract class Pet : MonoBehaviour
     {
         agent.enabled = value;
     }
-    public bool GetIsOnNavMesh() {
+    public bool GetIsOnNavMesh()
+    {
         return agent.isOnNavMesh;
     }
-    public Vector3 GetDestination() {
+    public Vector3 GetDestination()
+    {
         return agent.destination;
     }
     public void ResetNav()
@@ -271,7 +275,8 @@ public abstract class Pet : MonoBehaviour
     /// 시야 범위에 존재하는 활성화 되지 않은 버튼을 찾아낸 후 타겟으로 설정
     /// </summary>
     /// <returns>탐색 성공 여부</returns>
-    public bool FindButton() {
+    public bool FindButton()
+    {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (!target) return false;
         Vector3 dest = target.transform.position;

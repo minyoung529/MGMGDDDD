@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class Sticky : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class Sticky : MonoBehaviour
     private NavMeshObstacle obstacle;
     private Conditions stickyConditions;
 
+    [SerializeField] private UnityEvent<StickyPet> onStickyStart;
+    [SerializeField] private UnityEvent<StickyPet> onStickyEnd;
+    private StickyPet stickyPet;
     #region Property
     public bool IsSticky { get { return isSticky; } set { isSticky = value; } }
     public bool CanMove { get { return canMove; } set { canMove = value; OnMoveChange(value); } }
@@ -88,33 +92,26 @@ public class Sticky : MonoBehaviour
 
         if (obstacle)
             obstacle.enabled = true;
+
+        onStickyEnd?.Invoke(stickyPet);
+        stickyPet = null;
     }
 
-    public void OnSticky()
+    public void OnSticky(StickyPet stickyPet)
     {
         if (IsSticky) return;
 
         isSticky = true;
         if (obstacle)
             obstacle.enabled = false;
+
+        this.stickyPet = stickyPet;
+
+        onStickyStart?.Invoke(stickyPet);
     }
 
     public void OnMoveChange(bool canMove)
     {
         onChangeCanMove?.Invoke(canMove);
     }
-
-    //public void SetSticky()
-    //{
-    //    if(isSticky) return;
-
-    //    isSticky = true;
-    //}
-
-    //public void NotSticky()
-    //{
-    //    if(!isSticky) return;
-
-    //    isSticky = false;
-    //}
 }

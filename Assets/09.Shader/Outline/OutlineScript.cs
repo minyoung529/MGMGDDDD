@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder;
 
 [Flags]
@@ -19,6 +20,7 @@ public class OutlineScript : MonoBehaviour
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private float outlineScaleFactor = -1.1f;
     [SerializeField] private PetFlag petType;
+    [SerializeField] private UnityEvent onInteractPet;
     public PetFlag PetType => petType;
 
     private Renderer outlineRenderer;

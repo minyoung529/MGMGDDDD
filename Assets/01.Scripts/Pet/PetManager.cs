@@ -119,7 +119,6 @@ public class PetManager : MonoSingleton<PetManager>
         if(pets[selectIndex].IsInteraction)
         {
             pets[selectIndex].InteractionPoint();
-            return;
         }
         pets[selectIndex].MovePoint();
     }

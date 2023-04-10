@@ -22,8 +22,11 @@ public class SelectedObject : MonoBehaviour
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
 
+        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue);
+
         if (Physics.Raycast(ray, out hit, 100f))
         {
+            Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
 

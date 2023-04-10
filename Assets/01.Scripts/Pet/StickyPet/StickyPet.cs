@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,7 +34,6 @@ public class StickyPet : Pet
     private Vector3 stickyOffset;
     private Quaternion origianalRotation;
     private Transform originalParent = null;
-    private bool stickyKinematic = false;
 
 
     protected override void Awake()
@@ -46,7 +46,9 @@ public class StickyPet : Pet
     {
         base.OnUpdate();
 
-        if (stickyObject && stickyObject.ApplyOffset) // 오프셋 맞추기
+        // 얘떄문에 ㅁ누제다
+        // 이거 PARENT 유진이 확정이라고????
+        if (stickyObject && stickyObject.transform.parent == stickyParent && stickyObject.ApplyOffset) // 오프셋 맞추기
         {
             stickyObject.transform.position = stickyParent.position + stickyOffset;
             stickyObject.MovableRoot.rotation = origianalRotation;
@@ -130,9 +132,7 @@ public class StickyPet : Pet
         {
             SetTarget(null);
 
-            transform.DOMoveX(hit.x, moveSpeed);
-            transform.DOMoveY(hit.y, moveSpeed);
-            transform.DOMoveZ(hit.z, moveSpeed);
+            transform.DOMove(hit, moveSpeed);
         }
     }
 
@@ -140,34 +140,26 @@ public class StickyPet : Pet
     {
         if (state == StickyState.Sticky) return;
         ChangeState(StickyState.Sticky);
-
-        //if (!sticky.CanSticky) return;
-
         stickyObject = sticky;
         skillEffect.Play();
+        transform.DOKill();
 
         if (sticky.CanMove)
         {
             SetTarget(null);
-            Rigid.isKinematic = false;
         }
         else
         {
-            //SetNavIsStopped(true);
             SetNavEnabled(false);
-            Rigid.isKinematic = true;
         }
 
-        if (stickyObject.Rigidbody)
+        if (stickyObject.Rigidbody.isKinematic || stickyObject.Rigidbody == null)
         {
-            stickyKinematic = stickyObject.Rigidbody.isKinematic;
-        }
-
-        if (stickyKinematic || stickyObject.Rigidbody == null)
-        {
+            // SET ORIGINAL PARENT & PARENT
             originalParent = stickyObject.MovableRoot.parent;
-            stickyObject.MovableRoot.SetParent(stickyParent);
+            StartCoroutine(DelayParent());
 
+            // SET VARIABLE
             stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
             origianalRotation = stickyObject.MovableRoot.rotation;
         }
@@ -177,10 +169,17 @@ public class StickyPet : Pet
             joint.connectedBody = stickyObject.Rigidbody;
         }
 
-        stickyObject.OnSticky();
+        stickyObject.OnSticky(this);
 
         sticky.StartListeningNotSticky(NotSticky);
         sticky.StartListeningChangeCanMove(CanMove);
+    }
+
+    // TEST
+    private IEnumerator DelayParent()
+    {
+        yield return null;
+        stickyObject.MovableRoot.SetParent(stickyParent);
     }
 
     public void CanMove(bool canMove)
@@ -204,9 +203,10 @@ public class StickyPet : Pet
 
         //SetNavIsStopped(false);
         SetNavEnabled(true);
-        if (stickyKinematic && stickyObject)
+        if (stickyObject)
         {
             stickyObject.MovableRoot.SetParent(originalParent);
+            stickyObject.NotSticky();
         }
         else
         {
@@ -231,7 +231,6 @@ public class StickyPet : Pet
             if (stickyObject != null)
             {
                 SetBillow(collision.transform.forward);
-
                 Sticky(stickyObject);
             }
         }
@@ -244,7 +243,6 @@ public class StickyPet : Pet
             if (stickyObject != null)
             {
                 SetBillow(other.transform.forward);
-
                 Sticky(stickyObject);
             }
         }
