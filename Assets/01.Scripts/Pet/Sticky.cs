@@ -9,7 +9,6 @@ using UnityEngine.Events;
 public class Sticky : MonoBehaviour
 {
     [SerializeField] private bool canMove = false;
-    [SerializeField] private bool applyRotatationOffset = true;
     private bool isSticky = false;
     private Action notSticky;
     private Action<bool> onChangeCanMove;

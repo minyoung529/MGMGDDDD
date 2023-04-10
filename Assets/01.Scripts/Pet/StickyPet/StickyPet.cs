@@ -147,6 +147,12 @@ public class StickyPet : Pet
         if (sticky.CanMove)
         {
             SetTarget(null);
+
+            // 이렇게 하면 Agent가 멈추더라구요...
+            // SetTarget의 Reset Path가 안 먹히나...?
+            // 일단 임시로 해놨습니다.
+            SetNavEnabled(false);
+            SetNavEnabled(true);
         }
         else
         {
@@ -156,12 +162,12 @@ public class StickyPet : Pet
         if (stickyObject.Rigidbody.isKinematic || stickyObject.Rigidbody == null)
         {
             // SET ORIGINAL PARENT & PARENT
-            originalParent = stickyObject.MovableRoot.parent;
             StartCoroutine(DelayParent());
 
             // SET VARIABLE
-            stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
-            origianalRotation = stickyObject.MovableRoot.rotation;
+            //originalParent = stickyObject.MovableRoot.parent;
+            //stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
+            //origianalRotation = stickyObject.MovableRoot.rotation;
         }
         else
         {
@@ -179,6 +185,10 @@ public class StickyPet : Pet
     private IEnumerator DelayParent()
     {
         yield return null;
+
+        originalParent = stickyObject.MovableRoot.parent;
+        stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
+        origianalRotation = stickyObject.MovableRoot.rotation;
         stickyObject.MovableRoot.SetParent(stickyParent);
     }
 

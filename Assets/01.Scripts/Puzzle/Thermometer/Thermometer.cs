@@ -48,6 +48,7 @@ public class Thermometer : MonoBehaviour
         SetLiquidValueBy01_R(redBeginLiquidValue);
         SetLiquidValueBy01_Y(yellowBeginLiquidValue);
         UpdateYellow();
+        UpdateRedPosition();
 
         changer.Initialize(MAX_LIQUID_SCALE_Y * 2f);
     }
@@ -68,7 +69,7 @@ public class Thermometer : MonoBehaviour
     #region CHANGE LIQUID VALUE
     public void AddNormalizedLiquidValue(float value)
     {
-        ChangeTween(redLiquidPivot, Mathf.Clamp01(NormalizedRed + value));
+        ChangeTween(redLiquidPivot, Mathf.Clamp(NormalizedRed + value, 0f, 1f));
         prevRedValue = NormalizedRed;
     }
 
@@ -94,6 +95,7 @@ public class Thermometer : MonoBehaviour
         );
 
         seq.onUpdate += UpdateYellow;
+        seq.onUpdate += UpdateRedPosition;
     }
     #endregion
 
@@ -119,12 +121,17 @@ public class Thermometer : MonoBehaviour
 
     private void SetLiquidValueBy01_Y(float normalized)
     {
-        Vector3 yellowPosition = yellowLiquidPivot.localPosition;
-        yellowPosition.y = RedScaleY * 2f - 0.1f;
-        yellowLiquidPivot.localPosition = yellowPosition;
-
         normalized = Mathf.Clamp(normalized, 0f, 1f - NormalizedRed);
         YellowScaleY = NormalizedToScaleY(normalized);
+    }
+    #endregion
+
+    #region UPDATE
+    private void UpdateRedPosition()
+    {
+        Vector3 redPosition = redLiquidPivot.localPosition;
+        redPosition.y = YellowScaleY * 2f - 0.1f;
+        redLiquidPivot.localPosition = redPosition;
     }
 
     private void UpdateYellow()
@@ -134,22 +141,34 @@ public class Thermometer : MonoBehaviour
 
         prevRedValue = NormalizedRed;
     }
+    #endregion
 
+    #region GET
     private float NormalizedToScaleY(float value)
     {
         return Mathf.Lerp(0f, MAX_LIQUID_SCALE_Y, value);
     }
-    #endregion
 
     public bool IsClear(float weight)
     {
         return (Mathf.Abs(NormalizedLiquid - weight) < 0.1f);
     }
+    #endregion
+
+    #region TEST
+    [ContextMenu("RED+0.1")]
+    public void RedPlus01() => AddNormalizedLiquidValue(0.1f);
+
+    [ContextMenu("YELLOW+0.1")]
+    public void YellpwPlus01() => AddNormalizedLiquidValue_Y(0.1f);
+    #endregion
 
     private void OnValidate()
     {
         SetLiquidValueBy01_R(redBeginLiquidValue);
         SetLiquidValueBy01_Y(yellowBeginLiquidValue);
+
         UpdateYellow();
+        UpdateRedPosition();
     }
 }
