@@ -7,6 +7,7 @@ public abstract class MoveState : MonoBehaviour
 {
     public abstract StateName StateName { get; }
     public PlayerMove Player { get; set; }
+    public virtual bool IsPlayWithAction => false;
 
     /// <summary>
     /// PlayerMove에서 업데이트 시마다 호출

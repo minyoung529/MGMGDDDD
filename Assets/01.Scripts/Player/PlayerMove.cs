@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour {
@@ -59,6 +57,8 @@ public class PlayerMove : MonoBehaviour {
     private int hash_fVertical = Animator.StringToHash("fVertical");
     private int hash_fHorizontal = Animator.StringToHash("fHorizontal");
     private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
+    private int hash_iActionNum = Animator.StringToHash("iActionNum");
+    private int hash_bActionActive = Animator.StringToHash("bActionActive");
     #endregion
 
     private Camera mainCam;
@@ -101,12 +101,6 @@ public class PlayerMove : MonoBehaviour {
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
         actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
-        //actions.Add(InputAction.Zoom, (action, value) => {
-        //    if (curState.StateName != StateName.Zoom)
-        //        ChangeState(StateName.Zoom);
-        //    else
-        //        ChangeState(StateName.DefaultMove);
-        //});
         actions.Add(InputAction.Jump, (action, value) => {
             if (IsInputLock) return;
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
@@ -169,18 +163,34 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
-    public void ChangeState(StateName state) {
+    public void ChangeState(StateName state, int animIndex = -1) {
         MoveState targetState;
         if (!stateDictionary.TryGetValue(state, out targetState)) {
             Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
             return;
         }
+        if (animIndex < 0)
+            animIndex = (int)state;
+        if (!targetState.IsPlayWithAction)
+            StopAction();
         curState.OnStateEnd(() => {
             curState = targetState;
-            anim.SetInteger(hash_iStateNum, (int)state);
+            anim.SetInteger(hash_iStateNum, animIndex);
             anim.SetTrigger(hash_tStateChange);
             curState.OnStateStart();
         });
+    }
+
+    /// <summary>
+    /// state와는 다르게 실제로 플레이어 코드의 변화는 없지만 간단하고 짧은 애니메이션을 보여줄때 사용
+    /// </summary>
+    public void PlayAction(PlayerAction action) {
+        anim.SetInteger(hash_iActionNum, (int)action);
+        anim.SetBool(hash_bActionActive, true);
+    }
+
+    public void StopAction() {
+        anim.SetBool(hash_bActionActive, false);
     }
 
     #region 편의성 함수 (State에서 주로 사용)

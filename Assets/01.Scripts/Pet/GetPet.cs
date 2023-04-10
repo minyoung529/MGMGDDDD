@@ -35,22 +35,28 @@ public class GetPet : MonoBehaviour
 
     private void Get(InputAction inputAction, float value)
     {
+        Debug.Log("Start");
         if (pet == null) return;
+        Debug.Log("Not null");
         if (PetManager.Instance.IsGet(pet)) return;
 
+        Debug.Log("Get");
         pet.GetPet(gameObject.transform);
         OnGetPet?.Invoke();
         pet = null;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (((1 << other.gameObject.layer) & petLayer) != 0)
-            pet = other.GetComponent<Pet>();
+        if (((1 << other.gameObject.layer) & petLayer) == 0) return;
+        Pet pet = other.GetComponent<Pet>();
+        Debug.Log(pet != null);
+        if (pet != null) this.pet = pet;
     }
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other) 
     {
-        if (((1 << other.gameObject.layer) & petLayer) != 0)
-            pet = null;
+        if (((1 << other.gameObject.layer) & petLayer) == 0) return;
+        Debug.Log("Exit");  
+        pet = null;
     }
 }

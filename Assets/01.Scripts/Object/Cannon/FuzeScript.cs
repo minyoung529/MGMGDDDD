@@ -31,7 +31,6 @@ public class FuzeScript : MonoBehaviour
             Fire();
     }
 
-    [ContextMenu("Test")]
     public void Fire() {
         if (!canFire) return;
         canFire = false;

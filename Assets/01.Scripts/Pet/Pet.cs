@@ -71,7 +71,9 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         petThrow = GetComponent<PetThrow>();
-        
+
+        //GetMaterials();
+
         beginAcceleration = agent.acceleration;
     }
 
@@ -213,8 +215,8 @@ public abstract class Pet : MonoBehaviour
         }
     }
 
-    [ContextMenu("ReCall")]
     public void ReCall() {
+        if (!player) return;
         SetNavEnabled(false);
         coll.enabled = false;
         rigid.isKinematic = true;
@@ -227,22 +229,16 @@ public abstract class Pet : MonoBehaviour
         Vector3 dest = player.position + (transform.position - player.position).normalized * 2f;
         dest = GetNearestNavMeshPosition(dest) + Vector3.up * 2f;
 
-        Vector3[] path = new Vector3[9];
-        path[0] = Vector3.Lerp(transform.position, dest, 0.6f) + Vector3.right * 2f;
-        path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 6f;
+        Vector3[] path = new Vector3[3];
+        path[0] = dest + Vector3.up;
+        path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 5f;
         path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
-        path[3] = Vector3.Lerp(transform.position, dest, 0.4f) + Vector3.left * 2f;
-        path[4] = Vector3.Lerp(path[0], path[3], 0.2f) + Vector3.down * 3f;
-        path[5] = Vector3.Lerp(path[0], path[3], 0.8f) + Vector3.down * 3f;
-        path[6] = dest;
-        path[7] = Vector3.Lerp(path[3], dest, 0.2f) + Vector3.up * 6f;
-        path[8] = Vector3.Lerp(path[3], dest, 0.8f) + Vector3.up * 3f;
 
-        transform.DOPath(path, 3f).OnComplete(() => {
+        transform.DOPath(path, 3f, PathType.CubicBezier).OnComplete(() => {
             foreach (KeyValuePair<Material, Color> pair in materialDictionary) {
                 pair.Key.SetColor(_Emission, pair.Value);
             }
-            petThrow.Throw(dest, Vector3.up * 300, 2f);
+            petThrow.Throw(dest, Vector3.up * 300, 1f);
         });
     }
     #endregion

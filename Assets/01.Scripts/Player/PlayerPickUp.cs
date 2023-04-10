@@ -1,9 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerPickUp : MonoBehaviour {
@@ -73,7 +71,7 @@ public class PlayerPickUp : MonoBehaviour {
 
         pet.SetDestination(dir);
 
-        return pet.GetDestination();
+        return pet.GetDestination(); 
     }
 
     private IEnumerator WaitPet(Vector3 destination, Action onArrive) {
@@ -131,7 +129,6 @@ public class PlayerPickUp : MonoBehaviour {
         playerMove.IsInputLock = false;
         playerMove.ChangeState(StateName.DefaultMove);
     }
-
     #endregion
 
     private void OnDisable() {
