@@ -13,7 +13,6 @@ public class SelectedObject : MonoBehaviour
     private void Update()
     {
         if (PetManager.Instance.GetSelectedPet() == null) return;
-
         CheckObject();
     }
 
