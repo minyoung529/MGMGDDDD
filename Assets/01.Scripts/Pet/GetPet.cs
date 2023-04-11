@@ -36,8 +36,11 @@ public class GetPet : MonoBehaviour
 
     private void Get(InputAction inputAction, float value)
     {
+        Debug.Log("start");
         if (pet == null) return;
+        Debug.Log("Not null");
         if (PetManager.Instance.IsGet(pet)) return;
+        Debug.Log("get");
 
         pet.GetPet(gameObject.transform);
         OnGetPet?.Invoke();
