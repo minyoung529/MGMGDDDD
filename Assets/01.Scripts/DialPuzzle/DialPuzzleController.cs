@@ -12,6 +12,8 @@ public enum TimeType
     Afternoon = 1,
     Evening = 2,
     Night = 3,
+
+    Count
 }
 
 public class DialPuzzleController : MonoBehaviour
@@ -20,12 +22,14 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private float lessSpeed = 1.5f;
     [SerializeField] private string hintString = "";
     [SerializeField] private GameObject map;
+    [SerializeField] private Transform[] spawnPoints;
 
     private Queue<TimeType> answer = new Queue<TimeType>();
     private TimeType curState = TimeType.Morning;
 
     public string Hint => hintString;
     public TimeType CurState => curState;
+    public Vector3 SpawnPosition => spawnPoints[(int)curState].position;
 
     private bool pause = false;
     private float remainTime = 0;
