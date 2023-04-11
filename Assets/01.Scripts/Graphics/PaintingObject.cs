@@ -5,6 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using UnityEngine.UIElements;
+using UnityEngine.Events;
 
 struct PaintStructure
 {
@@ -73,6 +74,11 @@ public class PaintingObject : MonoBehaviour
 
     new private SphereCollider collider;
 
+    [field:SerializeField]
+    public UnityEvent<float> OnSpreadOil { get; set; }
+    [field: SerializeField]
+    public UnityEvent OnResetOil { get; set; }
+
     private void Start()
     {
         prevPosition = transform.position;
@@ -118,18 +124,6 @@ public class PaintingObject : MonoBehaviour
 
         if (distanceChecker > eraseDistance)
         {
-            /*
-            if (paintLogs.Length >= OIL_MAX_SIZE && isAutoDelete)
-            {
-                PaintStructure top = paintLogs;
-
-                if (!IsNear(top.point))
-                {
-                    StartCoroutine(DryCoroutine(top));
-                }
-            }
-            */
-
             if (IsNear(contact)) return;
 
             CreateOilPaint(contact, p);
@@ -155,7 +149,6 @@ public class PaintingObject : MonoBehaviour
         paintData.DataSet(p, point, radius, 0.2f, 1f, color);
 
         StartCoroutine(SpreadCoroutine(paintData));
-        //PaintManager.Instance.Paint(p, collision.GetContact(0).point, radius, 0.2f, 1f, color);
     }
 
     private IEnumerator DryCoroutine(PaintStructure p)
@@ -208,6 +201,7 @@ public class PaintingObject : MonoBehaviour
             }
         }
 
+        OnResetOil?.Invoke();
         curIdx = 0;
         oilList.ForEach(x => x.ResetOil());
         isBurning = false;

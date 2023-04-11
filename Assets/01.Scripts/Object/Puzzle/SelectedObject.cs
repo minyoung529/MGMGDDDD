@@ -10,10 +10,11 @@ public class SelectedObject : MonoBehaviour
     public GameObject InteractiveObj { get { return interactionObj.gameObject; } }
     private OutlineScript interactionObj = null;
 
+    public static OutlineScript CurInteractObject;
+
     private void Update()
     {
         if (PetManager.Instance.GetSelectedPet() == null) return;
-
         CheckObject();
     }
 
@@ -22,8 +23,11 @@ public class SelectedObject : MonoBehaviour
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
 
+        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue);
+
         if (Physics.Raycast(ray, out hit, 100f))
         {
+            Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
 
@@ -40,6 +44,7 @@ public class SelectedObject : MonoBehaviour
 
             pet.IsInteraction = true;
             interactionObj = selected;
+            CurInteractObject = selected;
             interactionObj.SetColor(pet.petColor);
             interactionObj.OnOutline();
         }
@@ -60,7 +65,7 @@ public class SelectedObject : MonoBehaviour
             interactionObj.OffOutline();
             interactionObj = null;
         }
+
+        CurInteractObject = null;
     }
-
-
 }

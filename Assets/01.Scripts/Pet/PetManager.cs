@@ -116,12 +116,14 @@ public class PetManager : MonoSingleton<PetManager>
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
-        if(pets[selectIndex].IsInteraction)
+        pets[selectIndex].MovePoint();
+
+        if (pets[selectIndex].IsInteraction && SelectedObject.CurInteractObject)
         {
             pets[selectIndex].InteractionPoint();
-            return;
+            pets[selectIndex].OnArrive = null;
+            pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
         }
-        pets[selectIndex].MovePoint();
     }
 
     private void OnSkill(InputAction input, float value)

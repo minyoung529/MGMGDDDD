@@ -110,6 +110,7 @@ public class OilPetSkill
             }
 
             float duration = skillDistance / agent.speed * 0.7f;
+            painting.OnSpreadOil.Invoke(duration);
 
             // ³ªÁß¿¡ ²÷±â
             agent.transform.DOPath(points.ToArray(), duration).OnComplete(() =>
@@ -182,7 +183,6 @@ public class OilPetSkill
 
             if (IsCrosshair)
             {
-                //  ------------------------------------- GameManager NULL ---------------------------------
                 pathAgent.transform.position = GameManager.Instance.GetCameraHit();
             }
             else
