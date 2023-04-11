@@ -2,34 +2,39 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum TimeType
 {
-    None = 0,
-
-    Morning = 1,
-    Afternoon = 2,
-    Evening = 3,
-    Night = 4,
+    Morning = 0,
+    Afternoon = 1,
+    Evening = 2,
+    Night = 3,
 }
 
 public class DialPuzzleController : MonoBehaviour
 {
     [SerializeField] private float lessTimer = 30f;
+    [SerializeField] private float lessSpeed = 1.5f;
     [SerializeField] private string hintString = "";
     [SerializeField] private GameObject map;
 
     private Queue<TimeType> answer = new Queue<TimeType>();
-    private TimeType curState = TimeType.None;
+    private TimeType curState = TimeType.Morning;
 
     public string Hint => hintString;
     public TimeType CurState => curState;
 
+    private bool pause = false;
+    private float remainTime = 0;
+    private Coroutine timerCoroutine;
+
     #region Answer
-    public void InputAnswer(TimeType ans)
+    public void InputAnswer()
     {
-        answer.Enqueue(ans);
+        answer.Enqueue(curState);
     }
     public void OutAnswer()
     {
@@ -45,31 +50,67 @@ public class DialPuzzleController : MonoBehaviour
     }
     public void ChangeState(TimeType state)
     {
-        Debug.Log((int)state);
         Vector3 rot = new Vector3(0, (int)state * 90f, 0);
         map.transform.DORotate(rot, 0.5f).OnComplete(() =>
-            {
-                CheckCurrentState();
-            });
-
+        {
+            CheckRotationState();
+        });
     }
-    private void CheckCurrentState()
+    private void CheckRotationState()
     {
-        double stateValue = Math.Truncate(map.transform.rotation.y / 90);
-        curState = (TimeType)((int)stateValue);
+        curState = (TimeType)(map.transform.eulerAngles.y/90);
     }
 
+    #endregion
+
+    #region Timer
+    public void StartTimer()
+    {
+        ClearTimer();
+        timerCoroutine = StartCoroutine(GameTimer());
+    }
+
+    private IEnumerator GameTimer()
+    {
+        while (remainTime >= 0)
+        {
+            while (pause)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(1f * lessSpeed);
+            remainTime--;
+        }
+    }
+
+    private void SetPause(bool _pause)
+    {
+        pause = _pause;
+    }
+
+    private void ClearTimer()
+    {
+        pause = false;
+        remainTime = lessTimer;
+    }
+    private void StopTimer()
+    {
+        ClearTimer();
+        StopCoroutine(GameTimer());
+    }
 
     #endregion
 
     #region Start/Stop
     public void StartDialPuzzle()
     {
-
+        StartTimer();
     }
+
     public void StopDialPuzzle()
     {
-
+        StopTimer();
     }
     #endregion
 }
