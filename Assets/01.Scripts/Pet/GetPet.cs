@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class GetPet : MonoBehaviour
 {
@@ -35,28 +36,43 @@ public class GetPet : MonoBehaviour
 
     private void Get(InputAction inputAction, float value)
     {
-        Debug.Log("Start");
+        Debug.Log("start");
         if (pet == null) return;
         Debug.Log("Not null");
         if (PetManager.Instance.IsGet(pet)) return;
+        Debug.Log("get");
 
-        Debug.Log("Get");
         pet.GetPet(gameObject.transform);
         OnGetPet?.Invoke();
         pet = null;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & petLayer) != 0)
+        {
+            pet = null;
+            pet = other.GetComponent<Pet>();
+            if(pet == null)
+            {
+                pet = other.transform.parent.GetComponent<Pet>();
+            }
+        }
+    }
     private void OnTriggerStay(Collider other)
     {
-        if (((1 << other.gameObject.layer) & petLayer) == 0) return;
-        Pet pet = other.GetComponent<Pet>();
-        Debug.Log(pet != null);
-        if (pet != null) this.pet = pet;
+        if (((1 << other.gameObject.layer) & petLayer) != 0)
+        {
+            pet = null;
+            pet = other.GetComponent<Pet>();
+            if (pet == null)
+            {
+                pet = other.transform.parent.GetComponent<Pet>();
+            }
+        }
     }
-    private void OnTriggerExit(Collider other) 
+    private void OnTriggerExit(Collider other)
     {
-        if (((1 << other.gameObject.layer) & petLayer) == 0) return;
-        Debug.Log("Exit");  
-        pet = null;
+        if (((1 << other.gameObject.layer) & petLayer) != 0)  pet = null;
     }
 }

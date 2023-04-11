@@ -120,6 +120,36 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 129
   oilTriggerPrefab: {fileID: 5742998313985315220, guid: 61bd2098d3a274340863c6f655452f30, type: 3}
+  <OnSpreadOil>k__BackingField:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2665007496983162312}
+        m_TargetAssemblyTypeName: Liquid, Assembly-CSharp
+        m_MethodName: UnFillLiquid
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  <OnResetOil>k__BackingField:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2665007496983162312}
+        m_TargetAssemblyTypeName: Liquid, Assembly-CSharp
+        m_MethodName: FillLiquid
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!54 &732353071
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -266,7 +296,7 @@ GameObject:
   - component: {fileID: 4586198276244333049}
   - component: {fileID: 1009855031}
   - component: {fileID: 1009855026}
-  - component: {fileID: 945534706}
+  - component: {fileID: 498263000}
   m_Layer: 8
   m_Name: OilPet
   m_TagString: OilPet
@@ -481,26 +511,19 @@ MonoBehaviour:
     m_Bits: 0
   tutorialType: 0
   tutorialName: 
---- !u!95 &945534706
-Animator:
-  serializedVersion: 5
+--- !u!114 &498263000
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4586198276244333025}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb513295265b2074ba6e7adfd01af132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  intensity: 3
 --- !u!1001 &3437776999065935891
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -666,6 +689,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}
   m_PrefabInstance: {fileID: 4881320968481792479}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2665007496983162312 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7440489451713383447, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+  m_PrefabInstance: {fileID: 4881320968481792479}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26610d8e1eb455c4aae2aaef13e2dbd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2899592358760943771 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7746336965991592260, guid: 15b6b854160728648b96676a91611dc0, type: 3}
