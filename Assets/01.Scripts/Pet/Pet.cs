@@ -35,8 +35,7 @@ public abstract class Pet : MonoBehaviour
 
     private Vector3 originScale;
 
-    protected Dictionary<Material, Color> materialDictionary = new Dictionary<Material, Color>();
-    private readonly int _Emission = Shader.PropertyToID("_Emission");
+    private ChangePetEmission emission;
 
     #region Get
 
@@ -73,6 +72,7 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         petThrow = GetComponent<PetThrow>();
+        emission = GetComponentInChildren<ChangePetEmission>();
 
         //GetMaterials();
 
@@ -89,6 +89,10 @@ public abstract class Pet : MonoBehaviour
     {
         CheckArrive();
         FollowTarget();
+        if(Input.GetKeyDown(KeyCode.K)) {
+            ReCall();
+            Debug.Log("RECALL");
+        }
     }
 
     #region Set
@@ -118,12 +122,6 @@ public abstract class Pet : MonoBehaviour
     public void AgentEnabled(bool isEnabled)
     {
         agent.enabled = isEnabled;
-    }
-
-    private void GetMaterials() {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        for (int i = 0; i < renderers.Length; i++)
-            materialDictionary.Add(renderers[i].material, renderers[i].material.GetColor(_Emission));
     }
     #endregion
 
@@ -225,9 +223,8 @@ public abstract class Pet : MonoBehaviour
         coll.enabled = false;
         rigid.isKinematic = true;
 
-        foreach (Material item in materialDictionary.Keys) {
-            item.SetColor(_Emission, Color.white);
-        }
+        // Default Color: White
+        emission.EmissionOn();
 
         //Darw Bezier
         Vector3 dest = player.position + (transform.position - player.position).normalized * 2f;
@@ -239,9 +236,7 @@ public abstract class Pet : MonoBehaviour
         path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
 
         transform.DOPath(path, 3f, PathType.CubicBezier).OnComplete(() => {
-            foreach (KeyValuePair<Material, Color> pair in materialDictionary) {
-                pair.Key.SetColor(_Emission, pair.Value);
-            }
+            emission.EmissionOff();
             petThrow.Throw(dest, Vector3.up * 300, 1f);
         });
     }
