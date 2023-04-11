@@ -1,72 +1,51 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.ProBuilder;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
-public enum CarType
-{
-    BasicCar,
-    SportsCar,
-    Bus,
-    Subway
-}
+
 public class MorningDialPuzzle : MonoBehaviour
 {
-    [SerializeField] Transform carSpawnParent;
     [SerializeField] List<GameObject> carPrefabs = new List<GameObject>();
 
     private List<GameObject> cars = new List<GameObject>();
-    private float[] spawnPositioin = { -5f, -3.32f, 0f, 1.5f, 4.5f, 6f };
+
+    private float minDriveTime = 1.5f;
+    private float maxDriveTime = 4.5f;
 
     private void Start()
     {
-        StartCoroutine(SpawnCar());
+        StartPuzzle();
     }
 
     public void StartPuzzle()
     {
+        GetCar();
     }
     
     public void StopPuzzle()
     {
     }
 
-    private IEnumerator SpawnCar()
-    {
-        while(true)
-        {
-            yield return new WaitForSeconds(Random.Range(0.5f, 3f));
-            InstantiateCar();
-        }
-    }
-
     private GameObject InstantiateCar()
     {
         int carType = Random.Range(0, carPrefabs.Count);
         GameObject car = Instantiate(carPrefabs[carType]);
-        car.transform.SetParent(carSpawnParent);
+        car.transform.SetParent(transform);
         cars.Add(car);
 
         car.SetActive(true);
 
         return car;
     }
-    private void InstantiateCar(CarType type)
-    {
-        GameObject car = Instantiate(carPrefabs[(int)type]);
-        car.transform.SetParent(carSpawnParent);
-        car.SetActive(false);
-        
-        cars.Add(car);
-    }
 
     public void GetCar()
     {
-        int randomCar = Random.Range(0, carSpawnParent.childCount);
+        int randomCar = Random.Range(0, cars.Count);
         Transform car;
-
-        if (carSpawnParent.childCount == 0)
+        if (cars.Count == 0)
         {
             car = InstantiateCar().transform;
         }
@@ -74,10 +53,16 @@ public class MorningDialPuzzle : MonoBehaviour
         {
             car = cars[randomCar].transform;
         }
-        car.transform.localPosition = new Vector3(spawnPositioin[Random.Range(0, spawnPositioin.Length)], 4.4f, 10f);
-        car.gameObject.SetActive(true);
-
+        
         cars.Remove(car.gameObject);
+        car.transform.localPosition = Vector3.zero;
+        car.gameObject.SetActive(true);
+        car.DOLocalMoveZ(0.3f, Random.Range(minDriveTime, maxDriveTime)).SetEase(Ease.Flash).OnComplete(() =>
+        {
+            ReturnCar(car.gameObject);
+            GetCar();
+        });
+
     }
 
     public void ReturnCar(GameObject car)
