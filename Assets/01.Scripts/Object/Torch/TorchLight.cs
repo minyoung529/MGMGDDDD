@@ -65,4 +65,15 @@ public class TorchLight : MonoBehaviour
             OnLighted?.Invoke(isOn);
         }
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        Fire fire = collision.collider.GetComponent<Fire>();
+        if (fire != null)
+        {
+            if (!fire.IsBurn) return;
+            OnLight();
+            OnLighted?.Invoke(isOn);
+        }
+    }
+
 }

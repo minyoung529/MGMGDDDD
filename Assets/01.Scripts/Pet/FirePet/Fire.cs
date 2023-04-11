@@ -52,7 +52,7 @@ public class Fire : MonoBehaviour
         seq.AppendInterval(burnDelay);
         seq.AppendCallback(() =>
         {
-            //isBurn = true;
+            isBurn = true;
 
             FireParticlePlay();
             if (isDestroyType) DestroyBurn();
