@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class TorchLight : MonoBehaviour
 {
-    ParticleSystem fireParticle;
+   // ParticleSystem fireParticle;
     private bool isOn = false;
 
     public bool IsOn { get { return isOn; } }
@@ -15,11 +15,12 @@ public class TorchLight : MonoBehaviour
 
     protected virtual void Awake()
     {
-        fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
+      //  fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
         particles= GetComponentsInChildren<ParticleSystem>();
         OffLight();
     }
 
+    [ContextMenu("OnLight")]
     public void OnLight()
     {
         isOn = true;
@@ -27,16 +28,17 @@ public class TorchLight : MonoBehaviour
         foreach (ParticleSystem p in particles)
             p.Play();
 
+        OnLighted?.Invoke(true);
         //fireParticle.Play();
     }
 
+    [ContextMenu("OffLight")]
     public void OffLight()
     {
         isOn = false;
 
         foreach (ParticleSystem p in particles)
             p.Stop();
-
 
         //fireParticle.Stop();
     }
