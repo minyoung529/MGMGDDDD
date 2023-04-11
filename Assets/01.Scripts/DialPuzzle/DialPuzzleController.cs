@@ -29,6 +29,9 @@ public class DialPuzzleController : MonoBehaviour
 
     public string Hint => hintString;
     public TimeType CurState => curState;
+
+    // 여기서 Null 오류가 난다면 07.Prefab/Puzzle/Dial에 Spawn Points를 씬으로 끌고 와서
+    // 그 자식들을 DialPuzzleController의 SpawnPoints로 옮겨주시면 됩니다.
     public Vector3 SpawnPosition => spawnPoints[(int)curState].position;
 
     private bool pause = false;
