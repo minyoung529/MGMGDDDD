@@ -62,6 +62,19 @@ public static class Utils
 
         return count;
     }
+
+    public static float GetNormalizedRange(float a, float b, float t)
+    {
+        // a < b
+        if (a > b)
+        {
+            float temp = a;
+            a = b;
+            b = temp;
+        }
+
+        return (t - a) / (b - a);
+    }
 }
 
 
