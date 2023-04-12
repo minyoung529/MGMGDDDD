@@ -26,4 +26,9 @@ public sealed class OperatorPlate : PressurePlate
     {
 
     }
+
+    public void SetOperator(OperatorType operatorType)
+    {
+        this.operatorType = operatorType;
+    }
 } 

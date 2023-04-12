@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 4383366970072100676}
   - component: {fileID: 1649665690838033064}
   - component: {fileID: 2447609522195671268}
+  - component: {fileID: 5862768057618669373}
   m_Layer: 0
-  m_Name: Button 0
+  m_Name: NumberPlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,4 +134,38 @@ MonoBehaviour:
   layer:
     serializedVersion: 2
     m_Bits: 8
-  number: 0
+--- !u!114 &5862768057618669373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4383366970072100698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2447609522195671268}
+        m_TargetAssemblyTypeName: NumberPlate, Assembly-CSharp
+        m_MethodName: OnFire
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireParticle: []
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isTriggerBurn: 0
+  isCool: 1
+  isClingTo: 1

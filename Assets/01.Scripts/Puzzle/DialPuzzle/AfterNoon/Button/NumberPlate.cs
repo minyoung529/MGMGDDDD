@@ -4,15 +4,27 @@ using UnityEngine;
 
 public sealed class NumberPlate : PressurePlate
 {
-    [SerializeField]
-    private int number;
-
-    #region PROPERTY
-    public int Number => number;
-    #endregion 
+    public int Number { get; private set; }
+    private Pair<int, int> numberPair;
 
     public override void OnSelected()
     {
 
+    }
+
+    public void OnFire()
+    {
+        Number = numberPair.second;
+    }
+
+    public void SetNumberPair(Pair<int, int> numberPair)
+    {
+        this.numberPair = numberPair;
+        Number = numberPair.first;
+
+        if (numberPair.second < 0)
+        {
+            numberPair.second = numberPair.first;
+        }
     }
 }

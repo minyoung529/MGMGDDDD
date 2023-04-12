@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,38 +7,51 @@ using UnityEngine.Events;
 public class MathPuzzleController : MonoBehaviour
 {
     [Header("GROUP")]
-    [SerializeField]
-    private PlateGroup firstGroup;
+    private List<PlateGroup> plateGroups;
+    // [0] = NUMBER, [1] = OPERATOR, [2] = NUMBER
 
     [SerializeField]
-    private PlateGroup operators;
+    private List<MathPuzzleSetting> settings;
 
-    [SerializeField]
-    private PlateGroup secondGroup;
-
-    [field: SerializeField]
-    public int TargetValue { get; set; }
+    private int targetValue;
+    private int curIdx = 0;
 
     [Header("CLEAR")]
     [SerializeField]
     private UnityEvent onClearPuzzle;
 
     #region PROPERTY
-    public int FirstNumber => firstGroup.Value;
-    public OperatorType Operator => operators.OperatorType;
-    public int SecondNumber => secondGroup.Value;
+    public int FirstNumber => plateGroups[0].Value;
+    public OperatorType Operator => plateGroups[1].OperatorType;
+    public int SecondNumber => plateGroups[2].Value;
     #endregion
 
-    private void Update()
+    private void Awake()
     {
-        Debug.Log(CalculatedValue());
+        plateGroups = GetComponentsInChildren<PlateGroup>().ToList();
+    }
+
+    private void Start()
+    {
+        plateGroups.ForEach(x => x.ListeningOnSelected(CalculateResult));
+        StartPuzzle();
+    }
+
+    private void StartPuzzle()
+    {
+        ResetPuzzle();
+
+        targetValue = settings[curIdx].targetValue;
+
+        plateGroups[0].SetNumberPairs(settings[curIdx].firstNumbers);
+        plateGroups[2].SetNumberPairs(settings[curIdx].secondNumbers);
+
+        plateGroups[1].SetOperators(settings[curIdx].operatorTypes);
     }
 
     private void ResetPuzzle()
     {
-        firstGroup.ResetPuzzle();
-        operators.ResetPuzzle();
-        secondGroup.ResetPuzzle();
+        plateGroups.ForEach(x => x.ResetPuzzle());
     }
 
     private int CalculatedValue() => Operator switch
@@ -56,10 +70,10 @@ public class MathPuzzleController : MonoBehaviour
             return;
         }
 
-        if (CalculatedValue() == TargetValue)
+        Debug.Log("CHECK : " + CalculatedValue());
+        if (CalculatedValue() == targetValue)
         {
             onClearPuzzle?.Invoke();
-            Debug.Log("CLEAR");
         }
     }
 }

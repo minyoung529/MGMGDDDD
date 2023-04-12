@@ -53,7 +53,7 @@ public class ChangeEmission : MonoBehaviour
 
     public void BackToOriginalColor()
     {
-        renderer.material.DOColor(originalColor, EMISSION_COLOR, onTime);
+        renderer?.material.DOColor(originalColor, EMISSION_COLOR, onTime);
     }
 
     private Color GetEmission()
