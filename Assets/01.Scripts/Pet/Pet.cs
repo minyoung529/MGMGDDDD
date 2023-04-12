@@ -10,6 +10,10 @@ public abstract class Pet : MonoBehaviour
     [SerializeField] protected PetTypeSO petInform;
     [SerializeField] protected float sightRange = 5f;
     [SerializeField] protected float collRadius = 0.7f;
+    [SerializeField] private ParticleSystem flyParticlePref;
+    [SerializeField] private ParticleSystem arriveParticlePref;
+    private ParticleSystem flyParticle = null;
+    private ParticleSystem arriveParticle = null;
 
     #region CheckList
 
@@ -17,6 +21,8 @@ public abstract class Pet : MonoBehaviour
     protected bool isMouseMove = false;
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
+    private bool isRecall = false;
+    public bool IsHolding = false;
 
     #endregion
 
@@ -74,10 +80,11 @@ public abstract class Pet : MonoBehaviour
         petThrow = GetComponent<PetThrow>();
         emission = GetComponentInChildren<ChangePetEmission>();
 
-        //GetMaterials();
-
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
+
+        flyParticle = Instantiate(flyParticlePref, transform);
+        arriveParticle = Instantiate(arriveParticlePref, transform);
     }
 
     private void Start()
@@ -89,10 +96,6 @@ public abstract class Pet : MonoBehaviour
     {
         CheckArrive();
         FollowTarget();
-        if(Input.GetKeyDown(KeyCode.K)) {
-            ReCall();
-            Debug.Log("RECALL");
-        }
     }
 
     #region Set
@@ -218,7 +221,12 @@ public abstract class Pet : MonoBehaviour
     }
 
     public void ReCall() {
-        if (!player) return;
+        Debug.Log(IsHolding);
+        if (isRecall || IsHolding || !player) return;
+        isRecall = true;
+        isInputLock = true;
+
+        isInputLock = true; 
         SetNavEnabled(false);
         coll.enabled = false;
         rigid.isKinematic = true;
@@ -228,16 +236,22 @@ public abstract class Pet : MonoBehaviour
 
         //Darw Bezier
         Vector3 dest = player.position + (transform.position - player.position).normalized * 2f;
-        dest = GetNearestNavMeshPosition(dest) + Vector3.up * 2f;
+        dest = GetNearestNavMeshPosition(dest) + Vector3.up * 1.5f;
 
         Vector3[] path = new Vector3[3];
         path[0] = dest + Vector3.up;
         path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 5f;
         path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
 
-        transform.DOPath(path, 3f, PathType.CubicBezier).OnComplete(() => {
+        flyParticle.Play();
+
+        transform.DOLookAt(player.position, 0.5f);
+        transform.DOPath(path, 3f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
             emission.EmissionOff();
+            flyParticle.Stop();
+            arriveParticle.Play();
             petThrow.Throw(dest, Vector3.up * 300, 1f);
+            isRecall = false;
         });
     }
     #endregion

@@ -83,6 +83,8 @@ public class PetManager : MonoSingleton<PetManager>
         InputManager.StartListeningInput(InputAction.Pet_Move, OnClickMove);
         InputManager.StartListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StartListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
+
+        InputManager.StartListeningInput(InputAction.Pet_Follow, ReCall);
     }
 
     private void StopListen()
@@ -97,6 +99,8 @@ public class PetManager : MonoSingleton<PetManager>
         InputManager.StopListeningInput(InputAction.Pet_Move, OnClickMove);
         InputManager.StopListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StopListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
+
+        InputManager.StopListeningInput(InputAction.Pet_Follow, ReCall);
     }
 
     private void OnSkillUp(InputAction input, float value)
@@ -132,6 +136,9 @@ public class PetManager : MonoSingleton<PetManager>
         pets[selectIndex].Skill();
     }
 
+    private void ReCall(InputAction input, float value) {
+        pets[selectIndex].ReCall();
+    }
     #endregion
 
     #region SwitchPet
