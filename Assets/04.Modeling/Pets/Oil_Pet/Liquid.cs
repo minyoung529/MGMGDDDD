@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -115,6 +116,16 @@ public class Liquid : MonoBehaviour
         // keep last position
         lastPos = transform.position;
         lastRot = transform.rotation;
+    }
+
+    public void FillLiquid()
+    {
+        DOTween.To(() => fillAmount, (x) => fillAmount = x, 0.29f, 0.2f);
+    }
+
+    public void UnFillLiquid(float duration)
+    {
+        DOTween.To(() => fillAmount, (x) => fillAmount = x, 1.3f, duration);
     }
 
     void UpdatePos(float deltaTime)

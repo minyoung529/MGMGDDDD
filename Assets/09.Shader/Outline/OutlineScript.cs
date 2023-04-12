@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder;
+using static UnityEngine.Rendering.DebugUI;
 
 [Flags]
 public enum PetFlag
@@ -17,15 +19,32 @@ public enum PetFlag
 public class OutlineScript : MonoBehaviour
 {
     [SerializeField] private Material outlineMaterial;
-    [SerializeField] private float outlineScaleFactor = -1.1f;
+    [SerializeField] private float outlineScaleFactor = 0.06f;
     [SerializeField] private PetFlag petType;
+    [SerializeField] private UnityEvent onInteractPet;
     public PetFlag PetType => petType;
 
-    private Renderer outlineRenderer;
+    private List<Renderer> outlineRenderer = new List<Renderer>();
+
+    private int outlineLayer;
+
 
     void Start()
     {
-        outlineRenderer = CreateOutline(outlineMaterial, outlineScaleFactor, Color.white);
+        outlineLayer = Utils.LayerToInteger( LayerMask.GetMask("Outline"));
+
+        InitRenderer();
+    }
+
+    private void InitRenderer()
+    {
+        Renderer[] renderers = transform.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            Renderer newRenderer = CreateOutline(renderer.transform, outlineMaterial, outlineScaleFactor, Color.white);
+            outlineRenderer.Add(newRenderer);
+        }
     }
 
     #region Set
@@ -33,52 +52,59 @@ public class OutlineScript : MonoBehaviour
     [ContextMenu("OnOutline")]
     public void OnOutline()
     {
-        if (outlineRenderer != null)
-        {
-            outlineRenderer.enabled = true;
-        }
+        if (outlineRenderer != null) SetEnableRenderer(true);
     }
     [ContextMenu("OffOutline")]
     public void OffOutline()
     {
-        if (outlineRenderer != null)
-            outlineRenderer.enabled = false;
+        if (outlineRenderer != null) SetEnableRenderer(false);
+    }
+
+    private void SetEnableRenderer(bool value)
+    {
+        for (int i = 0; i < outlineRenderer.Count; i++)
+        {
+            outlineRenderer[i].enabled = value;
+        }
     }
 
     public void SetColor(Color color)
     {
-        outlineRenderer.material.SetColor("_OutlineColor", color);
+        for (int i = 0; i < outlineRenderer.Count; i++)
+        {
+            outlineRenderer[i].material.SetColor("_OutLine_Color", color);
+        }
     }
 
     #endregion
 
     #region Draw_Outline
 
-    Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color)
+    Renderer CreateOutline(Transform origin, Material outlineMat, float scaleFactor, Color color)
     {
-        GameObject outlineObject = Instantiate(new GameObject(), transform.position, transform.rotation, transform);
+        GameObject outlineObject = new GameObject($"{origin.name}_Outline");
 
-        MeshFilter originFilter = gameObject.GetComponent<MeshFilter>();
-        ProBuilderMesh originProFilter = gameObject.GetComponent<ProBuilderMesh>();
+        outlineObject.layer = outlineLayer;
+        // Reset Transform
+        outlineObject.transform.SetParent(origin);
+        outlineObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        outlineObject.transform.localScale = new Vector3(1f, 1f, 1f);
 
-        if (originProFilter)
+        MeshFilter originFilter = origin.GetComponent<MeshFilter>();
+
+        if (originFilter == null)
         {
-            //AddProbuilderMesh(outlineObject, originProFilter);
-            Debug.Log("PROBUILDER MESH!");
+            return null;
         }
 
         AddMesh(outlineObject, originFilter);
 
         MeshRenderer render = outlineObject.AddComponent<MeshRenderer>();
         render.material = outlineMat;
-        render.material.SetColor("_OutlineColor", color);
-        render.material.SetFloat("_Scale", scaleFactor);
+        render.material.SetColor("_OutLine_Color", color);
+        render.material.SetFloat("_Outline_Thickness", scaleFactor);
         render.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-
-        outlineObject.transform.localScale = new Vector3(1f, 1f, 1f);
         render.enabled = false;
-
-        render.name = gameObject.name + "_Outline";
 
         return render;
     }
@@ -90,4 +116,8 @@ public class OutlineScript : MonoBehaviour
     }
     #endregion
 
+    public void OnInteract()
+    {
+        onInteractPet?.Invoke();
+    }
 }

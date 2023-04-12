@@ -50,6 +50,31 @@ public static class Utils
     {
         return new Vector3(thisVec.x * vector.x, thisVec.y * vector.y, thisVec.z * vector.z);
     }
+
+    public static int LayerToInteger(LayerMask layer)
+    {
+        int count = 0;
+        while (layer > 1)
+        {
+            layer >>= 1;
+            count++;
+        }
+
+        return count;
+    }
+
+    public static float GetNormalizedRange(float a, float b, float t)
+    {
+        // a < b
+        if (a > b)
+        {
+            float temp = a;
+            a = b;
+            b = temp;
+        }
+
+        return (t - a) / (b - a);
+    }
 }
 
 

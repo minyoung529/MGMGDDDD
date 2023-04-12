@@ -10,6 +10,10 @@ public abstract class Pet : MonoBehaviour
     [SerializeField] protected PetTypeSO petInform;
     [SerializeField] protected float sightRange = 5f;
     [SerializeField] protected float collRadius = 0.7f;
+    [SerializeField] private ParticleSystem flyParticlePref;
+    [SerializeField] private ParticleSystem arriveParticlePref;
+    private ParticleSystem flyParticle = null;
+    private ParticleSystem arriveParticle = null;
 
     #region CheckList
 
@@ -17,6 +21,8 @@ public abstract class Pet : MonoBehaviour
     protected bool isMouseMove = false;
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
+    private bool isRecall = false;
+    public bool IsHolding = false;
 
     #endregion
 
@@ -35,8 +41,7 @@ public abstract class Pet : MonoBehaviour
 
     private Vector3 originScale;
 
-    protected Dictionary<Material, Color> materialDictionary = new Dictionary<Material, Color>();
-    private readonly int _Emission = Shader.PropertyToID("_Emission");
+    private ChangePetEmission emission;
 
     #region Get
 
@@ -52,9 +57,9 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    private float distanceToPlayer = 5f;
+    private readonly float distanceToPlayer = 5f;
 
-    public Action onArrive { get; set; }
+    public Action OnArrive { get; set; }
 
     private static bool isCameraAimPoint = true;
     public static bool IsCameraAimPoint
@@ -62,6 +67,8 @@ public abstract class Pet : MonoBehaviour
         get => isCameraAimPoint;
         set => isCameraAimPoint = value;
     }
+
+    public AxisController AxisController { get; set; }
 
     protected virtual void Awake()
     {
@@ -71,10 +78,13 @@ public abstract class Pet : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         petThrow = GetComponent<PetThrow>();
+        emission = GetComponentInChildren<ChangePetEmission>();
 
-        //GetMaterials();
-
+        AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
+
+        flyParticle = Instantiate(flyParticlePref, transform);
+        arriveParticle = Instantiate(arriveParticlePref, transform);
     }
 
     private void Start()
@@ -115,12 +125,6 @@ public abstract class Pet : MonoBehaviour
     public void AgentEnabled(bool isEnabled)
     {
         agent.enabled = isEnabled;
-    }
-
-    private void GetMaterials() {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        for (int i = 0; i < renderers.Length; i++)
-            materialDictionary.Add(renderers[i].material, renderers[i].material.GetColor(_Emission));
     }
     #endregion
 
@@ -164,6 +168,7 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
+        
         if (!target)
         {
             agent.ResetPath();
@@ -172,7 +177,7 @@ public abstract class Pet : MonoBehaviour
 
         SetNavEnabled(true);
         SetNavIsStopped(false);
-        this.onArrive = onArrive;
+        this.OnArrive = onArrive;
     }
 
     public void SetDestination(Transform target)
@@ -197,48 +202,56 @@ public abstract class Pet : MonoBehaviour
     public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
     {
         if (!agent.isOnNavMesh) return;
-        this.onArrive = onArrive;
+        this.OnArrive = onArrive;
         SetNavEnabled(true);
         SetNavIsStopped(false);
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
-        agent.SetDestination(target);
+        agent.SetDestination(AxisController.CalculateDestination(target));
     }
 
     private void CheckArrive()
     {
         if (Vector3.Distance(agent.destination, transform.position) <= 1f)
         {
-            onArrive?.Invoke();
-            onArrive = null;
+            OnArrive?.Invoke();
+            OnArrive = null;
         }
     }
 
     public void ReCall() {
-        if (!player) return;
+        Debug.Log(IsHolding);
+        if (isRecall || IsHolding || !player) return;
+        isRecall = true;
+        isInputLock = true;
+
+        isInputLock = true; 
         SetNavEnabled(false);
         coll.enabled = false;
         rigid.isKinematic = true;
 
-        foreach (Material item in materialDictionary.Keys) {
-            item.SetColor(_Emission, Color.white);
-        }
+        // Default Color: White
+        emission.EmissionOn();
 
         //Darw Bezier
         Vector3 dest = player.position + (transform.position - player.position).normalized * 2f;
-        dest = GetNearestNavMeshPosition(dest) + Vector3.up * 2f;
+        dest = GetNearestNavMeshPosition(dest) + Vector3.up * 1.5f;
 
         Vector3[] path = new Vector3[3];
         path[0] = dest + Vector3.up;
         path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 5f;
         path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
 
-        transform.DOPath(path, 3f, PathType.CubicBezier).OnComplete(() => {
-            foreach (KeyValuePair<Material, Color> pair in materialDictionary) {
-                pair.Key.SetColor(_Emission, pair.Value);
-            }
+        flyParticle.Play();
+
+        transform.DOLookAt(player.position, 0.5f);
+        transform.DOPath(path, 3f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
+            emission.EmissionOff();
+            flyParticle.Stop();
+            arriveParticle.Play();
             petThrow.Throw(dest, Vector3.up * 300, 1f);
+            isRecall = false;
         });
     }
     #endregion
@@ -252,10 +265,12 @@ public abstract class Pet : MonoBehaviour
     {
         agent.enabled = value;
     }
-    public bool GetIsOnNavMesh() {
+    public bool GetIsOnNavMesh()
+    {
         return agent.isOnNavMesh;
     }
-    public Vector3 GetDestination() {
+    public Vector3 GetDestination()
+    {
         return agent.destination;
     }
     public void ResetNav()
@@ -319,7 +334,8 @@ public abstract class Pet : MonoBehaviour
     /// 시야 범위에 존재하는 활성화 되지 않은 버튼을 찾아낸 후 타겟으로 설정
     /// </summary>
     /// <returns>탐색 성공 여부</returns>
-    public bool FindButton() {
+    public bool FindButton()
+    {
         ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
         if (!target) return false;
         Vector3 dest = target.transform.position;

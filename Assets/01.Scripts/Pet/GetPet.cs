@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class GetPet : MonoBehaviour
 {
@@ -49,11 +50,29 @@ public class GetPet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & petLayer) != 0)
+        {
+            pet = null;
             pet = other.GetComponent<Pet>();
+            if(pet == null)
+            {
+                pet = other.transform.parent.GetComponent<Pet>();
+            }
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & petLayer) != 0)
+        {
+            pet = null;
+            pet = other.GetComponent<Pet>();
+            if (pet == null)
+            {
+                pet = other.transform.parent.GetComponent<Pet>();
+            }
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (((1 << other.gameObject.layer) & petLayer) != 0)
-            pet = null;
+        if (((1 << other.gameObject.layer) & petLayer) != 0)  pet = null;
     }
 }

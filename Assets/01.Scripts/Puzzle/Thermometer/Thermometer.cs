@@ -1,8 +1,10 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class Thermometer : MonoBehaviour
 {
@@ -11,62 +13,169 @@ public class Thermometer : MonoBehaviour
 
     private Sequence seq;
 
-    private float NormalizedLiquid => Mathf.Lerp(0f, 1f, liquidPivot.localScale.y / MAX_LIQUID_SCALE_Y);
+    private float NormalizedLiquid => NormalizedRed + NormalizedYellow;
+    private float NormalizedRed => Mathf.Clamp01(Mathf.Lerp(0f, 1f, redLiquidPivot.localScale.y / MAX_LIQUID_SCALE_Y));
+    private float NormalizedYellow => Mathf.Clamp01(Mathf.Lerp(0f, 1f, yellowLiquidPivot.localScale.y / MAX_LIQUID_SCALE_Y));
+
+    private float prevRedValue = 0f;
+    private float RedScaleY
+    {
+        get => redLiquidPivot.localScale.y;
+        set => SetLiquidValueByScale(value, redLiquidPivot);
+    }
+    private float YellowScaleY
+    {
+        get => yellowLiquidPivot.localScale.y;
+        set => SetLiquidValueByScale(value, yellowLiquidPivot);
+    }
 
     // Set Normalize Value
     [SerializeField]
-    private Transform liquidPivot;
+    private Transform redLiquidPivot;
+    [SerializeField]
+    private Transform yellowLiquidPivot;
 
     [SerializeField, Range(0f, 1f)]
-    private float beginLiquidValue;
+    private float redBeginLiquidValue;
+
+    [SerializeField, Range(0f, 1f)]
+    private float yellowBeginLiquidValue;
+
+    [SerializeField]
+    private ThermometerChanger changer;
+
+    public Action OnChangeValue { get; set; }
 
     private void Start()
     {
-        SetLiquidValueBy01(beginLiquidValue);
+        SetLiquidValueBy01_R(redBeginLiquidValue);
+        SetLiquidValueBy01_Y(yellowBeginLiquidValue);
+        UpdateYellow();
+        UpdateRedPosition();
+
+        changer.Initialize(MAX_LIQUID_SCALE_Y * 2f);
     }
 
+    private void Update()
+    {
+        changer.SetMinimum(NormalizedYellow);
+
+        if (changer.ControlLiquid)
+        {
+            SetLiquidValueBy01_R(changer.GetNormalizeValue() - NormalizedYellow);
+            OnChangeValue?.Invoke();
+        }
+        else
+        {
+            changer.SetLiquidValue(NormalizedLiquid);
+        }
+    }
+
+    #region CHANGE LIQUID VALUE
     public void AddNormalizedLiquidValue(float value)
     {
-        Debug.Log(NormalizedLiquid + value);
-        ChangeNormalizedLiquidValue(NormalizedLiquid + value);
+        ChangeTween(redLiquidPivot, Mathf.Clamp(NormalizedRed + value, 0f, 1f));
+        prevRedValue = NormalizedRed;
     }
 
-    public void ChangeNormalizedLiquidValue(float normalizedValue)
+    public void AddNormalizedLiquidValue_Y(float value)
     {
-        normalizedValue = Mathf.Clamp01(normalizedValue);
-        float scaleY = Mathf.Lerp(0f, MAX_LIQUID_SCALE_Y, normalizedValue);
-        float distance = Mathf.Abs(scaleY - liquidPivot.localScale.y);
+        ChangeTween(yellowLiquidPivot, Mathf.Clamp(NormalizedYellow + value, 0f, 1f - NormalizedRed));
+    }
+
+    private void ChangeTween(Transform trn, float normalized)
+    {
+        float scaleY = Mathf.Lerp(0f, MAX_LIQUID_SCALE_Y, normalized);
+        float distance = Mathf.Abs(scaleY - trn.localScale.y);
 
         seq?.Kill();
         seq = DOTween.Sequence();
 
         seq.Append
         (
-            DOTween.To(() => liquidPivot.localScale.y,
-            (x) => SetLiquidValueByScale(x),
+            DOTween.To(() => trn.localScale.y,
+            (x) => SetLiquidValueByScale(x, trn),
             scaleY,
             LIQUID_MOVE_SPEED * distance).SetEase(Ease.Linear)
-        );
-    }
+        ).OnComplete(() => OnChangeValue?.Invoke());
 
-    private void SetLiquidValueByScale(float scaleY)
+        seq.onUpdate += UpdateYellow;
+        seq.onUpdate += UpdateRedPosition;
+    }
+    #endregion
+
+    #region DIRECT SET LIQUID
+    private void SetLiquidValueByScale(float scaleY, Transform trn)
     {
-        Vector3 scale = liquidPivot.localScale;
+        if (trn == redLiquidPivot)
+        {
+            prevRedValue = NormalizedRed;
+        }
+
+        Vector3 scale = trn.localScale;
         scale.y = scaleY;
 
-        liquidPivot.localScale = scale;
+        trn.localScale = scale;
     }
 
-    private void SetLiquidValueBy01(float normalized)
+    private void SetLiquidValueBy01_R(float normalized)
     {
-        Vector3 scale = liquidPivot.localScale;
-        scale.y = Mathf.Lerp(0f, MAX_LIQUID_SCALE_Y, normalized);
-
-        liquidPivot.localScale = scale;
+        prevRedValue = NormalizedRed;
+        RedScaleY = NormalizedToScaleY(normalized);
     }
+
+    private void SetLiquidValueBy01_Y(float normalized)
+    {
+        normalized = Mathf.Clamp(normalized, 0f, 1f - NormalizedRed);
+        YellowScaleY = NormalizedToScaleY(normalized);
+    }
+    #endregion
+
+    #region UPDATE
+    private void UpdateRedPosition()
+    {
+        Vector3 redPosition = redLiquidPivot.localPosition;
+        redPosition.y = YellowScaleY * 2f - 0.1f;
+        redLiquidPivot.localPosition = redPosition;
+    }
+
+    private void UpdateYellow()
+    {
+        float diff = Mathf.Abs(prevRedValue - NormalizedRed);
+        SetLiquidValueBy01_Y(NormalizedYellow - diff);
+
+        prevRedValue = NormalizedRed;
+    }
+    #endregion
+
+    #region GET
+    private float NormalizedToScaleY(float value)
+    {
+        return Mathf.Lerp(0f, MAX_LIQUID_SCALE_Y, value);
+    }
+
+    public bool IsClear(float weight)
+    {
+        return (Mathf.Abs(NormalizedLiquid - weight) < 0.1f);
+    }
+    #endregion
+
+    #region TEST
+    [ContextMenu("RED+0.1")]
+    public void RedPlus01() => AddNormalizedLiquidValue(0.1f);
+
+    [ContextMenu("YELLOW+0.1")]
+    public void YellpwPlus01() => AddNormalizedLiquidValue_Y(0.1f);
+    #endregion
 
     private void OnValidate()
     {
-        SetLiquidValueBy01(beginLiquidValue);
+        SetLiquidValueBy01_R(redBeginLiquidValue);
+        SetLiquidValueBy01_Y(yellowBeginLiquidValue);
+
+        UpdateYellow();
+        UpdateRedPosition();
+
+        changer.SetLiquidValue(NormalizedLiquid);
     }
 }

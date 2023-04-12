@@ -83,6 +83,8 @@ public class PetManager : MonoSingleton<PetManager>
         InputManager.StartListeningInput(InputAction.Pet_Move, OnClickMove);
         InputManager.StartListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StartListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
+
+        InputManager.StartListeningInput(InputAction.Pet_Follow, ReCall);
     }
 
     private void StopListen()
@@ -97,6 +99,8 @@ public class PetManager : MonoSingleton<PetManager>
         InputManager.StopListeningInput(InputAction.Pet_Move, OnClickMove);
         InputManager.StopListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StopListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
+
+        InputManager.StopListeningInput(InputAction.Pet_Follow, ReCall);
     }
 
     private void OnSkillUp(InputAction input, float value)
@@ -116,12 +120,14 @@ public class PetManager : MonoSingleton<PetManager>
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
-        if(pets[selectIndex].IsInteraction)
+        pets[selectIndex].MovePoint();
+
+        if (pets[selectIndex].IsInteraction && SelectedObject.CurInteractObject)
         {
             pets[selectIndex].InteractionPoint();
-            return;
+            pets[selectIndex].OnArrive = null;
+            pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
         }
-        pets[selectIndex].MovePoint();
     }
 
     private void OnSkill(InputAction input, float value)
@@ -130,6 +136,9 @@ public class PetManager : MonoSingleton<PetManager>
         pets[selectIndex].Skill();
     }
 
+    private void ReCall(InputAction input, float value) {
+        pets[selectIndex].ReCall();
+    }
     #endregion
 
     #region SwitchPet

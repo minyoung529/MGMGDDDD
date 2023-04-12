@@ -26,17 +26,8 @@ public class PlayerPickUp : MonoBehaviour {
 
         switch (action) {
             case InputAction.PickUp_And_Drop:
-                if (!holdingPet) {
-                    holdingPet = FindPet();
-                    if (!holdingPet) {
-                        playerMove.IsInputLock = false;
-                        break;
-                    }
-                    holdingPet.IsInputLock = true;
-                    holdingPet.Coll.enabled = false;
-                    Vector3 dest = CallPet(holdingPet);
-                    StartCoroutine(WaitPet(dest, () => playerMove.ChangeState(StateName.PickUp)));
-                }
+                if (!holdingPet)
+                    PickUp();
                 else
                     playerMove.ChangeState(StateName.Drop);
                 break;
@@ -54,6 +45,29 @@ public class PlayerPickUp : MonoBehaviour {
     }
 
     #region PickUp ฐüทร
+    private void PickUp() {
+        holdingPet = FindPet();
+        if (!holdingPet) {
+            playerMove.IsInputLock = false;
+            return;
+        }
+        if (!holdingPet.GetIsOnNavMesh()) {
+            holdingPet = null;
+            playerMove.IsInputLock = false;
+            return;
+        }
+        holdingPet.IsHolding = true;
+        holdingPet.IsInputLock = true;
+        holdingPet.Coll.enabled = false;
+        Vector3 dest = CallPet(holdingPet);
+        if (Vector3.Distance(dest, transform.position) > distance2Pet + 1f) {
+            holdingPet = null;
+            playerMove.IsInputLock = false;
+            return;
+        }
+        StartCoroutine(WaitPet(dest, () => playerMove.ChangeState(StateName.PickUp)));
+    }
+
     public Pet FindPet() {
         Pet pet = PetManager.Instance.GetSelectedPet();
         if (!pet || !pet.GetIsOnNavMesh()) {
@@ -107,6 +121,7 @@ public class PlayerPickUp : MonoBehaviour {
 
     public void OnDrop() {
         isHolding = false;
+        holdingPet.IsHolding = false;
         holdingPet.Rigid.isKinematic = false;
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
@@ -119,6 +134,7 @@ public class PlayerPickUp : MonoBehaviour {
 
     public void OnThrow() {
         isHolding = false;
+        holdingPet.IsHolding = false;
         holdingPet.Rigid.velocity = Vector3.zero;
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.PetThrow.Throw(transform.position, dir * throwPow);
