@@ -31,16 +31,7 @@ public class OutlineScript : MonoBehaviour
 
     void Start()
     {
-        outlineLayer = LayerMask.GetMask("Outline");
-        int count = 0;
-
-        while (outlineLayer > 1)
-        {
-            outlineLayer >>= 1;
-            count++;
-        }
-
-        outlineLayer = count;
+        outlineLayer = Utils.LayerToInteger( LayerMask.GetMask("Outline"));
 
         InitRenderer();
     }

@@ -11,7 +11,8 @@ public class DieTrigger : MonoBehaviour
     {
         if (collision.gameObject.CompareTag(Define.PLAYER_TAG))
         {
-            PlayerRespawn.RespawnClosestPoint();
+            EventParam param = new();
+            EventManager.TriggerEvent(EventName.PlayerDie, param);
             OnDie?.Invoke();
         }
     }
