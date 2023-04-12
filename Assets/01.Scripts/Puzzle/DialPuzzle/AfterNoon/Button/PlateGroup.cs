@@ -104,7 +104,7 @@ public class PlateGroup : MonoBehaviour
         {
             plate.CorrectResult();
         }
-        
+
         StartCoroutine(DelayCoroutine(1f, nextPuzzleAction));
     }
 
@@ -115,7 +115,8 @@ public class PlateGroup : MonoBehaviour
             plate.WrongResult();
         }
 
-        StartCoroutine(DelayCoroutine(1f, nextPuzzleAction));
+        if (nextPuzzleAction != null)
+            StartCoroutine(DelayCoroutine(1f, nextPuzzleAction));
     }
 
     private IEnumerator DelayCoroutine(float duration, Action callback)

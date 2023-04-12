@@ -78,16 +78,21 @@ public class MathPuzzleController : MonoBehaviour
 
         if (CalculatedValue() == targetValue)
         {
-            plateGroups.ForEach(x => x.Success(() =>
+            for (int i = 1; i < plateGroups.Count; i++)
+                plateGroups[i].Success(null);
+
+            plateGroups[0].Success(() =>
             {
                 StartPuzzle();
                 onClearPuzzle?.Invoke();
-            }));
+            });
         }
         else
         {
-            // ¾ÆÈ©°³ »¡°­
-            plateGroups.ForEach(x => x.Fail(StartPuzzle));
+            for (int i = 1; i < plateGroups.Count; i++)
+                plateGroups[i].Fail(null);
+
+            plateGroups[0].Fail(StartPuzzle);
         }
     }
 

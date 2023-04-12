@@ -6,6 +6,7 @@ using UnityEngine;
 public class PressurePlate : MonoBehaviour
 {
     private bool isSelected = false;
+    private bool isFirstSet = false;
 
     [SerializeField]
     private ChangeEmission emission;
@@ -36,7 +37,18 @@ public class PressurePlate : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (isSelected) return;
+        if (!isFirstSet) return;
+
+        if (((1 << collision.gameObject.layer) & layer) != 0)
+        {
+            isFirstSet = false;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (isSelected || isFirstSet) return;
+
         if (((1 << collision.gameObject.layer) & layer) != 0)
         {
             Selected();
@@ -95,9 +107,15 @@ public class PressurePlate : MonoBehaviour
     {
         UnSelected();
         emission.SetIsMaintain(true);
+        OnSetValue();
 
         OnReset();
     }
 
     public virtual void OnReset() { }
+
+    protected void OnSetValue()
+    {
+        isFirstSet = true;
+    }
 }

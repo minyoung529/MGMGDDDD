@@ -35,6 +35,7 @@ public sealed class OperatorPlate : PressurePlate
         this.operatorType = operatorType;
 
         ActiveOperations();
+        OnSetValue();
     }
 
     private void ActiveOperations()
