@@ -18,6 +18,9 @@ public sealed class OperatorPlate : PressurePlate
     [SerializeField]
     private OperatorType operatorType;
 
+    [SerializeField]
+    private Transform[] operations;
+
     #region Property
     public OperatorType OperatorType => operatorType;
     #endregion
@@ -30,5 +33,15 @@ public sealed class OperatorPlate : PressurePlate
     public void SetOperator(OperatorType operatorType)
     {
         this.operatorType = operatorType;
+
+        ActiveOperations();
+    }
+
+    private void ActiveOperations()
+    {
+        foreach (Transform operation in operations)
+            operation.gameObject.SetActive(false);
+
+        operations[(int)operatorType - 1].gameObject.SetActive(true);
     }
 } 

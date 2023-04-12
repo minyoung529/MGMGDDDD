@@ -7,6 +7,9 @@ public sealed class NumberPlate : PressurePlate
     public int Number { get; private set; }
     private Pair<int, int> numberPair;
 
+    [SerializeField]
+    private DigitalNumber digitalNumber;
+
     public override void OnSelected()
     {
 
@@ -15,6 +18,7 @@ public sealed class NumberPlate : PressurePlate
     public void OnFire()
     {
         Number = numberPair.second;
+        digitalNumber.SetNumber(Number);
     }
 
     public void SetNumberPair(Pair<int, int> numberPair)
@@ -24,7 +28,9 @@ public sealed class NumberPlate : PressurePlate
 
         if (numberPair.second < 0)
         {
-            numberPair.second = numberPair.first;
+            this.numberPair.second = numberPair.first;
         }
+
+        digitalNumber.SetNumber(Number);
     }
 }

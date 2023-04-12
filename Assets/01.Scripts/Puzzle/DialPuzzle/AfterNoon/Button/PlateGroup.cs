@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,14 @@ public class PlateGroup : MonoBehaviour
         {
             plate.OnSelectedAction += OnSelected;
             plate.IsLock += IsLock;
+            plate.OnUnSelectedAction += OnUnSelected;
         }
+    }
+
+    public void ListeningOnSelected(Action action)
+    {
+        onSelectedAction -= action;
+        onSelectedAction += action;
     }
 
     private void OnSelected(PressurePlate pressurePlate)
@@ -42,11 +50,15 @@ public class PlateGroup : MonoBehaviour
         onSelectedAction?.Invoke();
     }
 
-    public void ListeningOnSelected(Action action)
+    private void OnUnSelected(PressurePlate pressurePlate)
     {
-        onSelectedAction -= action;
-        onSelectedAction += action;
+        if (!isSelected) return;
+        isSelected = false;
+
+        Value = 0;
+        OperatorType = OperatorType.None;
     }
+
 
     public void ResetPuzzle()
     {
@@ -60,6 +72,7 @@ public class PlateGroup : MonoBehaviour
         OperatorType = OperatorType.None;
     }
 
+    #region SET
     private bool IsLock() => isSelected;
 
     public void SetNumberPairs(Pair<int, int>[] pair)
@@ -82,5 +95,32 @@ public class PlateGroup : MonoBehaviour
                 (plates[i] as OperatorPlate).SetOperator(operators[i]);
             }
         }
+    }
+    #endregion
+
+    public void Success(Action nextPuzzleAction)
+    {
+        foreach (PressurePlate plate in plates)
+        {
+            plate.CorrectResult();
+        }
+        
+        StartCoroutine(DelayCoroutine(1f, nextPuzzleAction));
+    }
+
+    public void Fail(Action nextPuzzleAction)
+    {
+        foreach (PressurePlate plate in plates)
+        {
+            plate.WrongResult();
+        }
+
+        StartCoroutine(DelayCoroutine(1f, nextPuzzleAction));
+    }
+
+    private IEnumerator DelayCoroutine(float duration, Action callback)
+    {
+        yield return new WaitForSeconds(duration);
+        callback?.Invoke();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro.Examples;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -37,6 +38,11 @@ public class DialPuzzleController : MonoBehaviour
     private bool pause = false;
     private float remainTime = 0;
     private Coroutine timerCoroutine;
+
+    private void Start()
+    {
+        StartDialPuzzle();
+    }
 
     #region Answer
     public void InputAnswer()
@@ -113,11 +119,23 @@ public class DialPuzzleController : MonoBehaviour
     public void StartDialPuzzle()
     {
         StartTimer();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Pet.IsCameraAimPoint = false;
+        OilPetSkill.IsCrosshair = false;
     }
 
     public void StopDialPuzzle()
     {
         StopTimer();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        Pet.IsCameraAimPoint = true;
+        OilPetSkill.IsCrosshair = true;
     }
     #endregion
 }

@@ -20,6 +20,9 @@ public class MathPuzzleController : MonoBehaviour
     [SerializeField]
     private UnityEvent onClearPuzzle;
 
+    [SerializeField]
+    Pair<DigitalNumber, DigitalNumber> targetValueObject;
+
     #region PROPERTY
     public int FirstNumber => plateGroups[0].Value;
     public OperatorType Operator => plateGroups[1].OperatorType;
@@ -42,11 +45,14 @@ public class MathPuzzleController : MonoBehaviour
         ResetPuzzle();
 
         targetValue = settings[curIdx].targetValue;
+        SetTargetNumberObject();
 
         plateGroups[0].SetNumberPairs(settings[curIdx].firstNumbers);
         plateGroups[2].SetNumberPairs(settings[curIdx].secondNumbers);
 
         plateGroups[1].SetOperators(settings[curIdx].operatorTypes);
+
+        curIdx++;
     }
 
     private void ResetPuzzle()
@@ -70,10 +76,36 @@ public class MathPuzzleController : MonoBehaviour
             return;
         }
 
-        Debug.Log("CHECK : " + CalculatedValue());
         if (CalculatedValue() == targetValue)
         {
-            onClearPuzzle?.Invoke();
+            plateGroups.ForEach(x => x.Success(() =>
+            {
+                StartPuzzle();
+                onClearPuzzle?.Invoke();
+            }));
+        }
+        else
+        {
+            // ¾ÆÈ©°³ »¡°­
+            plateGroups.ForEach(x => x.Fail(StartPuzzle));
+        }
+    }
+
+    private void SetTargetNumberObject()
+    {
+        string sNumber = targetValue.ToString();
+
+        if (sNumber.Length == 1)
+        {
+            targetValueObject.second.gameObject.SetActive(false);
+            targetValueObject.first.SetNumber(sNumber[0] - '0');
+        }
+        else // 2
+        {
+            targetValueObject.second.gameObject.SetActive(true);
+
+            targetValueObject.first.SetNumber(sNumber[0] - '0');
+            targetValueObject.second.SetNumber(sNumber[1] - '0');
         }
     }
 }

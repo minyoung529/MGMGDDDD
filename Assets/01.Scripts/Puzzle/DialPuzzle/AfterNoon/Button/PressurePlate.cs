@@ -9,6 +9,12 @@ public class PressurePlate : MonoBehaviour
 
     [SerializeField]
     private ChangeEmission emission;
+    [SerializeField]
+    private Color originalEmissionColor;
+    [SerializeField]
+    private Color wrongEmissionColor;
+    [SerializeField]
+    private Color successEmissionColor;
 
     [SerializeField]
     private LayerMask layer;
@@ -17,16 +23,33 @@ public class PressurePlate : MonoBehaviour
 
     public Func<bool> IsLock { get; set; }
     public Action<PressurePlate> OnSelectedAction { get; set; }
+    public Action<PressurePlate> OnUnSelectedAction { get; set; }
 
     #region PROPERTY
     public bool IsSelected => isSelected;
     #endregion
 
+    private void Awake()
+    {
+        emission.SetColor(originalEmissionColor);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        if (isSelected) return;
         if (((1 << collision.gameObject.layer) & layer) != 0)
         {
             Selected();
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (!isSelected) return;
+
+        if (((1 << collision.gameObject.layer) & layer) != 0)
+        {
+            UnSelected();
         }
     }
 
@@ -47,7 +70,23 @@ public class PressurePlate : MonoBehaviour
     public void UnSelected()
     {
         emission?.BackToOriginalColor();
+        emission.SetColor(originalEmissionColor);
+        OnUnSelectedAction?.Invoke(this);
         isSelected = false;
+    }
+
+    public void WrongResult()
+    {
+        emission.SetIsMaintain(false);
+        emission.SetColor(wrongEmissionColor);
+        emission?.Change();
+    }
+
+    public void CorrectResult()
+    {
+        emission.SetIsMaintain(false);
+        emission.SetColor(successEmissionColor);
+        emission?.Change();
     }
 
     public virtual void OnSelected() { }
@@ -55,6 +94,8 @@ public class PressurePlate : MonoBehaviour
     public void ResetPuzzle()
     {
         UnSelected();
+        emission.SetIsMaintain(true);
+
         OnReset();
     }
 

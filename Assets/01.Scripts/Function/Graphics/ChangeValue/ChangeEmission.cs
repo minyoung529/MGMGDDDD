@@ -53,6 +53,7 @@ public class ChangeEmission : MonoBehaviour
 
     public void BackToOriginalColor()
     {
+        renderer?.material.DOKill();
         renderer?.material.DOColor(originalColor, EMISSION_COLOR, onTime);
     }
 
@@ -64,5 +65,17 @@ public class ChangeEmission : MonoBehaviour
     private void SetEmission(Color color)
     {
         renderer.material.SetColor(EMISSION_COLOR, color);
+    }
+
+    public void SetColor(Color color)
+    {
+        this.color = color;
+    }
+
+    public Color GetColor => color;
+
+    public void SetIsMaintain(bool isMaintain)
+    {
+        this.isMaintain = isMaintain;
     }
 }
