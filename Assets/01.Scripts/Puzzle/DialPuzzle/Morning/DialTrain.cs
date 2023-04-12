@@ -15,8 +15,9 @@ public class DialTrain : MonoBehaviour
     [SerializeField] float minDriveCoolTime = 3.0f;
     [SerializeField] float maxDriveCoolTime = 5.0f;
 
-    private Vector3 startPos = new Vector3(0.015f, 1f, 0.25f);
-    private float endPosZ = 0.7f;
+    private Vector3 startPos = new Vector3(0.6f, 6f, 14.3f);
+    private float endPosZ = 38f;
+    private float driveDelay = 1.5f;
     private bool stop = false;
 
     private void Start()
@@ -46,6 +47,7 @@ public class DialTrain : MonoBehaviour
         // Sound
         yield return new WaitForSeconds(warningTime);
         SwitchWarning(false);
+        yield return new WaitForSeconds(driveDelay);
         DriveTrain();
     }
 
