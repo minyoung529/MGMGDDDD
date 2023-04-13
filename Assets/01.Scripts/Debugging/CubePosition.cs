@@ -10,6 +10,9 @@ public class CubePosition : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = color;
-        Gizmos.DrawCube(transform.position, transform.lossyScale);
+        Matrix4x4 rotationMatrix = transform.localToWorldMatrix;
+        Gizmos.matrix = rotationMatrix;
+
+        Gizmos.DrawCube(Vector3.zero, Vector3.one);
     }
 }
