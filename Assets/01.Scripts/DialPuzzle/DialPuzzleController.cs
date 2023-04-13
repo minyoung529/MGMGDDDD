@@ -55,6 +55,7 @@ public class DialPuzzleController : MonoBehaviour
 
     private bool pause = false;
     private float remainTime = 0;
+    public float RemainTime { get { return remainTime; } }
     private float rotateSpeed = 10f;
     private Coroutine timerCoroutine = null;
 
@@ -128,7 +129,6 @@ public class DialPuzzleController : MonoBehaviour
     private void CheckRotationState()
     {
         curState = (TimeType)(look.transform.eulerAngles.y / 90);
-        Debug.Log(curState);
     }
 
     #endregion
