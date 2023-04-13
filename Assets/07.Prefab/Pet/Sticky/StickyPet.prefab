@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4884736892528368307}
   - component: {fileID: 3200471853253183780}
   - component: {fileID: 2026869122}
+  - component: {fileID: 4707797183022412248}
   m_Layer: 8
   m_Name: StickyPet
   m_TagString: StickyPet
@@ -93,6 +94,9 @@ MonoBehaviour:
   petInform: {fileID: 11400000, guid: 44204a8ab7f9d0e41a1b1bf3840dc187, type: 2}
   sightRange: 5
   collRadius: 0.7
+  flyParticlePref: {fileID: 198468451835195826, guid: 7f13edbb273b9514fbf6da6e743e8586, type: 3}
+  arriveParticlePref: {fileID: 198468451835195826, guid: f3b9d8c9b1301c747a43060c247cd3d8, type: 3}
+  IsHolding: 0
   skillEffect: {fileID: 7061654698569328266}
   scaleObject: {fileID: 1788196496585228096}
   OnBillow:
@@ -224,6 +228,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   intensity: 1.2
+--- !u!114 &4707797183022412248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611246238103810629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27585b09aba3f394083cf0839804ce11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  landingTime: 1
 --- !u!1 &5969439458487625808
 GameObject:
   m_ObjectHideFlags: 0
