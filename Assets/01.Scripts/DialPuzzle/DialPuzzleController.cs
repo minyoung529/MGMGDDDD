@@ -1,11 +1,14 @@
+using Cinemachine;
 using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using TMPro.Examples;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.Events;
+using UnityEngine.Rendering.UI;
 
 public enum TimeType
 {
@@ -17,27 +20,45 @@ public enum TimeType
     Count
 }
 
+[System.Serializable]
+public class InputTimeAnswer
+{
+    public List<TimeType> answerTimeList;
+}
 public class DialPuzzleController : MonoBehaviour
 {
+    [SerializeField] private CinemachineVirtualCamera fullCam;
+    [SerializeField] private CinemachineVirtualCamera defaultCam;
+
     [SerializeField] private float lessTimer = 30f;
     [SerializeField] private float lessSpeed = 1.5f;
-    [SerializeField] private string hintString = "";
-    [SerializeField] private GameObject map;
+    [SerializeField] private GameObject look;
     [SerializeField] private Transform[] spawnPoints;
 
-    private Queue<TimeType> answer = new Queue<TimeType>();
+
     private TimeType curState = TimeType.Morning;
 
-    public string Hint => hintString;
+    [SerializeField] TextMeshProUGUI hintText;
+
+    private int round = 0;
+    public string Hint => hintString[round];
+    private List<TimeType> answer = new List<TimeType>();
+
+    [Header("Dial Answer")]
+    [SerializeField] private int maxRound = 2;
+    [SerializeField] private List<string> hintString = new List<string>();
+    [SerializeField] private List<InputTimeAnswer> correctAnswer = new List<InputTimeAnswer>();
+    
     public TimeType CurState => curState;
 
-    // 여기서 Null 오류가 난다면 07.Prefab/Puzzle/Dial에 Spawn Points를 씬으로 끌고 와서
-    // 그 자식들을 DialPuzzleController의 SpawnPoints로 옮겨주시면 됩니다.
     public Vector3 SpawnPosition => spawnPoints[(int)curState].position;
 
     private bool pause = false;
     private float remainTime = 0;
-    private Coroutine timerCoroutine;
+    private float rotateSpeed = 10f;
+    private Coroutine timerCoroutine = null;
+
+    private bool isFull = false;
 
     private void Start()
     {
@@ -45,36 +66,75 @@ public class DialPuzzleController : MonoBehaviour
     }
 
     #region Answer
+    [ContextMenu("InputAnswer")]
     public void InputAnswer()
     {
-        answer.Enqueue(curState);
+        CheckRotationState();
+        answer.Add(curState);
+        CheckAnswer();
     }
     public void OutAnswer()
     {
-        answer.Dequeue();
+        answer.RemoveAt(answer.Count - 1);
     }
-    #endregion
+
+    //private void CheckAnswer()
+    //{
+    //    if(answer.Count != correctAnswer.Count)
+    //    {
+    //        Wrong();
+    //        return;
+    //    }
+    //    for(int i=0;i<answer.Count;i++)
+    //    {
+    //        if (answer[i] != correctAnswer[i])
+    //        {
+    //            Wrong();
+    //            return;
+    //        }
+    //    }
+    //    Correct();
+    //}
+    private void CheckAnswer()
+    {
+        if (answer[answer.Count - 1] != correctAnswer[round].answerTimeList[answer.Count - 1])
+        {
+            Wrong();
+        }
+        else
+        {
+            if (answer.Count == correctAnswer[round].answerTimeList.Count) Correct();
+        }
+    }
+
+    private void Wrong()
+    {
+        Debug.Log("Answer : " + answer[answer.Count-1] + "Correct : " + correctAnswer[answer.Count-1] + " => Wrong");
+    }
+    private void Correct()
+    {
+        answer.Clear();
+        
+        round++;
+        if(round > maxRound)
+        {
+            Debug.Log("Game End");
+            return;
+        }
+    }
 
     #region State
-    [ContextMenu("ChangeState")]
-    public void Test()
-    {
-        ChangeState((TimeType)((int)curState + 1));
-    }
-    public void ChangeState(TimeType state)
-    {
-        Vector3 rot = new Vector3(0, (int)state * 90f, 0);
-        map.transform.DORotate(rot, 0.5f).OnComplete(() =>
-        {
-            CheckRotationState();
-        });
-    }
+
     private void CheckRotationState()
     {
-        curState = (TimeType)(map.transform.eulerAngles.y/90);
+        curState = (TimeType)(look.transform.eulerAngles.y / 90);
+        Debug.Log(curState);
     }
 
     #endregion
+
+    #endregion
+
 
     #region Timer
     public void StartTimer()
@@ -115,17 +175,59 @@ public class DialPuzzleController : MonoBehaviour
 
     #endregion
 
+    #region UI
+
+    private void SetHint()
+    {
+        hintText.SetText(hintString[round]);
+    }
+    private void SetHint(string str)
+    {
+        hintText.SetText(str);
+    }
+
+    #endregion
+
+    #region Action
+    private void RotateMap(InputAction act, float value)
+    {
+        float dir = act == InputAction.Move_Right ? 1f : -1f;
+        look.transform.Rotate(0.0f, dir * Time.deltaTime * rotateSpeed, 0.0f);
+        CheckRotationState();
+    }
+
+    private void SwitchCam(InputAction act, float value)
+    {
+        isFull = !isFull;
+        if (isFull) CameraSwitcher.SwitchCamera(fullCam);
+        else CameraSwitcher.SwitchCamera(defaultCam);
+    }
+    #endregion
+
     #region Start/Stop
+
+    private void ResetDial()
+    {
+        SetHint();
+        StartTimer();
+        round = 0;
+    }
+
     public void StartDialPuzzle()
     {
-        StartTimer();
-
+        ResetDial();
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
         Pet.IsCameraAimPoint = false;
         OilPetSkill.IsCrosshair = false;
+
+        InputManager.StartListeningInput(InputAction.Zoom, SwitchCam);
+        InputManager.StartListeningInput(InputAction.Move_Left, RotateMap);
+        InputManager.StartListeningInput(InputAction.Move_Right, RotateMap);
     }
+
 
     public void StopDialPuzzle()
     {
@@ -136,6 +238,15 @@ public class DialPuzzleController : MonoBehaviour
 
         Pet.IsCameraAimPoint = true;
         OilPetSkill.IsCrosshair = true;
+
+        InputManager.StopListeningInput(InputAction.Zoom, SwitchCam);
+        InputManager.StopListeningInput(InputAction.Move_Right, RotateMap);
+        InputManager.StopListeningInput(InputAction.Move_Left, RotateMap);
     }
     #endregion
+
+    private void OnDestroy()
+    {
+        StopDialPuzzle();
+    }
 }
