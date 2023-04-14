@@ -19,18 +19,18 @@ public class ChangePetEmission : MonoBehaviour
     }
 
     [ContextMenu("Change To White")]
-    public void OnEmission()
+    public void EmissionOn()
     {
         ChangeEmission(true, Color.white * intensity);
     }
 
-    public void OnEmission(Color color)
+    public void EmissionOn(Color color)
     {
         ChangeEmission(true, color);
     }
 
     [ContextMenu("Off Emission")]
-    public void OffEmission()
+    public void EmissionOff()
     {
         ChangeEmission(false, Color.black);
     }

@@ -11,6 +11,8 @@ public class CannonScript : MonoBehaviour
     [SerializeField] private Transform destination;
     [SerializeField] private float firePow = 500;
     [SerializeField] private float radius = 1f;
+    [SerializeField] private ParticleSystem explosion;
+    [SerializeField] private ParticleSystem smoke;
 
     #region 인 게임 변수
     private List<Pet> pets = new List<Pet>();
@@ -54,7 +56,11 @@ public class CannonScript : MonoBehaviour
     }
 
     private void FireCannon() {
-        if (pets.Count < 1) return;
+        if (pets.Count < 1) {
+            smoke.Play();
+            return;
+        }
+        explosion.Play();
         CannonCaliber caliber = Instantiate(caliberPref, barrel);
         caliber.transform.SetParent(null);
         caliber.transform.localScale = Vector3.one;
