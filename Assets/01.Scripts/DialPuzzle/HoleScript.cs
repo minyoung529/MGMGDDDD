@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class HoleScript : MonoBehaviour {
     [SerializeField] private float holeOriginRadius = 10f;
+    [SerializeField] public readonly float MaxSize;
+    [SerializeField] public readonly float MinSize;
+    [SerializeField] [Range(0f, 0.48f)] private float radius = 0.1f;
 
     private List<int> vertexIndex = new List<int>();
     private List<Vector3> direction = new List<Vector3>();
@@ -11,8 +14,6 @@ public class HoleScript : MonoBehaviour {
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
     private Mesh mesh;
-
-    [SerializeField] [Range(0f, 0.48f)] private float radius = 0.1f;
 
     private void Start() {
         meshFilter = GetComponent<MeshFilter>();
