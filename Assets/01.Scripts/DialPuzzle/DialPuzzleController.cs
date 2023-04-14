@@ -27,39 +27,43 @@ public class InputTimeAnswer
 }
 public class DialPuzzleController : MonoBehaviour
 {
+    [Header("Camera")]
     [SerializeField] private CinemachineVirtualCamera fullCam;
     [SerializeField] private CinemachineVirtualCamera defaultCam;
 
+    [Header("Object")]
+    [SerializeField] private GameObject look;
+    [SerializeField] private SpiderRope spider;
+    [SerializeField] private TextMeshProUGUI hintText;
+
+    [Header("Value")]
     [SerializeField] private float lessTimer = 30f;
     [SerializeField] private float lessSpeed = 1.5f;
-    [SerializeField] private GameObject look;
-    [SerializeField] private Transform[] spawnPoints;
-
-
-    private TimeType curState = TimeType.Morning;
-
-    [SerializeField] TextMeshProUGUI hintText;
-
-    private int round = 0;
-    public string Hint => hintString[round];
-    private List<TimeType> answer = new List<TimeType>();
 
     [Header("Dial Answer")]
     [SerializeField] private int maxRound = 2;
     [SerializeField] private List<string> hintString = new List<string>();
     [SerializeField] private List<InputTimeAnswer> correctAnswer = new List<InputTimeAnswer>();
     
-    public TimeType CurState => curState;
+    [SerializeField] private Transform[] spawnPoints;
 
-    public Vector3 SpawnPosition => spawnPoints[(int)curState].position;
+    private TimeType curState = TimeType.Morning;
+    private List<TimeType> answer = new List<TimeType>();
 
     private bool pause = false;
+    private bool isFull = false;
+
+    private int round = 0;
     private float remainTime = 0;
-    public float RemainTime { get { return remainTime; } }
     private float rotateSpeed = 10f;
+
     private Coroutine timerCoroutine = null;
 
-    private bool isFull = false;
+    public TimeType CurState => curState;
+    public string Hint => hintString[round];
+    public float RemainTime { get { return remainTime; } }
+    public Vector3 SpawnPosition => spawnPoints[(int)curState].position;
+
 
     private void Start()
     {
@@ -210,12 +214,14 @@ public class DialPuzzleController : MonoBehaviour
     {
         SetHint();
         StartTimer();
+        spider.ResetSpider(RemainTime);
         round = 0;
     }
 
     public void StartDialPuzzle()
     {
         ResetDial();
+        spider.FallSpider();
         
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
