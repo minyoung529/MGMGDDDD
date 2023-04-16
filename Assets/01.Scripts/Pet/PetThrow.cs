@@ -25,7 +25,6 @@ public class PetThrow : MonoBehaviour {
         if (!isThrow || collision.gameObject.layer != Define.BOTTOM_LAYER) return;
         
         elapsedLandingTime += Time.deltaTime;
-        Debug.Log(elapsedLandingTime);
         if (elapsedLandingTime > landingTime) {
             WakeUp();
             elapsedLandingTime = 0f;

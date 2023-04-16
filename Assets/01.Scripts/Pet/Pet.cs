@@ -159,13 +159,12 @@ public abstract class Pet : MonoBehaviour
 
     private void FollowTarget()
     {
-        if (!target || !agent.isOnNavMesh) return;
+        if (!target || !agent.enabled || !agent.isOnNavMesh) return;
         agent.SetDestination(target.position);
     }
 
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
     {
-        rigid.velocity = Vector3.zero;
         this.target = target;
         agent.stoppingDistance = stopDistance;
         
@@ -175,8 +174,6 @@ public abstract class Pet : MonoBehaviour
             return;
         }
 
-        SetNavEnabled(true);
-        SetNavIsStopped(false);
         this.OnArrive = onArrive;
     }
 
@@ -187,9 +184,6 @@ public abstract class Pet : MonoBehaviour
 
     public void SetTargetPlayer()
     {
-        SetNavEnabled(true);
-        SetNavIsStopped(false);
-        rigid.velocity = Vector3.zero;
         target = player;
         agent.stoppingDistance = distanceToPlayer;
     }
@@ -251,6 +245,7 @@ public abstract class Pet : MonoBehaviour
             flyParticle.Stop();
             arriveParticle.Play();
             petThrow.Throw(dest, Vector3.up * 300, 1f);
+            SetTargetPlayer();
             isRecall = false;
         });
     }

@@ -52,6 +52,19 @@ public class JumpMotion
         }).SetEase(Ease.InOutSine);
     }
 
+    public void Jump(Transform player, Transform target, float duration, Action action = null)
+    {
+        TargetPos = target.position;
+
+        player.DOKill();
+
+        player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
+        {
+            action?.Invoke();
+        }).SetEase(Ease.InOutSine);
+    }
+
+
     private void StartAnimation(Transform player)
     {
         animator ??= player.GetComponent<Animator>();
