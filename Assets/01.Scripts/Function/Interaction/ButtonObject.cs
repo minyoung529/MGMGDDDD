@@ -38,6 +38,12 @@ public class ButtonObject : MonoBehaviour, IFindable
         }
     }
 
+    [ContextMenu("Press")]
+    private void PressTest()
+    {
+        Press(true);
+    }
+
     private void Press(bool value)
     {
         OnButtonAnimation(value);
