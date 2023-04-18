@@ -84,7 +84,7 @@ public class DialPuzzleController : MonoBehaviour {
         Vector3 camPos = player.transform.position + center2Player * 10f;
         camPos.y += 20f;
         dialCam.transform.position = camPos;
-        dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.3f));
+        dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
     }
 
     private void UpdateHoleSize() {
