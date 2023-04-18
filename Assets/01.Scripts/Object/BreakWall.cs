@@ -12,15 +12,8 @@ public class BreakWall : MonoBehaviour
     public int CutCascades = 1;
     public float ExplodeForce = 0;
 
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            DestroyMesh();
-        }
-    }
-
-    private void DestroyMesh()
+    [ContextMenu("Destroy Mesh")]
+    public void DestroyMesh()
     {
         var originalMesh = GetComponent<MeshFilter>().mesh;
         originalMesh.RecalculateBounds();

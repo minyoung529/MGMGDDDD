@@ -46,8 +46,6 @@ public class StickyPet : Pet
     {
         base.OnUpdate();
 
-        // 얘떄문에 ㅁ누제다
-        // 이거 PARENT 유진이 확정이라고????
         if (stickyObject && stickyObject.transform.parent == stickyParent && stickyObject.ApplyOffset) // 오프셋 맞추기
         {
             stickyObject.transform.position = stickyParent.position + stickyOffset;
@@ -70,7 +68,7 @@ public class StickyPet : Pet
         OnExitBillow?.Invoke();
     }
 
-    private void ChangeState(StickyState setState)
+    public void ChangeState(StickyState setState)
     {
         state = setState;
     }
