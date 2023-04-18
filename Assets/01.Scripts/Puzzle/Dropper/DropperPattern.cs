@@ -70,7 +70,7 @@ public class DropperPattern : MonoBehaviour
         onStartPattern?.Invoke();
         EnterPatternAnimation();
 
-        transform.DOMoveY(transform.position.y + Vector3.Distance(target.position, transform.position) + 20f, 3.0f);
+        transform.DOMoveY(transform.position.y + Vector3.Distance(target.position, transform.position) + 25f, 2.65f);
     }
 
     private void EnterPatternAnimation()
