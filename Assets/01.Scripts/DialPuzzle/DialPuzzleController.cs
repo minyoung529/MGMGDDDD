@@ -15,10 +15,10 @@ public class DialPuzzleController : MonoBehaviour {
     [Header("Event")]
     [SerializeField] private UnityEvent onPuzzleClear = null;
     [SerializeField] private UnityEvent onPuzzleOver = null;
+    public Action<TimeType> OnTimeChange = null;
 
     [Header("Object")]
     [SerializeField] private SpiderRope spider;
-    [SerializeField] private TextMeshProUGUI hintText;
     [SerializeField] private CinemachineVirtualCameraBase dialCam;
     [SerializeField] private Transform ground;
     [SerializeField] private HoleScript hole;
@@ -27,10 +27,12 @@ public class DialPuzzleController : MonoBehaviour {
     private PlayerMove player;
     private CinemachineVirtualCameraBase originCam;
     private float targetRadius = 0;
+    private Vector3 center2Player = Vector3.zero;
 
     [Header("Timer")]
     [SerializeField] private float timer = 30f;
-    [SerializeField] private float loseAmount = 5f;
+    [SerializeField] private float answerTime = 5f;
+    [SerializeField] private float spiderTime = 50f;
     private float remainTime = 0;
     public float RemainTime => remainTime;
     private bool pause = false;
@@ -67,6 +69,7 @@ public class DialPuzzleController : MonoBehaviour {
     }
 
     private void Update() {
+        CheckAngle();
         UpdateCamPos();
         UpdateHoleSize();
     }
@@ -75,13 +78,13 @@ public class DialPuzzleController : MonoBehaviour {
         //중심-플레이어 방향 벡터 만들기
         Vector3 groundPos = ground.position;
         groundPos.y = player.transform.position.y;
-        Vector3 dir = (player.transform.position - groundPos).normalized;
+        center2Player = (player.transform.position - groundPos).normalized;
 
         //방향 벡터와 일정 거리를 더한 지점을 카메라 위치로 지정
-        Vector3 camPos = player.transform.position + dir * 20f;
-        camPos.y += 50f;
+        Vector3 camPos = player.transform.position + center2Player * 10f;
+        camPos.y += 20f;
         dialCam.transform.position = camPos;
-        dialCam.transform.LookAt(groundPos);
+        dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.3f));
     }
 
     private void UpdateHoleSize() {
@@ -104,7 +107,7 @@ public class DialPuzzleController : MonoBehaviour {
     #region Start/Stop
     public void StartDialPuzzle() {
         ResetDial(); 
-        //spider.FallSpider();
+        spider.StartFalling(spiderTime);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -134,19 +137,25 @@ public class DialPuzzleController : MonoBehaviour {
 
     private void ResetDial() {
         StartTimer();
-        //spider.ResetSpider(RemainTime);
+        spider.ResetSpider();
         round = 0;
     }
     #endregion
 
     #region Answer
     private void CheckAngle() {
+        float angle = Vector3.SignedAngle(Vector3.forward, center2Player, Vector3.up) + 180;
         foreach(AnswerData data in answerDatas) {
-            if()
+            if (angle < data.minAngle && data.maxAngle < angle)
+                if (curType != data.time) {
+                    curType = data.time;
+                    OnTimeChange?.Invoke(curType);
+                }
         }
     }
 
     public void CheckAnswer(int typeID) {
+        if (isBlockAnswer) return;
         if ((TimeType)typeID == correctAnswer[round][correctCount])
             Correct(typeID);
         else
@@ -155,10 +164,8 @@ public class DialPuzzleController : MonoBehaviour {
 
     private void Correct(int typeID) {
         correctCount++;
-        emissions[typeID].SetColor(Color.green);
-        emissions[typeID].Change();
-        materials[typeID].color = Color.green;
-        if(correctCount >= correctAnswer.Count) {
+        StartCoroutine(SetPatternsColor(Color.green, typeID));
+        if (correctCount >= correctAnswer[round].array.Count) {
             correctCount = 0;
             Clear();
         }
@@ -167,37 +174,47 @@ public class DialPuzzleController : MonoBehaviour {
     private void Wrong(int typeID) {
         correctCount = 0;
         isBlockAnswer = true;
-        emissions[typeID].SetColor(Color.red);
-        emissions[typeID].Change();
-        materials[typeID].color = Color.red;
-        Invoke(nameof(ResetPattern), 2f);
+        remainTime -= answerTime;
+        StartCoroutine(SetPatternsColor(Color.red, typeID));
+        StartCoroutine(SetPatternsColor(Color.white, -1, 1f, () => isBlockAnswer = false));
     }
 
     private void Clear() {
         round++;
+        remainTime += answerTime;
         isBlockAnswer = true;
-        if (round > maxRound) {
+        if (round > maxRound)
             onPuzzleClear?.Invoke();
-            Invoke(nameof(ResetPattern), 2f);
-        }
+        StartCoroutine(SetPatternsColor(Color.yellow, -1, 1f));
+        StartCoroutine(SetPatternsColor(Color.white, -1, 2f, () => isBlockAnswer = false));
     }
 
-    private void ResetPattern() {
-        foreach(ChangeEmission item in emissions)
-            item.BackToOriginalColor();
-        foreach(Material item in materials)
-            item.color = Color.white;
-        isBlockAnswer = false;
+    private IEnumerator SetPatternsColor(Color color, int index = -1, float delay = 0f, Action onChange = null) {
+        yield return new WaitForSeconds(delay);
+        if (index < 0) {
+            foreach (ChangeEmission item in emissions) {
+                item.SetColor(color);
+                item.Change();
+            }
+            foreach (Material item in materials)
+                item.color = color;
+        }
+        else {
+            emissions[index].SetColor(color);
+            emissions[index].Change();
+            materials[index].color = color;
+        }
+        onChange?.Invoke();
     }
     #endregion
 
     #region Timer
     public void StartTimer() {
         ResetTimer();
-        StartCoroutine(GameTimer());
+        StartCoroutine(TimerCoroutine());
     }
 
-    private IEnumerator GameTimer() {
+    private IEnumerator TimerCoroutine() {
         while (remainTime >= 0) {
             while (pause) {
                 yield return null;
@@ -210,7 +227,7 @@ public class DialPuzzleController : MonoBehaviour {
 
     private void StopTimer() {
         ResetTimer();
-        StopCoroutine(GameTimer());
+        StopCoroutine(TimerCoroutine());
     }
 
     private void ResetTimer() {
