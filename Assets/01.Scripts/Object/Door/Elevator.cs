@@ -30,14 +30,14 @@ public class Elevator : MonoBehaviour
     {
         leftDoor.Open();
         rightDoor.Open();
-        UpdateCollider();
+     //   UpdateCollider();
     }
     [ContextMenu("Close")]
     public void CloseElevator()
     {
         leftDoor.Close();
         rightDoor.Close();
-        UpdateCollider();
+      //  UpdateCollider();
     }
 
     public void UpElevator()
