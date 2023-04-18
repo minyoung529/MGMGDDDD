@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2377962186714619638}
   m_LocalRotation: {x: -0.000000019160034, y: 0.48110855, z: -0.000000010514949, w: 0.87666106}
-  m_LocalPosition: {x: -101.86759, y: 14.0999975, z: -58.14451}
+  m_LocalPosition: {x: -104.8, y: 14.0999975, z: -56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -47,6 +47,9 @@ GameObject:
   - component: {fileID: 2377962186932389422}
   - component: {fileID: 2377962186932389423}
   - component: {fileID: 2377962186932389416}
+  - component: {fileID: 988440443000186026}
+  - component: {fileID: 2952623629417414619}
+  - component: {fileID: 5645830261232010107}
   m_Layer: 0
   m_Name: LeftDoor
   m_TagString: Untagged
@@ -377,6 +380,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &988440443000186026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962186932389418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &2952623629417414619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962186932389418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &5645830261232010107
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962186932389418}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000008}
+  m_Center: {x: 33, y: 5.300849, z: 48.93306}
 --- !u!1 &2377962186936098172
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +445,9 @@ GameObject:
   - component: {fileID: 2377962186936098160}
   - component: {fileID: 2377962186936098161}
   - component: {fileID: 2377962186936098162}
+  - component: {fileID: 2480873341891896918}
+  - component: {fileID: 6502236649875753596}
+  - component: {fileID: 9164961135629420126}
   m_Layer: 0
   m_Name: LeftDoor
   m_TagString: Untagged
@@ -721,6 +778,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &2480873341891896918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962186936098172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &6502236649875753596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962186936098172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &9164961135629420126
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962186936098172}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.300849, z: 48.933033}
 --- !u!1 &2377962187310174263
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,6 +843,9 @@ GameObject:
   - component: {fileID: 2377962187310174251}
   - component: {fileID: 2377962187310174260}
   - component: {fileID: 2377962187310174261}
+  - component: {fileID: 3227229751465288073}
+  - component: {fileID: 6046709204606739096}
+  - component: {fileID: 2290802879103457605}
   m_Layer: 0
   m_Name: RightDoor
   m_TagString: Untagged
@@ -1065,6 +1176,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &3227229751465288073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187310174263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &6046709204606739096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187310174263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &2290802879103457605
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187310174263}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.30085, z: 48.93318}
 --- !u!1 &2377962187485601141
 GameObject:
   m_ObjectHideFlags: 0
@@ -1079,6 +1241,9 @@ GameObject:
   - component: {fileID: 2377962187485601129}
   - component: {fileID: 2377962187485601130}
   - component: {fileID: 2377962187485601131}
+  - component: {fileID: 9180383732656997713}
+  - component: {fileID: 8425240588740224010}
+  - component: {fileID: 3380538348470685395}
   m_Layer: 0
   m_Name: LeftDoor
   m_TagString: Untagged
@@ -1409,6 +1574,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &9180383732656997713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187485601141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &8425240588740224010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187485601141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &3380538348470685395
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187485601141}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.30085, z: 48.93305}
 --- !u!1 &2377962187670183187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1423,6 +1639,9 @@ GameObject:
   - component: {fileID: 2377962187670183191}
   - component: {fileID: 2377962187670183184}
   - component: {fileID: 2377962187670183185}
+  - component: {fileID: 1941036553244247048}
+  - component: {fileID: 1824309833622375234}
+  - component: {fileID: 8557233159740640783}
   m_Layer: 0
   m_Name: LeftDoor
   m_TagString: Untagged
@@ -1753,6 +1972,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &1941036553244247048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187670183187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &1824309833622375234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187670183187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &8557233159740640783
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187670183187}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.30085, z: 48.933064}
 --- !u!1 &2377962187790483114
 GameObject:
   m_ObjectHideFlags: 0
@@ -1800,6 +2070,9 @@ GameObject:
   - component: {fileID: 2377962187888952306}
   - component: {fileID: 2377962187888952307}
   - component: {fileID: 2377962187888952316}
+  - component: {fileID: 3059215996780263405}
+  - component: {fileID: 9026465697096723822}
+  - component: {fileID: 5645538812048286907}
   m_Layer: 0
   m_Name: RightDoor
   m_TagString: Untagged
@@ -2130,6 +2403,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &3059215996780263405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187888952318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &9026465697096723822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187888952318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &5645538812048286907
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962187888952318}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000008}
+  m_Center: {x: 33, y: 5.300849, z: 48.933186}
 --- !u!1 &2377962188016682376
 GameObject:
   m_ObjectHideFlags: 0
@@ -2187,7 +2511,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2377962188104350013}
   m_LocalRotation: {x: -0.000000016957923, y: 0.6308509, z: -0.0000000137876714, w: 0.7759041}
-  m_LocalPosition: {x: -114.16312, y: 14.099999, z: -21.28646}
+  m_LocalPosition: {x: -117.3, y: 14.099999, z: -15.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2210,6 +2534,9 @@ GameObject:
   - component: {fileID: 2377962188131848667}
   - component: {fileID: 2377962188131848676}
   - component: {fileID: 2377962188131848677}
+  - component: {fileID: 4787606596645094446}
+  - component: {fileID: 1000572160100068503}
+  - component: {fileID: 3956012411992359689}
   m_Layer: 0
   m_Name: RightDoor
   m_TagString: Untagged
@@ -2540,6 +2867,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &4787606596645094446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188131848679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &1000572160100068503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188131848679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &3956012411992359689
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188131848679}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.30085, z: 48.93318}
 --- !u!1 &2377962188436173648
 GameObject:
   m_ObjectHideFlags: 0
@@ -2554,6 +2932,9 @@ GameObject:
   - component: {fileID: 2377962188436173652}
   - component: {fileID: 2377962188436173653}
   - component: {fileID: 2377962188436173654}
+  - component: {fileID: 8214734063056681735}
+  - component: {fileID: 5732306813379490659}
+  - component: {fileID: 6460184639299647667}
   m_Layer: 0
   m_Name: RightDoor
   m_TagString: Untagged
@@ -2884,6 +3265,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &8214734063056681735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188436173648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &5732306813379490659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188436173648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &6460184639299647667
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188436173648}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.30085, z: 48.933174}
 --- !u!1 &2377962188439974217
 GameObject:
   m_ObjectHideFlags: 0
@@ -2931,6 +3363,9 @@ GameObject:
   - component: {fileID: 2377962188602551390}
   - component: {fileID: 2377962188602551391}
   - component: {fileID: 2377962188602551384}
+  - component: {fileID: 3266974377929661769}
+  - component: {fileID: 603654482155977431}
+  - component: {fileID: 5548338742510954984}
   m_Layer: 0
   m_Name: RightDoor
   m_TagString: Untagged
@@ -3261,6 +3696,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &3266974377929661769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188602551386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &603654482155977431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188602551386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &5548338742510954984
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188602551386}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.30085, z: 48.933167}
 --- !u!1 &2377962188713625729
 GameObject:
   m_ObjectHideFlags: 0
@@ -3275,6 +3761,9 @@ GameObject:
   - component: {fileID: 2377962188713625733}
   - component: {fileID: 2377962188713625734}
   - component: {fileID: 2377962188713625735}
+  - component: {fileID: 453323476585686105}
+  - component: {fileID: 6535935715695557476}
+  - component: {fileID: 6662911645501425201}
   m_Layer: 0
   m_Name: LeftDoor
   m_TagString: Untagged
@@ -3605,6 +4094,57 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &453323476585686105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188713625729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 4
+  targetPos: {x: 0, y: -20, z: 0}
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  ease: 0
+  isPrevKill: 1
+  isLocal: 0
+--- !u!114 &6535935715695557476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188713625729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1671008f1f0d83c4cab132c6dee365c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!65 &6662911645501425201
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377962188713625729}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.44, y: 30, z: 15.000006}
+  m_Center: {x: 33, y: 5.300849, z: 48.933064}
 --- !u!1 &3297006369021416748
 GameObject:
   m_ObjectHideFlags: 0
