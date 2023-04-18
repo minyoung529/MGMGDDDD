@@ -4,9 +4,27 @@ using UnityEngine;
 
 public class HoleScript : MonoBehaviour {
     [SerializeField] private float holeOriginRadius = 10f;
-    [SerializeField] public readonly float MaxSize;
-    [SerializeField] public readonly float MinSize;
-    [SerializeField] [Range(0f, 0.48f)] private float radius = 0.1f;
+    [SerializeField] private float minRadius;
+    public float MinRadius => minRadius;
+    [SerializeField] private float maxRadius;
+    public float MaxRadius => maxRadius;
+    [SerializeField] private float radius = 0f;
+    public float Radius {
+        get {
+            return radius;
+        }
+        set {
+            if (value < MinRadius) {
+                radius = MinRadius;
+                return;
+            }
+            if (MaxRadius < value) {
+                radius = MaxRadius;
+                return;
+            }
+            radius = value;
+        }
+    }
 
     private List<int> vertexIndex = new List<int>();
     private List<Vector3> direction = new List<Vector3>();
