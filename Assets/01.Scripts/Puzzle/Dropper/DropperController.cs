@@ -160,8 +160,9 @@ public class DropperController : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             patterns[shuffles[i]].PatternStart();
-            topCameraPivot.DOShakePosition(Random.Range(2f, 2.5f), Random.Range(0.5f, 1.2f));
-            yield return new WaitForSeconds(1.6f);
+            yield return new WaitForSeconds(0.25f);
+            topCameraPivot.DOShakePosition(4f, 0.7f);
+            yield return new WaitForSeconds(1.15f);
             patterns[shuffles[i]].ExitPatternAnimation();
         }
 
