@@ -65,6 +65,7 @@ public class CubePuzzleController : MonoBehaviour
     [ContextMenu("SolvePuzzle")]
     private void SolvePuzzle()
     {
+        Debug.Log("SOLVE");
         OnSolvePuzzle?.Invoke(SuccessCnt);
     }
 

@@ -82,7 +82,8 @@ public class HardMoveObject : MonoBehaviour
     {
         onUnMove?.Invoke();
 
-        rigid.constraints = RigidbodyConstraints.FreezeAll;
+        enterIdx = 0;
+        rigid.constraints = RigidbodyConstraints.FreezeAll ^ RigidbodyConstraints.FreezePositionY;
         canMove = false;
     }
 

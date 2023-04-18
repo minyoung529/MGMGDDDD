@@ -39,6 +39,7 @@ public class ButtonObject : MonoBehaviour, IFindable
         }
     }
 
+    [ContextMenu("Press")]
     public virtual void Press(bool value)
     {
         DoButtonAnimation(value);

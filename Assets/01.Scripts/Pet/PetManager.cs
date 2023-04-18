@@ -137,6 +137,7 @@ public class PetManager : MonoSingleton<PetManager>
     }
 
     private void ReCall(InputAction input, float value) {
+        if (pets.Count == 0) return;
         pets[selectIndex].ReCall();
     }
     #endregion
