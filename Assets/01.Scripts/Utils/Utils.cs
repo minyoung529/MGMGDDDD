@@ -77,7 +77,7 @@ public static class Utils
     }
 }
 
-
+[System.Serializable]
 public struct Pair<T, Q>
 {
     public T first;

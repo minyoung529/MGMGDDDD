@@ -44,7 +44,6 @@ public class Fire : MonoBehaviour
     public void Burn()
     {
         if (!gameObject.activeSelf) return;
-        Debug.Log("BURN" + gameObject.name);
 
         isBurn = true;
 

@@ -40,7 +40,7 @@ public class ChangeEmission : MonoBehaviour
     {
         Color originalColor = GetEmission();
         Color emissionColor = color * intensity;
-        Debug.Log("ASD");
+
         renderer.material.DOColor(emissionColor, EMISSION_COLOR, onTime);
 
         if (!isMaintain)
