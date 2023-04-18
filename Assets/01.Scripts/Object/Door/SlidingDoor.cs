@@ -6,6 +6,7 @@ using UnityEngine;
 public class SlidingDoor : MonoBehaviour
 {
     [SerializeField] LayerMask targetLayer;
+    [SerializeField] bool isClose = false;
     private bool open = false;
 
     TogglePosition togglePos;
@@ -32,6 +33,17 @@ public class SlidingDoor : MonoBehaviour
         if(((1 << other.gameObject.layer) & targetLayer) != 0)
         {
             if (!open)
+            {
+                Open();
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & targetLayer) != 0)
+        {
+            if (open && isClose)
             {
                 Open();
             }
