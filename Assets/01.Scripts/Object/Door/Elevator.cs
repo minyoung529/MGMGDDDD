@@ -16,28 +16,17 @@ public class Elevator : MonoBehaviour
 
     private bool isMoving = false;
 
-    SkinnedMeshRenderer meshRenderer;
-    MeshCollider collider;
-
-    private void Awake()
-    {
-        collider= GetComponent<MeshCollider>();
-        meshRenderer = GetComponent<SkinnedMeshRenderer>();
-    }
-
     [ContextMenu("Open")]
     public void OpenElevator()
     {
         leftDoor.Open();
         rightDoor.Open();
-     //   UpdateCollider();
     }
     [ContextMenu("Close")]
     public void CloseElevator()
     {
         leftDoor.Close();
         rightDoor.Close();
-      //  UpdateCollider();
     }
 
     public void UpElevator()
@@ -46,25 +35,33 @@ public class Elevator : MonoBehaviour
         floor++;
         isMoving = true;
         CloseElevator();
-        transform.DOKill();
-        transform.DOMoveY(transform.position.y + distance, duration).OnComplete(() =>
-        {
-            OpenElevator();
-            isMoving = false; 
-        });
+
+        transform.DOMoveY(transform.position.y + distance, duration);
+        StartCoroutine(DelayOpenMove());
     }
+
     public void DownElevator()
     {
         if (floor <= 1) return;
         floor--;
         isMoving = true;
         CloseElevator();
-        transform.DOKill();
-        transform.DOMoveY(transform.position.y + (distance*-1), duration).OnComplete(() =>
-        {
-            OpenElevator();
-            isMoving = false;
-        });
+        
+        transform.DOMoveY(transform.position.y + (distance * -1), duration);
+        StartCoroutine(DelayOpenMove());
+    }
+
+    private IEnumerator DelayOpenMove()
+    {
+        yield return new WaitForSeconds(2f);
+        OpenElevator();
+        isMoving = false;
+    }
+    private IEnumerator DelayCloseMove()
+    {
+        yield return new WaitForSeconds(2f);
+        CloseElevator();    
+        isMoving = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -75,14 +72,4 @@ public class Elevator : MonoBehaviour
         }
     }
 
-    private void UpdateCollider()
-    {
-        Mesh bakedMesh = new Mesh();
-        collider.sharedMesh = bakedMesh;
-
-        meshRenderer.SetBlendShapeWeight(0, 1);
-
-        meshRenderer.BakeMesh(bakedMesh);
-        collider.sharedMesh = bakedMesh;
-    }
 }
