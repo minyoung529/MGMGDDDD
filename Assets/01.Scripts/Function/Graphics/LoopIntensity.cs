@@ -23,8 +23,10 @@ public class LoopIntensity : MonoBehaviour
     private void Loop()
     {
         Sequence seq = DOTween.Sequence();
-        seq.Append(light.DOIntensity(endValue, duration));
-        seq.Append(light.DOIntensity(startValue, duration));
+        seq.AppendCallback(ActiveIntensity);
+        seq.AppendInterval(RandomDuration());
+        seq.AppendCallback(InactiveIntensity);
+        seq.AppendInterval(RandomDuration());
         seq.SetLoops(-1);
     }
 
@@ -32,5 +34,20 @@ public class LoopIntensity : MonoBehaviour
     {
         light.intensity = 0;
         light.DOIntensity(startValue, 1f).OnComplete(Loop);
+    }
+
+    private void ActiveIntensity()
+    {
+        light.DOIntensity(endValue, duration);
+    }
+
+    private void InactiveIntensity()
+    {
+        light.DOIntensity(startValue, duration);
+    }
+
+    private float RandomDuration()
+    {
+        return Mathf.Clamp(Random.Range(duration - 0.5f, duration + 0.5f), 0f, duration);
     }
 }
