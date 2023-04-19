@@ -11,6 +11,7 @@ public class DialCar : MonoBehaviour
         // TEST
         controller = FindObjectOfType<DialPuzzleController>();
     }
+
     private void DeadPlayer()
     {
         EventParam eventParam = new();
