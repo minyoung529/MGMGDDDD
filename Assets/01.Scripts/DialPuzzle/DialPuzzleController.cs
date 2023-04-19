@@ -39,6 +39,7 @@ public class DialPuzzleController : MonoBehaviour {
 
     [Header("Dial Answer")]
     [SerializeField] private int maxRound = 2;
+    [SerializeField] private TextMeshProUGUI hintText;
     [SerializeField] private List<AnswerData> answerDatas = new List<AnswerData>();
     [SerializeField] private List<AnswerList> correctAnswer = new List<AnswerList>();
     [SerializeField] private List<GameObject> patterns = new List<GameObject>();
@@ -150,7 +151,9 @@ public class DialPuzzleController : MonoBehaviour {
     #region Start/Stop
     [ContextMenu("Start")]
     public void StartDialPuzzle() {
-        ResetDial(); 
+        ResetDial();
+
+        SetHint(Hint);
         spider.StartFalling(spiderTime);
 
         Cursor.lockState = CursorLockMode.None;
@@ -180,9 +183,9 @@ public class DialPuzzleController : MonoBehaviour {
     }
 
     private void ResetDial() {
+        round = 0;
         StartTimer();
         spider.ResetSpider();
-        round = 0;
     }
     #endregion
 
@@ -255,7 +258,7 @@ public class DialPuzzleController : MonoBehaviour {
             remainTime -= Time.deltaTime;
             yield return null;
         }
-        onPuzzleOver?.Invoke();
+            onPuzzleOver?.Invoke();a
     }
 
     private void StopTimer() {
@@ -271,6 +274,15 @@ public class DialPuzzleController : MonoBehaviour {
     public void SetPause(bool _pause) {
         pause = _pause;
     }
+    #endregion
+
+    #region UI
+
+    public void SetHint(string str)
+    {
+        hintText.SetText(str);
+    }
+
     #endregion
 
     private void OnDestroy() {

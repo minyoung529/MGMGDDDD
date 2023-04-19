@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,8 +16,9 @@ public class ButtonObject : MonoBehaviour, IFindable
     [SerializeField] private bool isRerise = false;
 
     private GameObject obj = null;
-    public GameObject EnterObject => obj;
     private bool isButtonOn = false;
+    public bool IsButtonOn => isButtonOn;
+    public GameObject EnterObject => obj;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -51,4 +53,34 @@ public class ButtonObject : MonoBehaviour, IFindable
     {
         cap.DOLocalMoveY(enable ? -0.2f : 0, 0.3f);
     }
+
+    public void PressButton(bool value)
+    {
+        Press(value);
+    }
+
+    #region LISTENING
+    public void ListeningOnPress(Action action)
+    {
+        onPress.AddListener(() => action.Invoke());
+    }
+
+    public void StopListeningOnPress(Action action)
+    {
+        onPress.RemoveListener(() => action.Invoke());
+    }
+
+
+    public void ListeningOnRise(Action action)
+    {
+        onRise.AddListener(() => action.Invoke());
+    }
+
+
+    public void StopListeningOnRise(Action action)
+    {
+        onRise.RemoveListener(() => action.Invoke());
+    }
+
+    #endregion
 }

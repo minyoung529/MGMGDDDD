@@ -13,9 +13,9 @@ public class ChangePetEmission : MonoBehaviour
     [SerializeField]
     private float intensity = 1.2f;
 
-    private void Start()
+    private void Awake()
     {
-        renderers = transform.GetComponentsInChildren<Renderer>();
+        renderers = transform.GetComponentsInChildren<MeshRenderer>();
     }
 
     [ContextMenu("Change To White")]
@@ -39,6 +39,8 @@ public class ChangePetEmission : MonoBehaviour
     {
         foreach (Renderer renderer in renderers)
         {
+            if (renderer.material == null) continue;
+
             if (renderer.material.HasProperty(EMISSION))
             {
                 renderer.material.SetInt(EMISSION, isEmission ? 1 : 0);

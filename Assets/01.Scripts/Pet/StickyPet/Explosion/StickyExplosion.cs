@@ -31,8 +31,13 @@ public class StickyExplosion : MonoBehaviour
 
     [SerializeField]
     private List<GameObject> ignoreList;
-    private void Start()
+
+    [SerializeField]
+    private StickyPet stickyPet;
+
+    private void Awake()
     {
+        originalScale = visual.localScale;
         jumper = GetComponent<JumperObject>();
     }
 
@@ -62,6 +67,8 @@ public class StickyExplosion : MonoBehaviour
 
     private void Explosion()
     {
+        visual.DOScale(originalScale * 0.45f, 0.2f);
+
         Collider[] cols = Physics.OverlapSphere(transform.position, explosionRadius);
 
         foreach (Collider col in cols)
@@ -70,12 +77,14 @@ public class StickyExplosion : MonoBehaviour
 
             ExplosionReceiver receiver = col.GetComponent<ExplosionReceiver>();
 
+            Rigidbody rigid = col.GetComponent<Rigidbody>();
+
             if (receiver)
             {
-                receiver.OnExplosion();
-            }
+                float force = (rigid) ? rigid.mass * explosionRadius : explosionRadius;
 
-            Rigidbody rigid = col.GetComponent<Rigidbody>();
+                receiver.OnExplosion(new ExplosionInfo { explosionPos = transform.position, explosionForce = force, radius = explosionRadius });
+            }
 
             if (rigid)
             {
@@ -84,14 +93,6 @@ public class StickyExplosion : MonoBehaviour
         }
 
         explosionParticles.ForEach(x => x.Play());
-
-        visual.DOScale(originalScale, 1f).OnComplete(() =>
-        {
-            isExplosioning = false;
-            if (jumper)
-                jumper.CanJump = true;
-
-        });
     }
 
     [ContextMenu("Explosion")]
@@ -99,14 +100,37 @@ public class StickyExplosion : MonoBehaviour
     {
         if (isExplosioning) return;
 
-        originalScale = visual.localScale;
-
         isExplosioning = true;
 
         if (jumper)
             jumper.CanJump = false;
 
-        visual.DOScale(originalScale * 1.75f, 1.5f).SetEase(ease).OnComplete(Explosion);
+        Sequence seq = DOTween.Sequence();
+        seq.Append(visual.DOScale(originalScale * 6f, 1.5f).SetEase(ease));
+        seq.AppendCallback(Explosion);
+        seq.AppendInterval(3f);
+        seq.AppendCallback(SetOriginalPos);
+        seq.AppendInterval(1f);
+        seq.AppendCallback(EndExplosion);
+    }
+
+    private void SetOriginalPos()
+    {
+        visual.DOScale(originalScale, 1f);
+    }
+
+    private void EndExplosion()
+    {
+        isExplosioning = false;
+
+        if (jumper)
+        {
+            jumper.CanJump = true;
+        }
+
+        Debug.Log("END EXPLOSION");
+        stickyPet.ChangeState(StickyState.Idle);
+        gameObject.SetActive(false);
     }
 
     private void OnDrawGizmos()
