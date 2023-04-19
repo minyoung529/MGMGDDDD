@@ -10,11 +10,11 @@ public class DialPuzzleController : MonoBehaviour {
     private int round = 0;
 
     private TimeType curType = TimeType.None;
-    public TimeType CurType => curType;
 
     [Header("Event")]
     [SerializeField] private UnityEvent onPuzzleClear = null;
     [SerializeField] private UnityEvent onPuzzleOver = null;
+    [SerializeField] private float playerDieHeight = -10f;
     public Action<TimeType> OnTimeChange = null;
 
     [Header("Object")]
@@ -54,25 +54,26 @@ public class DialPuzzleController : MonoBehaviour {
 
     [Header("SpawnPoint")]
     [SerializeField] private Transform[] spawnPoints;
-    public Vector3 SpawnPosition => spawnPoints[(int)curType].position;
+    private Vector3 spawnPosition;
+    public Vector3 SpawnPosition => spawnPosition;
 
     private void Start() {
-
-        round= 0;
-        StartDialPuzzle();
-        FindPatternCompo();
-        hole.Radius = (remainTime / timer) * hole.MaxRadius;
-    }
-
-    private void FindPatternCompo() {
-        foreach(GameObject item in patterns) {
+        foreach (GameObject item in patterns) {
             emissions.Add(item.GetComponent<ChangeEmission>());
             materials.Add(item.GetComponent<MeshRenderer>().material);
         }
+        remainTime = timer;
+        hole.Radius = hole.MaxRadius;
+        player = GameManager.Instance.Player;
+        spawnPosition = spawnPoints[0].position;
+
+        StartDialPuzzle();
     }
 
     private void Update() {
-        CheckAngle();
+        CheckTime();
+        CheckRespawn();
+        CheckFall();
         UpdateCamPos();
         UpdateHoleSize();
     }
@@ -107,13 +108,51 @@ public class DialPuzzleController : MonoBehaviour {
         }
     }
 
-    #region Start/Stop
-    public void NextRound()
-    {
-        round++;
-        StartDialPuzzle();
+    private void CheckTime() {
+        float angle = Vector3.SignedAngle(Vector3.forward, center2Player, Vector3.up) + 180;
+        foreach (AnswerData data in answerDatas) {
+            float maxAngle = data.maxAngle;
+            if (data.minAngle > maxAngle) {
+                maxAngle += 360;
+                if (angle < data.minAngle)
+                    angle += 360;
+            }
+            if (data.minAngle < angle && angle < maxAngle)
+                if (curType != data.time) {
+                    curType = data.time;
+                    OnTimeChange?.Invoke(curType);
+                }
+        }
     }
 
+    private void CheckRespawn() {
+        foreach(Transform item in spawnPoints) {
+            if (item.position == spawnPosition) continue;
+            Vector3 groundPos = ground.position;
+            groundPos.y = spawnPosition.y;
+            Vector3 center2Spawn = (spawnPosition - groundPos).normalized;
+            float angle = Vector3.Angle(center2Spawn, center2Player) * 0.5f;
+            Vector3 dir = Vector3.RotateTowards(center2Spawn, center2Player, angle * Mathf.Deg2Rad, 0f);
+            groundPos.y = item.position.y;
+            Vector3 center2NewSpawn = (item.position - groundPos).normalized;
+            if (Vector3.Angle(center2NewSpawn, dir) <= angle) {
+                spawnPosition = item.transform.position;
+                break;
+            }
+        }
+    }
+
+    private void CheckFall() {
+        if(player.transform.position.y < playerDieHeight) {
+            EventParam eventParam = new();
+            eventParam["position"] = SpawnPosition;
+
+            EventManager.TriggerEvent(EventName.PlayerDie, eventParam);
+        }
+    }
+
+    #region Start/Stop
+    [ContextMenu("Start")]
     public void StartDialPuzzle() {
         ResetDial();
 
@@ -147,23 +186,13 @@ public class DialPuzzleController : MonoBehaviour {
     }
 
     private void ResetDial() {
+        round = 0;
         StartTimer();
         spider.ResetSpider();
     }
     #endregion
 
     #region Answer
-    private void CheckAngle() {
-        float angle = Vector3.SignedAngle(Vector3.forward, center2Player, Vector3.up) + 180;
-        foreach(AnswerData data in answerDatas) {
-            if (angle < data.minAngle && data.maxAngle < angle)
-                if (curType != data.time) {
-                    curType = data.time;
-                    OnTimeChange?.Invoke(curType);
-                }
-        }
-    }
-
     public void CheckAnswer(int typeID) {
         if (isBlockAnswer) return;
         if ((TimeType)typeID == correctAnswer[round][correctCount])
@@ -195,6 +224,8 @@ public class DialPuzzleController : MonoBehaviour {
         isBlockAnswer = true;
         if (round > maxRound)
             onPuzzleClear?.Invoke();
+        else
+            SetHint(Hint);
         StartCoroutine(SetPatternsColor(Color.yellow, -1, 1f));
         StartCoroutine(SetPatternsColor(Color.white, -1, 2f, () => isBlockAnswer = false));
     }
@@ -232,15 +263,7 @@ public class DialPuzzleController : MonoBehaviour {
             remainTime -= Time.deltaTime;
             yield return null;
         }
-
-        if(round >= maxRound-1)
-        {
             onPuzzleOver?.Invoke();
-        }
-        else
-        {
-            NextRound();
-        }
     }
 
     private void StopTimer() {
