@@ -62,9 +62,12 @@ public class DialPuzzleController : MonoBehaviour {
             emissions.Add(item.GetComponent<ChangeEmission>());
             materials.Add(item.GetComponent<MeshRenderer>().material);
         }
+        remainTime = timer;
         hole.Radius = hole.MaxRadius;
         player = GameManager.Instance.Player;
         spawnPosition = spawnPoints[0].position;
+
+        StartDialPuzzle();
     }
 
     private void Update() {
@@ -221,6 +224,8 @@ public class DialPuzzleController : MonoBehaviour {
         isBlockAnswer = true;
         if (round > maxRound)
             onPuzzleClear?.Invoke();
+        else
+            SetHint(Hint);
         StartCoroutine(SetPatternsColor(Color.yellow, -1, 1f));
         StartCoroutine(SetPatternsColor(Color.white, -1, 2f, () => isBlockAnswer = false));
     }
@@ -258,7 +263,7 @@ public class DialPuzzleController : MonoBehaviour {
             remainTime -= Time.deltaTime;
             yield return null;
         }
-            onPuzzleOver?.Invoke();a
+            onPuzzleOver?.Invoke();
     }
 
     private void StopTimer() {
