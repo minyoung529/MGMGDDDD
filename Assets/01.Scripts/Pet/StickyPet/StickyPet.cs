@@ -46,13 +46,11 @@ public class StickyPet : Pet
     {
         base.OnUpdate();
 
-        // 얘떄문에 ㅁ누제다
-        // 이거 PARENT 유진이 확정이라고????
-        if (stickyObject && stickyObject.transform.parent == stickyParent && stickyObject.ApplyOffset) // 오프셋 맞추기
-        {
-            stickyObject.transform.position = stickyParent.position + stickyOffset;
-            stickyObject.MovableRoot.rotation = origianalRotation;
-        }
+        //if (stickyObject && stickyObject.transform.parent == stickyParent && stickyObject.ApplyOffset) // 오프셋 맞추기
+        //{
+        //    //stickyObject.transform.position = stickyParent.position + stickyOffset;
+        //    stickyObject.MovableRoot.rotation = origianalRotation;
+        //}
     }
 
     #region Set
@@ -148,9 +146,6 @@ public class StickyPet : Pet
         {
             SetTarget(null);
 
-            // 이렇게 하면 Agent가 멈추더라구요...
-            // SetTarget의 Reset Path가 안 먹히나...?
-            // 일단 임시로 해놨습니다.
             SetNavEnabled(false);
             SetNavEnabled(true);
         }
@@ -159,8 +154,6 @@ public class StickyPet : Pet
             SetNavEnabled(false);
         }
 
-        if (stickyObject.Rigidbody.isKinematic || stickyObject.Rigidbody == null)
-        {
             // SET ORIGINAL PARENT & PARENT
             StartCoroutine(DelayParent());
 
@@ -168,13 +161,7 @@ public class StickyPet : Pet
             //originalParent = stickyObject.MovableRoot.parent;
             //stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
             //origianalRotation = stickyObject.MovableRoot.rotation;
-        }
-        else
-        {
-            FixedJoint joint = gameObject.AddComponent<FixedJoint>();
-            joint.connectedBody = stickyObject.Rigidbody;
-        }
-
+        
         stickyObject.OnSticky(this);
 
         sticky.StartListeningNotSticky(NotSticky);
@@ -190,6 +177,7 @@ public class StickyPet : Pet
         stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
         origianalRotation = stickyObject.MovableRoot.rotation;
         stickyObject.MovableRoot.SetParent(stickyParent);
+        stickyObject.MovableRoot.DOLocalMove(new Vector3(0f, 1f, 0f), 1f);
     }
 
     public void CanMove(bool canMove)
@@ -207,7 +195,7 @@ public class StickyPet : Pet
         }
     }
 
-    private void NotSticky()
+    public void NotSticky()
     {
         ChangeState(StickyState.Idle);
 
@@ -217,14 +205,6 @@ public class StickyPet : Pet
         {
             stickyObject.MovableRoot.SetParent(originalParent);
             stickyObject.NotSticky();
-        }
-        else
-        {
-            FixedJoint[] joints = GetComponents<FixedJoint>();
-            for (int i = 0; i < joints.Length; i++)
-            {
-                Destroy(joints[i]);
-            }
         }
 
         skillEffect.Play();

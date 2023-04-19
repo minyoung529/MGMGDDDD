@@ -6,9 +6,13 @@ using UnityEngine;
 public class SlidingDoor : MonoBehaviour
 {
     [SerializeField] LayerMask targetLayer;
+    [SerializeField] int needKeyCount = 1;
     [SerializeField] bool isClose = false;
+    [SerializeField] bool isLock = false;
+    [SerializeField] Light[] checkLights;
     private bool open = false;
-
+    private int inputKeyCount = 0;
+    
     TogglePosition togglePos;
 
     private void Awake()
@@ -18,6 +22,7 @@ public class SlidingDoor : MonoBehaviour
 
     public void Open()
     {
+        if(isLock) return;
         open = true;
         togglePos.Open();
     }
@@ -47,6 +52,25 @@ public class SlidingDoor : MonoBehaviour
             {
                 Open();
             }
+        }
+    }
+
+    public void Lock()
+    {
+        isLock= true;
+    }
+    public void UnLock()
+    {
+        isLock= false;
+    }
+
+    public void InputKey()
+    {
+        inputKeyCount++;
+        checkLights[inputKeyCount - 1].color = Color.green;
+        if (inputKeyCount >= needKeyCount)
+        {
+            UnLock();
         }
     }
 
