@@ -13,7 +13,7 @@ public class ButtonObject : MonoBehaviour, IFindable
     [SerializeField] private Transform cap;
     [SerializeField] private UnityEvent onPress;
     [SerializeField] private UnityEvent onRise;
-    [SerializeField] bool isRerise = false;
+    [SerializeField] private bool isRerise = false;
 
     private GameObject obj = null;
     private bool isButtonOn = false;
@@ -30,6 +30,7 @@ public class ButtonObject : MonoBehaviour, IFindable
             Press(true);
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
@@ -41,21 +42,16 @@ public class ButtonObject : MonoBehaviour, IFindable
     }
 
     [ContextMenu("Press")]
-    private void PressTest()
+    public virtual void Press(bool value)
     {
-        Press(true);
-    }
-
-    private void Press(bool value)
-    {
-        OnButtonAnimation(value);
+        DoButtonAnimation(value);
         (value ? onPress : onRise)?.Invoke();
         isButtonOn = value;
     }
 
-    private void OnButtonAnimation(bool value)
+    private void DoButtonAnimation(bool enable)
     {
-        cap.DOLocalMoveY(value ? -0.2f : 0, 0.3f);
+        cap.DOLocalMoveY(enable ? -0.2f : 0, 0.3f);
     }
 
     public void PressButton(bool value)

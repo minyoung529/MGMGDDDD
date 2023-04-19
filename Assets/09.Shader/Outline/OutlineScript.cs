@@ -28,7 +28,6 @@ public class OutlineScript : MonoBehaviour
 
     private int outlineLayer;
 
-
     void Start()
     {
         outlineLayer = Utils.LayerToInteger( LayerMask.GetMask("Outline"));
