@@ -24,7 +24,7 @@ public class PlayerDie : MonoBehaviour {
     }
 
     private void OnDie(EventParam param = null) {
-        if (param == null)
+        if (param == null || !param.Contain("position"))
             Respawn(curRespawnPoint);
         else
             Respawn((Vector3)param["position"]);
