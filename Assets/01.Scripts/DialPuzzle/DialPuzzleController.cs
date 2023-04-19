@@ -117,7 +117,6 @@ public class DialPuzzleController : MonoBehaviour {
     public void StartDialPuzzle() {
         ResetDial();
 
-        Debug.Log(round);
         SetHint(Hint);
         spider.StartFalling(spiderTime);
 
@@ -263,7 +262,6 @@ public class DialPuzzleController : MonoBehaviour {
 
     public void SetHint(string str)
     {
-        Debug.Log(str);
         hintText.SetText(str);
     }
 
