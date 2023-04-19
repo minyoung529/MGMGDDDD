@@ -20,7 +20,7 @@ public class JumpMotion
         return points;
     }
 
-    public void StartJump(Transform player, Action OnStartJump, Action OnEndJump, bool isSit = false, float duration = 0.75f)
+    public void StartJump(Transform player, Action OnStartJump = null, Action OnEndJump = null, bool isSit = false, float duration = 0.75f)
     {
         OnStartJump?.Invoke();
         StartAnimation(player);
@@ -68,6 +68,7 @@ public class JumpMotion
     private void StartAnimation(Transform player)
     {
         animator ??= player.GetComponent<Animator>();
+        if (animator == null) return;
 
         animator?.SetTrigger("tStateChange");
         animator?.SetInteger("iStateNum", (int)StateName.Jump);

@@ -17,6 +17,7 @@ public class StickyPet : Pet
     [SerializeField] private Transform scaleObject;
 
     private StickyState state = StickyState.Idle;
+    public StickyState State => state;
     private Vector3 bigScale = new Vector3(3f, 3f, 3f);
     private Vector3 smallDirection;
 
