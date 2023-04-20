@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ChangeRenderSettings : MonoBehaviour
 {
@@ -37,6 +38,9 @@ public class ChangeRenderSettings : MonoBehaviour
 
     [SerializeField]
     private bool[] changeVariable = new bool[5] { true, true, true, true, true };
+
+    [SerializeField]
+    private UnityEvent onChange;
 
     private void OnTriggerExit(Collider other)
     {
@@ -82,6 +86,8 @@ public class ChangeRenderSettings : MonoBehaviour
             oFogColor = RenderSettingController.SetFogColor(fogColor, duration);
         if (changeVariable[4])
             oFogDensity = RenderSettingController.SetFogDensity(fogDensity, duration);
+
+        onChange?.Invoke();
     }
 
     public void Back()
