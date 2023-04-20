@@ -61,6 +61,7 @@ public class DialPuzzleController : MonoBehaviour {
     [SerializeField] private Transform[] spawnPoints;
     private Vector3 spawnPosition;
     public Vector3 SpawnPosition => spawnPosition;
+    private float switchOffset = 0f;
 
     private void Start() {
         foreach (GameObject item in patterns) {
@@ -96,8 +97,10 @@ public class DialPuzzleController : MonoBehaviour {
         center2Player = (player.transform.position - groundPos).normalized;
 
         //방향 벡터와 일정 거리를 더한 지점을 카메라 위치로 지정
-        Vector3 camPos = player.transform.position + center2Player * (distance);
-        camPos.y += height;
+        Vector3 camPos = player.transform.position + center2Player * distance;
+        camPos.z -= switchOffset;
+        camPos.y += (height - (switchOffset * 2f));
+
         dialCam.transform.position = camPos;
         dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
     }
@@ -135,9 +138,11 @@ public class DialPuzzleController : MonoBehaviour {
 
                     CameraSetting(angle, data);
                 }
+
+            switchOffset = angle - 180;
         }
 
-        Debug.Log(angle);
+        Debug.Log(switchOffset);
 
     }
 
