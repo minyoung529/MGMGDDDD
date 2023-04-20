@@ -65,6 +65,7 @@ public class StickyPet : Pet
         ChangeState(StickyState.Idle);
 
         scaleObject.DOScale(Vector3.one, 0.5f);
+        IsInputLock = false;
 
         OnExitBillow?.Invoke();
     }
@@ -93,12 +94,13 @@ public class StickyPet : Pet
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
-        SetTarget(null);
-
         transform.DOKill();
         SetNavIsStopped(true);
 
         BillowAction();
+        SetTarget(null);
+
+        IsInputLock = true;
         OnBillow?.Invoke();
     }
 
