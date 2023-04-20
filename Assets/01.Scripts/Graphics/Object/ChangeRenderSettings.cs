@@ -73,9 +73,9 @@ public class ChangeRenderSettings : MonoBehaviour
     public void Change()
     {
         if (changeVariable[0])
-            oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
-        if (changeVariable[1])
             oAmbientLight = RenderSettingController.SetAmbientLight(ambientLight, duration);
+        if (changeVariable[1])
+            oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
         if (changeVariable[2])
             oFog = RenderSettingController.Setfog(fog);
         if (changeVariable[3])
@@ -87,9 +87,9 @@ public class ChangeRenderSettings : MonoBehaviour
     public void Back()
     {
         if (changeVariable[0])
-            RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
-        if (changeVariable[1])
             RenderSettingController.SetAmbientLight(oAmbientLight, duration);
+        if (changeVariable[1])
+            RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
         if (changeVariable[2])
             RenderSettingController.Setfog(oFog);
         if (changeVariable[3])
