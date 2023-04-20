@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using static Cinemachine.CinemachineFreeLook;
+using UnityEngine.WSA;
+using static UnityEditor.SceneView;
+using DG.Tweening;
 
 public class DialPuzzleController : MonoBehaviour {
     private int round = 0;
@@ -20,6 +24,7 @@ public class DialPuzzleController : MonoBehaviour {
     [Header("Object")]
     [SerializeField] private SpiderRope spider;
     [SerializeField] private CinemachineVirtualCameraBase dialCam;
+    [SerializeField] private CinemachineFreeLook playerCam;
     [SerializeField] private Transform ground;
     [SerializeField] private HoleScript hole;
     [SerializeField] private float holeSpeed = 0.05f;
@@ -76,6 +81,7 @@ public class DialPuzzleController : MonoBehaviour {
         CheckFall();
         UpdateCamPos();
         UpdateHoleSize();
+
     }
 
     [SerializeField]
@@ -90,7 +96,7 @@ public class DialPuzzleController : MonoBehaviour {
         center2Player = (player.transform.position - groundPos).normalized;
 
         //방향 벡터와 일정 거리를 더한 지점을 카메라 위치로 지정
-        Vector3 camPos = player.transform.position + center2Player * distance;
+        Vector3 camPos = player.transform.position + center2Player * (distance);
         camPos.y += height;
         dialCam.transform.position = camPos;
         dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
@@ -126,8 +132,13 @@ public class DialPuzzleController : MonoBehaviour {
                 if (curType != data.time) {
                     curType = data.time;
                     OnTimeChange?.Invoke(curType);
+
+                    CameraSetting(angle, data);
                 }
         }
+
+        Debug.Log(angle);
+
     }
 
     private void CheckRespawn() {
@@ -156,6 +167,21 @@ public class DialPuzzleController : MonoBehaviour {
         }
     }
 
+    private void CameraSetting(float angle, AnswerData data)
+    {
+        if ((int)curType % 2 == 0)
+        {
+            CameraSwitcher.SwitchCamera(dialCam);
+        }
+        else
+        {
+            if (data.time == TimeType.AfternoonToEvening) return;
+            playerCam.m_XAxis.Value = angle;
+            playerCam.m_YAxis.Value = 0.7f;
+            CameraSwitcher.SwitchCamera(playerCam);
+        }
+    }
+
     #region Start/Stop
     [ContextMenu("Start")]
     public void StartDialPuzzle() {
@@ -164,8 +190,8 @@ public class DialPuzzleController : MonoBehaviour {
         SetHint(Hint);
         spider.StartFalling(spiderTime);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
 
         Pet.IsCameraAimPoint = false;
         OilPetSkill.IsCrosshair = false;
@@ -180,8 +206,8 @@ public class DialPuzzleController : MonoBehaviour {
     public void StopDialPuzzle() {
         StopTimer();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
 
         Pet.IsCameraAimPoint = true;
         OilPetSkill.IsCrosshair = true;

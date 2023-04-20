@@ -45,6 +45,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     {
         CameraSwitcher.UnRegister(defaultCamera);
         CameraSwitcher.Register(defaultCamera);
+        CameraSwitcher.SetDefaultCamera(defaultCamera);
 
         SetDefault();
     }
