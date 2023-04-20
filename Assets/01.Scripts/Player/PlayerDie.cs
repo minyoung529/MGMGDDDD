@@ -16,8 +16,11 @@ public class PlayerDie : MonoBehaviour {
     private void Awake() {
         CanvasGroup canvasPrefab = Resources.Load<CanvasGroup>("DieCanvas");
         dieCanvas = Instantiate(canvasPrefab);
+
+        if(startRespawnPoint != null)
         curRespawnPoint = startRespawnPoint.position;
-        if (dieParticlePref)
+
+        if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
 
         EventManager.StartListening(EventName.PlayerDie, OnDie);
