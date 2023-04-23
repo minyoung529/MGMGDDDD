@@ -143,8 +143,6 @@ public class DialPuzzleController : MonoBehaviour {
             // 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
             float minAgl = Mathf.Abs(data.minAngle- angle);
             float maxAgl = Mathf.Abs(data.maxAngle - angle);
-            Debug.Log("Cur : " + (int)angle + "  Min : " + (int)data.minAngle + "  Max : " + (int)data.maxAngle);
-            Debug.Log("Min : " + (int)minAgl + "  Max : " + (int)maxAgl);
             float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
             switchOffset = minDistanceAngle;
         }

@@ -6,10 +6,12 @@ public class Reveal : MonoBehaviour
     [SerializeField] Light spotLight;
 
     private Material m_Mat;
+    private ChangeShaderFloat shaderFloat;
 
     private void Start()
     {
         m_Mat = GetComponent<Renderer>().sharedMaterial;
+        shaderFloat= GetComponent<ChangeShaderFloat>();
 
         SetLight(false);
     }
@@ -22,11 +24,16 @@ public class Reveal : MonoBehaviour
 
     public void SetLight(bool value)
     {
-        int rot = 0;
-        if (value) rot = 90;
-
         spotLight.gameObject.SetActive(value);
-        spotLight.transform.eulerAngles = new Vector3(rot, -90, 0);
+
+        if(value)
+        {
+        shaderFloat.Active();
+        }
+        else
+        {
+        shaderFloat.Inactive();
+        }
     }
     public void SwitchLight()
     {
