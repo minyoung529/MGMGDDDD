@@ -80,7 +80,7 @@ namespace SplineMesh {
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        private Vector3 GetLocation(float t) {
+        public Vector3 GetLocation(float t) {
             float omt = 1f - t;
             float omt2 = omt * omt;
             float t2 = t * t;
