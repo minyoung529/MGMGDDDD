@@ -98,8 +98,9 @@ public class DialPuzzleController : MonoBehaviour {
 
         //방향 벡터와 일정 거리를 더한 지점을 카메라 위치로 지정
         Vector3 camPos = player.transform.position + center2Player * distance;
-        camPos.z -= switchOffset;
-        camPos.y += (height - (switchOffset * 2f));
+        //camPos.z += switchOffset;
+        camPos.y += (height);
+        //camPos.y += (height - (switchOffset * 2f));
 
         dialCam.transform.position = camPos;
         dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
@@ -139,11 +140,14 @@ public class DialPuzzleController : MonoBehaviour {
                     CameraSetting(angle, data);
                 }
 
-            switchOffset = angle - 180;
+            // 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
+            float minAgl = Mathf.Abs(data.minAngle- angle);
+            float maxAgl = Mathf.Abs(data.maxAngle - angle);
+            Debug.Log("Cur : " + (int)angle + "  Min : " + (int)data.minAngle + "  Max : " + (int)data.maxAngle);
+            Debug.Log("Min : " + (int)minAgl + "  Max : " + (int)maxAgl);
+            float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
+            switchOffset = minDistanceAngle;
         }
-
-        Debug.Log(switchOffset);
-
     }
 
     private void CheckRespawn() {

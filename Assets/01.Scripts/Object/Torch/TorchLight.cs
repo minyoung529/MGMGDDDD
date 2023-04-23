@@ -55,7 +55,7 @@ public class TorchLight : MonoBehaviour
         //OnLighted?.Invoke(isOn);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         Fire fire = other.GetComponent<Fire>();
         if(fire !=null)
@@ -65,7 +65,7 @@ public class TorchLight : MonoBehaviour
             OnLighted?.Invoke(isOn);
         }
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         Fire fire = collision.collider.GetComponent<Fire>();
         if (fire != null)
