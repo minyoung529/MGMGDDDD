@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class TutorialController : MonoBehaviour
     Dictionary<TutorialType, TutorialPlayer> tutorials = new Dictionary<TutorialType, TutorialPlayer>();
 
     private Animator animator;
+
+    private Action onEnd;
 
     private void Awake()
     {
@@ -43,15 +46,19 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    public void StartTutorial(TutorialType type, string name = "")
+    public void StartTutorial(TutorialType type, Action onEnd, string name = "")
     {
         tutorials[type].Animator = animator;
         tutorials[type].StartTutorial(name);
+        this.onEnd += onEnd;
     }
 
     public void StopTutorial(TutorialType type)
     {
         tutorials[type].Animator = animator;
         tutorials[type].StopTutorial();
+
+        onEnd?.Invoke();
+        onEnd = null;
     }
 }

@@ -350,9 +350,10 @@ namespace SplineMesh
         // t = 0~1
         public Vector3 GetLocationByTime(float t)
         {
-            int nodeIdx = Mathf.Clamp((int)Mathf.Lerp(0, curves.Count, t), 0, curves.Count - 1);
+            int nodeIdx = Mathf.Clamp(Mathf.RoundToInt(Mathf.Lerp(0, curves.Count - 1, t)), 0, curves.Count - 1);
+            Debug.Log(nodeIdx);
             float section = 1f / curves.Count;
-            float mod = (t * curves.Count) % section;
+            float mod = t % section;
             return transform.position + curves[nodeIdx].GetLocation(Mathf.Lerp(0f, section, mod / section));
         }
     }

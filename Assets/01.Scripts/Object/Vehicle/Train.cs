@@ -78,7 +78,7 @@ public class Train : MonoBehaviour
         playerRigid.isKinematic = true;
         playerTransform.SetParent(transform.parent);
 
-        pathFollower.destination = destinations[(int)Destination.Clock];
+        pathFollower.destination = destinations[(int)Destination.Clock].position;
         pathFollower.Depart();
         pathFollower.onArrive.AddListener((x) => isArrive = true);
     }
