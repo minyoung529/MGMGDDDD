@@ -113,6 +113,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 794e6ac7cd7416f4b8147d78b81553f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particles:
+  - {fileID: 5480849930242454978}
+  IsSuccess: 0
 --- !u!114 &4847700714340694798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,9 +149,20 @@ MonoBehaviour:
   playOnAwake: 0
   fireEvent:
     m_PersistentCalls:
-      m_Calls: []
-  fireParticle:
-  - {fileID: 5480849930242454978}
+      m_Calls:
+      - m_Target: {fileID: 5346925129443412219}
+        m_TargetAssemblyTypeName: ChandlierListner, Assembly-CSharp
+        m_MethodName: Lighting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireParticle: []
   isDestroyType: 0
   burnDelay: 0
   burningTime: 2
@@ -163,8 +177,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 1582300641825469930}
     m_Modifications:
     - target: {fileID: 1705543343898280589, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1705543343898280589, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 2.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 1705543344329668035, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1705543344329668035, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -219,12 +241,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1705543345121223929, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1705543345121223929, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 2.38
       objectReference: {fileID: 0}
     - target: {fileID: 1705543345121223931, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
       propertyPath: m_Name
       value: CartoonFire
+      objectReference: {fileID: 0}
+    - target: {fileID: 1705543345211398833, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1705543345211398833, guid: 66348be98092a894b892d0cb88c79c9d, type: 3}
       propertyPath: InitialModule.startSize.scalar
