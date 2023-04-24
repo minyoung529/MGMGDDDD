@@ -41,11 +41,12 @@ public class IsolatedCubePuzzle : MonoBehaviour
 
         if (curRatio > 1f)
         {
+            OnEnd();
         }
         else
         {
             cubeTransform.position = pathCreator.path.GetPointAtDistance(curRatio * pathCreator.path.length);
-            cubeTransform.up = pathCreator.path.GetNormalAtDistance(curRatio * pathCreator.path.length);
+            cubeTransform.rotation = pathCreator.path.GetRotationAtDistance(curRatio * pathCreator.path.length);
         }
     }
 
@@ -71,7 +72,12 @@ public class IsolatedCubePuzzle : MonoBehaviour
 
     private void OnEnd()
     {
+        Debug.Log("End");
         isStartFollow = false;
-        cubeTransform.DORotateQuaternion(originalRotation, 0.5f);
+            cubeTransform.GetComponent<Rigidbody>().freezeRotation = false;
+       // cubeTransform.DORotateQuaternion(originalRotation, 0.5f).OnComplete(() =>
+       // {
+       // });
+
     }
 }
