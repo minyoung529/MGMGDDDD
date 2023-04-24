@@ -10,7 +10,8 @@ using UnityEngine.WSA;
 using static UnityEditor.SceneView;
 using DG.Tweening;
 
-public class DialPuzzleController : MonoBehaviour {
+public class DialPuzzleController : MonoBehaviour
+{
     private int round = 0;
 
     private TimeType curType = TimeType.None;
@@ -62,9 +63,14 @@ public class DialPuzzleController : MonoBehaviour {
     private Vector3 spawnPosition;
     public Vector3 SpawnPosition => spawnPosition;
     private float switchOffset = 0f;
+    private float minAgl = 0;
+    private float maxAgl = 0;
 
-    private void Start() {
-        foreach (GameObject item in patterns) {
+
+    private void Start()
+    {
+        foreach (GameObject item in patterns)
+        {
             emissions.Add(item.GetComponent<ChangeEmission>());
             materials.Add(item.GetComponent<MeshRenderer>().material);
         }
@@ -76,7 +82,8 @@ public class DialPuzzleController : MonoBehaviour {
         StartDialPuzzle();
     }
 
-    private void Update() {
+    private void Update()
+    {
         CheckTime();
         CheckRespawn();
         CheckFall();
@@ -86,11 +93,12 @@ public class DialPuzzleController : MonoBehaviour {
     }
 
     [SerializeField]
-    private float height=20f;
+    private float height = 20f;
     [SerializeField]
-    private float distance=10f;
+    private float distance = 10f;
 
-    private void UpdateCamPos() {
+    private void UpdateCamPos()
+    {
         //중심-플레이어 방향 벡터 만들기
         Vector3 groundPos = ground.position;
         groundPos.y = player.transform.position.y;
@@ -106,16 +114,19 @@ public class DialPuzzleController : MonoBehaviour {
         dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
     }
 
-    private void UpdateHoleSize() {
+    private void UpdateHoleSize()
+    {
         targetRadius = (remainTime / timer) * hole.MaxRadius;
         float dir = targetRadius - hole.Radius;
-        if (dir > 0) {
+        if (dir > 0)
+        {
             hole.Radius += holeSpeed * Time.deltaTime;
             if (hole.Radius > targetRadius)
                 hole.Radius = targetRadius;
             return;
         }
-        if (dir < 0) {
+        if (dir < 0)
+        {
             hole.Radius -= holeSpeed * Time.deltaTime;
             if (hole.Radius < targetRadius)
                 hole.Radius = targetRadius;
@@ -123,37 +134,46 @@ public class DialPuzzleController : MonoBehaviour {
         }
     }
 
-    private void CheckTime() {
+    private void CheckTime()
+    {
         float angle = Vector3.SignedAngle(Vector3.forward, center2Player, Vector3.up) + 180;
-        foreach (AnswerData data in answerDatas) {
+
+        foreach (AnswerData data in answerDatas)
+        {
             float maxAngle = data.maxAngle;
             float playerAngle = angle;
 
-            if (data.minAngle > maxAngle) {
+            if (data.minAngle > maxAngle)
+            {
                 maxAngle += 360;
                 if (angle < data.minAngle)
                     playerAngle += 360;
             }
 
             if (data.minAngle < playerAngle && playerAngle < maxAngle)
-                if (curType != data.time) {
+                if (curType != data.time)
+                {
                     curType = data.time;
-                    Debug.Log(curType);
-                    //// 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
-                    //float minAgl = Mathf.Abs(data.minAngle - angle);
-                    //float maxAgl = Mathf.Abs(data.maxAngle - angle);
-                    //float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
-                    //switchOffset = minDistanceAngle;
+                    minAgl = Mathf.Abs(data.minAngle - angle);
+                    maxAgl = Mathf.Abs(data.maxAngle - angle);
 
                     OnTimeChange?.Invoke(curType);
 
                     CameraSetting(angle, data);
                 }
+
+            // 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
+            float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
+            switchOffset = minDistanceAngle;
         }
+        Debug.Log(minAgl + ", " + maxAgl);
+        Debug.Log(angle);
     }
 
-    private void CheckRespawn() {
-        foreach(Transform item in spawnPoints) {
+    private void CheckRespawn()
+    {
+        foreach (Transform item in spawnPoints)
+        {
             if (item.position == spawnPosition) continue;
             Vector3 groundPos = ground.position;
             groundPos.y = spawnPosition.y;
@@ -162,15 +182,18 @@ public class DialPuzzleController : MonoBehaviour {
             Vector3 dir = Vector3.RotateTowards(center2Spawn, center2Player, angle * Mathf.Deg2Rad, 0f);
             groundPos.y = item.position.y;
             Vector3 center2NewSpawn = (item.position - groundPos).normalized;
-            if (Vector3.Angle(center2NewSpawn, dir) <= angle) {
+            if (Vector3.Angle(center2NewSpawn, dir) <= angle)
+            {
                 spawnPosition = item.transform.position;
                 break;
             }
         }
     }
 
-    private void CheckFall() {
-        if(player.transform.position.y < playerDieHeight) {
+    private void CheckFall()
+    {
+        if (player.transform.position.y < playerDieHeight)
+        {
             EventParam eventParam = new();
             eventParam["position"] = SpawnPosition;
 
@@ -195,7 +218,8 @@ public class DialPuzzleController : MonoBehaviour {
 
     #region Start/Stop
     [ContextMenu("Start")]
-    public void StartDialPuzzle() {
+    public void StartDialPuzzle()
+    {
         ResetDial();
 
         SetHint(Hint);
@@ -214,7 +238,8 @@ public class DialPuzzleController : MonoBehaviour {
         player = GameManager.Instance.Player;
     }
 
-    public void StopDialPuzzle() {
+    public void StopDialPuzzle()
+    {
         StopTimer();
 
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -227,7 +252,8 @@ public class DialPuzzleController : MonoBehaviour {
         CameraSwitcher.UnRegister(dialCam);
     }
 
-    private void ResetDial() {
+    private void ResetDial()
+    {
         round = 0;
         StartTimer();
         spider.ResetSpider();
@@ -235,7 +261,8 @@ public class DialPuzzleController : MonoBehaviour {
     #endregion
 
     #region Answer
-    public void CheckAnswer(int typeID) {
+    public void CheckAnswer(int typeID)
+    {
         if (isBlockAnswer) return;
         if ((TimeType)typeID == correctAnswer[round][correctCount])
             Correct(typeID);
@@ -243,16 +270,19 @@ public class DialPuzzleController : MonoBehaviour {
             Wrong(typeID);
     }
 
-    private void Correct(int typeID) {
+    private void Correct(int typeID)
+    {
         correctCount++;
         StartCoroutine(SetPatternsColor(Color.green, typeID));
-        if (correctCount >= correctAnswer[round].array.Count) {
+        if (correctCount >= correctAnswer[round].array.Count)
+        {
             correctCount = 0;
             Clear();
         }
     }
 
-    private void Wrong(int typeID) {
+    private void Wrong(int typeID)
+    {
         correctCount = 0;
         isBlockAnswer = true;
         remainTime -= answerTime;
@@ -260,7 +290,8 @@ public class DialPuzzleController : MonoBehaviour {
         StartCoroutine(SetPatternsColor(Color.white, -1, 1f, () => isBlockAnswer = false));
     }
 
-    private void Clear() {
+    private void Clear()
+    {
         round++;
         remainTime += answerTime;
         isBlockAnswer = true;
@@ -272,17 +303,21 @@ public class DialPuzzleController : MonoBehaviour {
         StartCoroutine(SetPatternsColor(Color.white, -1, 2f, () => isBlockAnswer = false));
     }
 
-    private IEnumerator SetPatternsColor(Color color, int index = -1, float delay = 0f, Action onChange = null) {
+    private IEnumerator SetPatternsColor(Color color, int index = -1, float delay = 0f, Action onChange = null)
+    {
         yield return new WaitForSeconds(delay);
-        if (index < 0) {
-            foreach (ChangeEmission item in emissions) {
+        if (index < 0)
+        {
+            foreach (ChangeEmission item in emissions)
+            {
                 item.SetColor(color);
                 item.Change();
             }
             foreach (Material item in materials)
                 item.color = color;
         }
-        else {
+        else
+        {
             emissions[index].SetColor(color);
             emissions[index].Change();
             materials[index].color = color;
@@ -292,33 +327,49 @@ public class DialPuzzleController : MonoBehaviour {
     #endregion
 
     #region Timer
-    public void StartTimer() {
+    public void StartTimer()
+    {
         ResetTimer();
         StartCoroutine(TimerCoroutine());
     }
 
-    private IEnumerator TimerCoroutine() {
-        while (remainTime >= 0) {
-            while (pause) {
+    private IEnumerator TimerCoroutine()
+    {
+        while (remainTime >= 0)
+        {
+            while (pause)
+            {
                 yield return null;
             }
             remainTime -= Time.deltaTime;
             yield return null;
         }
-            onPuzzleOver?.Invoke();
+        onPuzzleOver?.Invoke();
     }
 
-    private void StopTimer() {
+    public void GameOver()
+    {
+        EventParam eventParam = new();
+        eventParam["position"] = spawnPoints[0].position;
+        EventManager.TriggerEvent(EventName.PlayerDie, eventParam);
+
+        StartDialPuzzle();
+    }
+
+    private void StopTimer()
+    {
         ResetTimer();
         StopCoroutine(TimerCoroutine());
     }
 
-    private void ResetTimer() {
+    private void ResetTimer()
+    {
         pause = false;
         remainTime = timer;
     }
 
-    public void SetPause(bool _pause) {
+    public void SetPause(bool _pause)
+    {
         pause = _pause;
     }
     #endregion
@@ -332,7 +383,8 @@ public class DialPuzzleController : MonoBehaviour {
 
     #endregion
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         StopDialPuzzle();
     }
 }

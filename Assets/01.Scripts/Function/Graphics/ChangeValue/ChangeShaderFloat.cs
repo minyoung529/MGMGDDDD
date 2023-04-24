@@ -74,7 +74,6 @@ public class ChangeShaderFloat : MonoBehaviour
             seq.AppendInterval(preDelay);
         }
 
-        Debug.Log(inactiveValue);
         seq.AppendCallback(() => ChangeValue(inactiveValue));
     }
 
