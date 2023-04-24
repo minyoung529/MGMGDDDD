@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRail : MonoBehaviour
+public class RidingRail : MonoBehaviour
 {
     [SerializeField, Range(0f, 1f)]
     float timer;
@@ -38,7 +38,7 @@ public class PlayerRail : MonoBehaviour
         this.triggerPoint = triggerPoint;
     }
 
-    public void RideRail(InputAction action, float val)
+    public void RideRail(InputAction action = InputAction.Interaction, float val = 0f)
     {
         if (isRiding) return;
         isRiding = true;
@@ -62,10 +62,30 @@ public class PlayerRail : MonoBehaviour
         pathFollower.StartFollowing();
 
         pathFollower.onArrive.AddListener(OnArrive);
+        RidePets();
+    }
+
+    private void RidePets()
+    {
+        StartCoroutine(DelayPets());
+    }
+
+    private IEnumerator DelayPets()
+    {
+        List<Pet> petList = PetManager.Instance.GetPetList;
+
+        for (int i = 0; i < petList.Count; i++)
+        {
+            yield return new WaitForSeconds(0.5f);
+            RidingRail rail = Utils.GetOrAddComponent<RidingRail>(petList[i]);
+            rail.SetRail(pathFollower.pathCreator, triggerPoint);
+            rail.RideRail();
+        }
     }
 
     public void OnArrive(Destination destination)
     {
+        Debug.Log($"{name} ARRIVE");
         gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
         isRiding = false;
     }

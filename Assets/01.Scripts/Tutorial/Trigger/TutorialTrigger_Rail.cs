@@ -8,11 +8,11 @@ public class TutorialTrigger_Rail : TutorialTrigger
     [SerializeField]
     private PathCreator path;
 
-    private PlayerRail rail;
+    private RidingRail rail;
 
     protected override bool Condition(Transform player)
     {
-        rail ??= Utils.GetOrAddComponent<PlayerRail>(player);
+        rail ??= Utils.GetOrAddComponent<RidingRail>(player);
 
         if (!rail) return false;
 
