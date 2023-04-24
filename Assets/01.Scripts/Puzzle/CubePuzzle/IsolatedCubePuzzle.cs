@@ -72,12 +72,7 @@ public class IsolatedCubePuzzle : MonoBehaviour
 
     private void OnEnd()
     {
-        Debug.Log("End");
         isStartFollow = false;
             cubeTransform.GetComponent<Rigidbody>().freezeRotation = false;
-       // cubeTransform.DORotateQuaternion(originalRotation, 0.5f).OnComplete(() =>
-       // {
-       // });
-
     }
 }
