@@ -33,10 +33,8 @@ public class ChangeDayAndNight : MonoBehaviour
 
     public void Change(int index)
     {
-        Debug.Log(index);
-
-        if (renderSettings.Length > 0)
-            renderSettings[index]?.Change();
+        //if (renderSettings.Length > 0)
+        //    renderSettings[index]?.Change();
 
         if (postProcessings.Length > 0)
             postProcessings[index]?.Change();
