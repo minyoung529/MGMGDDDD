@@ -96,6 +96,7 @@ namespace PathCreation.Examples
                     rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
                 }
 
+                Debug.Log($"{name} DIST => {Vector3.Distance(transform.position, destination)}");
                 if (endOfPathInstruction == EndOfPathInstruction.Stop && distanceTravelled > 1f && !isStop && Vector3.Distance(transform.position, nextPos) < 0.01f)
                 {
                     onArrive.Invoke(destName);
@@ -144,7 +145,7 @@ namespace PathCreation.Examples
             if (!reachDestination && dist < 5f)
             {
                 reachDestination = true;
-                DOTween.To(() => speed, (x) => speed = x, 0f, 2f).OnComplete(() => onArrive.Invoke(destName));
+                DOTween.To(() => speed, (x) => speed = x, 0f, 2f);
             }
         }
 

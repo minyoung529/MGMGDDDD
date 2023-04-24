@@ -38,7 +38,7 @@ public class RidingRail : MonoBehaviour
         this.triggerPoint = triggerPoint;
     }
 
-    public void RideRail(InputAction action = InputAction.Interaction, float val = 0f)
+    public void PlayerRideRail(InputAction action = InputAction.Interaction, float val = 0f)
     {
         if (isRiding) return;
         isRiding = true;
@@ -47,22 +47,28 @@ public class RidingRail : MonoBehaviour
 
         if (Vector3.Distance(pathFollower.EndPoint, triggerPoint.position) < 5f)
         {
-            pathFollower.reverseStartEnd = true;
-            pathFollower.destination = pathFollower.StartPoint;
+            Ride(pathFollower.StartPoint, true);
+            RidePets();
         }
         else
         {
-            pathFollower.reverseStartEnd = false;
-            pathFollower.destination = pathFollower.EndPoint;
+            Ride(pathFollower.StartPoint, false);
         }
+
+    }
+
+    public void Ride(Vector3 destination, bool reverse)
+    {
+        pathFollower.reverseStartEnd = reverse;
+        pathFollower.destination = destination;
 
         pathFollower.endOfPathInstruction = EndOfPathInstruction.Stop;
 
         pathFollower.speed = 15f;
         pathFollower.StartFollowing();
 
+        pathFollower.onArrive.RemoveListener(OnArrive);
         pathFollower.onArrive.AddListener(OnArrive);
-        RidePets();
     }
 
     private void RidePets()
@@ -79,7 +85,7 @@ public class RidingRail : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             RidingRail rail = Utils.GetOrAddComponent<RidingRail>(petList[i]);
             rail.SetRail(pathFollower.pathCreator, triggerPoint);
-            rail.RideRail();
+            rail.PlayerRideRail();
         }
     }
 
@@ -92,7 +98,7 @@ public class RidingRail : MonoBehaviour
 
     public void Enter()
     {
-        InputManager.StartListeningInput(InputAction.Interaction, RideRail);
+        InputManager.StartListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 
     public void Exit()
@@ -100,6 +106,6 @@ public class RidingRail : MonoBehaviour
         triggerPoint = null;
         pathFollower.pathCreator = null;
 
-        InputManager.StopListeningInput(InputAction.Interaction, RideRail);
+        InputManager.StopListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 }
