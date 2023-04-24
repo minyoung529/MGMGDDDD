@@ -16,7 +16,7 @@ public class DialTrain : MonoBehaviour
     [SerializeField] float maxDriveCoolTime = 5.0f;
 
     private Vector3 startPos = new Vector3(0.6f, 6f, 14.3f);
-    private float endPosZ = 38f;
+    private float endPosZ = 45f;
     private float driveDelay = 1.5f;
     private bool stop = false;
 
