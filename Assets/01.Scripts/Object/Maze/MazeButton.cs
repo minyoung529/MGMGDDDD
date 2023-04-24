@@ -40,7 +40,7 @@ public class MazeButton : MonoBehaviour
             button.EnterObject.transform.DOMove(undoPosition.position, 0.1f).OnComplete(() =>
             {
                 button.EnterObject.GetComponent<Pet>().ResetNav();
-                button.PressButton(false);
+                button.Press(false);
             });
         }
     }

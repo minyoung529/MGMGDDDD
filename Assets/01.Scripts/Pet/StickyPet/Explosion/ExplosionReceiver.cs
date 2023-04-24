@@ -8,8 +8,12 @@ public class ExplosionReceiver : MonoBehaviour
     [SerializeField]
     private UnityEvent onExplosion;
 
-    public void OnExplosion()
+    [SerializeField]
+    private UnityEvent<ExplosionInfo> onExplosionWithInfo;
+
+    public void OnExplosion(ExplosionInfo info)
     {
         onExplosion?.Invoke();
+        onExplosionWithInfo?.Invoke(info);
     }
 }
