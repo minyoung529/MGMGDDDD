@@ -78,6 +78,11 @@ public class DialPuzzleController : MonoBehaviour {
         UpdateHoleSize();
     }
 
+    [SerializeField]
+    private float height=20f;
+    [SerializeField]
+    private float distance=10f;
+
     private void UpdateCamPos() {
         //중심-플레이어 방향 벡터 만들기
         Vector3 groundPos = ground.position;
@@ -85,8 +90,8 @@ public class DialPuzzleController : MonoBehaviour {
         center2Player = (player.transform.position - groundPos).normalized;
 
         //방향 벡터와 일정 거리를 더한 지점을 카메라 위치로 지정
-        Vector3 camPos = player.transform.position + center2Player * 10f;
-        camPos.y += 20f;
+        Vector3 camPos = player.transform.position + center2Player * distance;
+        camPos.y += height;
         dialCam.transform.position = camPos;
         dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
     }

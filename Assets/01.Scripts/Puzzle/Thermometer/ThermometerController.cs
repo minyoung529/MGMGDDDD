@@ -31,7 +31,7 @@ public class ThermometerController : MonoBehaviour
 
         foreach (Thermometer thermometer in thermometers)
         {
-            if (!thermometer.IsClear(clearValue))
+            if (!thermometer.IsClear())
                 return;
         }
 

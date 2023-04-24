@@ -81,6 +81,11 @@ public class EventParam
             eventParams.Remove(hash);
         }
     }
+
+    public bool Contain(string name)
+    {
+        return eventParams.ContainsKey(name.GetHashCode());
+    }
 }
 
 public struct Param
