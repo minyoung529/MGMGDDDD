@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerMove))]
-public class PlayerPickUp : MonoBehaviour {
+public class PlayerHold : MonoBehaviour {
     [SerializeField] private float distance2Pet = 2;
     [SerializeField] private float throwPow;
 

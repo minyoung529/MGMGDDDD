@@ -3,19 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour {
-    #region 컴포넌트
-    private Rigidbody rigid;
-    private Animator anim;
-    private Collider coll;
-
-    public Rigidbody Rigid => rigid;
-    public Animator Anim => anim;
-    public Collider Coll => coll;
-    #endregion
+public class PlayerMove : MonoBehaviour, PlayerCompo {
+    private PlayerController controller = null;
+    PlayerController PlayerCompo.Controller { get => controller; set => controller = value; }
 
     #region 속력, 방향 관련 변수
-    [SerializeField] private const float rotateTime = 2f;
+    [SerializeField] private float distanceToGround = 0;
+    [SerializeField] private const float rotateTime = 1f;
 
     private float curSpeed = 0;
     public float CurSpeed => curSpeed;
@@ -41,9 +35,10 @@ public class PlayerMove : MonoBehaviour {
     #endregion
 
     #region 상태 관련 변수
-    [SerializeField] private List<MoveState> stateList;
-    private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
+    [SerializeField] private Transform stateParent;
     [SerializeField] private MoveState curState;
+    private List<MoveState> stateList;
+    private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
 
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
@@ -70,23 +65,14 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
-    [SerializeField] private float distanceToGround = 0;
-
-    private Dictionary<InputAction, Action<InputAction, float>> actions = new Dictionary<InputAction, Action<InputAction, float>>();
-
+    private Dictionary<InputAction, Action<InputAction, float>> actions
+        = new Dictionary<InputAction, Action<InputAction, float>>();
+    
+    
     #region SetUp
     private void Awake() {
-        mainCam = Camera.main;
-
-        SetUpCompo();
         StartListen();
         SetUpStateDictionary();
-    }
-
-    private void SetUpCompo() {
-        rigid = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
-        coll = GetComponent<Collider>();
     }
 
     private void SetUpStateDictionary() {
