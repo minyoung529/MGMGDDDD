@@ -127,12 +127,15 @@ public class DialPuzzleController : MonoBehaviour {
         float angle = Vector3.SignedAngle(Vector3.forward, center2Player, Vector3.up) + 180;
         foreach (AnswerData data in answerDatas) {
             float maxAngle = data.maxAngle;
+            float playerAngle = angle;
+
             if (data.minAngle > maxAngle) {
                 maxAngle += 360;
                 if (angle < data.minAngle)
-                    angle += 360;
+                    playerAngle += 360;
             }
-            if (data.minAngle < angle && angle < maxAngle)
+
+            if (data.minAngle < playerAngle && playerAngle < maxAngle)
                 if (curType != data.time) {
                     curType = data.time;
                     OnTimeChange?.Invoke(curType);

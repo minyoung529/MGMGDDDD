@@ -74,7 +74,7 @@ public class PaintingObject : MonoBehaviour
 
     new private SphereCollider collider;
 
-    [field:SerializeField]
+    [field: SerializeField]
     public UnityEvent<float> OnSpreadOil { get; set; }
     [field: SerializeField]
     public UnityEvent OnResetOil { get; set; }
@@ -93,7 +93,7 @@ public class PaintingObject : MonoBehaviour
 
             oil.OnContactFirePet += Burn;
             oil.gameObject.SetActive(false);
-            oil.transform.localScale = Vector3.one * radius;
+            oil.transform.localScale = Vector3.one * radius * 1.5f;
         }
     }
 

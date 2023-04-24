@@ -215,7 +215,6 @@ public abstract class Pet : MonoBehaviour
     }
 
     public void ReCall() {
-        Debug.Log(IsHolding);
         if (isRecall || IsHolding || !player) return;
         isRecall = true;
         isInputLock = true;

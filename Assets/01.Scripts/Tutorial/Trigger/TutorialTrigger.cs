@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,15 @@ public class TutorialTrigger : MonoBehaviour
     private TutorialController tutorialController = null;
     private bool isEnter = false;
 
+    private Action onEnter;
+    private Action onExit;
+
+    private void Awake()
+    {
+        onEnter += OnEnter;
+        onExit += OnExit;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!isCollide || isEnter) return;
@@ -32,7 +42,8 @@ public class TutorialTrigger : MonoBehaviour
             isEnter = true;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
 
-            tutorialController?.StartTutorial(tutorialType, tutorialName);
+            tutorialController?.StartTutorial(tutorialType, onExit, tutorialName);
+            onEnter?.Invoke();
         }
     }
 
@@ -48,6 +59,7 @@ public class TutorialTrigger : MonoBehaviour
             isEnter = false;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
             tutorialController?.StopTutorial(tutorialType);
+            onExit?.Invoke();
         }
     }
 
@@ -89,7 +101,7 @@ public class TutorialTrigger : MonoBehaviour
 
     private void StartTutorial(TutorialController controller)
     {
-        controller.StartTutorial(tutorialType, tutorialName);
+        controller.StartTutorial(tutorialType, onExit, tutorialName);
         OnStartTrigger();
     }
 
@@ -102,4 +114,8 @@ public class TutorialTrigger : MonoBehaviour
     {
 
     }
+
+    protected virtual void OnEnter() { }
+
+    protected virtual void OnExit() { }
 }
