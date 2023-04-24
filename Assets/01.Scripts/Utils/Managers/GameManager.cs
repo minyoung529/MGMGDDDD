@@ -33,6 +33,9 @@ public class GameManager : MonoSingleton<GameManager>
     public UIManager UI { get; private set; } = new UIManager();
     #endregion
 
+    private PlayerMove player = null;
+    public PlayerMove Player => player;
+
     #region 퍼즐 관련 변수
     private ButtonObject[] buttons;
     public ButtonObject[] Buttons => buttons;
@@ -50,6 +53,7 @@ public class GameManager : MonoSingleton<GameManager>
     protected override void Awake()
     {
         FindFindableObject();
+        FindPlayer();
         st = Time.time;
 
         base.Awake();
@@ -59,6 +63,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         // LATER FIX
         SceneController.ListeningEnter(SetMainCamera);
+        SceneController.ListeningEnter(FindPlayer);
         RenderSettingController.Start();
         CameraSwitcher.Start();
     }
@@ -70,6 +75,10 @@ public class GameManager : MonoSingleton<GameManager>
         //    Cursor.visible = true;
         //    Cursor.lockState = CursorLockMode.None;
         //}
+    }
+
+    private void FindPlayer() {
+        player = FindObjectOfType<PlayerMove>();
     }
 
     private void FindFindableObject()

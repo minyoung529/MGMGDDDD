@@ -136,8 +136,14 @@ public class PetManager : MonoSingleton<PetManager>
         pets[selectIndex].Skill();
     }
 
-    private void ReCall(InputAction input, float value) {
+    private void ReCall(InputAction input, float value)
+    {
         if (pets.Count == 0) return;
+        //foreach (Pet p in pets)
+        //{
+        //    p.ReCall();
+        //}
+
         pets[selectIndex].ReCall();
     }
     #endregion

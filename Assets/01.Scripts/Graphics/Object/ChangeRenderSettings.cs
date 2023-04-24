@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ChangeRenderSettings : MonoBehaviour
 {
@@ -38,6 +39,9 @@ public class ChangeRenderSettings : MonoBehaviour
     [SerializeField]
     private bool[] changeVariable = new bool[5] { true, true, true, true, true };
 
+    [SerializeField]
+    private UnityEvent onChange;
+
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
@@ -73,23 +77,25 @@ public class ChangeRenderSettings : MonoBehaviour
     public void Change()
     {
         if (changeVariable[0])
-            oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
-        if (changeVariable[1])
             oAmbientLight = RenderSettingController.SetAmbientLight(ambientLight, duration);
+        if (changeVariable[1])
+            oReflectionIntensity = RenderSettingController.SetReflectionIntensity(reflectionIntensity, duration);
         if (changeVariable[2])
             oFog = RenderSettingController.Setfog(fog);
         if (changeVariable[3])
             oFogColor = RenderSettingController.SetFogColor(fogColor, duration);
         if (changeVariable[4])
             oFogDensity = RenderSettingController.SetFogDensity(fogDensity, duration);
+
+        onChange?.Invoke();
     }
 
     public void Back()
     {
         if (changeVariable[0])
-            RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
-        if (changeVariable[1])
             RenderSettingController.SetAmbientLight(oAmbientLight, duration);
+        if (changeVariable[1])
+            RenderSettingController.SetReflectionIntensity(oReflectionIntensity, duration);
         if (changeVariable[2])
             RenderSettingController.Setfog(oFog);
         if (changeVariable[3])

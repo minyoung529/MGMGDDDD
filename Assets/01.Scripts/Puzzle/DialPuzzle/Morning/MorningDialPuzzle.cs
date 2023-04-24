@@ -56,6 +56,7 @@ public class MorningDialPuzzle : MonoBehaviour
         
         cars.Remove(car.gameObject);
         car.transform.localPosition = Vector3.zero;
+        car.localRotation = Quaternion.identity;
         car.gameObject.SetActive(true);
         car.DOLocalMoveZ(0.3f, Random.Range(minDriveTime, maxDriveTime)).SetEase(Ease.Flash).OnComplete(() =>
         {

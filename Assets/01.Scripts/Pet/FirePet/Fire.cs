@@ -180,4 +180,10 @@ public class Fire : MonoBehaviour
     {
         seq.Kill();
     }
+
+    public void ListeningFireEvent(UnityAction action)
+    {
+        fireEvent.RemoveListener(action);
+        fireEvent.AddListener(action);
+    }
 }

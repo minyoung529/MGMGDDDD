@@ -28,6 +28,8 @@ public class SelectedObject : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100f))
         {
             Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
+            if(interactionObj != null) OffInteration();
+            
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
 
