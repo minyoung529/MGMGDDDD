@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 [ExecuteAlways] // 에디터 모드에서도 실행되어 테스트가 쉽다.
 public class Reveal : MonoBehaviour
@@ -24,15 +25,19 @@ public class Reveal : MonoBehaviour
 
     public void SetLight(bool value)
     {
+        
         spotLight.gameObject.SetActive(value);
 
         if(value)
         {
-        shaderFloat.Active();
+            spotLight.transform.position = new Vector3(spotLight.transform.position.x, 0f, spotLight.transform.position.z);
+            spotLight.transform.DOMoveY(30f, 1f);
+            shaderFloat.Active();
         }
         else
         {
-        shaderFloat.Inactive();
+            spotLight.transform.DOMoveY(0f, 1f);
+            shaderFloat.Inactive();
         }
     }
     public void SwitchLight()
