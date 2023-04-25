@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ThirdPersonCameraControll : MonoBehaviour
 {
-    [SerializeField] Texture2D skillCursor;
     [SerializeField] CinemachineFreeLook defaultCamera;
     [SerializeField] Canvas crosshairCanvas;
 

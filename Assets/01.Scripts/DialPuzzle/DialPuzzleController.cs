@@ -86,7 +86,7 @@ public class DialPuzzleController : MonoBehaviour
     {
         CheckTime();
         CheckRespawn();
-        CheckFall();
+        //CheckFall();
         UpdateCamPos();
         UpdateHoleSize();
     }
@@ -162,8 +162,8 @@ public class DialPuzzleController : MonoBehaviour
                 }
 
             // 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
-            float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
-            switchOffset = minDistanceAngle;
+         //   float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
+           // switchOffset = minDistanceAngle;
         }
     //    Debug.Log(minAgl + ", " + maxAgl);
     }
@@ -190,13 +190,13 @@ public class DialPuzzleController : MonoBehaviour
 
     private void CheckFall()
     {
-        if (player.transform.position.y < playerDieHeight)
-        {
-            EventParam eventParam = new();
-            eventParam["position"] = SpawnPosition;
-
-            EventManager.TriggerEvent(EventName.PlayerDie, eventParam);
-        }
+        //if (player.transform.position.y < playerDieHeight)
+        //{
+        //    EventParam eventParam = new();
+        //    eventParam["position"] = SpawnPosition;
+        //    Debug.Log("ASD");
+        //    EventManager.TriggerEvent(EventName.PlayerDie, eventParam);
+        //}
     }
 
     private void CameraSetting(float angle, AnswerData data)
@@ -350,6 +350,7 @@ public class DialPuzzleController : MonoBehaviour
         EventParam eventParam = new();
         eventParam["position"] = spawnPoints[0].position;
         EventManager.TriggerEvent(EventName.PlayerDie, eventParam);
+
 
         StartDialPuzzle();
     }
