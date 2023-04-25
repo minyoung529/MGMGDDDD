@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 [ExecuteAlways] // 에디터 모드에서도 실행되어 테스트가 쉽다.
 public class Reveal : MonoBehaviour
@@ -6,10 +7,12 @@ public class Reveal : MonoBehaviour
     [SerializeField] Light spotLight;
 
     private Material m_Mat;
+    private ChangeShaderFloat shaderFloat;
 
     private void Start()
     {
         m_Mat = GetComponent<Renderer>().sharedMaterial;
+        shaderFloat= GetComponent<ChangeShaderFloat>();
 
         SetLight(false);
     }
@@ -22,11 +25,20 @@ public class Reveal : MonoBehaviour
 
     public void SetLight(bool value)
     {
-        int rot = 0;
-        if (value) rot = 90;
-
+        
         spotLight.gameObject.SetActive(value);
-        spotLight.transform.eulerAngles = new Vector3(rot, -90, 0);
+
+        if(value)
+        {
+            spotLight.transform.position = new Vector3(spotLight.transform.position.x, 0f, spotLight.transform.position.z);
+            spotLight.transform.DOMoveY(30f, 1f);
+            shaderFloat.Active();
+        }
+        else
+        {
+            spotLight.transform.DOMoveY(0f, 1f);
+            shaderFloat.Inactive();
+        }
     }
     public void SwitchLight()
     {

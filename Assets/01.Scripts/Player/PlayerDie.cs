@@ -43,6 +43,8 @@ public class PlayerDie : MonoBehaviour {
 
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
+        PetManager.Instance.AllPetActions(x => x.transform.position = point);
+        
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
         seq.AppendCallback(() => {
@@ -52,6 +54,7 @@ public class PlayerDie : MonoBehaviour {
         seq.AppendCallback(() => Time.timeScale = 1f);
         seq.Append(dieCanvas.DOFade(0f, 1f));
         seq.AppendCallback(() => dieCanvas.gameObject.SetActive(false));
+
     }
 
     public void RenewSpawnPoint(Vector3 point) {

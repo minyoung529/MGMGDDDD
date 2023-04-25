@@ -7,6 +7,8 @@ public class SpiderRope : MonoBehaviour
 {
     [SerializeField] private Transform startPos;
     [SerializeField] private Transform endPos;
+
+    public Transform EndPos { get { return endPos; } }
     
 
     public void Awake()
