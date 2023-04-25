@@ -87,20 +87,15 @@ namespace PathCreation.Examples
                 if (reverseStartEnd)
                 {
                     nextPos = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction) - offset;
-                    rotation = /*Quaternion.LookRotation(pathCreator.path.GetRDirectionAtDistance(distanceTravelled), Vector3.up);*/
-                        pathCreator.path.GetRRotationAtDistance(distanceTravelled, endOfPathInstruction);
+
+                    Vector3 eulerAngles = pathCreator.path.GetRDirectionAtDistance(distanceTravelled);
+                    eulerAngles.y += 180f;
+                    rotation = Quaternion.Euler(eulerAngles);
                 }
                 else
                 {
                     nextPos = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction) - offset;
                     rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
-                }
-
-                if (endOfPathInstruction == EndOfPathInstruction.Stop && distanceTravelled > 1f && !isStop && Vector3.Distance(transform.position, nextPos) < 0.01f)
-                {
-                    onArrive.Invoke(destName);
-                    isStop = true;
-                    isStart = false;
                 }
 
                 transform.position = nextPos;
@@ -141,10 +136,14 @@ namespace PathCreation.Examples
 
             float dist = Vector3.Distance(transform.position, destination);
 
-            if (!reachDestination && dist < 5f)
+            if (!reachDestination && dist < 2f && endOfPathInstruction == EndOfPathInstruction.Stop)
             {
                 reachDestination = true;
-                DOTween.To(() => speed, (x) => speed = x, 0f, 2f).OnComplete(() => onArrive.Invoke(destName));
+                onArrive.Invoke(destName);
+                isStop = true;
+                isStart = false;
+
+                DOTween.To(() => speed, (x) => speed = x, 0f, 2f);
             }
         }
 

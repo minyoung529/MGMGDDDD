@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RidingRail : MonoBehaviour
 {
@@ -20,12 +21,14 @@ public class RidingRail : MonoBehaviour
 
     private PathFollower pathFollower;
     private Transform triggerPoint;
+    private Rigidbody rigid;
 
     private void Awake()
     {
         railPosition = transform.Find("RailPosition");
 
-        pathFollower ??= Utils.GetOrAddComponent<PathFollower>(gameObject);
+        pathFollower = Utils.GetOrAddComponent<PathFollower>(gameObject);
+        rigid = GetComponent<Rigidbody>();
         pathFollower.offset = railPosition.localPosition;
         pathFollower.endOfPathInstruction = EndOfPathInstruction.Stop;
     }
@@ -38,61 +41,86 @@ public class RidingRail : MonoBehaviour
         this.triggerPoint = triggerPoint;
     }
 
-    public void RideRail(InputAction action = InputAction.Interaction, float val = 0f)
+    public void PlayerRideRail(InputAction action = InputAction.Interaction, float val = 0f)
+    {
+        if (isRiding) return;
+
+        if (Vector3.Distance(pathFollower.EndPoint, triggerPoint.position) < 5f)
+        {
+            Ride(pathFollower.StartPoint, true);
+            RidePets(pathFollower.StartPoint, true);
+        }
+        else
+        {
+            Ride(pathFollower.EndPoint, false);
+            RidePets(pathFollower.EndPoint, false);
+        }
+    }
+
+    public void Ride(Vector3 destination, bool reverse, UnityAction<Destination> onArrive = null)
     {
         if (isRiding) return;
         isRiding = true;
 
         pathFollower.ReasetData();
-
-        if (Vector3.Distance(pathFollower.EndPoint, triggerPoint.position) < 5f)
-        {
-            pathFollower.reverseStartEnd = true;
-            pathFollower.destination = pathFollower.StartPoint;
-        }
-        else
-        {
-            pathFollower.reverseStartEnd = false;
-            pathFollower.destination = pathFollower.EndPoint;
-        }
+        pathFollower.reverseStartEnd = reverse;
+        pathFollower.destination = destination;
 
         pathFollower.endOfPathInstruction = EndOfPathInstruction.Stop;
 
         pathFollower.speed = 15f;
         pathFollower.StartFollowing();
 
+        pathFollower.onArrive.RemoveListener(OnArrive);
         pathFollower.onArrive.AddListener(OnArrive);
-        RidePets();
+
+        if (onArrive != null)
+        {
+            pathFollower.onArrive.RemoveListener(onArrive);
+            pathFollower.onArrive.AddListener(onArrive);
+        }
     }
 
-    private void RidePets()
+    private void RidePets(Vector3 destination, bool reverse)
     {
-        StartCoroutine(DelayPets());
+        StartCoroutine(DelayPets(destination, reverse));
     }
 
-    private IEnumerator DelayPets()
+    private IEnumerator DelayPets(Vector3 destination, bool reverse)
     {
         List<Pet> petList = PetManager.Instance.GetPetList;
+        petList.ForEach(x => x.AgentEnabled(false));
 
         for (int i = 0; i < petList.Count; i++)
         {
             yield return new WaitForSeconds(0.5f);
             RidingRail rail = Utils.GetOrAddComponent<RidingRail>(petList[i]);
             rail.SetRail(pathFollower.pathCreator, triggerPoint);
-            rail.RideRail();
+
+            Pet pet = petList[i];
+
+            UnityAction<Destination> onArrive = (x) =>
+            {
+                pet.AgentEnabled(true);
+                pet.SetTargetPlayer();
+            };
+
+            rail.Ride(destination, reverse, onArrive);
+
+            pathFollower.onArrive.RemoveListener(OnArrive);
+            pathFollower.onArrive.AddListener(OnArrive);
         }
     }
 
     public void OnArrive(Destination destination)
     {
-        Debug.Log($"{name} ARRIVE");
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        rigid.velocity = Vector3.zero;
         isRiding = false;
     }
 
     public void Enter()
     {
-        InputManager.StartListeningInput(InputAction.Interaction, RideRail);
+        InputManager.StartListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 
     public void Exit()
@@ -100,6 +128,6 @@ public class RidingRail : MonoBehaviour
         triggerPoint = null;
         pathFollower.pathCreator = null;
 
-        InputManager.StopListeningInput(InputAction.Interaction, RideRail);
+        InputManager.StopListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 }
