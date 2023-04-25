@@ -44,6 +44,9 @@ public class Thermometer : MonoBehaviour
     [SerializeField]
     private ThermometerChanger changer;
 
+    [SerializeField]
+    private float targetValue;
+
     public Action OnChangeValue { get; set; }
 
     private void Start()
@@ -154,9 +157,9 @@ public class Thermometer : MonoBehaviour
         return Mathf.Lerp(0f, MAX_LIQUID_SCALE_Y, value);
     }
 
-    public bool IsClear(float weight)
+    public bool IsClear()
     {
-        return (Mathf.Abs(NormalizedLiquid - weight) < 0.1f);
+        return (Mathf.Abs(NormalizedLiquid - targetValue) < 0.05f);
     }
     #endregion
 

@@ -32,13 +32,13 @@ public class ChangeShaderFloat : MonoBehaviour
     {
         if (GetComponent<Renderer>())
         {
-
             material = GetComponent<Renderer>().material;
         }
         material ??= GetComponent<RawImage>().material;
         fillId = Shader.PropertyToID(name);
     }
 
+    [ContextMenu("Change")]
     public void Trigger()
     {
         if (isActive)
@@ -74,7 +74,6 @@ public class ChangeShaderFloat : MonoBehaviour
             seq.AppendInterval(preDelay);
         }
 
-        Debug.Log(inactiveValue);
         seq.AppendCallback(() => ChangeValue(inactiveValue));
     }
 

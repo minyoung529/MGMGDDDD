@@ -64,14 +64,14 @@ public class SlidingDoor : MonoBehaviour
         isLock= false;
     }
 
-    public void InputKey()
+    public void InputKey(Key key)
     {
         inputKeyCount++;
-        checkLights[inputKeyCount - 1].color = Color.green;
+        checkLights[key.ActiveIdx].color = key.Color;
+
         if (inputKeyCount >= needKeyCount)
         {
             UnLock();
         }
     }
-
 }

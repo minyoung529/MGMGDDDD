@@ -26,6 +26,9 @@ public class PetManager : MonoSingleton<PetManager>
     public List<Pet> GetPetList { get { return pets; } }
     #endregion 
 
+    [SerializeField]
+    private GameObject[] petPrefabs;
+
     protected override void Awake()
     {
         base.Awake();
@@ -39,6 +42,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         ResetPetManager();
     }
+
 
     private void Update()
     {
@@ -56,6 +60,7 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i].OnUpdate();
         }
 
+        Debug_CreateAndGetPet();
     }
 
     public bool IsGet(Pet p)
@@ -136,8 +141,14 @@ public class PetManager : MonoSingleton<PetManager>
         pets[selectIndex].Skill();
     }
 
-    private void ReCall(InputAction input, float value) {
+    private void ReCall(InputAction input, float value)
+    {
         if (pets.Count == 0) return;
+        //foreach (Pet p in pets)
+        //{
+        //    p.ReCall();
+        //}
+
         pets[selectIndex].ReCall();
     }
     #endregion
@@ -323,6 +334,20 @@ public class PetManager : MonoSingleton<PetManager>
     public bool Contain(Pet pet)
     {
         return pets.Contains(pet);
+    }
+    #endregion
+
+    #region Debug
+    private void Debug_CreateAndGetPet()
+    {
+        for (int i = 0; i < petPrefabs.Length; i++)
+        {
+            if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1 + i)))
+            { 
+                Pet pet = Instantiate(petPrefabs[i], GameManager.Instance.Player.transform.position, Quaternion.identity).GetComponent<Pet>();
+                pet.GetPet(GameManager.Instance.Player.transform);
+            }
+        }
     }
     #endregion
 }

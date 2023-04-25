@@ -14,6 +14,17 @@ public class Key : MonoBehaviour
     private bool own = false;
     private bool around = false;
 
+    [SerializeField]
+    private int activeIdx = 0;
+
+    [SerializeField]
+    private Color color;
+
+    #region Property
+    public int ActiveIdx => activeIdx;
+    public Color Color => color;
+    #endregion
+
     public void GetKey(bool val)
     {
         own = val;

@@ -31,6 +31,11 @@ public class Fire : MonoBehaviour
     [SerializeField]
     private bool isClingTo = true;
 
+    [SerializeField]
+    private bool onlyScriptBurn = false;
+
+    public float BurningTime => burningTime;
+
     private void Awake()
     {
         isBurn = playOnAwake;
@@ -41,12 +46,12 @@ public class Fire : MonoBehaviour
         }
     }
 
-    public void Burn()
+    public void Burn(bool isPhysics = false)
     {
         if (!gameObject.activeSelf) return;
+        if (isPhysics && onlyScriptBurn) return;
 
         isBurn = true;
-
         seq = DOTween.Sequence();
         seq.AppendInterval(burnDelay);
         seq.AppendCallback(() =>
@@ -151,7 +156,7 @@ public class Fire : MonoBehaviour
             if (f.IsBurn) continue;
             transform.DOKill();
 
-            f.Burn();
+            f.Burn(true);
         }
     }
 
@@ -172,12 +177,18 @@ public class Fire : MonoBehaviour
         {
             if (f.IsBurn) continue;
             transform.DOKill();
-            f.Burn();
+            f.Burn(true);
         }
     }
 
     private void OnDestroy()
     {
         seq.Kill();
+    }
+
+    public void ListeningFireEvent(UnityAction action)
+    {
+        fireEvent.RemoveListener(action);
+        fireEvent.AddListener(action);
     }
 }

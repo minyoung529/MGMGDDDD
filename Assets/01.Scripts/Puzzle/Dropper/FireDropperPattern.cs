@@ -11,11 +11,14 @@ public class FireDropperPattern : MonoBehaviour
     private MeshRenderer[] meshRenderers;
     private Collider[] colliders;
 
+    private MeshRenderer myRenderer;
+
     private void Awake()
     {
         gameObject.SetActive(true);
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         colliders = GetComponentsInChildren<Collider>();
+        myRenderer= GetComponent<MeshRenderer>();
         gameObject.SetActive(false);
     }
     public void StartDropper()
@@ -26,11 +29,7 @@ public class FireDropperPattern : MonoBehaviour
         seq.AppendInterval(0.25f);
         seq.AppendCallback(() =>
         {
-            foreach (MeshRenderer renderer in meshRenderers)
-                renderer.enabled = false;
-
-            foreach (Collider col in colliders)
-                col.enabled = false;
+            Active(false);
         });
     }
 
@@ -41,5 +40,18 @@ public class FireDropperPattern : MonoBehaviour
         {
             particle.Play();
         }
+    }
+
+    public void Active(bool isActive)
+    {
+        foreach (MeshRenderer renderer in meshRenderers)
+        {
+            if (renderer == myRenderer) continue;
+
+            renderer.enabled = isActive;
+        }
+
+        foreach (Collider col in colliders)
+            col.enabled = isActive;
     }
 }

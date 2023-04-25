@@ -16,15 +16,18 @@ public class PlayerRespawn : MonoBehaviour {
     private void Awake() {
         CanvasGroup canvasPrefab = Resources.Load<CanvasGroup>("DieCanvas");
         dieCanvas = Instantiate(canvasPrefab);
+
+        if(startRespawnPoint != null)
         curRespawnPoint = startRespawnPoint.position;
-        if (dieParticlePref)
+
+        if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
 
         EventManager.StartListening(EventName.PlayerDie, OnDie);
     }
 
     private void OnDie(EventParam param = null) {
-        if (param == null)
+        if (param == null || !param.Contain("position"))
             Respawn(curRespawnPoint);
         else
             Respawn((Vector3)param["position"]);
@@ -40,6 +43,8 @@ public class PlayerRespawn : MonoBehaviour {
 
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
+        PetManager.Instance.AllPetActions(x => x.transform.position = point);
+        
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
         seq.AppendCallback(() => {
@@ -49,6 +54,7 @@ public class PlayerRespawn : MonoBehaviour {
         seq.AppendCallback(() => Time.timeScale = 1f);
         seq.Append(dieCanvas.DOFade(0f, 1f));
         seq.AppendCallback(() => dieCanvas.gameObject.SetActive(false));
+
     }
 
     public void RenewSpawnPoint(Vector3 point) {

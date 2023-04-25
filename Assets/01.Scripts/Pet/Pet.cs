@@ -215,7 +215,6 @@ public abstract class Pet : MonoBehaviour
     }
 
     public void ReCall() {
-        Debug.Log(IsHolding);
         if (isRecall || IsHolding || !player) return;
         if (Vector3.Distance(transform.position, player.position) <= sightRange * 1.5f) {
             SetTargetPlayer();

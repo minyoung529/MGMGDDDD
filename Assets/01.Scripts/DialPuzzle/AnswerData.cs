@@ -27,10 +27,18 @@ public struct AnswerList {
 
 public enum TimeType {
     None = -1,
+
     Morning = 0,
-    Afternoon = 1,
-    Evening = 2,
-    Night = 3,
+    MorningToAfternoon = 1,
+    
+    Afternoon = 2,
+    AfternoonToEvening = 3,
+    
+    Evening = 4,
+    EveningToNight = 5,
+
+    Night = 6,
+    NightToMorning = 7,
 
     Count
 }

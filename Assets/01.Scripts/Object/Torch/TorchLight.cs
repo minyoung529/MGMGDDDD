@@ -17,6 +17,10 @@ public class TorchLight : MonoBehaviour
     {
       //  fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
         particles= GetComponentsInChildren<ParticleSystem>();
+    }
+
+    private void Start()
+    {
         OffLight();
     }
 
@@ -28,7 +32,6 @@ public class TorchLight : MonoBehaviour
         foreach (ParticleSystem p in particles)
             p.Play();
 
-        OnLighted?.Invoke(true);
         //fireParticle.Play();
     }
 
@@ -55,22 +58,23 @@ public class TorchLight : MonoBehaviour
         //OnLighted?.Invoke(isOn);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         Fire fire = other.GetComponent<Fire>();
         if(fire !=null)
         {
-            if (!fire.IsBurn) return;
+            if (!fire.IsBurn || isOn) return;
             OnLight();
             OnLighted?.Invoke(isOn);
         }
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         Fire fire = collision.collider.GetComponent<Fire>();
+            Debug.Log(collision.collider.name);
         if (fire != null)
         {
-            if (!fire.IsBurn) return;
+            if (!fire.IsBurn || isOn) return;
             OnLight();
             OnLighted?.Invoke(isOn);
         }

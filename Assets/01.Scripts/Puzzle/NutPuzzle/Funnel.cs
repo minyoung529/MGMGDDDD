@@ -20,7 +20,7 @@ public class Funnel : MonoBehaviour
 
     private void Awake()
     {
-        bolts = GetComponentsInChildren<Bolt>();
+        bolts = boltRoot.GetComponentsInChildren<Bolt>();
 
         foreach (Bolt bolt in bolts)
         {

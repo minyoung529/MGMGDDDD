@@ -19,7 +19,7 @@ namespace PathCreation.Examples
         public bool reverseStartEnd = false;
 
         [HideInInspector]
-        public Transform destination = null;
+        public Vector3 destination = Vector3.zero;
         private Destination destName = Destination.Clock;
 
         [SerializeField]
@@ -34,12 +34,20 @@ namespace PathCreation.Examples
         [SerializeField]
         private Ease moveEase = Ease.Unset;
 
-        void Start()
+        public Vector3 EndPoint => pathCreator.path.GetPoint(pathCreator.path.NumPoints - 1);
+        public Vector3 StartPoint => pathCreator.path.GetPoint(0);
+
+        public Vector3 offset = Vector3.zero;
+
+        void Awake()
         {
+            if (onArrive == null || onArrive.GetPersistentEventCount() == 0)
+            {
+                onArrive = new UnityEvent<Destination>();
+            }
+
             if (duration > 0f)
             {
-                // 5초 10
-                // 1초 2
                 speed = pathCreator.path.length / duration;
             }
 
@@ -50,6 +58,19 @@ namespace PathCreation.Examples
                 // Subscribed to the pathUpdated event so that we're notified if the path changes during the game
                 pathCreator.pathUpdated += OnPathChanged;
             }
+        }
+
+        public void ReasetData()
+        {
+            isStop = false;
+            distanceTravelled = 0f;
+            isStart = true;
+            reachDestination = false;
+        }
+
+        public void StartFollowing()
+        {
+            isStart = true;
         }
 
         void Update()
@@ -65,20 +86,16 @@ namespace PathCreation.Examples
 
                 if (reverseStartEnd)
                 {
-                    nextPos = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction);
-                    rotation = Quaternion.LookRotation(-pathCreator.path.GetRDirectionAtDistance(distanceTravelled), Vector3.up);
+                    nextPos = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction) - offset;
+
+                    Vector3 eulerAngles = pathCreator.path.GetRDirectionAtDistance(distanceTravelled);
+                    eulerAngles.y += 180f;
+                    rotation = Quaternion.Euler(eulerAngles);
                 }
                 else
                 {
-                    nextPos = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                    nextPos = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction) - offset;
                     rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
-                }
-
-                if (endOfPathInstruction == EndOfPathInstruction.Stop && distanceTravelled > 1f && !isStop && Vector3.Distance(transform.position, nextPos) < 0.01f)
-                {
-                    onArrive?.Invoke(destName);
-                    isStop = true;
-                    isStart = false;
                 }
 
                 transform.position = nextPos;
@@ -117,18 +134,22 @@ namespace PathCreation.Examples
         {
             if (destination == null) return;
 
-            float dist = Vector3.Distance(transform.position, destination.position);
+            float dist = Vector3.Distance(transform.position, destination);
 
-            if (!reachDestination && dist < 5f)
+            if (!reachDestination && dist < 2f && endOfPathInstruction == EndOfPathInstruction.Stop)
             {
                 reachDestination = true;
-                DOTween.To(() => speed, (x) => speed = x, 0f, 2f).OnComplete(() => onArrive.Invoke(destName));
+                onArrive.Invoke(destName);
+                isStop = true;
+                isStart = false;
+
+                DOTween.To(() => speed, (x) => speed = x, 0f, 2f);
             }
         }
 
         public void SetDestination(Transform destTrn, Destination dest)
         {
-            destination = destTrn;
+            destination = destTrn.position;
             destName = dest;
         }
     }

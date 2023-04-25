@@ -15,6 +15,7 @@ public class CameraSwitcher
     public static List<CinemachineVirtualCameraBase> Cameras => cameras;
 
     public static CinemachineVirtualCameraBase activeCamera = null;
+    public static CinemachineVirtualCameraBase defaultCamera = null;
 
     private static CinemachineBrain cinemachineBrain;
     public static CinemachineBrain CinemachineBrain
@@ -47,6 +48,7 @@ public class CameraSwitcher
         }
     }
 
+
     public static void Start()
     {
         SceneController.ListeningEnter(SceneType.Clock, ResetCameras);
@@ -59,6 +61,16 @@ public class CameraSwitcher
     }
 
     #region CameraSet
+
+    public static void SetDefaultCamera(CinemachineVirtualCameraBase cam)
+    {
+        defaultCamera = cam;
+    }
+
+    public static void SwitchDefaultCamera()
+    {
+        SwitchCamera(defaultCamera);
+    }
 
     public static void Register(CinemachineVirtualCameraBase cam)
     {

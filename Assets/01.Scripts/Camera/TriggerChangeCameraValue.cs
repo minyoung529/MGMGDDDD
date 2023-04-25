@@ -17,10 +17,15 @@ public class TriggerChangeCameraValue : MonoBehaviour
     [SerializeField]
     private float duration = 1f;
 
+    private bool isEnter = false;
+
     private void OnTriggerEnter(Collider other)
     {
+        if (isEnter) return;
+
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
+            isEnter = true;
             // 나중에 고쳐야 함...
             FreeLookCameraHolder holder = other.GetComponentInChildren<FreeLookCameraHolder>();
 
@@ -39,8 +44,11 @@ public class TriggerChangeCameraValue : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (!isEnter) return;
+
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
+            isEnter = false;
             // 나중에 고쳐야 함...
             FreeLookCameraHolder holder = other.GetComponentInChildren<FreeLookCameraHolder>();
 
