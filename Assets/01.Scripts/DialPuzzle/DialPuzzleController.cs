@@ -89,7 +89,6 @@ public class DialPuzzleController : MonoBehaviour
         CheckFall();
         UpdateCamPos();
         UpdateHoleSize();
-
     }
 
     [SerializeField]
@@ -167,7 +166,6 @@ public class DialPuzzleController : MonoBehaviour
             switchOffset = minDistanceAngle;
         }
     //    Debug.Log(minAgl + ", " + maxAgl);
-        Debug.Log(angle);
     }
 
     private void CheckRespawn()

@@ -17,7 +17,11 @@ public class TorchLight : MonoBehaviour
     {
       //  fireParticle = transform.GetChild(1).GetComponent<ParticleSystem>();
         particles= GetComponentsInChildren<ParticleSystem>();
-        OffLight();
+    }
+
+    private void Start()
+    {
+        OnLight();
     }
 
     [ContextMenu("OnLight")]
