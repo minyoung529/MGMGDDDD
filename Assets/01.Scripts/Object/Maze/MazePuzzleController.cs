@@ -88,10 +88,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         ChangeCam();
         OnCrossHairMove(true);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = false;
-
-        Pet.IsCameraAimPoint = false;
+        GameManager.Instance.SetCursorVisible(true);
         PetManager.Instance.AllPetActions(x => x.AgentAcceleration = 80);
     }
 
