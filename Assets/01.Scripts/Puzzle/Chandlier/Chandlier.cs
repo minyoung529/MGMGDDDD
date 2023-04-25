@@ -36,7 +36,7 @@ public class Chandlier : MonoBehaviour
         }
 
         oilGroupTransforms.ForEach(x => x.TouchedTime = 2f);
-        oilGroupTransforms.ForEach(x => x.TouchedTime = 1f);
+        groupTransforms.ForEach(x => x.TouchedTime = 1f);
     }
 
     private int CheckOilGroup(ChandlierListner listner)
@@ -47,8 +47,9 @@ public class Chandlier : MonoBehaviour
             {
                 if (!element.IsOilContact || !element.IsTouched)
                 {
-                    oilGroupTransforms.ForEach(x => x.StopFire());
+                    Debug.Log(element.name + " : " + element.IsOilContact + ", " + element.IsTouched);
                     listner.BlockLighting();
+                    oilGroupTransforms.ForEach(x => x.StopFire());
                     return -1;
                 }
             }
@@ -94,6 +95,7 @@ public class Chandlier : MonoBehaviour
         {
             check = 1;
             listner.Fire();
+            Debug.Log("FIRE");
         }
 
         if (check == -1) return;

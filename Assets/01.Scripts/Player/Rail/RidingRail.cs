@@ -29,7 +29,9 @@ public class RidingRail : MonoBehaviour
 
         pathFollower = Utils.GetOrAddComponent<PathFollower>(gameObject);
         rigid = GetComponent<Rigidbody>();
-        pathFollower.offset = railPosition.localPosition;
+
+        pathFollower.offset = (railPosition) ? railPosition.localPosition : Vector3.zero;
+
         pathFollower.endOfPathInstruction = EndOfPathInstruction.Stop;
     }
 
@@ -55,6 +57,8 @@ public class RidingRail : MonoBehaviour
             Ride(pathFollower.EndPoint, false);
             RidePets(pathFollower.EndPoint, false);
         }
+
+        InputManager.StopListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 
     public void Ride(Vector3 destination, bool reverse, UnityAction<Destination> onArrive = null)

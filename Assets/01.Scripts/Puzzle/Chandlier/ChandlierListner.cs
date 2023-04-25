@@ -58,11 +58,14 @@ public class ChandlierListner : MonoBehaviour
         {
             particle.Play();
         }
+
+        IsSuccess = true;
     }
 
     public void StopFire()
     {
         fire.StopBurn();
+        IsSuccess = false;
     }
 
     public void BlockLighting()

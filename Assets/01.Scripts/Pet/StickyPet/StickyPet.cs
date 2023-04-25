@@ -64,6 +64,7 @@ public class StickyPet : Pet
         stickyObject = null;
         ChangeState(StickyState.Idle);
 
+        scaleObject.DOKill();
         scaleObject.DOScale(Vector3.one, 0.5f);
         IsInputLock = false;
 
@@ -202,7 +203,6 @@ public class StickyPet : Pet
     {
         ChangeState(StickyState.Idle);
 
-        //SetNavIsStopped(false);
         SetNavEnabled(true);
         if (stickyObject)
         {

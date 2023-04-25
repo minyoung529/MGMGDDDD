@@ -11,6 +11,8 @@ public class PaintedOil : MonoBehaviour
 
     private Fire firePet = null;
 
+    public float BurnDuration => fire.BurningTime;
+
     private void Awake()
     {
         fire = GetComponent<Fire>();

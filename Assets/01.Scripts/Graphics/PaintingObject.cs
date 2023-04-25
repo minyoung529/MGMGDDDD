@@ -236,5 +236,7 @@ public class PaintingObject : MonoBehaviour
 
             yield return fireDelay;
         }
+
+        yield return new WaitForSeconds(oilList[index].BurnDuration);
     }
 }
