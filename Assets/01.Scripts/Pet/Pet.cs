@@ -216,6 +216,8 @@ public abstract class Pet : MonoBehaviour
 
     public void ReCall() {
         if (isRecall || IsHolding || !player) return;
+
+        ResetPet(); // 일단 넣어놓았습니다
         isRecall = true;
         isInputLock = true;
 
@@ -239,7 +241,7 @@ public abstract class Pet : MonoBehaviour
         flyParticle.Play();
 
         transform.DOLookAt(player.position, 0.5f);
-        transform.DOPath(path, 3f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
+        transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
             emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();

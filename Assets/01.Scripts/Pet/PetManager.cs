@@ -86,7 +86,6 @@ public class PetManager : MonoSingleton<PetManager>
 
         InputManager.StartListeningInput(InputAction.Pet_Skill, OnSkill);
         InputManager.StartListeningInput(InputAction.Pet_Move, OnClickMove);
-        InputManager.StartListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StartListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
 
         InputManager.StartListeningInput(InputAction.Pet_Follow, ReCall);
@@ -102,7 +101,6 @@ public class PetManager : MonoSingleton<PetManager>
 
         InputManager.StopListeningInput(InputAction.Pet_Skill, OnSkill);
         InputManager.StopListeningInput(InputAction.Pet_Move, OnClickMove);
-        InputManager.StopListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StopListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
 
         InputManager.StopListeningInput(InputAction.Pet_Follow, ReCall);
@@ -237,7 +235,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     public Pet GetSelectedPet()
     {
-        if (PetCount < 1) return null;
+        if (PetCount < 1 || pets.Count <= selectIndex) return null;
         return pets[selectIndex];
     }
     #endregion
@@ -342,8 +340,8 @@ public class PetManager : MonoSingleton<PetManager>
     {
         for (int i = 0; i < petPrefabs.Length; i++)
         {
-            if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1 + i)))
-            { 
+            if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha4 + i)))
+            {
                 Pet pet = Instantiate(petPrefabs[i], GameManager.Instance.Player.transform.position, Quaternion.identity).GetComponent<Pet>();
                 pet.GetPet(GameManager.Instance.Player.transform);
             }
