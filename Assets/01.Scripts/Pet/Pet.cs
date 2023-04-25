@@ -217,9 +217,14 @@ public abstract class Pet : MonoBehaviour
     public void ReCall() {
         Debug.Log(IsHolding);
         if (isRecall || IsHolding || !player) return;
-        isRecall = true;
-        isInputLock = true;
+        if (Vector3.Distance(transform.position, player.position) <= sightRange * 1.5f) {
+            SetTargetPlayer();
+            if(Vector3.Distance(GetDestination(), player.position) < 1f) {
+                return;
+            }
+        }
 
+        isRecall = true;
         isInputLock = true; 
         SetNavEnabled(false);
         coll.enabled = false;

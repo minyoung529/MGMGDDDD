@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHP : MonoBehaviour, PlayerCompo {
-    private PlayerController controller = null;
-    PlayerController PlayerCompo.Controller { get => controller; set => controller = value; }
-
+public class PlayerHP : PlayerMono
+{
     [SerializeField] private int maxHp;
     private int curHp;
 
@@ -17,7 +15,7 @@ public class PlayerHP : MonoBehaviour, PlayerCompo {
         if (isInvincible) return;
         if (collision.transform.CompareTag("EnemyAttack")) {
             curHp--;
-            anim.SetTrigger(hash_tDamaged);
+            controller.Anim.SetTrigger(hash_tDamaged);
             StartCoroutine(Invincible(2f));
             if(curHp <= 0) {
                 EventManager.TriggerEvent(EventName.PlayerDie);
