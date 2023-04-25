@@ -34,6 +34,7 @@ public class TogglePosition : MonoBehaviour
         }
     }
 
+    [ContextMenu("Trigger")]
     public void Trigger()
     {
         if (isOpen)
@@ -55,6 +56,7 @@ public class TogglePosition : MonoBehaviour
         Trigger();
     }
 
+    [ContextMenu("Open")]
     public void Open()
     {
         if (isPrevKill)
@@ -72,6 +74,7 @@ public class TogglePosition : MonoBehaviour
         OnOpen?.Invoke();
     }
 
+    [ContextMenu("Close")]
     public void Close()
     {
         if (isPrevKill)

@@ -12,7 +12,8 @@ public class DialPuzzleController : MonoBehaviour
     private TimeType curType = TimeType.None;
 
     [Header("Event")]
-    [SerializeField] private UnityEvent onPuzzleClear = null;
+    [SerializeField] private UnityEvent onDialClear = null;
+    [SerializeField] private UnityEvent onNextRound = null;
     [SerializeField] private UnityEvent onPuzzleOver = null;
     [SerializeField] private float playerDieHeight = -10f;
     public Action<TimeType> OnTimeChange = null;
@@ -57,9 +58,6 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     private Vector3 spawnPosition;
     public Vector3 SpawnPosition => spawnPosition;
-    private float switchOffset = 0f;
-    private float minAgl = 0;
-    private float maxAgl = 0;
 
     private DialPuzzleUI dialUIManager;
 
@@ -163,8 +161,8 @@ public class DialPuzzleController : MonoBehaviour
                 if (curType != data.time)
                 {
                     curType = data.time;
-                    minAgl = Mathf.Abs(data.minAngle - angle);
-                    maxAgl = Mathf.Abs(data.maxAngle - angle);
+                    //minAgl = Mathf.Abs(data.minAngle - angle);
+                    //maxAgl = Mathf.Abs(data.maxAngle - angle);
 
                     OnTimeChange?.Invoke(curType);
 
@@ -311,9 +309,12 @@ public class DialPuzzleController : MonoBehaviour
         remainTime += answerTime;
         isBlockAnswer = true;
         if (round > maxRound)
-            onPuzzleClear?.Invoke();
+        {
+            onDialClear?.Invoke();
+        }
         else
         {
+            onNextRound?.Invoke();
             hole.Radius = hole.MaxRadius;
             StartTimer();
             spider.ResetSpider();
