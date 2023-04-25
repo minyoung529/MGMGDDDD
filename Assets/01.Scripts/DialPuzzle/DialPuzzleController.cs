@@ -7,10 +7,6 @@ using UnityEngine.Events;
 
 public class DialPuzzleController : MonoBehaviour
 {
-    private int round = 0;
-
-    private TimeType curType = TimeType.None;
-
     [Header("Event")]
     [SerializeField] private UnityEvent onDialClear = null;
     [SerializeField] private UnityEvent onNextRound = null;
@@ -36,8 +32,11 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private float timer = 30f;
     [SerializeField] private float answerTime = 5f;
     // [SerializeField] private float spiderTime = 50f;
-    private float remainTime = 0;
+
+    private int round = 0;
+    private TimeType curType = TimeType.None;
     public float RemainTime => remainTime;
+    private float remainTime = 0;
     private bool pause = false;
 
     [Header("Dial Answer")]
@@ -45,6 +44,8 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private List<AnswerData> answerDatas = new List<AnswerData>();
     [SerializeField] private List<AnswerList> correctAnswer = new List<AnswerList>();
     [SerializeField] private List<GameObject> patterns = new List<GameObject>();
+    [SerializeField] private List<GameObject> selecctButtons = new List<GameObject>();
+
     private List<ChangeEmission> emissions = new List<ChangeEmission>();
     private List<Material> materials = new List<Material>();
     private int correctCount = 0;
@@ -86,7 +87,6 @@ public class DialPuzzleController : MonoBehaviour
     {
         CheckTime();
         CheckRespawn();
-        //CheckFall();
         UpdateCamPos();
         UpdateHoleSize();
     }
@@ -116,7 +116,6 @@ public class DialPuzzleController : MonoBehaviour
     private void UpdateHoleSize()
     {
         targetRadius = (remainTime / timer) * hole.MaxRadius;
-    //  spider.transform.position = Vector3.Lerp(spider.transform.position, spider.EndPos.position, Time.deltaTime / timer);
         dialUIManager.SetRadiusSlide(targetRadius);
 
         float dir = targetRadius - hole.Radius;
@@ -161,19 +160,11 @@ public class DialPuzzleController : MonoBehaviour
                 if (curType != data.time)
                 {
                     curType = data.time;
-                    //minAgl = Mathf.Abs(data.minAngle - angle);
-                    //maxAgl = Mathf.Abs(data.maxAngle - angle);
-
-                    OnTimeChange?.Invoke(curType);
-
+                    
+                    if (selecctButtons[(int)curType].activeSelf) OnTimeChange?.Invoke(curType);
                     CameraSetting(angle, data);
                 }
-
-            // 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
-            //   float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
-            // switchOffset = minDistanceAngle;
         }
-        //    Debug.Log(minAgl + ", " + maxAgl);
     }
 
     private void CheckRespawn()
@@ -265,6 +256,10 @@ public class DialPuzzleController : MonoBehaviour
     private void ResetDial()
     {
         round = 0;
+
+        ActiveRound(TimeType.Morning, false);
+        ActiveRound(TimeType.Evening, false);
+
         StartTimer();
         spider.ResetSpider();
     }
@@ -284,7 +279,6 @@ public class DialPuzzleController : MonoBehaviour
     {
         correctCount++;
         StartCoroutine(SetPatternsColor(Color.green, typeID));
-        Debug.Log(hole.Radius + ", " + correctAddRadius);
         hole.Radius = hole.Radius - correctAddRadius;
 
         if (correctCount >= correctAnswer[round].array.Count)
@@ -314,14 +308,30 @@ public class DialPuzzleController : MonoBehaviour
         }
         else
         {
-            onNextRound?.Invoke();
-            hole.Radius = hole.MaxRadius;
-            StartTimer();
-            spider.ResetSpider();
-            dialUIManager.SetHintText(Hint);
+            NextRound();
         }
         StartCoroutine(SetPatternsColor(Color.yellow, -1, 1f));
         StartCoroutine(SetPatternsColor(Color.white, -1, 2f, () => isBlockAnswer = false));
+    }
+
+    private void ActiveRound(TimeType type, bool _active)
+    {
+        // 조명 설정
+        patterns[(int)type].SetActive(_active);
+        selecctButtons[(int)type].SetActive(_active);
+    }
+
+    private void NextRound()
+    {
+         onNextRound?.Invoke();
+
+        ActiveRound(TimeType.Morning, true);
+        ActiveRound(TimeType.Evening, true);
+
+        hole.Radius = hole.MaxRadius;
+         StartTimer();
+         spider.ResetSpider();
+         dialUIManager.SetHintText(Hint);
     }
 
     private IEnumerator SetPatternsColor(Color color, int index = -1, float delay = 0f, Action onChange = null)
@@ -374,7 +384,6 @@ public class DialPuzzleController : MonoBehaviour
         eventParam["position"] = spawnPoints[0].position;
         EventManager.TriggerEvent(EventName.PlayerDie, eventParam);
 
-
         StartDialPuzzle();
     }
 
@@ -400,4 +409,6 @@ public class DialPuzzleController : MonoBehaviour
     {
         StopDialPuzzle();
     }
+
+
 }
