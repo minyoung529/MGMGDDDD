@@ -39,7 +39,7 @@ public class DialPuzzleController : MonoBehaviour
     [Header("Timer")]
     [SerializeField] private float timer = 30f;
     [SerializeField] private float answerTime = 5f;
-   // [SerializeField] private float spiderTime = 50f;
+    // [SerializeField] private float spiderTime = 50f;
     private float remainTime = 0;
     public float RemainTime => remainTime;
     private bool pause = false;
@@ -108,7 +108,7 @@ public class DialPuzzleController : MonoBehaviour
         Vector3 camPos = player.transform.position + center2Player * distance;
         //camPos.z += switchOffset;
         camPos.y += (height);
-       // camPos.y += (height + (switchOffset));
+        // camPos.y += (height + (switchOffset));
 
         dialCam.transform.position = camPos;
         dialCam.transform.LookAt(Vector3.Lerp(player.transform.position, center2Player, 0.1f));
@@ -117,7 +117,7 @@ public class DialPuzzleController : MonoBehaviour
     private void UpdateHoleSize()
     {
         targetRadius = (remainTime / timer) * hole.MaxRadius;
-        spider.transform.position = Vector3.Lerp(spider.transform.position, spider.EndPos.position, Time.deltaTime / timer);
+    //    spider.transform.position = Vector3.Lerp(spider.transform.position, spider.EndPos.position, Time.deltaTime / timer);
 
         float dir = targetRadius - hole.Radius;
         if (dir > 0)
@@ -170,10 +170,10 @@ public class DialPuzzleController : MonoBehaviour
                 }
 
             // 현재 각도 Min max min max 중 작은 거리에 있는 애의 각도랑 현재 각도의 거리나 각도를 구해서 그걸 Offset으로 이용
-         //   float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
-           // switchOffset = minDistanceAngle;
+            //   float minDistanceAngle = minAgl < maxAgl ? minAgl : maxAgl;
+            // switchOffset = minDistanceAngle;
         }
-    //    Debug.Log(minAgl + ", " + maxAgl);
+        //    Debug.Log(minAgl + ", " + maxAgl);
     }
 
     private void CheckRespawn()
@@ -209,7 +209,7 @@ public class DialPuzzleController : MonoBehaviour
 
     private void CameraSetting(float angle, AnswerData data)
     {
-        
+
         if ((int)curType % 2 == 0)
         {
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -222,7 +222,7 @@ public class DialPuzzleController : MonoBehaviour
             if (data.time == TimeType.AfternoonToEvening)
             {
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
-            Pet.IsCameraAimPoint = false;
+                Pet.IsCameraAimPoint = false;
                 UnityEngine.Cursor.visible = true;
                 return;
             }
@@ -244,6 +244,7 @@ public class DialPuzzleController : MonoBehaviour
 
         SetHint(Hint);
         spider.ResetSpider();
+        spider.StartFalling(timer);
 
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         UnityEngine.Cursor.visible = true;

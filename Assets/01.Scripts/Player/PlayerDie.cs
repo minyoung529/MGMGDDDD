@@ -43,6 +43,8 @@ public class PlayerDie : MonoBehaviour {
 
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
+        PetManager.Instance.AllPetActions(x => x.transform.position = point);
+        
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
         seq.AppendCallback(() => {

@@ -22,8 +22,8 @@ public class SpiderRope : MonoBehaviour
         transform.position = startPos.position;
     }
 
-    //public void StartFalling(float duration)
-    //{
-    //    transform.DOMoveY(endPos.position.y, duration);
-    //}
+    public void StartFalling(float duration)
+    {
+        transform.DOMoveY(endPos.position.y, duration);
+    }
 }

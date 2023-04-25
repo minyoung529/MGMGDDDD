@@ -63,9 +63,7 @@ public class TorchLight : MonoBehaviour
         Fire fire = other.GetComponent<Fire>();
         if(fire !=null)
         {
-            Debug.Log("Burn");
-            if (!fire.IsBurn) return;
-        if (isOn) return;
+            if (!fire.IsBurn || isOn) return;
             OnLight();
             OnLighted?.Invoke(isOn);
         }
@@ -76,9 +74,7 @@ public class TorchLight : MonoBehaviour
             Debug.Log(collision.collider.name);
         if (fire != null)
         {
-            if (!fire.IsBurn) return;
-            Debug.Log("Burning");
-        if (isOn) return;
+            if (!fire.IsBurn || isOn) return;
             OnLight();
             OnLighted?.Invoke(isOn);
         }
