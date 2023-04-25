@@ -7,7 +7,6 @@ public abstract class PlayerMono : MonoBehaviour
     public PlayerController Controller => controller;
 
     static public void SetController(PlayerController controller) {
-        Debug.Log(controller.name);
         if (PlayerMono.controller) {
             Debug.LogError("2개 이상의 PlayerController가 존재합니다");
             GameObject.Destroy(controller.gameObject);

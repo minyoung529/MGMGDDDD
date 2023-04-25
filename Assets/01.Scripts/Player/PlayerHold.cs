@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerHold : PlayerMono
 {
-    [SerializeField] private float distance2Pet = 2;
+    [SerializeField] private float distance2Pet = 1f;
     [SerializeField] private float throwPow;
 
     private Sequence seq;
