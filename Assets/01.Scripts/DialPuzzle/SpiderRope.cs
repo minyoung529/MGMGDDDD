@@ -7,6 +7,8 @@ public class SpiderRope : MonoBehaviour
 {
     [SerializeField] private Transform startPos;
     [SerializeField] private Transform endPos;
+
+    public Transform EndPos { get { return endPos; } }
     
 
     public void Awake()
@@ -20,8 +22,8 @@ public class SpiderRope : MonoBehaviour
         transform.position = startPos.position;
     }
 
-    public void StartFalling(float duration)
-    {
-        transform.DOMoveY(endPos.position.y, duration);
-    }
+    //public void StartFalling(float duration)
+    //{
+    //    transform.DOMoveY(endPos.position.y, duration);
+    //}
 }

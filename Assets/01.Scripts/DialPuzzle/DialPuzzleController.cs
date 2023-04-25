@@ -29,6 +29,7 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private Transform ground;
     [SerializeField] private HoleScript hole;
     [SerializeField] private float holeSpeed = 0.05f;
+    [SerializeField] private float correctAddRadius = 0.08f;
 
     private PlayerMove player;
     private CinemachineVirtualCameraBase originCam;
@@ -38,7 +39,7 @@ public class DialPuzzleController : MonoBehaviour
     [Header("Timer")]
     [SerializeField] private float timer = 30f;
     [SerializeField] private float answerTime = 5f;
-    [SerializeField] private float spiderTime = 50f;
+   // [SerializeField] private float spiderTime = 50f;
     private float remainTime = 0;
     public float RemainTime => remainTime;
     private bool pause = false;
@@ -116,21 +117,28 @@ public class DialPuzzleController : MonoBehaviour
     private void UpdateHoleSize()
     {
         targetRadius = (remainTime / timer) * hole.MaxRadius;
+        spider.transform.position = Vector3.Lerp(spider.transform.position, spider.EndPos.position, Time.deltaTime / timer);
+
         float dir = targetRadius - hole.Radius;
         if (dir > 0)
         {
             hole.Radius += holeSpeed * Time.deltaTime;
             if (hole.Radius > targetRadius)
+            {
                 hole.Radius = targetRadius;
+            }
             return;
         }
         if (dir < 0)
         {
             hole.Radius -= holeSpeed * Time.deltaTime;
             if (hole.Radius < targetRadius)
+            {
                 hole.Radius = targetRadius;
+            }
             return;
         }
+
     }
 
     private void CheckTime()
@@ -201,13 +209,26 @@ public class DialPuzzleController : MonoBehaviour
 
     private void CameraSetting(float angle, AnswerData data)
     {
+        
         if ((int)curType % 2 == 0)
         {
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
+
             CameraSwitcher.SwitchCamera(dialCam);
         }
         else
         {
-            if (data.time == TimeType.AfternoonToEvening) return;
+            if (data.time == TimeType.AfternoonToEvening)
+            {
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
+            Pet.IsCameraAimPoint = false;
+                UnityEngine.Cursor.visible = true;
+                return;
+            }
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            Pet.IsCameraAimPoint = true;
+            UnityEngine.Cursor.visible = false;
             playerCam.m_XAxis.Value = angle;
             playerCam.m_YAxis.Value = 0.7f;
             CameraSwitcher.SwitchCamera(playerCam);
@@ -218,10 +239,11 @@ public class DialPuzzleController : MonoBehaviour
     [ContextMenu("Start")]
     public void StartDialPuzzle()
     {
+        hole.Radius = hole.MaxRadius;
         ResetDial();
 
         SetHint(Hint);
-        spider.StartFalling(spiderTime);
+        spider.ResetSpider();
 
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         UnityEngine.Cursor.visible = true;
@@ -272,6 +294,9 @@ public class DialPuzzleController : MonoBehaviour
     {
         correctCount++;
         StartCoroutine(SetPatternsColor(Color.green, typeID));
+        Debug.Log(hole.Radius + ", " + correctAddRadius);
+        hole.Radius = hole.Radius - correctAddRadius;
+
         if (correctCount >= correctAnswer[round].array.Count)
         {
             correctCount = 0;
@@ -296,7 +321,12 @@ public class DialPuzzleController : MonoBehaviour
         if (round > maxRound)
             onPuzzleClear?.Invoke();
         else
+        {
+            hole.Radius = hole.MaxRadius;
+            StartTimer();
+            spider.ResetSpider();
             SetHint(Hint);
+        }
         StartCoroutine(SetPatternsColor(Color.yellow, -1, 1f));
         StartCoroutine(SetPatternsColor(Color.white, -1, 2f, () => isBlockAnswer = false));
     }
