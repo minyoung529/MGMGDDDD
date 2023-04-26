@@ -24,10 +24,10 @@ public class JumpState : MoveState
     private int hash_tLanding = Animator.StringToHash("tLanding");
 
     public void Jump() {
-        Vector3 dir = Player.Rigid.velocity;
+        Vector3 dir = Player.Controller.Rigid.velocity;
         dir.y = 0;
-        Player.Rigid.velocity = dir;
-        Player.Rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
+        Player.Controller.Rigid.velocity = dir;
+        Player.Controller.Rigid.AddForce(Vector3.up * jumpPower, ForceMode.Force);
         StartCoroutine(LandingCoroutine());
     }
 
@@ -36,6 +36,6 @@ public class JumpState : MoveState
         while(!Player.CheckOnGround()) {
             yield return null;
         }
-        Player.Anim.SetTrigger(hash_tLanding);
+        Player.Controller.Anim.SetTrigger(hash_tLanding);
     }
 }

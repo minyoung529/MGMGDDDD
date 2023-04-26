@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 [RequireComponent(typeof(Pet))]
 public class PetThrow : MonoBehaviour
@@ -13,6 +14,7 @@ public class PetThrow : MonoBehaviour
     private bool isWake = false;
     private bool currentWake = false;
     private float elapsedLandingTime = 0;
+    private Action onComplete = null;
 
     private void Awake()
     {
@@ -52,9 +54,10 @@ public class PetThrow : MonoBehaviour
     }
     */
 
-    public void Throw(Vector3 thrower, Vector3 force, float distanceToEnable = 3f)
+    public void Throw(Vector3 thrower, Vector3 force, float distanceToEnable = 3f, Action onComplete = null)
     {
         isThrow = true;
+        this.onComplete = onComplete;
         pet.Rigid.isKinematic = false;
         pet.Rigid.velocity = Vector3.zero;
         pet.Rigid.constraints = RigidbodyConstraints.None;
@@ -93,6 +96,8 @@ public class PetThrow : MonoBehaviour
         isWake = false;
         pet.IsInputLock = false;
         pet.SetNavEnabled(true);
+        onComplete?.Invoke();
+        onComplete = null;
         pet.FindButton();
     }
 }

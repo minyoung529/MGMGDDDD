@@ -23,7 +23,7 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private float holeSpeed = 0.05f;
     [SerializeField] private float correctAddRadius = 0.08f;
 
-    private PlayerMove player;
+    private PlayerController player;
     private CinemachineVirtualCameraBase originCam;
     private float targetRadius = 0;
     private Vector3 center2Player = Vector3.zero;
@@ -78,7 +78,7 @@ public class DialPuzzleController : MonoBehaviour
         hole.Radius = hole.MaxRadius;
         spawnPosition = spawnPoints[0].position;
         dialUIManager.MaxFillAmount = hole.MaxRadius;
-        player = GameManager.Instance.Player;
+        player = GameManager.Instance.PlayerController;
 
         StartDialPuzzle();
     }
@@ -98,12 +98,12 @@ public class DialPuzzleController : MonoBehaviour
 
     private void UpdateCamPos()
     {
-        //Áß½É-ÇÃ·¹ÀÌ¾î ¹æÇâ º¤ÅÍ ¸¸µé±â
+        //ï¿½ß½ï¿½-ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         Vector3 groundPos = ground.position;
         groundPos.y = player.transform.position.y;
         center2Player = (player.transform.position - groundPos).normalized;
 
-        //¹æÇâ º¤ÅÍ¿Í ÀÏÁ¤ °Å¸®¸¦ ´õÇÑ ÁöÁ¡À» Ä«¸Þ¶ó À§Ä¡·Î ÁöÁ¤
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         Vector3 camPos = player.transform.position + center2Player * distance;
         //camPos.z += switchOffset;
         camPos.y += (height);
@@ -239,7 +239,7 @@ public class DialPuzzleController : MonoBehaviour
         CameraSwitcher.Register(dialCam);
         CameraSwitcher.SwitchCamera(dialCam);
 
-        player = GameManager.Instance.Player;
+        player = GameManager.Instance.PlayerController;
     }
 
     public void StopDialPuzzle()

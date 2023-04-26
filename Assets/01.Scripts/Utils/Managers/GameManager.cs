@@ -33,8 +33,8 @@ public class GameManager : MonoSingleton<GameManager>
     public UIManager UI { get; private set; } = new UIManager();
     #endregion
 
-    private PlayerMove player = null;
-    public PlayerMove Player => player;
+    private PlayerController playerController = null;
+    public PlayerController PlayerController => playerController;
 
     #region 퍼즐 관련 변수
     private ButtonObject[] buttons;
@@ -78,7 +78,7 @@ public class GameManager : MonoSingleton<GameManager>
     }
 
     private void FindPlayer() {
-        player = FindObjectOfType<PlayerMove>();
+        playerController = FindObjectOfType<PlayerController>();
     }
 
     private void FindFindableObject()

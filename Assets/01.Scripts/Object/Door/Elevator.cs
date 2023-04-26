@@ -12,9 +12,16 @@ public class Elevator : MonoBehaviour
     private const int maxFloor = 3;
 
     private float distance = 18f;
-    private float duration = 2f;
+    private float duration = 5f;
 
     private bool isMoving = false;
+
+    private Rigidbody rigid;
+
+    private void Awake()
+    {
+        rigid = GetComponent<Rigidbody>();
+    }
 
     [ContextMenu("Open")]
     public void OpenElevator()
@@ -36,7 +43,7 @@ public class Elevator : MonoBehaviour
         isMoving = true;
         CloseElevator();
 
-        transform.DOMoveY(transform.position.y + distance, duration);
+        rigid.DOMoveY(transform.position.y + distance, duration);
         StartCoroutine(DelayOpenMove());
     }
 
@@ -46,8 +53,8 @@ public class Elevator : MonoBehaviour
         floor--;
         isMoving = true;
         CloseElevator();
-        
-        transform.DOMoveY(transform.position.y + (distance * -1), duration);
+
+        rigid.DOMoveY(transform.position.y + (distance * -1), duration);
         StartCoroutine(DelayOpenMove());
     }
 
@@ -71,5 +78,4 @@ public class Elevator : MonoBehaviour
             UpElevator();
         }
     }
-
 }

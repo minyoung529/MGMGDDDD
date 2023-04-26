@@ -3,19 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour {
-    #region 컴포넌트
-    private Rigidbody rigid;
-    private Animator anim;
-    private Collider coll;
-
-    public Rigidbody Rigid => rigid;
-    public Animator Anim => anim;
-    public Collider Coll => coll;
-    #endregion
-
+public class PlayerMove : PlayerMono
+{   
     #region 속력, 방향 관련 변수
-    [SerializeField] private const float rotateTime = 2f;
+    [SerializeField] private float distanceToGround = 0;
+    [SerializeField] private const float rotateTime = 1f;
 
     private float curSpeed = 0;
     public float CurSpeed => curSpeed;
@@ -41,9 +33,9 @@ public class PlayerMove : MonoBehaviour {
     #endregion
 
     #region 상태 관련 변수
-    [SerializeField] private List<MoveState> stateList;
-    private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
+    [SerializeField] private Transform stateParent;
     [SerializeField] private MoveState curState;
+    private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
 
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
@@ -70,26 +62,17 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
-    [SerializeField] private float distanceToGround = 0;
-
-    private Dictionary<InputAction, Action<InputAction, float>> actions = new Dictionary<InputAction, Action<InputAction, float>>();
-
+    private Dictionary<InputAction, Action<InputAction, float>> actions
+        = new Dictionary<InputAction, Action<InputAction, float>>();
+    
     #region SetUp
     private void Awake() {
-        mainCam = Camera.main;
-
-        SetUpCompo();
         StartListen();
         SetUpStateDictionary();
     }
 
-    private void SetUpCompo() {
-        rigid = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
-        coll = GetComponent<Collider>();
-    }
-
     private void SetUpStateDictionary() {
+        MoveState[] stateList = stateParent.GetComponentsInChildren<MoveState>();
         foreach (MoveState item in stateList) {
             stateDictionary.Add(item.StateName, item);
             item.Player = this;
@@ -122,8 +105,8 @@ public class PlayerMove : MonoBehaviour {
     /// 애니메이션에 사용될 fHorizontal과 fVertical을 설정
     /// </summary>
     public void SetAnimInput(Vector3 dir) {
-        Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, dir));
-        Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, dir));
+        controller.Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, dir));
+        controller.Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, dir));
     }
 
     private void Update() {
@@ -138,27 +121,27 @@ public class PlayerMove : MonoBehaviour {
     #endregion
 
     private void OnAnimatorIK(int layerIndex) {
-        if (anim) {
+        if (controller.Anim) {
             //발 IK 위치 연산
-            anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
-            anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
+            controller.Anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
+            controller.Anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
 
             RaycastHit hit;
-            Ray ray = new Ray(anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
+            Ray ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
             if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER)) {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
-                anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
+                controller.Anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
             }
 
-            anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
-            anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
+            controller.Anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
+            controller.Anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
 
-            ray = new Ray(anim.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+            ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
             if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER)) {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
-                anim.SetIKPosition(AvatarIKGoal.RightFoot, footposition);
+                controller.Anim.SetIKPosition(AvatarIKGoal.RightFoot, footposition);
             }
         }
     }
@@ -175,8 +158,8 @@ public class PlayerMove : MonoBehaviour {
             StopAction();
         curState.OnStateEnd(() => {
             curState = targetState;
-            anim.SetInteger(hash_iStateNum, animIndex);
-            anim.SetTrigger(hash_tStateChange);
+            controller.Anim.SetInteger(hash_iStateNum, animIndex);
+            controller.Anim.SetTrigger(hash_tStateChange);
             curState.OnStateStart();
         });
     }
@@ -185,12 +168,12 @@ public class PlayerMove : MonoBehaviour {
     /// state와는 다르게 실제로 플레이어 코드의 변화는 없지만 간단하고 짧은 애니메이션을 보여줄때 사용
     /// </summary>
     public void PlayAction(PlayerAction action) {
-        anim.SetInteger(hash_iActionNum, (int)action);
-        anim.SetBool(hash_bActionActive, true);
+        controller.Anim.SetInteger(hash_iActionNum, (int)action);
+        controller.Anim.SetBool(hash_bActionActive, true);
     }
 
     public void StopAction() {
-        anim.SetBool(hash_bActionActive, false);
+        controller.Anim.SetBool(hash_bActionActive, false);
     }
 
     #region 편의성 함수 (State에서 주로 사용)
@@ -207,10 +190,10 @@ public class PlayerMove : MonoBehaviour {
         }
 
         Vector3 dir = inputDir * curSpeed;
-        dir.y = rigid.velocity.y;
-        rigid.velocity = dir;
+        dir.y = controller.Rigid.velocity.y;
+        controller.Rigid.velocity = dir;
 
-        anim.SetFloat(hash_fCurSpeed, curSpeed);
+        controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
     public void Decelerate(float brake = 5f) {
@@ -219,13 +202,13 @@ public class PlayerMove : MonoBehaviour {
             curSpeed = 0;
         }
 
-        Vector3 dir = rigid.velocity;
+        Vector3 dir = controller.Rigid.velocity;
         dir.y = 0;
         dir = dir.normalized * curSpeed;
-        dir.y = rigid.velocity.y;
-        rigid.velocity = dir;
+        dir.y = controller.Rigid.velocity.y;
+        controller.Rigid.velocity = dir;
 
-        anim.SetFloat(hash_fCurSpeed, curSpeed);
+        controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
     public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {

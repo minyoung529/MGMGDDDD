@@ -2,7 +2,7 @@ using DG.Tweening;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerDie : MonoBehaviour {
+public class PlayerRespawn : MonoBehaviour {
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private Transform startRespawnPoint;
     [SerializeField] private float respawnDelay = 2f;
@@ -65,15 +65,4 @@ public class PlayerDie : MonoBehaviour {
     {
         EventManager.StopListening(EventName.PlayerDie, OnDie);
     }
-
-    //public static Vector3 GetClosestRespawnPoint()
-    //{
-    //    IOrderedEnumerable<GameObject> sorted = respawnTransforms.OrderBy(x => Vector3.Distance(x.transform.position, player.position));
-    //    return sorted.First().transform.position;
-    //}
-
-    //public void SetRespawnClosestPoint()
-    //{
-    //    transform.position = GetClosestRespawnPoint();
-    //}
 }

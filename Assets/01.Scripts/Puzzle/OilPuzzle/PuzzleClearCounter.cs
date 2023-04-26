@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ScaffoldingPuzzleClear : MonoBehaviour
+public class PuzzleClearCounter : MonoBehaviour
 {
     [SerializeField] private int clearCount = 1;
     [SerializeField] UnityEvent onClear;

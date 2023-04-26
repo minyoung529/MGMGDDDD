@@ -26,6 +26,9 @@ public class PetManager : MonoSingleton<PetManager>
     public List<Pet> GetPetList { get { return pets; } }
     #endregion 
 
+    [SerializeField]
+    private GameObject[] petPrefabs;
+
     protected override void Awake()
     {
         base.Awake();
@@ -39,6 +42,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         ResetPetManager();
     }
+
 
     private void Update()
     {
@@ -56,6 +60,7 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i].OnUpdate();
         }
 
+        Debug_CreateAndGetPet();
     }
 
     public bool IsGet(Pet p)
@@ -81,7 +86,6 @@ public class PetManager : MonoSingleton<PetManager>
 
         InputManager.StartListeningInput(InputAction.Pet_Skill, OnSkill);
         InputManager.StartListeningInput(InputAction.Pet_Move, OnClickMove);
-        InputManager.StartListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StartListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
 
         InputManager.StartListeningInput(InputAction.Pet_Follow, ReCall);
@@ -97,7 +101,6 @@ public class PetManager : MonoSingleton<PetManager>
 
         InputManager.StopListeningInput(InputAction.Pet_Skill, OnSkill);
         InputManager.StopListeningInput(InputAction.Pet_Move, OnClickMove);
-        InputManager.StopListeningInput(InputAction.Pet_Follow, OnWithdraw);
         InputManager.StopListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
 
         InputManager.StopListeningInput(InputAction.Pet_Follow, ReCall);
@@ -232,7 +235,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     public Pet GetSelectedPet()
     {
-        if (PetCount < 1) return null;
+        if (PetCount < 1 || pets.Count <= selectIndex) return null;
         return pets[selectIndex];
     }
     #endregion
@@ -329,6 +332,20 @@ public class PetManager : MonoSingleton<PetManager>
     public bool Contain(Pet pet)
     {
         return pets.Contains(pet);
+    }
+    #endregion
+
+    #region Debug
+    private void Debug_CreateAndGetPet()
+    {
+        for (int i = 0; i < petPrefabs.Length; i++)
+        {
+            if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha4 + i)))
+            {
+                Pet pet = Instantiate(petPrefabs[i], GameManager.Instance.PlayerController.transform.position, Quaternion.identity).GetComponent<Pet>();
+                pet.GetPet(GameManager.Instance.PlayerController.transform);
+            }
+        }
     }
     #endregion
 }
