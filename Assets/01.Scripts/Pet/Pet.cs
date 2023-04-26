@@ -102,7 +102,7 @@ public abstract class Pet : MonoBehaviour
 
         if(agent.isOnOffMeshLink)
         {
-            agent.speed = originalAgentSpeed / 2f;
+            agent.speed = originalAgentSpeed * 0.5f;
         }
         else
         {
