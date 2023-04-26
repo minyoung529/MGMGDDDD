@@ -41,6 +41,7 @@ public abstract class Pet : MonoBehaviour
     }
 
     private Vector3 originScale;
+    private float originalAgentSpeed;
 
     private ChangePetEmission emission;
 
@@ -73,8 +74,6 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void Awake()
     {
-        originScale = transform.localScale;
-
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
@@ -83,6 +82,9 @@ public abstract class Pet : MonoBehaviour
 
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
+
+        originScale = transform.localScale;
+        originalAgentSpeed = agent.speed;
 
         flyParticle = Instantiate(flyParticlePref, transform);
         arriveParticle = Instantiate(arriveParticlePref, transform);
@@ -97,6 +99,15 @@ public abstract class Pet : MonoBehaviour
     {
         CheckArrive();
         FollowTarget();
+
+        if(agent.isOnOffMeshLink)
+        {
+            agent.speed = originalAgentSpeed / 2f;
+        }
+        else
+        {
+            agent.speed = originalAgentSpeed;
+        }
     }
 
     #region Set
@@ -224,7 +235,7 @@ public abstract class Pet : MonoBehaviour
             if (Vector3.Distance(GetDestination(), player.position) <= 1f)
             {
                 SetTargetPlayer();
-                ResetPet(); // 일단 넣어놓았습니다
+                ResetPet(); 
                 return;
             }
         }
