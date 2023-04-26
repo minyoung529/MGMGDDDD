@@ -76,9 +76,9 @@ public class DialPuzzleController : MonoBehaviour
         }
         remainTime = timer;
         hole.Radius = hole.MaxRadius;
-        player = GameManager.Instance.Player;
         spawnPosition = spawnPoints[0].position;
         dialUIManager.MaxFillAmount = hole.MaxRadius;
+        player = GameManager.Instance.Player;
 
         StartDialPuzzle();
     }
@@ -316,7 +316,6 @@ public class DialPuzzleController : MonoBehaviour
 
     private void ActiveRound(TimeType type, bool _active)
     {
-        // 조명 설정
         patterns[(int)type].SetActive(_active);
         selecctButtons[(int)type].SetActive(_active);
     }
@@ -404,11 +403,5 @@ public class DialPuzzleController : MonoBehaviour
         pause = _pause;
     }
     #endregion
-
-    private void OnDestroy()
-    {
-        StopDialPuzzle();
-    }
-
 
 }

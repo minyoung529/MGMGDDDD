@@ -46,11 +46,11 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
-        //shuttingDown = true;
+        shuttingDown = true;
     }
 
     private void OnDestroy()
     {
-        //shuttingDown = true;
+        shuttingDown = true;
     }
 }
