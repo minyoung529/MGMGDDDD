@@ -342,8 +342,8 @@ public class PetManager : MonoSingleton<PetManager>
         {
             if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha4 + i)))
             {
-                Pet pet = Instantiate(petPrefabs[i], GameManager.Instance.Player.transform.position, Quaternion.identity).GetComponent<Pet>();
-                pet.GetPet(GameManager.Instance.Player.transform);
+                Pet pet = Instantiate(petPrefabs[i], GameManager.Instance.PlayerController.transform.position, Quaternion.identity).GetComponent<Pet>();
+                pet.GetPet(GameManager.Instance.PlayerController.transform);
             }
         }
     }

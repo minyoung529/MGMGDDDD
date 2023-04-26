@@ -31,7 +31,7 @@ public class DialPuzzleController : MonoBehaviour
     [SerializeField] private float holeSpeed = 0.05f;
     [SerializeField] private float correctAddRadius = 0.08f;
 
-    private PlayerMove player;
+    private PlayerController player;
     private CinemachineVirtualCameraBase originCam;
     private float targetRadius = 0;
     private Vector3 center2Player = Vector3.zero;
@@ -77,7 +77,7 @@ public class DialPuzzleController : MonoBehaviour
         }
         remainTime = timer;
         hole.Radius = hole.MaxRadius;
-        player = GameManager.Instance.Player;
+        player = GameManager.Instance.PlayerController;
         spawnPosition = spawnPoints[0].position;
 
         StartDialPuzzle();
@@ -256,7 +256,7 @@ public class DialPuzzleController : MonoBehaviour
         CameraSwitcher.Register(dialCam);
         CameraSwitcher.SwitchCamera(dialCam);
 
-        player = GameManager.Instance.Player;
+        player = GameManager.Instance.PlayerController;
     }
 
     public void StopDialPuzzle()

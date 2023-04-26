@@ -2,23 +2,7 @@ using UnityEngine;
 
 public class DefaultMoveState : MoveState
 {
-    #region abstarct 备泅 何盒
-    [SerializeField] private StateName stateName = StateName.DefaultMove;
-    public override StateName StateName => stateName;
-
-    public override void OnInput(Vector3 inputDir) {
-        if (inputDir.sqrMagnitude <= 0) {
-            Stop();
-            return;
-        }
-        Player.Anim.SetBool(hash_bWalk, true);
-        Player.Accelerate(inputDir, accel, brake, MaxSpeed);
-        Player.SetRotate(inputDir, rotateTime);
-    }
-    #endregion
-
     #region 加档, 规氢
-    private Rigidbody rigid = null;
     [SerializeField] private float walkSpeed = 2f;
     [SerializeField] private float sprintSpeed = 3f;
     [SerializeField] private float rotateTime = 0.2f;
@@ -41,6 +25,21 @@ public class DefaultMoveState : MoveState
     private int hash_tStop = Animator.StringToHash("tStop");
     #endregion
 
+    #region abstarct 备泅 何盒
+    [SerializeField] private StateName stateName = StateName.DefaultMove;
+    public override StateName StateName => stateName;
+
+    public override void OnInput(Vector3 inputDir) {
+        if (inputDir.sqrMagnitude <= 0) {
+            Stop();
+            return;
+        }
+        Player.Controller.Anim.SetBool(hash_bWalk, true);
+        Player.Accelerate(inputDir, accel, brake, MaxSpeed);
+        Player.SetRotate(inputDir, rotateTime);
+    }
+    #endregion
+
     private void Awake()
     {
         originWalkSpeed = walkSpeed;
@@ -51,19 +50,19 @@ public class DefaultMoveState : MoveState
     }
 
     private void Sprint(InputAction action, float param) {
-        if (!Player.Anim.GetBool(hash_bWalk)) return;
-        Player.Anim.SetBool(hash_bSprint, true);
+        if (!Player.Controller.Anim.GetBool(hash_bWalk)) return;
+        Player.Controller.Anim.SetBool(hash_bSprint, true);
         MaxSpeed = sprintSpeed;
     }
 
     private void Stop() {
-        if (Player.Anim.GetBool(hash_bSprint) && Player.CurSpeed > (walkSpeed + sprintSpeed) / 2) {
-            Player.Anim.SetTrigger(hash_tStop);
+        if (Player.Controller.Anim.GetBool(hash_bSprint) && Player.CurSpeed > (walkSpeed + sprintSpeed) / 2) {
+            Player.Controller.Anim.SetTrigger(hash_tStop);
             Player.LockInput(0.3f);
         }
         MaxSpeed = walkSpeed;
-        Player.Anim.SetBool(hash_bSprint, false);
-        Player.Anim.SetBool(hash_bWalk, false);
+        Player.Controller.Anim.SetBool(hash_bSprint, false);
+        Player.Controller.Anim.SetBool(hash_bWalk, false);
         Player.Decelerate(brake);
     }
 
@@ -83,10 +82,10 @@ public class DefaultMoveState : MoveState
         sprintSpeed = originSprintSpeed * sprintW;
         brake = originBrake * brakeW;
 
-        if (Player.Anim.GetBool(hash_bWalk))
+        if (Player.Controller.Anim.GetBool(hash_bWalk))
             MaxSpeed = walkSpeed;
 
-        else if (Player.Anim.GetBool(hash_bSprint))
+        else if (Player.Controller.Anim.GetBool(hash_bSprint))
             MaxSpeed = walkSpeed;
     }
 

@@ -4,8 +4,9 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerMove))]
-public class PlayerPickUp : MonoBehaviour {
-    [SerializeField] private float distance2Pet = 2;
+public class PlayerHold : PlayerMono
+{
+    [SerializeField] private float distance2Pet = 1f;
     [SerializeField] private float throwPow;
 
     private Sequence seq;
@@ -22,7 +23,7 @@ public class PlayerPickUp : MonoBehaviour {
     private void GetInput(InputAction action, float value) {
         if (playerMove.IsInputLock) return;
         playerMove.IsInputLock = true;
-        playerMove.Rigid.velocity = Vector3.zero;
+        controller.Rigid.velocity = Vector3.zero;
 
         switch (action) {
             case InputAction.PickUp_And_Drop:
@@ -104,8 +105,8 @@ public class PlayerPickUp : MonoBehaviour {
         while (isHolding) {
             holdingPet.transform.position =
                 Vector3.Lerp(
-                    playerMove.Anim.GetBoneTransform(HumanBodyBones.LeftHand).position,
-                    playerMove.Anim.GetBoneTransform(HumanBodyBones.RightHand).position,
+                    controller.Anim.GetBoneTransform(HumanBodyBones.LeftHand).position,
+                    controller.Anim.GetBoneTransform(HumanBodyBones.RightHand).position,
                     0.5f
                     )
                 + transform.forward * 0.2f;

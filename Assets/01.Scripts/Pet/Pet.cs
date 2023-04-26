@@ -215,12 +215,18 @@ public abstract class Pet : MonoBehaviour
     }
 
     public void ReCall() {
-        if (isRecall || IsHolding || !player) return;
+        if (isRecall || IsHolding || isInputLock || !player) return;
+        if(GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f) {
+            SetDestination(player.position);
+            if(Vector3.Distance(GetDestination(), player.position) <= 1f) {
+                SetTargetPlayer();
+                return;
+            }
+        }
 
         ResetPet(); // 일단 넣어놓았습니다
-        isRecall = true;
-        isInputLock = true;
 
+        isRecall = true;
         isInputLock = true; 
         SetNavEnabled(false);
         coll.enabled = false;
@@ -245,9 +251,10 @@ public abstract class Pet : MonoBehaviour
             emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
-            petThrow.Throw(dest, Vector3.up * 300, 1f);
-            SetTargetPlayer();
-            isRecall = false;
+            petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () => {
+                SetTargetPlayer();
+                isRecall = false;
+            });
         });
     }
     #endregion
