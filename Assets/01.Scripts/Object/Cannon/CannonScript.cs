@@ -45,6 +45,7 @@ public class CannonScript : MonoBehaviour
     [ContextMenu("Trigger")]
     public void TriggerCannon() {
         if (isPlay) return;
+
         isPlay = true;
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 0.6f, 1.2f), 0.5f));
