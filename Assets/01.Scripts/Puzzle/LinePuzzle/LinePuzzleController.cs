@@ -95,8 +95,7 @@ public class LinePuzzleController : MonoBehaviour
         isPlaying = true;
         onEnterGame?.Invoke();
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        GameManager.Instance.SetCursorVisible(true);
 
         cameraController.InactiveCrossHair();
         OilPetSkill.IsCrosshair = false;
@@ -130,14 +129,12 @@ public class LinePuzzleController : MonoBehaviour
 
     public void ExitGame()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        GameManager.Instance.SetCursorVisible(true);
         isPlaying = false;
 
         cameraController.ActiveCrossHair();
         OilPetSkill.IsCrosshair = true;
         oilPet.IsDirectSpread = true;
-        Pet.IsCameraAimPoint = true;
 
         oilPet.OnEndSkill -= MoveToPortal;
         oilPet.OnEndSkill -= SetEndPiece;

@@ -121,6 +121,21 @@ public class GameManager : MonoSingleton<GameManager>
 
         return Vector3.zero;
     }
+
+    public void SetCursorVisible(bool visible)
+    {
+        Pet.IsCameraAimPoint = !visible;
+        Cursor.visible = visible;
+        if(visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
     public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable
     {
         T target = default;
