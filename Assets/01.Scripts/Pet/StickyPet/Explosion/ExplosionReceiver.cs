@@ -16,4 +16,10 @@ public class ExplosionReceiver : MonoBehaviour
         onExplosion?.Invoke();
         onExplosionWithInfo?.Invoke(info);
     }
+
+    [ContextMenu("Explosion Test")]
+    public void ExplosionTest()
+    {
+        onExplosion?.Invoke();
+    }
 }
