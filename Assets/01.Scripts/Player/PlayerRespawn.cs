@@ -2,8 +2,7 @@ using DG.Tweening;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerRespawn : MonoBehaviour
-{
+public class PlayerRespawn : PlayerMono {
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private Transform startRespawnPoint;
     [SerializeField] private float respawnDelay = 2f;
@@ -14,13 +13,12 @@ public class PlayerRespawn : MonoBehaviour
     [Header("Prefab")]
     private CanvasGroup dieCanvas;
 
-    private void Awake()
-    {
+    private void Awake() {
         CanvasGroup canvasPrefab = Resources.Load<CanvasGroup>("DieCanvas");
         dieCanvas = Instantiate(canvasPrefab);
 
-        if (startRespawnPoint != null)
-            curRespawnPoint = startRespawnPoint.position;
+        if(startRespawnPoint != null)
+        curRespawnPoint = startRespawnPoint.position;
 
         if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
@@ -28,20 +26,18 @@ public class PlayerRespawn : MonoBehaviour
         EventManager.StartListening(EventName.PlayerDie, OnDie);
     }
 
-    private void OnDie(EventParam param = null)
-    {
+    private void OnDie(EventParam param = null) {
         if (param == null || !param.Contain("position"))
             Respawn(curRespawnPoint);
         else
             Respawn((Vector3)param["position"]);
     }
 
-    private void Respawn(Vector3 point)
-    {
-        Debug.Log("RESPAWN");
+    private void Respawn(Vector3 point) {
+        gameObject.SetActive(false);
+        controller.Move.ChangeState(StateName.DefaultMove);
 
-        if (dieParticle)
-        {
+        if (dieParticle) {
             dieParticle.Stop();
             dieParticle.transform.position = transform.position;
             dieParticle.Play();
@@ -50,22 +46,20 @@ public class PlayerRespawn : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
         PetManager.Instance.AllPetActions(x => x.transform.position = point);
-
+        
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
-        seq.AppendCallback(() =>
-        {
+        seq.AppendCallback(() => {
+            gameObject.SetActive(true);
             transform.position = point;
-            Time.timeScale = 1f;
-            //GameManager.Instance.PlayerController.Move.ChangeState(StateName.DefaultMove);
         });
+        seq.AppendCallback(() => Time.timeScale = 1f);
         seq.Append(dieCanvas.DOFade(0f, 1f));
         seq.AppendCallback(() => dieCanvas.gameObject.SetActive(false));
 
     }
 
-    public void RenewSpawnPoint(Vector3 point)
-    {
+    public void RenewSpawnPoint(Vector3 point) {
         curRespawnPoint = point;
     }
 

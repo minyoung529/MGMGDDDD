@@ -23,20 +23,39 @@ public class PaintedOil : MonoBehaviour
         if (other.CompareTag(Define.FIRE_PET_TAG))
         {
             firePet ??= other.GetComponent<Fire>();
-
             if (firePet.gameObject == other.gameObject && firePet.IsBurn)
             {
                 OnContactFirePet?.Invoke(this, EventArgs.Empty);
             }
-            else
+        }
+        else
+        {
+            Fire fire = other.GetComponent<Fire>();
+            if (fire == null) return;
+            if (fire.IsBurn)
             {
-                Fire fire = other.GetComponent<Fire>();
-                if(fire.IsBurn)
-                {
-                    OnContactFirePet?.Invoke(this, EventArgs.Empty);
-                }
+                OnContactFirePet?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        //if (other.CompareTag(Define.FIRE_PET_TAG))
+        //{
+        //    firePet ??= other.GetComponent<Fire>();
+
+        //    if (firePet.gameObject == other.gameObject && firePet.IsBurn)
+        //    {
+        //        OnContactFirePet?.Invoke(this, EventArgs.Empty);
+        //    }
+        //    else
+        //    {
+        //        Fire fire = other.GetComponent<Fire>();
+        //        if(fire.IsBurn)
+        //        {
+        //            OnContactFirePet?.Invoke(this, EventArgs.Empty);
+        //        }
+        //    }
+        //}
+
     }
 
     public void Burn()

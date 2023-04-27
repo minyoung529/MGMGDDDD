@@ -7,9 +7,9 @@ public class GearRotation : MonoBehaviour
 {
     [SerializeField] bool playOnAwake = false;
     [SerializeField] Vector3 dir = Vector3.back;
+    [SerializeField] private float curRotSpeed = 1f;
 
     private readonly float rotSpeed = 0.7f;
-    private float curRotSpeed = 0f;
     private bool isRotate = false;
     //private Animator animator;
 
@@ -36,9 +36,7 @@ public class GearRotation : MonoBehaviour
     public void StopGear()
     {
         isRotate = false;
-
-        Debug.Log("StopGear");
-           // StopCoroutine(RotateGear());
+        StopCoroutine(RotateGear());
         //DOTween.To(() => curRotSpeed, (x) => curRotSpeed = x, 0f, 0.5f).SetEase(Ease.InQuad).OnComplete(() =>
         //{
         //});
@@ -56,9 +54,10 @@ public class GearRotation : MonoBehaviour
     {
         while (isRotate)
         {
+            yield return new WaitForSeconds(0.01f);
             transform.Rotate(dir * curRotSpeed);
         }
-            yield return null;
+        yield return null;
     }
 
 }

@@ -79,8 +79,6 @@ public class DialPuzzleController : MonoBehaviour
         spawnPosition = spawnPoints[0].position;
         dialUIManager.MaxFillAmount = hole.MaxRadius;
         player = GameManager.Instance.PlayerController;
-
-        StartDialPuzzle();
     }
 
     private void Update()
@@ -226,6 +224,7 @@ public class DialPuzzleController : MonoBehaviour
     public void StartDialPuzzle()
     {
         hole.Radius = hole.MaxRadius;
+        dialUIManager.SetUIVisible(true);
         ResetDial();
 
         dialUIManager.SetHintText(Hint);
@@ -249,6 +248,7 @@ public class DialPuzzleController : MonoBehaviour
         GameManager.Instance.SetCursorVisible(false);
         OilPetSkill.IsCrosshair = true;
 
+        dialUIManager.SetUIVisible(false);
         CameraSwitcher.SwitchCamera(originCam);
         CameraSwitcher.UnRegister(dialCam);
     }

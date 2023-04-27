@@ -10,7 +10,6 @@ public class FuzeScript : MonoBehaviour
     [SerializeField] private Transform startPos;
     [SerializeField] private Transform endPos;
     [SerializeField] private Transform fire;
-    [SerializeField] private bool isRecycle;
 
     private Material material;
     private float amount = 0;
@@ -20,26 +19,43 @@ public class FuzeScript : MonoBehaviour
 
     private readonly int Fill = Shader.PropertyToID("_Fill");
 
-    private void Awake() {
+    private void Awake()
+    {
         material = GetComponent<Renderer>().material;
         distance = Vector3.Distance(startPos.position, endPos.position);
     }
 
-    private void OnCollisionStay(Collision collision) {
-        Fire fire = collision.transform.GetComponent<Fire>();
-        if (fire && fire.IsBurn)
-            Fire();
+    private void OnCollisionStay(Collision collision)
+    {
+        Fire fire = collision.collider.GetComponent<Fire>();
+        if(fire != null)
+        {
+            if (fire.IsBurn) Fire();
+        }
     }
 
-    public void Fire() {
+    private void OnTriggerStay(Collider other)
+    {
+        Fire fire = other.GetComponent<Fire>();
+        if (fire != null)
+        {
+            if (fire.IsBurn) Fire();
+        }
+    }
+
+    [ContextMenu("Trigger")]
+    public void Fire()
+    {
         if (!canFire) return;
         canFire = false;
         fire.gameObject.SetActive(true);
         StartCoroutine(Burn());
     }
 
-    private IEnumerator Burn() {
-        while (amount < 1) {
+    private IEnumerator Burn()
+    {
+        while (amount < 1)
+        {
             amount += fireSpeed * Time.deltaTime / distance;
             if (amount > 1) amount = 1;
             fire.position = Vector3.Lerp(startPos.position, endPos.position, amount);
@@ -50,13 +66,16 @@ public class FuzeScript : MonoBehaviour
         fire.gameObject.SetActive(false);
     }
 
-    public void Recycle() {
+    public void Recycle()
+    {
         if (canFire) return;
         StartCoroutine(RecycleCor());
     }
 
-    private IEnumerator RecycleCor() {
-        while (amount > 0) {
+    private IEnumerator RecycleCor()
+    {
+        while (amount > 0)
+        {
             amount -= fireSpeed * Time.deltaTime / distance;
             if (amount < 0) amount = 0;
             fire.position = Vector3.Lerp(startPos.position, endPos.position, amount);
