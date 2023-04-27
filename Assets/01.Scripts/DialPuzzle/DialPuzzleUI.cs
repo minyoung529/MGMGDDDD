@@ -6,11 +6,22 @@ using UnityEngine.UI;
 
 public class DialPuzzleUI : MonoBehaviour
 {
+    [SerializeField] Canvas canvas;
     [SerializeField] TextMeshProUGUI hintText;
     [SerializeField] Image[] slideImages;
 
     private float slideSpeed = 1f;
     public float MaxFillAmount { get; set; }
+
+    private void Awake()
+    {
+        SetUIVisible(false);
+    }
+
+    public void SetUIVisible(bool value)
+    {
+        canvas.gameObject.SetActive(value);
+    }
 
     public void SetHintText(string str)
     {
