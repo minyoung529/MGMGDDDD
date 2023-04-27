@@ -20,17 +20,18 @@ public class PaintedOil : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        firePet ??= other.GetComponent<Fire>();
-
-        if (firePet == null) return;
-        if (firePet.gameObject == other.gameObject && firePet.IsBurn)
+        if (other.CompareTag(Define.FIRE_PET_TAG))
         {
-            OnContactFirePet?.Invoke(this, EventArgs.Empty);
+            firePet ??= other.GetComponent<Fire>();
+            if (firePet.gameObject == other.gameObject && firePet.IsBurn)
+            {
+                OnContactFirePet?.Invoke(this, EventArgs.Empty);
+            }
         }
         else
         {
             Fire fire = other.GetComponent<Fire>();
-            if(fire == null) return;
+            if (fire == null) return;
             if (fire.IsBurn)
             {
                 OnContactFirePet?.Invoke(this, EventArgs.Empty);

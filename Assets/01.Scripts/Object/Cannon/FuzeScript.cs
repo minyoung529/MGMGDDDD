@@ -27,15 +27,19 @@ public class FuzeScript : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        // 두 번째 로프에 불 연결이 안됨
-        Fire fire = collision.transform.GetComponent<Fire>();
-            Debug.Log(collision.collider.name);
+        Fire fire = collision.collider.GetComponent<Fire>();
         if(fire != null)
         {
-            if (fire.IsBurn)
-            {
-                Fire();
-            }
+            if (fire.IsBurn) Fire();
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Fire fire = other.GetComponent<Fire>();
+        if (fire != null)
+        {
+            if (fire.IsBurn) Fire();
         }
     }
 
