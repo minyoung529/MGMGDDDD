@@ -17,4 +17,14 @@ public class DieTrigger : MonoBehaviour
             OnDie?.Invoke();
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(Define.PLAYER_TAG))
+        {
+            EventParam param = new();
+            EventManager.TriggerEvent(EventName.PlayerDie, param);
+            OnDie?.Invoke();
+        }
+    }
 }
