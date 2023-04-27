@@ -2,7 +2,7 @@ using DG.Tweening;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerRespawn : MonoBehaviour {
+public class PlayerRespawn : PlayerMono {
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private Transform startRespawnPoint;
     [SerializeField] private float respawnDelay = 2f;
@@ -35,6 +35,8 @@ public class PlayerRespawn : MonoBehaviour {
 
     private void Respawn(Vector3 point) {
         gameObject.SetActive(false);
+        controller.Move.ChangeState(StateName.DefaultMove);
+
         if (dieParticle) {
             dieParticle.Stop();
             dieParticle.transform.position = transform.position;
