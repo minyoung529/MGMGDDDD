@@ -66,7 +66,7 @@ public class StickyPet : Pet
 
         scaleObject.DOKill();
         scaleObject.DOScale(Vector3.one, 0.5f);
-        IsInputLock = false;
+        IsMovePointLock = false;
 
         OnExitBillow?.Invoke();
     }
@@ -101,7 +101,7 @@ public class StickyPet : Pet
         BillowAction();
         SetTarget(null);
 
-        IsInputLock = true;
+        IsMovePointLock = true;
         OnBillow?.Invoke();
     }
 

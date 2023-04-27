@@ -39,6 +39,11 @@ public class StickyExplosion : MonoBehaviour
     {
         originalScale = visual.localScale;
         jumper = GetComponent<JumperObject>();
+
+        foreach(ParticleSystem particle in explosionParticles)
+        {
+            particle.transform.SetParent(visual.transform);
+        }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -128,9 +133,8 @@ public class StickyExplosion : MonoBehaviour
             jumper.CanJump = true;
         }
 
-        Debug.Log("END EXPLOSION");
-        stickyPet.ChangeState(StickyState.Idle);
-        gameObject.SetActive(false);
+        stickyPet?.ChangeState(StickyState.Idle);
+        gameObject?.SetActive(false);
     }
 
     private void OnDrawGizmos()

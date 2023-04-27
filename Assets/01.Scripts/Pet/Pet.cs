@@ -23,7 +23,8 @@ public abstract class Pet : MonoBehaviour
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
     private bool isRecall = false;
     public bool IsHolding = false;
-
+    private bool isMovePointLock = false;
+    public bool IsMovePointLock { get => isMovePointLock; set => isMovePointLock = value; }
     #endregion
 
     protected Collider coll;
@@ -40,6 +41,7 @@ public abstract class Pet : MonoBehaviour
     }
 
     private Vector3 originScale;
+    private float originalAgentSpeed;
 
     private ChangePetEmission emission;
 
@@ -72,8 +74,6 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void Awake()
     {
-        originScale = transform.localScale;
-
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
@@ -82,6 +82,9 @@ public abstract class Pet : MonoBehaviour
 
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
+
+        originScale = transform.localScale;
+        originalAgentSpeed = agent.speed;
 
         flyParticle = Instantiate(flyParticlePref, transform);
         arriveParticle = Instantiate(arriveParticlePref, transform);
@@ -96,6 +99,15 @@ public abstract class Pet : MonoBehaviour
     {
         CheckArrive();
         FollowTarget();
+
+        if(agent.isOnOffMeshLink)
+        {
+            agent.speed = originalAgentSpeed * 0.5f;
+        }
+        else
+        {
+            agent.speed = originalAgentSpeed;
+        }
     }
 
     #region Set
@@ -167,7 +179,7 @@ public abstract class Pet : MonoBehaviour
     {
         this.target = target;
         agent.stoppingDistance = stopDistance;
-        
+
         if (!target)
         {
             agent.ResetPath();
@@ -214,12 +226,16 @@ public abstract class Pet : MonoBehaviour
         }
     }
 
-    public void ReCall() {
+    public void ReCall()
+    {
         if (isRecall || IsHolding || isInputLock || !player) return;
-        if(GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f) {
+        if (GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f)
+        {
             SetDestination(player.position);
-            if(Vector3.Distance(GetDestination(), player.position) <= 1f) {
+            if (Vector3.Distance(GetDestination(), player.position) <= 1f)
+            {
                 SetTargetPlayer();
+                ResetPet(); 
                 return;
             }
         }
@@ -227,7 +243,7 @@ public abstract class Pet : MonoBehaviour
         ResetPet(); // 일단 넣어놓았습니다
 
         isRecall = true;
-        isInputLock = true; 
+        isInputLock = true;
         SetNavEnabled(false);
         coll.enabled = false;
         rigid.isKinematic = true;
@@ -247,11 +263,13 @@ public abstract class Pet : MonoBehaviour
         flyParticle.Play();
 
         transform.DOLookAt(player.position, 0.5f);
-        transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
+        transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() =>
+        {
             emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
-            petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () => {
+            petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () =>
+            {
                 SetTargetPlayer();
                 isRecall = false;
             });
@@ -286,12 +304,15 @@ public abstract class Pet : MonoBehaviour
         transform.position = position;
         agent.enabled = true;
     }
-    public Vector3 GetNearestNavMeshPosition(Vector3 position) {
+    public Vector3 GetNearestNavMeshPosition(Vector3 position)
+    {
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(position, out hit, 5f, NavMesh.AllAreas)) {
+        if (NavMesh.SamplePosition(position, out hit, 5f, NavMesh.AllAreas))
+        {
             return hit.position;
         }
-        else {
+        else
+        {
             return position;
         }
     }
@@ -300,7 +321,7 @@ public abstract class Pet : MonoBehaviour
     #region InputEvent
     public void MovePoint(bool selected = false)
     {
-        if (isInputLock) return;
+        if (isInputLock || IsMovePointLock) return;
 
         if (selected)
         {
