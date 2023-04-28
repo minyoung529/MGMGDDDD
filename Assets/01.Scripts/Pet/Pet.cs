@@ -80,6 +80,7 @@ public abstract class Pet : MonoBehaviour
         petThrow = GetComponent<PetThrow>();
         emission = GetComponentInChildren<ChangePetEmission>();
 
+
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
 
@@ -145,6 +146,7 @@ public abstract class Pet : MonoBehaviour
     public virtual void Skill()
     {
         if (isCoolTime) return;
+        if (IsInputLock) return;
         SkillDelay();
     }
 

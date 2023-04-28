@@ -30,7 +30,9 @@ public class PlayerHold : PlayerMono
                 if (!holdingPet)
                     PickUp();
                 else
+                {
                     playerMove.ChangeState(StateName.Drop);
+                }
                 break;
             case InputAction.Throw:
                 if (!holdingPet) {
@@ -123,6 +125,7 @@ public class PlayerHold : PlayerMono
     public void OnDrop() {
         isHolding = false;
         holdingPet.IsHolding = false;
+        holdingPet.IsInputLock = false;
         holdingPet.Rigid.isKinematic = false;
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
