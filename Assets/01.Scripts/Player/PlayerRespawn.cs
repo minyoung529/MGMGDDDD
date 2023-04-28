@@ -34,8 +34,7 @@ public class PlayerRespawn : PlayerMono {
     }
 
     private void Respawn(Vector3 point) {
-        gameObject.SetActive(false);
-        controller.Move.ChangeState(StateName.DefaultMove);
+        //gameObject.SetActive(false);
 
         if (dieParticle) {
             dieParticle.Stop();
@@ -50,7 +49,9 @@ public class PlayerRespawn : PlayerMono {
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
         seq.AppendCallback(() => {
-            gameObject.SetActive(true);
+            //gameObject.SetActive(true);
+            controller.Move.ChangeState(StateName.DefaultMove);
+
             transform.position = point;
         });
         seq.AppendCallback(() => Time.timeScale = 1f);

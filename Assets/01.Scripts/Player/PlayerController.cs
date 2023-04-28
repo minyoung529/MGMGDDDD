@@ -31,6 +31,11 @@ public class PlayerController : MonoBehaviour {
     private void Awake() {
         SetUpCompo();
         RegisterMono();
+
+        move = GetComponent<PlayerMove>();
+        hp = GetComponent<PlayerHP>();
+        respawn = GetComponent<PlayerRespawn>();
+        hold = GetComponent<PlayerHold>();
     }
 
     private void SetUpCompo() {

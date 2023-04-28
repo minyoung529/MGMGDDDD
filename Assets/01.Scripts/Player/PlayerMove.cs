@@ -64,7 +64,10 @@ public class PlayerMove : PlayerMono
 
     private Dictionary<InputAction, Action<InputAction, float>> actions
         = new Dictionary<InputAction, Action<InputAction, float>>();
-    
+
+    [SerializeField]
+    private LayerMask ikLayer;
+
     #region SetUp
     private void Awake() {
         StartListen();
@@ -123,25 +126,34 @@ public class PlayerMove : PlayerMono
     private void OnAnimatorIK(int layerIndex) {
         if (controller.Anim) {
             //발 IK 위치 연산
-            controller.Anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
+            controller.Anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f); 
             controller.Anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
 
+            float rayDist = distanceToGround /*+ 1f*/;
             RaycastHit hit;
-            Ray ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
-            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER)) {
+            Ray ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.LeftFoot) /*+ Vector3.up*/, Vector3.down);
+
+            Debug.DrawRay(ray.origin, Vector3.down * 0.1f, Color.magenta);
+
+            if (Physics.Raycast(ray, out hit, rayDist, ikLayer)) {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
                 controller.Anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
+                controller.Anim.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.LookRotation(transform.forward, hit.normal));
             }
 
             controller.Anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
             controller.Anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
 
-            ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
-            if (Physics.Raycast(ray, out hit, distanceToGround + 1f, 1 << Define.BOTTOM_LAYER)) {
+            ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.RightFoot) /*+ Vector3.up*/, Vector3.down);
+            Debug.DrawRay(ray.origin, ray.direction * rayDist, Color.magenta);
+
+            if (Physics.Raycast(ray, out hit, rayDist, ikLayer)) {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
+
                 controller.Anim.SetIKPosition(AvatarIKGoal.RightFoot, footposition);
+                controller.Anim.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(transform.forward, hit.normal));
             }
         }
     }
