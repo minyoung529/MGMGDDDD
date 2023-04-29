@@ -422,6 +422,7 @@ GameObject:
   - component: {fileID: 5737417346290117146}
   - component: {fileID: 384537423}
   - component: {fileID: 4135225046918675315}
+  - component: {fileID: 5935958867484099401}
   m_Layer: 3
   m_Name: RopePlayer
   m_TagString: Player
@@ -510,8 +511,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.83, y: 1.3853345, z: 0.59}
-  m_Center: {x: 0, y: 0.78027964, z: 0}
+  m_Size: {x: 0.83, y: 1.5257045, z: 0.59}
+  m_Center: {x: 0, y: 0.77387464, z: 0}
 --- !u!114 &7746196819714221419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -555,12 +556,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007cd4f530a416a47b345fa2b72acb48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanceToGround: 0
+  distanceToGround: 0.16
   stateParent: {fileID: 2029852760411590517}
   curState: {fileID: 5148491769460052124}
   groundLayer:
     serializedVersion: 2
     m_Bits: 65665
+  ikLayer:
+    serializedVersion: 2
+    m_Bits: 129
 --- !u!114 &2046013562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -691,6 +695,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distance2Pet: 1
   throwPow: 500
+--- !u!114 &5935958867484099401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575653875229823198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25761bd0e35af0b42ba5675ebc417dee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 10
 --- !u!1 &2473812658451148972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,6 +1275,14 @@ PrefabInstance:
     - target: {fileID: 172443365008802921, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalPosition.z
       value: -6.399999
+      objectReference: {fileID: 0}
+    - target: {fileID: 172443365008802926, guid: 8136b3c088afa714180f136b6f556049, type: 3}
+      propertyPath: m_Damping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172443365008802926, guid: 8136b3c088afa714180f136b6f556049, type: 3}
+      propertyPath: m_MaximumEffort
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalPosition.y

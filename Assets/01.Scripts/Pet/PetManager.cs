@@ -112,16 +112,11 @@ public class PetManager : MonoSingleton<PetManager>
         pets[selectIndex].SkillUp();
     }
 
-    private void OnWithdraw(InputAction input, float value)
-    {
-        if (selectIndex < 0) return;
-        pets[selectIndex].Withdraw();
-    }
-
     private void OnClickMove(InputAction input, float value)
     {
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
+        if (pets[selectIndex].IsInputLock) return;
 
         pets[selectIndex].MovePoint();
 
@@ -135,7 +130,11 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnSkill(InputAction input, float value)
     {
+        // 펫이 없을 때
         if (selectIndex < 0) return;
+        // Input이 Lock 걸렸을 때
+        if (pets[selectIndex].IsInputLock) return;
+
         pets[selectIndex].Skill();
     }
 

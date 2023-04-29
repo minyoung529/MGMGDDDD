@@ -23,12 +23,14 @@ public class BalanceFloor : MonoBehaviour
         
         mainBalance.CompareWeight();
     }
+
     public void IncreaseWeight(float value)
     {
         curWeight += value;
         
         mainBalance.CompareWeight();
     }
+
     public void DecreaseWeight(WeightObject weightObj)
     {
         if (!weightObj.InWeight) return;
