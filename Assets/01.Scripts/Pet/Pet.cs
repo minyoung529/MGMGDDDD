@@ -19,14 +19,11 @@ public abstract class Pet : MonoBehaviour
 
     private bool isCoolTime = false;
     protected bool isMouseMove = false;
-    private bool isInputLock = false;
-    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
-    private bool isRecall = false;
     private bool isMovePointLock = false;
     public bool IsMovePointLock { get => isMovePointLock; set => isMovePointLock = value; }
-    #endregion
-
-    #region Lock
+    private bool isRecall = false;
+    private bool isInputLock = false;
+    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
 
     #endregion
 
@@ -233,7 +230,7 @@ public abstract class Pet : MonoBehaviour
 
     public void ReCall()
     {
-        if (isRecall || petThrow.IsHolding || isInputLock || !player) return;
+        if (isRecall || petThrow.IsHolding || !player) return;
         if (GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f)
         {
             SetDestination(player.position);
@@ -273,10 +270,10 @@ public abstract class Pet : MonoBehaviour
             emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
+            isRecall = false;
             petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () =>
             {
                 SetTargetPlayer();
-                isRecall = false;
             });
         });
     }
