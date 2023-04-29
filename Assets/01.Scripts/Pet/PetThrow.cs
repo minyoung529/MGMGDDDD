@@ -5,95 +5,90 @@ using DG.Tweening;
 using System;
 
 [RequireComponent(typeof(Pet))]
-public class PetThrow : MonoBehaviour
-{
+public class PetThrow : MonoBehaviour {
     [SerializeField] private float landingTime = 1f;
 
     private Pet pet = null;
+    private Action onComplete = null;
+    private float elapsedLandingTime = 0;
+    private bool isHolding = false;
+    public bool IsHolding => isHolding;
+
     private bool isThrow = false;
     private bool isWake = false;
-    private bool currentWake = false;
-    private float elapsedLandingTime = 0;
-    private Action onComplete = null;
 
-    private void Awake()
-    {
+    private void Awake() {
         pet = GetComponent<Pet>();
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer != Define.BOTTOM_LAYER) return;
-        if (currentWake) return;
+    private void OnCollisionStay(Collision collision) {
+        if (collision.gameObject.layer != Define.BOTTOM_LAYER || !isHolding) return;
 
-        if (isWake)
-        {
+        if (isThrow) {
+            elapsedLandingTime += Time.deltaTime;
+            if (elapsedLandingTime > landingTime) {
+                elapsedLandingTime = 0f;
+                WakeUp();
+            }
+        }
+        else if (isWake) {
             OnLanding();
         }
-        else if (isThrow)
-        {
-            currentWake = true;
-
-            Sequence seq = DOTween.Sequence();
-            seq.AppendInterval(landingTime);
-            seq.AppendCallback(WakeUp);
-        }
     }
 
-    /*
-    private void OnCollisionStay(Collision collision)
-    {
-        if (!isThrow || collision.gameObject.layer != Define.BOTTOM_LAYER) return;
-
-        elapsedLandingTime += Time.deltaTime;
-        if (elapsedLandingTime > landingTime)
-        {
-            WakeUp();
-            elapsedLandingTime = 0f;
-        }
+    public void Hold(bool value, float distanceToEnable = 3f) {
+        isHolding = value;
+        pet.Rigid.isKinematic = value;
+        if (value)
+            pet.Coll.enabled = !value;
+        else
+            StartCoroutine(EnableColl(transform.position, distanceToEnable));
     }
-    */
 
-    public void Throw(Vector3 thrower, Vector3 force, float distanceToEnable = 3f, Action onComplete = null)
-    {
-        isThrow = true;
-        this.onComplete = onComplete;
-        pet.Rigid.isKinematic = false;
+    public void Hold(bool value, Vector3 thrower, float distanceToEnable = 3f) {
         pet.Rigid.velocity = Vector3.zero;
-        pet.Rigid.constraints = RigidbodyConstraints.None;
-        pet.Rigid.AddForce(force, ForceMode.Impulse);
-        StartCoroutine(EnableColl(thrower, distanceToEnable));
+        isHolding = value;
+        pet.Rigid.isKinematic = value;
+        if (value)
+            pet.Coll.enabled = !value;
+        else
+            StartCoroutine(EnableColl(thrower, distanceToEnable));
     }
 
-    private IEnumerator EnableColl(Vector3 thrower, float distance)
-    {
-        while ((thrower - transform.position).sqrMagnitude > Mathf.Pow(distance, 2))
-        {
+    private IEnumerator EnableColl(Vector3 thrower, float distance = 3f) {
+        while ((thrower - transform.position).sqrMagnitude > Mathf.Pow(distance, 2)) {
             yield return null;
         }
         pet.Coll.enabled = true;
     }
 
-    private void WakeUp()
-    {
-        isThrow = false;
-        pet.Rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
-        pet.Rigid.AddForce(Vector3.up * 100, ForceMode.Impulse);
-        pet.Coll.enabled = false;
+    public void Throw(Vector3 thrower, Vector3 force, float distanceToEnable = 3f, Action onComplete = null) {
+        isThrow = true;
 
-        StartCoroutine(EnableColl(transform.position, 2f));
-        transform.DOMove(transform.position + Vector3.up * 3f, 0.5f).OnComplete(() =>
-        {
-            pet.Rigid.velocity = Vector3.zero;
-            currentWake = false;
-        });
-        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 0.5f);
-        isWake = true;
+        this.onComplete = onComplete;
+
+        pet.Rigid.constraints = RigidbodyConstraints.None;
+        Hold(false, thrower, distanceToEnable);
+        pet.Rigid.AddForce(force, ForceMode.Impulse);
     }
 
-    private void OnLanding()
-    {
+    private void WakeUp() {
+        isThrow = true;
+
+        pet.Rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
+
+        pet.Coll.enabled = false;
+        StartCoroutine(EnableColl(transform.position, 2f));
+        transform.DOMove(transform.position + Vector3.up * 3f, 0.5f).OnComplete(() => {
+            pet.Rigid.velocity = Vector3.zero;
+            pet.enabled = true;
+        });
+        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 0.5f);
+    }
+
+    private void OnLanding() {
         isWake = false;
+
         pet.IsInputLock = false;
         pet.SetNavEnabled(true);
         onComplete?.Invoke();

@@ -10,19 +10,17 @@ public class PlayerHold : PlayerMono
     [SerializeField] private float throwPow;
 
     private Sequence seq;
-    private PlayerMove playerMove;
     private Pet holdingPet;
     private bool isHolding;
 
     private void Awake() {
-        playerMove = GetComponent<PlayerMove>();
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
     }
 
     private void GetInput(InputAction action, float value) {
-        if (playerMove.IsInputLock) return;
-        playerMove.IsInputLock = true;
+        if (controller.Move.IsInputLock) return;
+        controller.Move.IsInputLock = true;
         controller.Rigid.velocity = Vector3.zero;
 
         switch (action) {
@@ -30,14 +28,14 @@ public class PlayerHold : PlayerMono
                 if (!holdingPet)
                     PickUp();
                 else
-                    playerMove.ChangeState(StateName.Drop);
+                    controller.Move.ChangeState(StateName.Drop);
                 break;
             case InputAction.Throw:
                 if (!holdingPet) {
-                    playerMove.IsInputLock = false;
+                    controller.Move.IsInputLock = false;
                     return;
                 }
-                playerMove.ChangeState(StateName.Throw);
+                controller.Move.ChangeState(StateName.Throw);
                 break;
             default:
                 Debug.LogError($"올바르지 않은 입력이 감지되었습니다! 입력명:{action}");
@@ -48,25 +46,19 @@ public class PlayerHold : PlayerMono
     #region PickUp 관련
     private void PickUp() {
         holdingPet = FindPet();
-        if (!holdingPet) {
-            playerMove.IsInputLock = false;
+        if (!holdingPet || !holdingPet.GetIsOnNavMesh()) {
+            controller.Move.IsInputLock = false;
             return;
         }
-        if (!holdingPet.GetIsOnNavMesh()) {
-            holdingPet = null;
-            playerMove.IsInputLock = false;
-            return;
-        }
-        holdingPet.IsHolding = true;
         holdingPet.IsInputLock = true;
         holdingPet.Coll.enabled = false;
         Vector3 dest = CallPet(holdingPet);
         if (Vector3.Distance(dest, transform.position) > distance2Pet + 1f) {
             holdingPet = null;
-            playerMove.IsInputLock = false;
+            controller.Move.IsInputLock = false;
             return;
         }
-        StartCoroutine(WaitPet(dest, () => playerMove.ChangeState(StateName.PickUp)));
+        StartCoroutine(WaitPet(dest, () => controller.Move.ChangeState(StateName.PickUp)));
     }
 
     public Pet FindPet() {
@@ -90,7 +82,7 @@ public class PlayerHold : PlayerMono
     }
 
     private IEnumerator WaitPet(Vector3 destination, Action onArrive) {
-        playerMove.IsInputLock = true;
+        controller.Move.IsInputLock = true;
         destination.y = transform.position.y;
         transform.DOLookAt(destination, 0.2f);
         while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 0.5f) {
@@ -122,7 +114,6 @@ public class PlayerHold : PlayerMono
 
     public void OnDrop() {
         isHolding = false;
-        holdingPet.IsHolding = false;
         holdingPet.Rigid.isKinematic = false;
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
@@ -135,16 +126,14 @@ public class PlayerHold : PlayerMono
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.IsHolding = false;
-        holdingPet.Rigid.velocity = Vector3.zero;
         Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
         holdingPet.PetThrow.Throw(transform.position, dir * throwPow);
         holdingPet = null;
     }
 
     public void OnAnimEnd() {
-        playerMove.IsInputLock = false;
-        playerMove.ChangeState(StateName.DefaultMove);
+        controller.Move.IsInputLock = false;
+        controller.Move.ChangeState(StateName.DefaultMove);
     }
     #endregion
 
