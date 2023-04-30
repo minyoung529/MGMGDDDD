@@ -44,11 +44,6 @@ public class Liquid : MonoBehaviour
     {
         GetMeshAndRend();
 
-        if (rend != null)
-        {
-            Material tempMaterial = new Material(rend.sharedMaterial);
-            rend.sharedMaterial = tempMaterial;
-        }
     }
 
     private void OnValidate()
@@ -67,6 +62,11 @@ public class Liquid : MonoBehaviour
             rend = GetComponent<Renderer>();
         }
 
+        if (rend != null)
+        {
+            Material tempMaterial = new Material(rend.sharedMaterial);
+            rend.sharedMaterial = tempMaterial;
+        }
     }
     void Update()
     {
@@ -112,13 +112,16 @@ public class Liquid : MonoBehaviour
             wobbleAmountToAddX += Mathf.Clamp((velocity.x + (velocity.y * 0.2f) + angularVelocity.z + angularVelocity.y) * MaxWobble, -MaxWobble, MaxWobble);
             wobbleAmountToAddZ += Mathf.Clamp((velocity.z + (velocity.y * 0.2f) + angularVelocity.x + angularVelocity.y) * MaxWobble, -MaxWobble, MaxWobble);
         }
+    //    if (rend.sharedMaterial != null)
+        {
 
-        // send it to the shader
-        rend.sharedMaterial.SetFloat("_WobbleX", wobbleAmountX);
-        rend.sharedMaterial.SetFloat("_WobbleZ", wobbleAmountZ);
+            // send it to the shader
+            rend.sharedMaterial?.SetFloat("_WobbleX", wobbleAmountX);
+            rend.sharedMaterial?.SetFloat("_WobbleZ", wobbleAmountZ);
 
-        // set fill amount
-        UpdatePos(deltaTime);
+            // set fill amount
+            UpdatePos(deltaTime);
+        }
 
         // keep last position
         lastPos = transform.position;
@@ -162,7 +165,7 @@ public class Liquid : MonoBehaviour
         {
             pos = worldPos - transform.position - new Vector3(0, fillAmount, 0);
         }
-        rend.sharedMaterial.SetVector("_FillAmount", pos);
+        rend.sharedMaterial?.SetVector("_FillAmount", pos);
     }
 
     //https://forum.unity.com/threads/manually-calculate-angular-velocity-of-gameobject.289462/#post-4302796
