@@ -20,6 +20,7 @@ public class PuzzleClearCounter : MonoBehaviour
         count++;
         if(count == clearCount)
         {
+            Debug.Log("CLEAR");
             onClear?.Invoke();
         }
     }
