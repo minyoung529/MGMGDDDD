@@ -140,7 +140,7 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!IsBurn /*&& IsTriggerBurn*/) return;
+        if (!IsBurn && IsTriggerBurn) return;
 
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
@@ -162,7 +162,7 @@ public class Fire : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (!IsBurn /*&& IsTriggerBurn*/) return;
+        if (!IsBurn && IsTriggerBurn) return;
 
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)

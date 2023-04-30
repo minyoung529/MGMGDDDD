@@ -43,6 +43,12 @@ public class Liquid : MonoBehaviour
     void Start()
     {
         GetMeshAndRend();
+
+        if (rend != null)
+        {
+            Material tempMaterial = new Material(rend.sharedMaterial);
+            rend.sharedMaterial = tempMaterial;
+        }
     }
 
     private void OnValidate()
@@ -60,6 +66,7 @@ public class Liquid : MonoBehaviour
         {
             rend = GetComponent<Renderer>();
         }
+
     }
     void Update()
     {
@@ -126,6 +133,11 @@ public class Liquid : MonoBehaviour
     public void UnFillLiquid(float duration)
     {
         DOTween.To(() => fillAmount, (x) => fillAmount = x, 1.3f, duration);
+    }
+
+    public void SetFillAmount(float amount)
+    {
+        DOTween.To(() => fillAmount, (x) => fillAmount = x, amount, 2f);
     }
 
     void UpdatePos(float deltaTime)
