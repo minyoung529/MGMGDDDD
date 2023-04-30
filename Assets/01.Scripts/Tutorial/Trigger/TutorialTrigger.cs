@@ -51,10 +51,14 @@ public class TutorialTrigger : MonoBehaviour
     {
         if (autoEnd || !isEnter) return;
 
-        if (((1 << other.gameObject.layer) & layerMask) != 0 && Condition(other.transform))
+        if (((1 << other.gameObject.layer) & layerMask) != 0 )
         {
             int len = Physics.OverlapBox(transform.position, transform.localScale * 0.5f, transform.rotation, layerMask).Length;
-            if (len != 0) return;
+            if (len != 0)
+            {
+                Debug.Log("RETURN ~~~");
+                return;
+            }
 
             isEnter = false;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();

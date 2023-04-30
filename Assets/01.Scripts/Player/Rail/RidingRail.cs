@@ -20,16 +20,16 @@ public class RidingRail : MonoBehaviour
     public bool IsRiding => isRiding;
 
     private PathFollower pathFollower;
+    public PathFollower PathFollower => pathFollower;
     private Transform triggerPoint;
     private Rigidbody rigid;
 
     private void Awake()
     {
-        railPosition = transform.Find("RailPosition");
-
         pathFollower = Utils.GetOrAddComponent<PathFollower>(gameObject);
         rigid = GetComponent<Rigidbody>();
 
+        railPosition = transform.Find("RailPosition");
         pathFollower.offset = (railPosition) ? railPosition.localPosition : Vector3.zero;
 
         pathFollower.endOfPathInstruction = EndOfPathInstruction.Stop;
@@ -129,9 +129,6 @@ public class RidingRail : MonoBehaviour
 
     public void Exit()
     {
-        triggerPoint = null;
-        pathFollower.pathCreator = null;
-
         InputManager.StopListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 }

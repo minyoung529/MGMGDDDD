@@ -10,6 +10,9 @@ public class TutorialTrigger_Rail : TutorialTrigger
 
     private RidingRail rail;
 
+    [SerializeField]
+    private bool isRotate = true;
+
     protected override bool Condition(Transform player)
     {
         rail ??= Utils.GetOrAddComponent<RidingRail>(player);
@@ -28,12 +31,15 @@ public class TutorialTrigger_Rail : TutorialTrigger
     {
         if (rail == null) return;
 
+        rail.PathFollower.IsRotate = isRotate;
         rail.Enter();
     }
 
     protected override void OnExit()
     {
         if (rail == null) return;
+
+        rail.PathFollower.IsRotate = isRotate;
         rail.Exit();
     }
 }

@@ -14,6 +14,9 @@ namespace PathCreation.Examples
         private float speedStorage = 0f;
         public float speed = 5;
         private bool isStop = false;
+        private bool isRotate = true;
+        public bool IsRotate
+        { get { return isRotate; } set {  isRotate = value; } }
         float distanceTravelled;
 
         public bool reverseStartEnd = false;
@@ -99,7 +102,11 @@ namespace PathCreation.Examples
                 }
 
                 transform.position = nextPos;
-                transform.rotation = rotation;
+
+                if (isRotate)
+                {
+                    transform.rotation = rotation;
+                }
             }
         }
 

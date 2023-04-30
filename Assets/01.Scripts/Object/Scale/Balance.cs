@@ -40,7 +40,6 @@ public class Balance : MonoBehaviour
 
         if (val > maxRotation) val = maxRotation;
         else if(val < 0) val = 0;
-        Debug.Log(val);
 
         RotateWeight(val);
     }
