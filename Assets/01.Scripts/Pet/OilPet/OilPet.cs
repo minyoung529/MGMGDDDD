@@ -23,7 +23,6 @@ public class OilPet : Pet
     [SerializeField]
     private NavMeshAgent pathAgent;
     private OilPetSkill oilPetSkill = new OilPetSkill();
-    private bool isSkilling;
     private bool pauseSkilling = false;
     protected bool isSkillDragging;
 
@@ -55,12 +54,12 @@ public class OilPet : Pet
     // Active skill
     public override void Skill()
     {
-        if (IsCoolTime || isSkillDragging || isSkillDragging || pauseSkilling) return;
+        if (IsCoolTime || isSkillDragging || pauseSkilling) return;
         base.Skill();
 
         OnStartSkill?.Invoke();
         isSkillDragging = true;
-        isSkilling = true;
+        Skilling = true;
         oilPetSkill.OnClickSkill();
     }
     private void ParticlePlay(Vector3 hit)
@@ -98,7 +97,7 @@ public class OilPet : Pet
 
     public void SpreadOil()
     {
-        if (isSkilling && (!isMouseMove || IsDirectSpread))
+        if (Skilling && (!isMouseMove || IsDirectSpread))
         {
             oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetTarget(null); SetNavIsStopped(false); ResetSkill(); });
         }
@@ -108,7 +107,7 @@ public class OilPet : Pet
     {
         base.SkillUp();
 
-        if (!isSkilling || !isSkillDragging) return;
+        if (!Skilling || !isSkillDragging) return;
 
         if (IsDirectSpread)
         {
@@ -124,7 +123,7 @@ public class OilPet : Pet
 
     protected void ResetSkill()
     {
-        isSkilling = false;
+        Skilling = false;
         SetDestination(transform.position);
     }
 
@@ -134,7 +133,7 @@ public class OilPet : Pet
 
         if (!pauseSkilling)
         {
-            oilPetSkill.Update(isSkilling, isSkillDragging);
+            oilPetSkill.Update(Skilling, isSkillDragging);
         }
     }
 

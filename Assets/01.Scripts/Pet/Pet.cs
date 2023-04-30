@@ -18,13 +18,15 @@ public abstract class Pet : MonoBehaviour
     #region CheckList
 
     private bool isCoolTime = false;
+    private bool skilling = false;
+    public bool Skilling { get { return skilling; } set { skilling = value; } }
     protected bool isMouseMove = false;
-    private bool isInputLock = false;
-    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
-    private bool isRecall = false;
-    public bool IsHolding = false;
     private bool isMovePointLock = false;
     public bool IsMovePointLock { get => isMovePointLock; set => isMovePointLock = value; }
+    private bool isRecall = false;
+    private bool isInputLock = false;
+    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
+
     #endregion
 
     protected Collider coll;
@@ -115,6 +117,7 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ResetPet()
     {
+        StopSkill();
         isCoolTime = false;
         agent.enabled = true;
         transform.localScale = originScale;
@@ -147,6 +150,7 @@ public abstract class Pet : MonoBehaviour
     {
         if (isCoolTime) return;
         if (IsInputLock) return;
+        skilling = true;
         SkillDelay();
     }
 
@@ -207,6 +211,11 @@ public abstract class Pet : MonoBehaviour
         this.player = player;
     }
 
+    public virtual void StopSkill()
+    {
+        skilling = false;
+    }
+
     public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
     {
         if (!agent.isOnNavMesh) return;
@@ -230,7 +239,7 @@ public abstract class Pet : MonoBehaviour
 
     public void ReCall()
     {
-        if (isRecall || IsHolding || isInputLock || !player) return;
+        if (isRecall || petThrow.IsHolding || !player) return;
         if (GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f)
         {
             SetDestination(player.position);
@@ -270,10 +279,10 @@ public abstract class Pet : MonoBehaviour
             emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
+            isRecall = false;
             petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () =>
             {
                 SetTargetPlayer();
-                isRecall = false;
             });
         });
     }
