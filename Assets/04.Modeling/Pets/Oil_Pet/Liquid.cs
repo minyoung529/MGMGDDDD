@@ -44,6 +44,11 @@ public class Liquid : MonoBehaviour
     {
         GetMeshAndRend();
 
+        if (rend != null)
+        {
+            Material tempMaterial = new Material(rend.sharedMaterial);
+            rend.sharedMaterial = tempMaterial;
+        }
     }
 
     private void OnValidate()
@@ -62,11 +67,6 @@ public class Liquid : MonoBehaviour
             rend = GetComponent<Renderer>();
         }
 
-        if (rend != null)
-        {
-            Material tempMaterial = new Material(rend.sharedMaterial);
-            rend.sharedMaterial = tempMaterial;
-        }
     }
     void Update()
     {
