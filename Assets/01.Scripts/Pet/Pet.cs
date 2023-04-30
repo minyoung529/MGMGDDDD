@@ -103,8 +103,6 @@ public abstract class Pet : MonoBehaviour
         CheckArrive();
         FollowTarget();
 
-        Debug.Log(skilling);
-
         if(agent.isOnOffMeshLink)
         {
             agent.speed = originalAgentSpeed * 0.5f;
