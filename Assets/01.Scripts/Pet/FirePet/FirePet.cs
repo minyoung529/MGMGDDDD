@@ -8,7 +8,6 @@ public class FirePet : Pet
     [SerializeField] GameObject fireBall;
 
     Fire fire;
-    bool isOn = false;
 
     protected override void Awake()
     {
@@ -21,7 +20,6 @@ public class FirePet : Pet
     {
         base.ResetPet();
 
-        isOn = false;
         fire.StopBurn();
     }
     #endregion
@@ -39,7 +37,7 @@ public class FirePet : Pet
 
     public void OffSkill()
     {
-        isOn = false;
+        Skilling = false;
         fire.StopBurn();
     }
 
@@ -52,8 +50,14 @@ public class FirePet : Pet
 
     public void OnSkill()
     {
-        isOn = true;
         fire.Burn();
+    }
+
+    public override void StopSkill()
+    {
+        base.StopSkill();
+
+        OffSkill();
     }
 
     private GameObject CreateFire()

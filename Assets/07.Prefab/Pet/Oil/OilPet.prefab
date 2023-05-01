@@ -329,6 +329,7 @@ GameObject:
   - component: {fileID: 1009855026}
   - component: {fileID: 498263000}
   - component: {fileID: 7002649222190951664}
+  - component: {fileID: 272708379305149914}
   m_Layer: 8
   m_Name: OilPet
   m_TagString: OilPet
@@ -425,7 +426,6 @@ MonoBehaviour:
   collRadius: 0.7
   flyParticlePref: {fileID: 198468451835195826, guid: 7f13edbb273b9514fbf6da6e743e8586, type: 3}
   arriveParticlePref: {fileID: 198468451835195826, guid: f3b9d8c9b1301c747a43060c247cd3d8, type: 3}
-  IsHolding: 0
   oilSkill: {fileID: 3503917110362162976, guid: 9d87604740c0fb1438c3ea57e1fc518a, type: 3}
   fireBurnParticle: {fileID: 4586198278030254431}
   parentController: {fileID: 0}
@@ -573,6 +573,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   landingTime: 1
+--- !u!114 &272708379305149914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4586198276244333025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25761bd0e35af0b42ba5675ebc417dee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 3
 --- !u!1001 &3437776999065935891
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -683,6 +696,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a919096323fee274ea4fe599a54f641b, type: 2}
+    - target: {fileID: 1299176460912231091, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7fd96e0ae71a1ca41823948434cb98e0, type: 2}
     - target: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}
       propertyPath: m_RootOrder
       value: 3

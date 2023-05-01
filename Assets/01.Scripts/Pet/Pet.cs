@@ -31,6 +31,8 @@ public abstract class Pet : MonoBehaviour
     #region CheckList
 
     private bool isCoolTime = false;
+    private bool skilling = false;
+    public bool Skilling { get { return skilling; } set { skilling = value; } }
     protected bool isMouseMove = false;
     private bool isRecall = false;
     private bool isMovePointLock = false;
@@ -120,6 +122,7 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ResetPet()
     {
+        StopSkill();
         isCoolTime = false;
         agent.enabled = true;
         transform.localScale = originScale;
@@ -152,6 +155,7 @@ public abstract class Pet : MonoBehaviour
     {
         if (isCoolTime) return;
         if (IsInputLock) return;
+        skilling = true;
         SkillDelay();
     }
 
@@ -210,6 +214,11 @@ public abstract class Pet : MonoBehaviour
     public void SetPlayerTransform(Transform player)
     {
         this.player = player;
+    }
+
+    public virtual void StopSkill()
+    {
+        skilling = false;
     }
 
     public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
