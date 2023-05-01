@@ -82,7 +82,6 @@ public abstract class Pet : MonoBehaviour
         petThrow = GetComponent<PetThrow>();
         emission = GetComponentInChildren<ChangePetEmission>();
 
-
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
 

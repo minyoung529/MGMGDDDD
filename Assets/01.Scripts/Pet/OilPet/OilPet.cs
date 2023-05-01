@@ -99,7 +99,7 @@ public class OilPet : Pet
     {
         if (Skilling && (!isMouseMove || IsDirectSpread))
         {
-            oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetTarget(null); SetNavIsStopped(false); ResetSkill(); });
+            oilPetSkill.StartSpreadOil(() => SetNavIsStopped(true), () => { SetTarget(null); SetNavIsStopped(false); ResetSkill(); IsMovePointLock = false; });
         }
     }
 
@@ -118,6 +118,7 @@ public class OilPet : Pet
 
         agent.isStopped = false;
         isSkillDragging = false;
+        IsMovePointLock = true;
         pauseSkilling = false;
     }
 
