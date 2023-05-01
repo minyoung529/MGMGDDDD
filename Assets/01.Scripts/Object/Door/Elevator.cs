@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Elevator : MonoBehaviour
 {
@@ -17,10 +18,12 @@ public class Elevator : MonoBehaviour
     private bool isMoving = false;
 
     private Rigidbody rigid;
+    private Collider collider;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
     }
 
     [ContextMenu("Open")]
@@ -43,7 +46,7 @@ public class Elevator : MonoBehaviour
         isMoving = true;
         CloseElevator();
 
-        rigid.DOMoveY(transform.position.y + distance, duration);
+        rigid.DOMoveY(transform.position.y + distance, duration).OnComplete(() => TriggerActive(false));
         StartCoroutine(DelayOpenMove());
     }
 
@@ -54,23 +57,29 @@ public class Elevator : MonoBehaviour
         isMoving = true;
         CloseElevator();
 
-        rigid.DOMoveY(transform.position.y + (distance * -1), duration);
+        rigid.DOMoveY(transform.position.y + (distance * -1), duration).OnComplete(() => TriggerActive(false));
         StartCoroutine(DelayOpenMove());
     }
 
     private IEnumerator DelayOpenMove()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(duration);
         OpenElevator();
+        Debug.Log("Open");
         isMoving = false;
     }
     private IEnumerator DelayCloseMove()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(duration);
+        Debug.Log("Close");
         CloseElevator();    
         isMoving = false;
     }
 
+    public void TriggerActive(bool active)
+    {
+        collider.enabled = active;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == Define.PLAYER_LAYER)

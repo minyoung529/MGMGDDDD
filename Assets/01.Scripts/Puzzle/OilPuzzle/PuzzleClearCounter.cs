@@ -18,6 +18,7 @@ public class PuzzleClearCounter : MonoBehaviour
     public void CheckClear()
     {
         count++;
+        Debug.Log(count);
         if(count == clearCount)
         {
             Debug.Log("CLEAR");
