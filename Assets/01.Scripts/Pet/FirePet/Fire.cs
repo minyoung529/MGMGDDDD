@@ -14,14 +14,14 @@ public class Fire : MonoBehaviour
     [SerializeField] bool isDestroyType = false;
     [SerializeField] float burnDelay = 0f;
     [SerializeField] float burningTime = 2f;
-    [SerializeField] bool isTriggerBurn = false;
+   // [SerializeField] bool isTriggerBurn = false;
 
     bool isReadyBurn = false;
     bool isBurn = false;
     float burningReadyTime = 2f;
 
     public bool IsBurn { get { return isBurn; } }
-    public bool IsTriggerBurn { get { return isTriggerBurn; } }
+   // public bool IsTriggerBurn { get { return isTriggerBurn; } }
 
     Sequence seq;
 
@@ -140,7 +140,7 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!IsBurn && IsTriggerBurn) return;
+        if (!IsBurn /* && IsTriggerBurn*/) return;
 
         IceMelting[] ices = other.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
@@ -162,7 +162,7 @@ public class Fire : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (!IsBurn && IsTriggerBurn) return;
+        if (!IsBurn /*&& IsTriggerBurn*/) return;
 
         IceMelting[] ices = collision.collider.GetComponents<IceMelting>();
         foreach (IceMelting ice in ices)
