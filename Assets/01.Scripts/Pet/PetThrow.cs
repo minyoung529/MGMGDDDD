@@ -22,9 +22,12 @@ public class PetThrow : MonoBehaviour {
     }
 
     private void OnCollisionStay(Collision collision) {
-        if (collision.gameObject.layer != Define.BOTTOM_LAYER || !isHolding) return;
+        if (collision.gameObject.layer != Define.BOTTOM_LAYER) return;
 
         if (isThrow) {
+            if (collision.transform.CompareTag("Disrollable")) {
+                WakeUp();
+            }
             elapsedLandingTime += Time.deltaTime;
             if (elapsedLandingTime > landingTime) {
                 elapsedLandingTime = 0f;
@@ -36,27 +39,41 @@ public class PetThrow : MonoBehaviour {
         }
     }
 
-    public void Hold(bool value, float distanceToEnable = 3f) {
-        isHolding = value;
-        pet.Rigid.isKinematic = value;
-        if (value)
-            pet.Coll.enabled = !value;
-        else
-            StartCoroutine(EnableColl(transform.position, distanceToEnable));
-    }
-
-    public void Hold(bool value, Vector3 thrower, float distanceToEnable = 3f) {
+    public void Hold(bool value, float distanceToEnableColl = 3f, float timeToEnableColl = 2f) {
         pet.Rigid.velocity = Vector3.zero;
         isHolding = value;
         pet.Rigid.isKinematic = value;
-        if (value)
-            pet.Coll.enabled = !value;
-        else
-            StartCoroutine(EnableColl(thrower, distanceToEnable));
+        pet.IsInputLock = value;
+        if (value) { //들어올릴때 
+            pet.Coll.enabled = false;
+            pet.SetNavEnabled(false);
+        }
+        else { //내려놓을때
+            StartCoroutine(EnableColl(transform.position, distanceToEnableColl, timeToEnableColl));
+        }
     }
 
-    private IEnumerator EnableColl(Vector3 thrower, float distance = 3f) {
-        while ((thrower - transform.position).sqrMagnitude > Mathf.Pow(distance, 2)) {
+    public void Hold(bool value, Vector3 thrower, float distanceToEnableColl = 3f, float timeToEnableColl = 2f) {
+        pet.Rigid.velocity = Vector3.zero;
+        isHolding = value;
+        pet.Rigid.isKinematic = value;
+        pet.IsInputLock = value;
+        if (value) { //들어올릴때 
+            pet.Coll.enabled = false;
+            pet.SetNavEnabled(false);
+        }
+        else { //내려놓을때
+            StartCoroutine(EnableColl(thrower, distanceToEnableColl, timeToEnableColl));
+        }
+    }
+
+    /// <summary>
+    /// 펫이 Hold 상태에서 해제된 후 Distancec이상 멀어졌거나 time 만큼의 시간이 지났다면 콜라이더를 다시 활성화합니다.
+    /// </summary>
+    private IEnumerator EnableColl(Vector3 thrower, float distance = 3f, float time = 2f) {
+        float timer = 0f;
+        while ((thrower - transform.position).sqrMagnitude > Mathf.Pow(distance, 2) && timer <= time) {
+            timer += Time.deltaTime;
             yield return null;
         }
         pet.Coll.enabled = true;
@@ -73,7 +90,8 @@ public class PetThrow : MonoBehaviour {
     }
 
     private void WakeUp() {
-        isThrow = true;
+        isThrow = false;
+        isWake = true;
 
         pet.Rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
 
