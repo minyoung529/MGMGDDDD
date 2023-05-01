@@ -50,16 +50,18 @@ public class RotatingDoor : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (((1 << other.gameObject.layer) & targetLayer) != 0)
+        if (((1 << collision.gameObject.layer) & targetLayer) != 0)
         {
-            if (open && isClose)
+            if (!open)
             {
+                Debug.Log(gameObject.name + " Open   " +  collision.gameObject.name);
                 Open();
             }
         }
     }
+
 
     public void Lock()
     {
