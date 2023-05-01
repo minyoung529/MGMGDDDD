@@ -8,12 +8,25 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
+    private Vector3 originScale;
+    private float originalAgentSpeed;
+    private ChangePetEmission emission;
+
+    #region 이동관련
     [SerializeField] protected float sightRange = 5f;
-    [SerializeField] protected float collRadius = 0.7f;
+    protected Transform target;
+    protected Transform player;
+    private readonly float distanceToPlayer = 5f;
+    public Action OnArrive { get; set; }
+
+    #region Recall
     [SerializeField] private ParticleSystem flyParticlePref;
     [SerializeField] private ParticleSystem arriveParticlePref;
     private ParticleSystem flyParticle = null;
     private ParticleSystem arriveParticle = null;
+    #endregion
+
+    #endregion
 
     #region CheckList
 
@@ -21,18 +34,17 @@ public abstract class Pet : MonoBehaviour
     private bool skilling = false;
     public bool Skilling { get { return skilling; } set { skilling = value; } }
     protected bool isMouseMove = false;
+    private bool isRecall = false;
     private bool isMovePointLock = false;
     public bool IsMovePointLock { get => isMovePointLock; set => isMovePointLock = value; }
-    private bool isRecall = false;
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
 
     #endregion
 
+    #region Component
     protected Collider coll;
     protected Rigidbody rigid;
-    protected Transform player;
-    protected Transform target;
     protected NavMeshAgent agent;
     protected PetThrow petThrow;
     private float beginAcceleration;
@@ -41,11 +53,7 @@ public abstract class Pet : MonoBehaviour
         get => agent.acceleration;
         set { agent.acceleration = value; }
     }
-
-    private Vector3 originScale;
-    private float originalAgentSpeed;
-
-    private ChangePetEmission emission;
+    #endregion
 
     #region Get
 
@@ -61,9 +69,6 @@ public abstract class Pet : MonoBehaviour
 
     #endregion
 
-    private readonly float distanceToPlayer = 5f;
-
-    public Action OnArrive { get; set; }
 
     private static bool isCameraAimPoint = true;
     public static bool IsCameraAimPoint
@@ -278,7 +283,6 @@ public abstract class Pet : MonoBehaviour
             emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
-            isRecall = false;
             petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () =>
             {
                 SetTargetPlayer();

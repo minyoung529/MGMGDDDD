@@ -41,7 +41,6 @@ public class ButtonObject : MonoBehaviour, IFindable
         }
     }
 
-    [ContextMenu("Press")]
     public virtual void Press(bool value)
     {
         DoButtonAnimation(value);
@@ -53,6 +52,13 @@ public class ButtonObject : MonoBehaviour, IFindable
     {
         cap.DOLocalMoveY(enable ? -0.2f : 0, 0.3f);
     }
+
+    [ContextMenu("Press")]
+    public void Press()
+    {
+        Press(true);
+    }
+
 
     public void PressButton(bool value)
     {

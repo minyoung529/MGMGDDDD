@@ -1,21 +1,30 @@
 using DG.Tweening;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerMove))]
-public class PlayerHold : PlayerMono
-{
+public class PlayerHold : PlayerMono {
     [SerializeField] private float distance2Pet = 1f;
+    [SerializeField] [Range(0, 90)] private float throwAngle;
     [SerializeField] private float throwPow;
+    private Vector3 ThrowVector {
+        get {
+            return Quaternion.AngleAxis(throwAngle, -transform.right) * transform.forward * throwPow;
+        }
+    }
 
     private Sequence seq;
     private Pet holdingPet;
     private bool isHolding;
 
+    private Trajectory trajectory;
+
     private void Awake() {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
+        trajectory = FindObjectOfType<Trajectory>();
     }
 
     private void GetInput(InputAction action, float value) {
@@ -46,19 +55,22 @@ public class PlayerHold : PlayerMono
     #region PickUp 관련
     private void PickUp() {
         holdingPet = FindPet();
-        if (!holdingPet || !holdingPet.GetIsOnNavMesh()) {
+        if (!holdingPet) {
             controller.Move.IsInputLock = false;
             return;
         }
-        holdingPet.IsInputLock = true;
-        holdingPet.Coll.enabled = false;
+
         Vector3 dest = CallPet(holdingPet);
-        if (Vector3.Distance(dest, transform.position) > distance2Pet + 1f) {
+        if (Vector3.Distance(dest, transform.position) > distance2Pet + 1f) { //플레이어까지 향하는 경로를 찾을 수 없을때
             holdingPet = null;
             controller.Move.IsInputLock = false;
             return;
         }
-        StartCoroutine(WaitPet(dest, () => controller.Move.ChangeState(StateName.PickUp)));
+
+        StartCoroutine(WaitPet(dest, () => {
+            holdingPet.PetThrow.Hold(true);
+            controller.Move.ChangeState(StateName.PickUp);
+        }));
     }
 
     public Pet FindPet() {
@@ -93,8 +105,8 @@ public class PlayerHold : PlayerMono
 
     private IEnumerator MovePetToHand() {
         isHolding = true;
-        holdingPet.SetNavEnabled(false);
         while (isHolding) {
+            trajectory.DrawLine(holdingPet.transform.position, Quaternion.AngleAxis(throwAngle, -Vector3.right) * Vector3.forward * throwPow, holdingPet.Rigid.mass);
             holdingPet.transform.position =
                 Vector3.Lerp(
                     controller.Anim.GetBoneTransform(HumanBodyBones.LeftHand).position,
@@ -104,6 +116,7 @@ public class PlayerHold : PlayerMono
                 + transform.forward * 0.2f;
             yield return null;
         }
+        trajectory.StopDraw();
     }
     #endregion
 
