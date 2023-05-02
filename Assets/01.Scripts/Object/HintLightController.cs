@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum HintEnum
 {
-    None = 0
+    None
 
     , OilRoom = 1 << 0
     , FireRoom = 1 << 1
@@ -14,7 +14,7 @@ public enum HintEnum
 public class HintLightController : MonoBehaviour
 {
     private static Dictionary<HintEnum, ChangeEmission[]> lightsDictionary = new Dictionary<HintEnum, ChangeEmission[]>();
-    static HintEnum curIndex = HintEnum.None;
+    static HintEnum curState = HintEnum.None;
 
     private void Awake()
     {
@@ -23,9 +23,9 @@ public class HintLightController : MonoBehaviour
 
     public static void Hint(HintEnum hint)
     {
-        OffHint(hint);
-        curIndex = hint;
-        OnHint(hint);
+        if(curState != HintEnum.None) OffHint(curState);
+        curState = hint;
+        OnHint(curState);
     }
 
     #region Set
