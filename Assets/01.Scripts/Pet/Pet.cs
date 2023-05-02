@@ -15,6 +15,7 @@ public abstract class Pet : MonoBehaviour
     #region 이동관련
     [SerializeField] protected float sightRange = 5f;
     protected Transform target;
+    protected Vector3 destination;
     protected Transform player;
     private readonly float distanceToPlayer = 5f;
     public Action OnArrive { get; set; }
@@ -229,12 +230,14 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
-        agent.SetDestination(AxisController.CalculateDestination(target));
+        destination = AxisController.CalculateDestination(target);
+        agent.SetDestination(destination);
+
     }
 
     private void CheckArrive()
     {
-        if (Vector3.Distance(agent.destination, transform.position) <= 1f)
+        if (Vector3.Distance(destination, transform.position) <= 1f)
         {
             OnArrive?.Invoke();
             OnArrive = null;
@@ -246,6 +249,7 @@ public abstract class Pet : MonoBehaviour
         if (isRecall || petThrow.IsHolding || !player) return;
         if (GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f)
         {
+            destination = player.position;
             SetDestination(player.position);
             if (Vector3.Distance(GetDestination(), player.position) <= 1f)
             {
@@ -345,13 +349,14 @@ public abstract class Pet : MonoBehaviour
 
         if (IsCameraAimPoint)
         {
-            SetDestination(GameManager.Instance.GetCameraHit());
+            destination = GameManager.Instance.GetCameraHit();
         }
         else
         {
-            SetDestination(GameManager.Instance.GetMousePos());
+            destination = GameManager.Instance.GetMousePos();
         }
 
+        SetDestination(destination);
         //transform.DOKill();
     }
 
