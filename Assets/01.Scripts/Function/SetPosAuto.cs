@@ -30,7 +30,7 @@ public class SetPosAuto : MonoBehaviour
         }
         if (!target) return;
         transform.DOMove(target.position, moveTime);
-        transform.DORotate(target.rotation.eulerAngles, moveTime);
+        //transform.DORotate(target.localEulerAngles, moveTime);
         isSet = true;
     }
 
