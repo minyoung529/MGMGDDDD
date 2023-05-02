@@ -139,8 +139,7 @@ public class PlayerHold : PlayerMono {
 
     public void OnThrow() {
         isHolding = false;
-        Vector3 dir = (transform.forward * 0.7f + Vector3.up).normalized;
-        holdingPet.PetThrow.Throw(transform.position, dir * throwPow);
+        holdingPet.PetThrow.Throw(transform.position, ThrowVector);
         holdingPet = null;
     }
 

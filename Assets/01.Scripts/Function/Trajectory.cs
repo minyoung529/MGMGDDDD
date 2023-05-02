@@ -41,11 +41,11 @@ public class Trajectory : MonoBehaviour
                 y: velocity.y * stepTimePassed - 0.5f * Physics.gravity.y * stepTimePassed * stepTimePassed,
                 z: velocity.z * stepTimePassed
                 );
-            if (i > 0) {
-                if (Physics.Raycast(beforePoint, MovementVector - beforePoint, 1 << Define.BOTTOM_LAYER)) {
-                    break;
-                }
-            }
+            //if (i > 0) {
+            //    if (Physics.Raycast(beforePoint, MovementVector - beforePoint, 1 << Define.BOTTOM_LAYER)) {
+            //        break;
+            //    }
+            //}
             beforePoint = -MovementVector;
             _linePoints.Add(-MovementVector);
         }

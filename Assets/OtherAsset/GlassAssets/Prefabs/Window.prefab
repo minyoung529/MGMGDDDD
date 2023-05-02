@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 23026058275702258}
   - component: {fileID: 114381180135537044}
   - component: {fileID: 82815429267135604}
+  - component: {fileID: 4122631731036195631}
   m_Layer: 0
   m_Name: Window
   m_TagString: Untagged
@@ -113,12 +114,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layer:
     serializedVersion: 2
-    m_Bits: 2
-  partsX: 10
-  partsY: 10
+    m_Bits: 1
+  partsX: 7
+  partsY: 7
   preCalculate: 1
   addTorques: 1
-  hideSplintersInHierarchy: 1
+  hideSplintersInHierarchy: 0
   useCollision: 0
   health: 0
   destroyPhysicsTime: 10
@@ -223,3 +224,33 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &4122631731036195631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643765196433972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b50c4e1eb8945c448a2f73ded5fc040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onExplosion:
+    m_PersistentCalls:
+      m_Calls: []
+  onExplosionWithInfo:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 114381180135537044}
+        m_TargetAssemblyTypeName: BreakableWindow, Assembly-CSharp
+        m_MethodName: Explosion
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
