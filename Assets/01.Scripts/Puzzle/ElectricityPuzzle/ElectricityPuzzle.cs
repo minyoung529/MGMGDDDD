@@ -2,6 +2,7 @@ using PathCreation.Examples;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.ProBuilder;
 
 public class ElectricityPuzzle : MonoBehaviour
@@ -20,6 +21,8 @@ public class ElectricityPuzzle : MonoBehaviour
 
     private bool isTesting = false;
 
+    [SerializeField]
+    private UnityEvent onClear;
 
     private void Start()
     {
@@ -77,6 +80,7 @@ public class ElectricityPuzzle : MonoBehaviour
         {
             // Å¬¸®¾î
             Debug.Log("CLEAR");
+            onClear?.Invoke();
         }
 
         Split();
