@@ -37,14 +37,14 @@ public class PlayerHold : PlayerMono {
                 if (!holdingPet)
                     PickUp();
                 else
-                    controller.Move.ChangeState(StateName.Drop);
+                    controller.Move.ChangeState(PlayerStateName.Drop);
                 break;
             case InputAction.Throw:
                 if (!holdingPet) {
                     controller.Move.IsInputLock = false;
                     return;
                 }
-                controller.Move.ChangeState(StateName.Throw);
+                controller.Move.ChangeState(PlayerStateName.Throw);
                 break;
             default:
                 Debug.LogError($"올바르지 않은 입력이 감지되었습니다! 입력명:{action}");
@@ -69,7 +69,7 @@ public class PlayerHold : PlayerMono {
 
         StartCoroutine(WaitPet(dest, () => {
             holdingPet.PetThrow.Hold(true);
-            controller.Move.ChangeState(StateName.PickUp);
+            controller.Move.ChangeState(PlayerStateName.PickUp);
         }));
     }
 
@@ -145,7 +145,7 @@ public class PlayerHold : PlayerMono {
 
     public void OnAnimEnd() {
         controller.Move.IsInputLock = false;
-        controller.Move.ChangeState(StateName.DefaultMove);
+        controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion
 

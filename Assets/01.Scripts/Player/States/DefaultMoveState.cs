@@ -26,8 +26,8 @@ public class DefaultMoveState : MoveState
     #endregion
 
     #region abstarct 구현 부분
-    [SerializeField] private StateName stateName = StateName.DefaultMove;
-    public override StateName StateName => stateName;
+    [SerializeField] private PlayerStateName stateName = PlayerStateName.DefaultMove;
+    public override PlayerStateName StateName => stateName;
 
     public override void OnInput(Vector3 inputDir) {
         if (inputDir.sqrMagnitude <= 0) {
