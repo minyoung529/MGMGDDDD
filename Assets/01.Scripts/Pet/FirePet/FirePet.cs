@@ -50,6 +50,10 @@ public class FirePet : Pet
 
     public void OnSkill()
     {
+        if(fire == null)
+        {
+            fire = GetComponent<Fire>();
+        }
         fire.Burn();
     }
 
