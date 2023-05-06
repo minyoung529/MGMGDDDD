@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TutorialTrigger : MonoBehaviour
 {
@@ -27,10 +28,28 @@ public class TutorialTrigger : MonoBehaviour
     private Action onEnter;
     private Action onExit;
 
+    #region ACTION
+    [Tooltip("이벤트를 구독하지 않으면 굳이 설정할 필요가 없음")]
+    [SerializeField]
+    private InputAction inputAction = InputAction.Interaction;
+
+    [SerializeField]
+    private UnityEvent onKeyDownEvent;
+
+    private Action<InputAction, float> keyDownAction;
+    #endregion
+
     private void Awake()
     {
+        if(onKeyDownEvent.GetPersistentEventCount() > 0)
+        {
+            keyDownAction = (InputAction x, float y) => onKeyDownEvent.Invoke();
+        }
+
         onEnter += OnEnter;
+        onEnter += ListeningEvent;
         onExit += OnExit;
+        onExit += StopListeningEvent;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -51,7 +70,7 @@ public class TutorialTrigger : MonoBehaviour
     {
         if (autoEnd || !isEnter) return;
 
-        if (((1 << other.gameObject.layer) & layerMask) != 0 )
+        if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
             int len = Physics.OverlapBox(transform.position, transform.localScale * 0.5f, transform.rotation, layerMask).Length;
             if (len != 0)
@@ -122,4 +141,20 @@ public class TutorialTrigger : MonoBehaviour
     protected virtual void OnEnter() { }
 
     protected virtual void OnExit() { }
+
+    private void ListeningEvent()
+    {
+        if (keyDownAction != null)
+        {
+            InputManager.StartListeningInput(inputAction, keyDownAction);
+        }
+    }
+
+    private void StopListeningEvent()
+    {
+        if (keyDownAction != null)
+        {
+            InputManager.StopListeningInput(inputAction, keyDownAction);
+        }
+    }
 }
