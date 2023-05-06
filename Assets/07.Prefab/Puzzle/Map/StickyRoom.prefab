@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1821663810}
   - component: {fileID: 1821663809}
   - component: {fileID: 1821663808}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CameraTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,6 +261,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 3061131147823845634}
+  distance: 5
+  jumpHeight: 0.5
 --- !u!114 &5750304596841613104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3061131146551892252
 Transform:
   m_ObjectHideFlags: 0
@@ -798,7 +800,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &3061131146702168727
 Transform:
@@ -1174,6 +1176,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 3061131147823845634}
+  distance: 5
+  jumpHeight: 0.5
 --- !u!1 &3061131147361476424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1633,7 +1637,31 @@ MonoBehaviour:
   boltRoot: {fileID: 3061131146176313909}
   onClear:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: HintLight, Assembly-CSharp
+        m_MethodName: OnHint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1 &3061131147936503237
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,6 +1813,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 3061131147823845634}
+  distance: 5
+  jumpHeight: 0.5
 --- !u!114 &3061131147936503235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1918,7 +1948,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 695
+      value: 761
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder
@@ -2143,7 +2173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 698
+      value: 764
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder

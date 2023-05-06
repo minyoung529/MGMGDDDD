@@ -290,6 +290,7 @@ public abstract class Pet : MonoBehaviour
             petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () =>
             {
                 SetTargetPlayer();
+                isRecall = false;
             });
         });
     }
