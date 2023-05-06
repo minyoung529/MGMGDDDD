@@ -8,13 +8,13 @@ using DG.Tweening;
 
 public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
 {
-        CinemachineVirtualCameraBase activeCamera;
-
+    float duration = 1f;
+    float strength = 2f;
 
     // NOTE: This function is called at runtime and edit time.  Keep that in mind when setting the values of properties.
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
     {
-        activeCamera = playerData as CinemachineVirtualCameraBase;
+        CinemachineVirtualCameraBase activeCamera = playerData as CinemachineVirtualCameraBase;
         if (!activeCamera) return;
         
         int inputCount = playable.GetInputCount ();
@@ -26,7 +26,10 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
             ScriptPlayable<CameraShakeEffectBehaviour> inputPlayable = (ScriptPlayable<CameraShakeEffectBehaviour>)playable.GetInput(i);
             CameraShakeEffectBehaviour input = inputPlayable.GetBehaviour();
 
-            input.camera = activeCamera;
+            input._duration = duration;
+            input._strength = strength;
+            input.activeCamera = activeCamera;
+
             // Use the above variables to process each frame of this playable.
             if (inputWeight > 0f)
             {
@@ -47,5 +50,4 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         {
         }
     }
-
 }

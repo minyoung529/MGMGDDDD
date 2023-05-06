@@ -8,9 +8,12 @@ using DG.Tweening;
 [Serializable]
 public class CameraShakeEffectBehaviour : PlayableBehaviour
 {
-    public CinemachineVirtualCameraBase camera;
-    public float duration = 1f;
-    public float strength = 2f;
+    public float _duration  = 1.0f;
+    public float _strength  = 2.0f;
+
+    [HideInInspector]
+    public CinemachineVirtualCameraBase activeCamera;
+
 
     public override void OnPlayableCreate (Playable playable)
     {
@@ -21,6 +24,9 @@ public class CameraShakeEffectBehaviour : PlayableBehaviour
     {
         base.OnBehaviourPlay(playable, info);
 
-        camera.transform.DOShakePosition(duration, strength);
+        if (activeCamera == null) return;
+        
+        activeCamera.transform.DOShakePosition(_duration, _strength);
     }
+
 }

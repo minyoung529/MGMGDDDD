@@ -9,10 +9,6 @@ using DG.Tweening;
 public class CameraShakeEffectClip : PlayableAsset, ITimelineClipAsset
 {
     public CameraShakeEffectBehaviour template = new CameraShakeEffectBehaviour ();
-
-    public float _strength = 3.0f;
-    public float _duration = 1.0f;
-
     public ClipCaps clipCaps
     {
         get { return ClipCaps.Extrapolation | ClipCaps.ClipIn | ClipCaps.SpeedMultiplier | ClipCaps.Blending; }
@@ -23,9 +19,7 @@ public class CameraShakeEffectClip : PlayableAsset, ITimelineClipAsset
         var playable = ScriptPlayable<CameraShakeEffectBehaviour>.Create (graph, template);
         var clone = playable.GetBehaviour ();
         
-        clone.strength = _strength;
-        clone.duration = _duration;
-
         return playable;
     }
+
 }

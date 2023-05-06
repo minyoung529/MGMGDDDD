@@ -91,15 +91,16 @@ public class StickyPet : Pet
 
     private void Billow()
     {
-        // ǳ��ó�� ��Ǫ�� �ൿ�� �����ϴ� �Լ�
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
-        transform.DOKill();
-        SetNavIsStopped(true);
+        if(agent!= null)
+        {
+            SetNavIsStopped(true);
+            SetTarget(null);
+        }
 
-        BillowAction();
-        SetTarget(null);
+        BillowAction(bigScale);
 
         IsMovePointLock = true;
         OnBillow?.Invoke();
@@ -111,10 +112,12 @@ public class StickyPet : Pet
         ReadySticky();
     }
 
-    private void BillowAction()
+    private void BillowAction(Vector3 _scale)
     {
+        transform.DOKill();
+
         transform.forward = smallDirection;
-        scaleObject.DOScale(bigScale, 0.5f);
+        scaleObject.DOScale(_scale, 0.5f);
 
         smallDirection = Vector3.zero;
     }

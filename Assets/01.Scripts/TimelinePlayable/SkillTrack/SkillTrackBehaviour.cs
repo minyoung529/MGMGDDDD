@@ -6,7 +6,7 @@ using UnityEngine.Timeline;
 [Serializable]
 public class SkillTrackBehaviour : PlayableBehaviour
 {
-    public Pet pet;
+    [HideInInspector]    public Pet pet;
 
     public override void OnPlayableCreate (Playable playable)
     {
@@ -17,6 +17,9 @@ public class SkillTrackBehaviour : PlayableBehaviour
     {
         base.OnBehaviourPlay(playable, info);
 
+        if (pet == null) return;
+
         pet.Skill();
     }
+
 }
