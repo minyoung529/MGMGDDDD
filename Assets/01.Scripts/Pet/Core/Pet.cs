@@ -11,21 +11,15 @@ public abstract class Pet : MonoBehaviour
     private Vector3 originScale;
     private float originalAgentSpeed;
     private ChangePetEmission emission;
+    public ChangePetEmission Emission => emission;
 
     #region 이동관련
 
-    [SerializeField] protected float sightRange = 5f;
     protected Transform target;
     protected Transform player;
+    public Transform Player => player;
     private readonly float distanceToPlayer = 5f;
     public Action OnArrive { get; set; }
-
-    #region Recall
-    [SerializeField] private ParticleSystem flyParticlePref;
-    [SerializeField] private ParticleSystem arriveParticlePref;
-    private ParticleSystem flyParticle = null;
-    private ParticleSystem arriveParticle = null;
-    #endregion
 
     #endregion
 
@@ -35,7 +29,6 @@ public abstract class Pet : MonoBehaviour
     private bool skilling = false;
     public bool Skilling { get { return skilling; } set { skilling = value; } }
     protected bool isMouseMove = false;
-    private bool isRecall = false;
     private bool isMovePointLock = false;
     public bool IsMovePointLock { get => isMovePointLock; set => isMovePointLock = value; }
     private bool isInputLock = false;
@@ -79,8 +72,9 @@ public abstract class Pet : MonoBehaviour
 
     public AxisController AxisController { get; set; }
 
-    private StateMachine<Pet> stateMachine;
     [SerializeField] private Transform stateParent = null;
+    private StateMachine<Pet> stateMachine;
+    public StateMachine<Pet> State => stateMachine;
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
 
@@ -98,18 +92,13 @@ public abstract class Pet : MonoBehaviour
         originScale = transform.localScale;
         originalAgentSpeed = agent.speed;
 
-        flyParticle = Instantiate(flyParticlePref, transform);
-        arriveParticle = Instantiate(arriveParticlePref, transform);
-
-        SetUpStateMachine();
-    }
-
-    private void SetUpStateMachine() {
-        List<PetState> petState = new List<PetState>();
-        foreach (PetState item in stateParent.GetComponents<PetState>()) {
-            petState.Insert((int)item.StateName, item);
+        PetState[] compos = stateParent.GetComponents<PetState>();
+        PetState[] states = new PetState[(int)PetStateName.Length];
+        foreach (PetState item in compos) {
+            states[(int)item.StateName] = item;
+            states[(int)item.StateName].SetUp(transform);
         }
-        stateMachine = new StateMachine<Pet>(this, petState.ToArray());
+        stateMachine = new StateMachine<Pet>(this, states);
     }
 
     private void Start()
@@ -119,6 +108,7 @@ public abstract class Pet : MonoBehaviour
 
     public virtual void OnUpdate()
     {
+        State.OnUpdate();
         CheckArrive();
         FollowTarget();
 
@@ -175,12 +165,12 @@ public abstract class Pet : MonoBehaviour
 
     private void SkillDelay()
     {
-        isCoolTime = true;
         StartCoroutine(SkillCoolTime(petInform.skillDelayTime));
     }
 
     private IEnumerator SkillCoolTime(float t)
     {
+        isCoolTime = true;
         yield return new WaitForSeconds(t);
         isCoolTime = false;
     }
@@ -252,55 +242,6 @@ public abstract class Pet : MonoBehaviour
             OnArrive?.Invoke();
             OnArrive = null;
         }
-    }
-
-    public void ReCall()
-    {
-        if (isRecall || petThrow.IsHolding || !player) return;
-        if (GetIsOnNavMesh() && Vector3.Distance(transform.position, player.position) <= sightRange * 2f)
-        {
-            SetDestination(player.position);
-            if (Vector3.Distance(GetDestination(), player.position) <= 1f)
-            {
-                SetTargetPlayer();
-                ResetPet(); 
-                return;
-            }
-        }
-
-        ResetPet(); // 일단 넣어놓았습니다
-
-        isRecall = true;
-        isInputLock = true;
-        SetNavEnabled(false);
-        coll.enabled = false;
-        rigid.isKinematic = true;
-
-        // Default Color: White
-        emission.EmissionOn();
-
-        //Darw Bezier
-        Vector3 dest = player.position + (transform.position - player.position).normalized * 2f;
-        dest = GetNearestNavMeshPosition(dest) + Vector3.up * 1.5f;
-
-        Vector3[] path = new Vector3[3];
-        path[0] = dest + Vector3.up;
-        path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 5f;
-        path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
-
-        flyParticle.Play();
-
-        transform.DOLookAt(player.position, 0.5f);
-        transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() =>
-        {
-            emission.EmissionOff();
-            flyParticle.Stop();
-            arriveParticle.Play();
-            petThrow.Throw(dest, Vector3.up * 300, 1f, onComplete: () =>
-            {
-                SetTargetPlayer();
-            });
-        });
     }
     #endregion
 
@@ -380,23 +321,12 @@ public abstract class Pet : MonoBehaviour
     }
     #endregion
 
-    #region AI
-    /// <summary>
-    /// 시야 범위에 존재하는 활성화 되지 않은 버튼을 찾아낸 후 타겟으로 설정
-    /// </summary>
-    /// <returns>탐색 성공 여부</returns>
-    public bool FindButton()
-    {
-        ButtonObject target = GameManager.Instance.GetNearest(transform, GameManager.Instance.Buttons, sightRange);
-        if (!target) return false;
-        Vector3 dest = target.transform.position;
-        agent.SetDestination(dest);
-        return true;
-    }
-    #endregion
-
     public void ResetAgentValue()
     {
         agent.acceleration = beginAcceleration;
+    }
+
+    private void OnDisable() {
+        State.OnDisable();
     }
 }

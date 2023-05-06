@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class StateMachine<T> {
     private T parent = default;
@@ -6,7 +7,6 @@ public class StateMachine<T> {
 
     private List<IState> states = new List<IState>();
     private IState curState = null;
-    private bool isChanged = false;
 
     private int curStateIndex;
     public int CurStateIndex => curStateIndex;
@@ -26,10 +26,10 @@ public class StateMachine<T> {
     }
 
     public void ChangeState(int index) {
-        curState.OnExit();
+        curState?.OnExit();
         curStateIndex = index;
         curState = states[index];
-        isChanged = true;
+        curState.OnEnter();
     }
 
     public void ChangeState(IState state) {
@@ -45,10 +45,10 @@ public class StateMachine<T> {
     }
 
     public void OnUpdate() {
-        if (isChanged) {
-            curState.OnEnter();
-            return;
-        }
         curState.OnUpdate();
+    }
+
+    public void OnDisable() {
+        curState.OnExit();
     }
 }

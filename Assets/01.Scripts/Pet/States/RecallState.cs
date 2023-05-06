@@ -1,0 +1,75 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+
+public class RecallState : PetState {
+    public override PetStateName StateName => PetStateName.Recall;
+
+    [SerializeField] private float sightRange = 10f;
+    [SerializeField] private ParticleSystem flyParticlePref;
+    [SerializeField] private ParticleSystem arriveParticlePref;
+    private ParticleSystem flyParticle = null;
+    private ParticleSystem arriveParticle = null;
+
+    public override void OnEnter() {
+        CheckDistanceToPlayer();
+    }
+
+    public override void OnExit() {
+        
+    }
+
+    public override void OnUpdate() {
+
+    }
+
+    private void Start() {
+        flyParticle = Instantiate(flyParticlePref, pet.transform);
+        arriveParticle = Instantiate(arriveParticlePref, pet.transform);
+    }
+
+    private void CheckDistanceToPlayer() {
+        if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange) {
+            pet.SetDestination(pet.Player.position);
+            if (Vector3.Distance(pet.GetDestination(), pet.Player.position) <= 1f) {
+                pet.SetTargetPlayer();
+                return;
+            }
+        }
+        Fly();
+    }
+
+    private void Fly() {
+        pet.SetNavEnabled(false);
+        pet.Coll.enabled = false;
+        pet.Rigid.isKinematic = true;
+
+        // Default Color: White
+        pet.Emission.EmissionOn();
+
+        Vector3[] path = DrawBezier();
+
+        flyParticle.Play();
+
+        pet.transform.DOLookAt(pet.Player.position, 0.5f);
+        pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
+            pet.Emission.EmissionOff();
+            flyParticle.Stop();
+            arriveParticle.Play();
+            pet.PetThrow.Throw(Vector3.up * 300);
+        });
+    }
+
+    private Vector3[] DrawBezier() {
+        Vector3 dest = pet.Player.position + (transform.position - pet.Player.position).normalized * 2f;
+        dest = pet.GetNearestNavMeshPosition(dest) + Vector3.up * 1.5f;
+
+        Vector3[] path = new Vector3[3];
+        path[0] = dest + Vector3.up;
+        path[1] = Vector3.Lerp(transform.position, path[0], 0.2f) + Vector3.up * 5f;
+        path[2] = Vector3.Lerp(transform.position, path[0], 0.8f) + Vector3.up * 3f;
+
+        return path;
+    }
+}

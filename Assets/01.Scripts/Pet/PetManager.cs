@@ -80,6 +80,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
         InputManager.StartListeningInput(InputAction.Down_Pet, SwitchPet);
+
         InputManager.StartListeningInput(InputAction.Select_First_Pet, SelectPet);
         InputManager.StartListeningInput(InputAction.Select_Second_Pet, SelectPet);
         InputManager.StartListeningInput(InputAction.Select_Third_Pet, SelectPet);
@@ -135,7 +136,7 @@ public class PetManager : MonoSingleton<PetManager>
         // Input¿Ã Lock ∞…∑»¿ª ∂ß
         if (pets[selectIndex].IsInputLock) return;
 
-        pets[selectIndex].Skill();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
     }
 
     private void ReCall(InputAction input, float value)
@@ -146,7 +147,7 @@ public class PetManager : MonoSingleton<PetManager>
         //    p.ReCall();
         //}
 
-        pets[selectIndex].ReCall();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }
     #endregion
 

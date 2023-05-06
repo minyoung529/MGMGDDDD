@@ -1,28 +1,28 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class LocalEvent
-{
-    private List<Action<EventParam>> eventList = new List<Action<EventParam>>();
+public class LocalEvent {
+    private Dictionary<int, Action> eventDictionary = new Dictionary<int, Action>();
 
-    public void StartListening(int eventIndex, Action<EventParam> listener) {
-        if (eventIndex < eventList.Count && eventList[eventIndex] != null) {
-            eventList[eventIndex] += listener;
+    public void StartListening(int eventIndex, Action listener) {
+        if (eventDictionary.ContainsKey(eventIndex)) {
+            eventDictionary[eventIndex] += listener;
         }
         else {
-            eventList.Add(listener);
+            eventDictionary.Add(eventIndex, listener);
         }
     }
 
-    public void StopListening(int eventIndex, Action<EventParam> listener) {
-        if (eventIndex < eventList.Count && eventList[eventIndex] != null) {
-            eventList[eventIndex] -= listener;
+    public void StopListening(int eventIndex, Action listener) {
+        if (eventDictionary.ContainsKey(eventIndex)) {
+            eventDictionary[eventIndex] -= listener;
         }
     }
 
-    public void TriggerEvent(int eventIndex, EventParam message = null) {
-        if (eventIndex < eventList.Count && eventList[eventIndex] != null) {
-            eventList[eventIndex].Invoke(message);
+    public void TriggerEvent(int eventIndex) {
+        if (eventDictionary.ContainsKey(eventIndex)) {
+            eventDictionary[eventIndex]?.Invoke();
         }
     }
 }

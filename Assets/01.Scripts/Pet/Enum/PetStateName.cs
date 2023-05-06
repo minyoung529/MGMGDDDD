@@ -1,10 +1,11 @@
 public enum PetStateName
 {
-    Idle,
+    Idle = 0,
     Move,
     Skill,
     Held,
     Threw,
     Landing,
-    Recall
+    Recall,
+    Length
 }

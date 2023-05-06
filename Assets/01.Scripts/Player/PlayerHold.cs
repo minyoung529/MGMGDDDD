@@ -68,7 +68,7 @@ public class PlayerHold : PlayerMono {
         }
 
         StartCoroutine(WaitPet(dest, () => {
-            holdingPet.PetThrow.Hold(true);
+            holdingPet.Event.TriggerEvent((int)PetEventName.OnHold);
             controller.Move.ChangeState(PlayerStateName.PickUp);
         }));
     }
@@ -131,15 +131,14 @@ public class PlayerHold : PlayerMono {
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() => {
-            holdingPet.Coll.enabled = true;
-            holdingPet.SetNavEnabled(true);
+            holdingPet.Event.TriggerEvent((int)PetEventName.OnDrop);
             holdingPet = null;
         });
     }
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.PetThrow.Throw(transform.position, ThrowVector);
+        holdingPet.PetThrow.Throw(ThrowVector);
         holdingPet = null;
     }
 
