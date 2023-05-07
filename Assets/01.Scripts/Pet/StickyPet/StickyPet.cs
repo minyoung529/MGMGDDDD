@@ -94,11 +94,8 @@ public class StickyPet : Pet
         if (state == StickyState.Billow) return;
         ChangeState(StickyState.Billow);
 
-        if(agent!= null)
-        {
-            SetNavIsStopped(true);
-            SetTarget(null);
-        }
+        SetNavIsStopped(true);
+        SetTarget(null);
 
         BillowAction(bigScale);
 
