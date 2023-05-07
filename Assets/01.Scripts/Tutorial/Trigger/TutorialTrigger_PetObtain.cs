@@ -16,4 +16,9 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
         // 가지고 있지 않으면 TRUE
         return PetManager.Instance.Contain(pet) == false;
     }
+
+    protected override void OnStartTrigger()
+    {
+        Destroy(gameObject);
+    }
 }

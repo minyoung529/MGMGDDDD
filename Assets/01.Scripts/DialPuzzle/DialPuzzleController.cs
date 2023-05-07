@@ -155,13 +155,15 @@ public class DialPuzzleController : MonoBehaviour
             }
 
             if (data.minAngle < playerAngle && playerAngle < maxAngle)
+            {
                 if (curType != data.time)
                 {
                     curType = data.time;
-                    
+
                     if (selecctButtons[(int)curType].activeSelf) OnTimeChange?.Invoke(curType);
                     CameraSetting(angle, data);
                 }
+            }
         }
     }
 

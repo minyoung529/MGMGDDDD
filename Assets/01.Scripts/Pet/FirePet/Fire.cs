@@ -153,7 +153,8 @@ public class Fire : MonoBehaviour
         Fire[] fires = other.GetComponents<Fire>();
         foreach (Fire f in fires)
         {
-            if (f.IsBurn) continue;
+            if (f.IsBurn) return;
+
             transform.DOKill();
 
             f.Burn(true);
@@ -171,6 +172,7 @@ public class Fire : MonoBehaviour
         }
 
         if (!isClingTo) return;
+
 
         Fire[] fires = collision.collider.GetComponents<Fire>();
         foreach (Fire f in fires)

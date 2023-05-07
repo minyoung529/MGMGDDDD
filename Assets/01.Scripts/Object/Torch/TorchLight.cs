@@ -32,6 +32,7 @@ public class TorchLight : MonoBehaviour
         foreach (ParticleSystem p in particles)
             p.Play();
 
+        OnLighted?.Invoke(true);
         //fireParticle.Play();
     }
 
