@@ -221,6 +221,8 @@ public class StickyPet : Pet
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.name);
+
         if (state == StickyState.ReadySticky)
         {
             Sticky stickyObject = collision.collider.GetComponent<Sticky>();
@@ -233,6 +235,8 @@ public class StickyPet : Pet
     }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.name);
+
         if (state == StickyState.ReadySticky)
         {
             Sticky stickyObject = other.GetComponent<Sticky>();
@@ -261,5 +265,4 @@ public class StickyPet : Pet
     }
 
     #endregion
-
 }
