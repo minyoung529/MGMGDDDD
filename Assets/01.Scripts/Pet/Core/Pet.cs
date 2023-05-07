@@ -7,7 +7,8 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] protected PetTypeSO petInform;
+    public PetTypeSO petInform;
+    
     private Vector3 originScale;
     private float originalAgentSpeed;
     private ChangePetEmission emission;

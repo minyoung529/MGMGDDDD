@@ -133,7 +133,7 @@ public class StickyExplosion : MonoBehaviour
             jumper.CanJump = true;
         }
 
-        stickyPet?.ChangeState(StickyState.Idle);
+        stickyPet.State.ChangeState((int)PetStateName.Idle);
         gameObject?.SetActive(false);
     }
 
