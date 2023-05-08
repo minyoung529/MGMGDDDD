@@ -19,6 +19,7 @@ public abstract class Pet : MonoBehaviour
     protected Transform target;
     protected Transform player;
     public Transform Player => player;
+    public Transform Target => target;
     private readonly float distanceToPlayer = 5f;
     public Action OnArrive { get; set; }
 
@@ -58,6 +59,7 @@ public abstract class Pet : MonoBehaviour
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
     public PetThrow PetThrow => petThrow;
+    public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
     public Color petColor => petInform.outlineColor;
@@ -110,8 +112,6 @@ public abstract class Pet : MonoBehaviour
     public virtual void OnUpdate()
     {
         State.OnUpdate();
-        CheckArrive();
-        FollowTarget();
 
         if(agent.isOnOffMeshLink)
         {
@@ -185,11 +185,7 @@ public abstract class Pet : MonoBehaviour
 
     #region Move
 
-    private void FollowTarget()
-    {
-        if (!target || !agent.enabled || !agent.isOnNavMesh) return;
-        agent.SetDestination(target.position);
-    }
+  
 
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
     {
@@ -236,14 +232,6 @@ public abstract class Pet : MonoBehaviour
         agent.SetDestination(AxisController.CalculateDestination(target));
     }
 
-    private void CheckArrive()
-    {
-        if (Vector3.Distance(agent.destination, transform.position) <= 1f)
-        {
-            OnArrive?.Invoke();
-            OnArrive = null;
-        }
-    }
     #endregion
 
     #region Nav_Get/Set

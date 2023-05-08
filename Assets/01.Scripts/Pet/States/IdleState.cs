@@ -22,6 +22,26 @@ public class IdleState : PetState {
 
     public override void OnUpdate() {
         //이후 Idle 애니메이션을 실행하거나 하는 등 추가가 될 것
+
+
+        CheckArrive();
+        FollowTarget();
+    }
+
+
+
+    private void CheckArrive()
+    {
+        if (Vector3.Distance(pet.Agent.destination, transform.position) <= 1f)
+        {
+            pet.OnArrive?.Invoke();
+            pet.OnArrive = null;
+        }
+    }
+    private void FollowTarget()
+    {
+        if (!pet.Target || !pet.Agent.enabled || !pet.Agent.isOnNavMesh) return;
+        pet.Agent.SetDestination(pet.Target.position);
     }
 
     private void OnSetDestination() {
