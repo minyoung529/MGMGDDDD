@@ -51,7 +51,7 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         }
         if(curDuration > 0)
         {
-            activeCamera.transform.localPosition = (Vector3)UnityEngine.Random.insideUnitCircle * 3f + originPos;
+        //    activeCamera.transform.localPosition = (Vector3)UnityEngine.Random.insideUnitCircle * 3f + originPos;
             curDuration -= Time.deltaTime * 0.1f;
         }
         // 클립이 없는 곳을 지나는 중

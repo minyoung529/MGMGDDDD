@@ -10,7 +10,7 @@ public enum SceneType
 {
     LivingRoom = 0,
     Lobby_FirstFloor = 1,
-    Lobby_SecondFloor = 2,
+    Clock_Lobby = 2,
     SecondScene = 3,
     Count
 }
