@@ -74,5 +74,7 @@ public class IsolatedCubePuzzle : MonoBehaviour
     {
         isStartFollow = false;
             cubeTransform.GetComponent<Rigidbody>().freezeRotation = false;
+
+        cubeTransform.DOLocalRotate(Vector3.zero, 0.5f, RotateMode.Fast);
     }
 }
