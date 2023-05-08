@@ -190,6 +190,7 @@ public abstract class Pet : MonoBehaviour
 
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
     {
+        if (agent == null) return;
         this.target = target;
         agent.stoppingDistance = stopDistance;
 
@@ -300,10 +301,12 @@ public abstract class Pet : MonoBehaviour
     #region Nav_Get/Set
     public void SetNavIsStopped(bool value)
     {
+        if (agent == null) return;
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value)
     {
+        if (agent == null) return;
         agent.enabled = value;
     }
     public bool GetIsOnNavMesh()
