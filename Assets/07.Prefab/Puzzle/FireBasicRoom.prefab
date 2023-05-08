@@ -23,7 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 32447452798939078}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -280,7 +280,6 @@ GameObject:
   - component: {fileID: 3028693041059399735}
   - component: {fileID: 3028693041059399732}
   - component: {fileID: 3028693041059399733}
-  - component: {fileID: 3028693041059399728}
   - component: {fileID: 3028693041059399729}
   - component: {fileID: 3028693041059399734}
   m_Layer: 0
@@ -356,30 +355,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3028693041059399728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3028693041059399755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playOnAwake: 0
-  fireEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  fireParticle:
-  - {fileID: 4441493595890245544}
-  isDestroyType: 0
-  burnDelay: 0
-  burningTime: 2
-  isCool: 0
-  isClingTo: 1
-  onlyScriptBurn: 0
 --- !u!65 &3028693041059399729
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -409,10 +384,34 @@ MonoBehaviour:
   onClear:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3028693041059399728}
-        m_TargetAssemblyTypeName: Fire, Assembly-CSharp
-        m_MethodName: Burn
+      - m_Target: {fileID: 4441493595890245544}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: HintLight, Assembly-CSharp
+        m_MethodName: OnHint
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -778,7 +777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805375, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
@@ -878,6 +877,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall
       objectReference: {fileID: 0}
+    - target: {fileID: 934090100098805375, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
 --- !u!4 &902350733293391057 stripped
@@ -898,7 +901,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 713
+      value: 854
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder
@@ -979,6 +982,10 @@ PrefabInstance:
     - target: {fileID: 934090100098805375, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 934090100098805375, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
@@ -1203,7 +1210,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805375, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
@@ -1291,13 +1298,60 @@ PrefabInstance:
       propertyPath: m_Name
       value: TorchLight (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1924355193, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+--- !u!198 &7864861395611760310 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7977934849540797966, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 257488851126812856}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8562157543887843653 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8448801635728372221, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
   m_PrefabInstance: {fileID: 257488851126812856}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8562157543887843654 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8448801635728372222, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 257488851126812856}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1916380614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8562157543887843654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3028693041059399734}
+        m_TargetAssemblyTypeName: PuzzleClearCounter, Assembly-CSharp
+        m_MethodName: CheckClear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireParticle:
+  - {fileID: 7864861395611760310}
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isCool: 0
+  isClingTo: 1
+  onlyScriptBurn: 0
 --- !u!1001 &3028693040334510726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1315,15 +1369,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1331,7 +1385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: 1.3400004
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1364,6 +1418,10 @@ PrefabInstance:
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2704425343851274988, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: fireParticle.Array.size
@@ -1422,15 +1480,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1438,7 +1496,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: 1.34
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1471,6 +1529,10 @@ PrefabInstance:
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2704425343851274988, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: fireParticle.Array.size
@@ -1692,15 +1754,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1708,7 +1770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: 1.3400004
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1741,6 +1803,10 @@ PrefabInstance:
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2704425343851274988, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: fireParticle.Array.size
@@ -1799,15 +1865,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1815,7 +1881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: 1.3400004
       objectReference: {fileID: 0}
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1848,6 +1914,10 @@ PrefabInstance:
     - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1582300641825469930, guid: 4024e29cce11abc468015b932545526c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2704425343851274988, guid: 4024e29cce11abc468015b932545526c, type: 3}
       propertyPath: fireParticle.Array.size
@@ -1972,11 +2042,58 @@ PrefabInstance:
       propertyPath: m_Name
       value: TorchLight (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1924355193, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
 --- !u!4 &5416244721698973752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8448801635728372221, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 4497532188512197061}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5416244721698973755 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8448801635728372222, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 4497532188512197061}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1899760172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5416244721698973755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3028693041059399734}
+        m_TargetAssemblyTypeName: PuzzleClearCounter, Assembly-CSharp
+        m_MethodName: CheckClear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireParticle:
+  - {fileID: 5826849537363357643}
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isCool: 0
+  isClingTo: 1
+  onlyScriptBurn: 0
+--- !u!198 &5826849537363357643 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7977934849540797966, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
   m_PrefabInstance: {fileID: 4497532188512197061}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5552218752736411751
@@ -2058,8 +2175,55 @@ PrefabInstance:
       propertyPath: m_Name
       value: TorchLight (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1924355193, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+--- !u!198 &2574406368870757993 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7977934849540797966, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 5552218752736411751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4057002034967736729 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8448801635728372222, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 5552218752736411751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1899760173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4057002034967736729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3028693041059399734}
+        m_TargetAssemblyTypeName: PuzzleClearCounter, Assembly-CSharp
+        m_MethodName: CheckClear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireParticle:
+  - {fileID: 2574406368870757993}
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isCool: 0
+  isClingTo: 1
+  onlyScriptBurn: 0
 --- !u!4 &4057002034967736730 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8448801635728372221, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
@@ -2144,8 +2308,55 @@ PrefabInstance:
       propertyPath: m_Name
       value: TorchLight (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1924355193, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+--- !u!198 &483989401543533856 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7977934849540797966, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 7494034524613432110}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2107689999105057488 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8448801635728372222, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
+  m_PrefabInstance: {fileID: 7494034524613432110}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1899760171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107689999105057488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3028693041059399734}
+        m_TargetAssemblyTypeName: PuzzleClearCounter, Assembly-CSharp
+        m_MethodName: CheckClear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireParticle:
+  - {fileID: 483989401543533856}
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isCool: 0
+  isClingTo: 1
+  onlyScriptBurn: 0
 --- !u!4 &2107689999105057491 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8448801635728372221, guid: 6cb19d9e724800042ac9d6fe47e42983, type: 3}
