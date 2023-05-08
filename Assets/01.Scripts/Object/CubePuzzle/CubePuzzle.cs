@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CubePuzzle : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class CubePuzzle : MonoBehaviour
     private readonly string CUBE_PUZZPE_TAG = "CubePuzzle";
 
     private int index = 0;
+
+    [SerializeField] private UnityEvent<Transform> onPuttedCube;
+
 
     private void Start()
     {
@@ -61,6 +65,8 @@ public class CubePuzzle : MonoBehaviour
         {
             OnSuccess?.Invoke(index);
         }
+
+        onPuttedCube?.Invoke(other.transform);
 
         cubeRigid.GetComponent<Sticky>().NotSticky();
     }
