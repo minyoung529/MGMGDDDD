@@ -10,6 +10,7 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
 {
     float duration = 1f;
     float strength = 2f;
+        CameraShakeEffectBehaviour input;
 
     // NOTE: This function is called at runtime and edit time.  Keep that in mind when setting the values of properties.
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
@@ -24,7 +25,7 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         {
             float inputWeight = playable.GetInputWeight(i);
             ScriptPlayable<CameraShakeEffectBehaviour> inputPlayable = (ScriptPlayable<CameraShakeEffectBehaviour>)playable.GetInput(i);
-            CameraShakeEffectBehaviour input = inputPlayable.GetBehaviour();
+            input = inputPlayable.GetBehaviour();
 
             input._duration = duration;
             input._strength = strength;
@@ -44,6 +45,7 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         // 클립이 1개인 곳을 지나는 중
         else if (currentInputCount == 1)
         {
+            if(input != null) input.CameraShake();
         }
         // 클립이 2개 이상인 블렌딩되고 있는 곳을 지나는 중
         else
