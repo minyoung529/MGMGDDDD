@@ -437,8 +437,9 @@ Transform:
   m_Children:
   - {fileID: 544938987521323692}
   - {fileID: 544938987166091525}
+  - {fileID: 544938988191894478}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: -136.915, z: 0}
 --- !u!135 &544938986748965228
 SphereCollider:
@@ -451,8 +452,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 5.5
-  m_Center: {x: -7.19, y: 0, z: 0.06}
+  m_Radius: 5.11
+  m_Center: {x: -0.6, y: 0, z: 0.06}
 --- !u!114 &544938986748965227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -518,18 +519,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 544938988058988995}
-        m_TargetAssemblyTypeName: ActivatePlatform, Assembly-CSharp
-        m_MethodName: Activate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   onExplosionWithInfo:
     m_PersistentCalls:
       m_Calls: []
@@ -578,7 +567,7 @@ Transform:
   - {fileID: 544938988702747486}
   - {fileID: 544938986883937071}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!191 &544938986875574651
 OffMeshLink:
@@ -974,7 +963,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -68.009, z: 0}
 --- !u!33 &544938987316183492
 MeshFilter:
@@ -1052,6 +1041,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 1, g: 0, b: 0, a: 0.6392157}
+  isFill: 1
+  isOutline: 0
 --- !u!1 &544938987349059433
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,7 +1075,7 @@ Transform:
   - {fileID: 544938988173133679}
   - {fileID: 544938988643045655}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!191 &544938987349059432
 OffMeshLink:
@@ -1139,7 +1130,7 @@ Transform:
   - {fileID: 544938988475029783}
   - {fileID: 544938986728461971}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -29.392, z: 0}
 --- !u!135 &544938987435594742
 SphereCollider:
@@ -1834,7 +1825,6 @@ GameObject:
   - component: {fileID: 544938988058988993}
   - component: {fileID: 544938988058989054}
   - component: {fileID: 544938988058989055}
-  - component: {fileID: 544938988058988995}
   m_Layer: 7
   m_Name: Bottom (1)
   m_TagString: Untagged
@@ -1855,7 +1845,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &544938988058988993
 MeshFilter:
@@ -1920,19 +1910,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &544938988058988995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544938988058989052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cb5be51298ac0c4588e2e788f316332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  exceptMyself: 0
 --- !u!1 &544938988093938090
 GameObject:
   m_ObjectHideFlags: 0
@@ -1965,7 +1942,7 @@ Transform:
   - {fileID: 544938987722824804}
   - {fileID: 544938988237344274}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!191 &544938988093938093
 OffMeshLink:
@@ -2351,12 +2328,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 544938988191894474}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.52, y: 3.9348936, z: 45.420002}
-  m_LocalScale: {x: 4.77, y: 0.81, z: 4.77}
+  m_LocalRotation: {x: -0, y: 0.93014425, z: -0, w: 0.3671944}
+  m_LocalPosition: {x: -11.198706, y: -0.7399988, z: 3.628871}
+  m_LocalScale: {x: 4.7699995, y: 0.81, z: 4.7699995}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 544938988334914352}
+  m_Father: {fileID: 544938986748965226}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &544938988191894479
@@ -2513,7 +2490,7 @@ Transform:
   - {fileID: 544938987194638114}
   - {fileID: 544938987451300816}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!191 &544938988300717173
 OffMeshLink:
@@ -2562,7 +2539,6 @@ Transform:
   m_Children:
   - {fileID: 544938986717628514}
   - {fileID: 544938987272208697}
-  - {fileID: 544938988191894478}
   - {fileID: 544938987435594743}
   - {fileID: 544938988385975741}
   - {fileID: 544938986748965226}
@@ -2611,7 +2587,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 121.127, z: 0}
 --- !u!33 &544938988344311281
 MeshFilter:
@@ -2689,6 +2665,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 1, g: 0, b: 0, a: 0.6392157}
+  isFill: 0
+  isOutline: 1
 --- !u!1 &544938988367205297
 GameObject:
   m_ObjectHideFlags: 0
@@ -2721,7 +2699,7 @@ Transform:
   - {fileID: 544938988595350030}
   - {fileID: 544938987101065642}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!191 &544938988367205296
 OffMeshLink:
@@ -2774,7 +2752,7 @@ Transform:
   - {fileID: 544938986607269448}
   - {fileID: 7584062850295493154}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 126.574, z: 0}
 --- !u!114 &544938988385975738
 MonoBehaviour:
@@ -2851,7 +2829,7 @@ Transform:
   - {fileID: 544938987103547648}
   - {fileID: 544938986648918706}
   m_Father: {fileID: 544938988334914352}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!191 &544938988459548488
 OffMeshLink:

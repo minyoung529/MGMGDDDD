@@ -39,7 +39,7 @@ public class ElectricityPuzzle : MonoBehaviour
     }
 
     [ContextMenu("Start!")]
-    private void StartElectricityFollow()
+    public void StartElectricityFollow()
     {
         if (isTesting) return;
 
@@ -90,7 +90,7 @@ public class ElectricityPuzzle : MonoBehaviour
     {
         if (curIdx == MaxCount - 1)
         {
-            // 하드코딩 죄송합니다.
+            pathFollwers[1].gameObject.SetActive(true);
             pathFollwers[1].Depart();
         }
     }

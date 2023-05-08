@@ -233,7 +233,6 @@ public abstract class Pet : MonoBehaviour
         agent.stoppingDistance = stopDistance;
         destination = AxisController.CalculateDestination(target);
         agent.SetDestination(destination);
-
     }
 
     private void CheckArrive()

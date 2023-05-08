@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7368406166917059051}
-  - component: {fileID: 4318106077394418457}
   - component: {fileID: -2537276437081940094}
+  - component: {fileID: 2124259960416598589}
   m_Layer: 8
   m_Name: Pet Obtain Tutorial Trigger
   m_TagString: Untagged
@@ -33,19 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &4318106077394418457
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3827877123055959373}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.86
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-2537276437081940094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,3 +52,20 @@ MonoBehaviour:
     m_Bits: 8
   tutorialType: 1
   tutorialName: "\uB9D0 \uAC78\uAE30"
+  inputAction: 16
+  onKeyDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &2124259960416598589
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3827877123055959373}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
