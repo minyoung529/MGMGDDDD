@@ -51,7 +51,7 @@ public class CameraSwitcher
 
     public static void Start()
     {
-        SceneController.ListeningEnter(SceneType.Clock, ResetCameras);
+        SceneController.ListeningEnter(SceneType.LivingRoom, ResetCameras);
     }
 
     private static void ResetCameras()
