@@ -294,19 +294,11 @@ public abstract class Pet : MonoBehaviour
         {
             SetDestination(GameManager.Instance.GetMousePos());
         }
-
-        //transform.DOKill();
     }
 
     public virtual void InteractionPoint()
     {
 
-    }
-
-    public virtual void Withdraw()
-    {
-        if (isInputLock) return;
-        ResetPet();
     }
     #endregion
 

@@ -14,10 +14,11 @@ public class RecallState : PetState {
 
     public override void OnEnter() {
         CheckDistanceToPlayer();
+        pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
     }
 
     public override void OnExit() {
-        
+        pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
     }
 
     public override void OnUpdate() {
@@ -27,6 +28,10 @@ public class RecallState : PetState {
     private void Start() {
         flyParticle = Instantiate(flyParticlePref, pet.transform);
         arriveParticle = Instantiate(arriveParticlePref, pet.transform);
+    }
+
+    private void OnThrew() {
+        pet.State.ChangeState((int)PetStateName.Threw);
     }
 
     private void CheckDistanceToPlayer() {
@@ -52,12 +57,14 @@ public class RecallState : PetState {
 
         flyParticle.Play();
 
+        pet.transform.DOKill();
         pet.transform.DOLookAt(pet.Player.position, 0.5f);
         pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
             pet.Emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
             pet.PetThrow.Throw(Vector3.up * 300);
+            Debug.Log(1);
         });
     }
 
