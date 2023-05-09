@@ -13,7 +13,7 @@ public abstract class Pet : MonoBehaviour
     private Vector3 originScale;
     private float originalAgentSpeed;
     private ChangePetEmission emission;
-
+    
 
     #region 이동관련
     [SerializeField] protected float sightRange = 5f;
@@ -61,6 +61,7 @@ public abstract class Pet : MonoBehaviour
 
     #region Get
 
+    public PetEmotion Emotion { get { return emotion; } }
     public bool IsInteraction { get; set; }
     public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }

@@ -6,27 +6,31 @@ public enum EmotionType
 {
     None,
     Smile,
+    Hate,
     Angry,
-    Sad
 }
 public class PetEmotion : MonoBehaviour
 {
     [SerializeField] Texture2D[] textures;
 
-    Material material;
-
     private EmotionType emotionType = EmotionType.None;
     public EmotionType GetEmotionType { get { return emotionType; } }
 
+    private Material material;
+    
     private void Awake()
     {
-        material = GetComponent<MeshRenderer>()?.material;
+        material = GetComponent<MeshRenderer>()?.sharedMaterial;
     }
 
     public void SetEmotion(EmotionType type)
     {
         emotionType = type;
-        material.mainTexture= textures[(int)type];
+        if(material == null)
+        {
+            material = GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        material.mainTexture = textures[(int)type];
     }
 
     [ContextMenu("Test")]
