@@ -11,8 +11,8 @@ using System;
 
 public class OilPet : Pet
 {
-    [SerializeField] GameObject oilSkill;
-    [SerializeField] GameObject fireBurnParticle;
+ //   [SerializeField] GameObject oilSkill;
+   // [SerializeField] GameObject fireBurnParticle;
     [SerializeField] Transform parentController;
     [SerializeField] Transform splatGunNozzle;
 
