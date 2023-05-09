@@ -43,7 +43,10 @@ public class RidingRail : MonoBehaviour
     {
         if (isRiding) return;
 
-        if (Vector3.Distance(pathFollower.EndPoint, triggerPoint.position) < 5f)
+        float triggerToEnd = Vector3.Distance(pathFollower.EndPoint, triggerPoint.position);
+        float triggerToStart = Vector3.Distance(pathFollower.StartPoint, triggerPoint.position);
+
+        if (triggerToStart > triggerToEnd)
         {
             Ride(pathFollower.StartPoint, true);
             RidePets(pathFollower.StartPoint, true);
@@ -54,7 +57,7 @@ public class RidingRail : MonoBehaviour
             RidePets(pathFollower.EndPoint, false);
         }
 
-        InputManager.StopListeningInput(InputAction.Interaction, PlayerRideRail);
+        Exit(); 
     }
 
     public void Ride(Vector3 destination, bool reverse, UnityAction<Destination> onArrive = null)
@@ -120,6 +123,7 @@ public class RidingRail : MonoBehaviour
 
     public void Enter()
     {
+        InputManager.StopListeningInput(InputAction.Interaction, PlayerRideRail);
         InputManager.StartListeningInput(InputAction.Interaction, PlayerRideRail);
     }
 

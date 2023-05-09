@@ -86,26 +86,32 @@ namespace PathCreation.Examples
 
                 Vector3 nextPos;
                 Quaternion rotation;
+                Vector3 direction;
 
                 if (reverseStartEnd)
                 {
                     nextPos = pathCreator.path.GetRPointAtDistance(distanceTravelled, endOfPathInstruction) - offset;
 
-                    Vector3 eulerAngles = pathCreator.path.GetRDirectionAtDistance(distanceTravelled);
-                    eulerAngles.y += 180f;
-                    rotation = Quaternion.Euler(eulerAngles);
+                    direction = pathCreator.path.GetRDirectionAtDistance(distanceTravelled);
+                    //direction.y += 180f;
+                    //rotation = Quaternion.Euler(direction);
                 }
                 else
                 {
                     nextPos = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction) - offset;
-                    rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+                    direction = pathCreator.path.GetDirectionAtDistance(distanceTravelled);
+
+                    //rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
                 }
 
                 transform.position = nextPos;
 
                 if (isRotate)
                 {
-                    transform.rotation = rotation;
+                    transform.forward = direction;
+                    Vector3 euler = transform.eulerAngles;
+                    euler.x = 0f;
+                    transform.rotation = Quaternion.Euler(euler);
                 }
             }
         }
@@ -143,7 +149,7 @@ namespace PathCreation.Examples
 
             float dist = Vector3.Distance(transform.position, destination);
 
-            if (!reachDestination && dist < 2f && endOfPathInstruction == EndOfPathInstruction.Stop)
+            if (!reachDestination && dist < 1.2f && endOfPathInstruction == EndOfPathInstruction.Stop)
             {
                 reachDestination = true;
                 onArrive.Invoke(destName);
