@@ -10,6 +10,13 @@ public class StickyInteractState : PetState
 
     private float moveSpeed = 1f;
 
+    private StickyPet stickyPet;
+
+    private void Awake()
+    {
+        stickyPet = transform.parent.GetComponent<StickyPet>();
+    }
+
     public override void OnEnter()
     {
         ReadySticky();
@@ -23,33 +30,32 @@ public class StickyInteractState : PetState
     {
     }
 
-
     private void ReadySticky()
     {
         Vector3 hit = GameManager.Instance.GetCameraHit();
         if (hit != Vector3.zero)
         {
-            transform.DOMove(hit, moveSpeed);
+            transform.DOMove(hit, moveSpeed).OnComplete(()=>
+            {
+                CheckAroundSticky();
+            });
         }
     }
 
-
-    private void OnCollisionEnter(Collision collision)
+    private void CheckAroundSticky()
     {
-        Sticky stickyObject = collision.collider.GetComponent<Sticky>();
-        if (stickyObject != null)
+        Collider[] cols = Physics.OverlapSphere(transform.position, 3f);
+        foreach (Collider col in cols)
         {
+            Sticky stickyObject = col.GetComponent<Sticky>();
+            if (stickyObject == null) continue;
+            
+            if (stickyObject.IsSticky) return;
+            stickyPet.StickyObject = stickyObject;
             pet.State.ChangeState((int)PetStateName.Sticky);
+            return;
         }
+       
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        Sticky stickyObject = other.GetComponent<Sticky>();
-        if (stickyObject != null)
-        {
-            pet.State.ChangeState((int)PetStateName.Sticky);
-        }
-    }
-
 
 }
