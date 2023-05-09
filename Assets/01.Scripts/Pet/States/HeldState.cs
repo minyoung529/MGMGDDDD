@@ -6,7 +6,6 @@ public class HeldState : PetState {
     public override PetStateName StateName => PetStateName.Held;
 
     public override void OnEnter() {
-        Debug.Log("HoldEnter");
         Enable();
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
         pet.Event.StartListening((int)PetEventName.OnHold, OnDrop);
@@ -26,7 +25,6 @@ public class HeldState : PetState {
     private void Enable() {
         pet.Rigid.velocity = Vector3.zero;
         pet.Rigid.isKinematic = true;
-        pet.IsInputLock = true;
         pet.Coll.enabled = false;
         pet.SetNavEnabled(false);
     }
@@ -34,7 +32,6 @@ public class HeldState : PetState {
     private void Disable() {
         pet.Rigid.velocity = Vector3.zero;
         pet.Rigid.isKinematic = false;
-        pet.IsInputLock = false;
     }
 
     private void OnThrew() {

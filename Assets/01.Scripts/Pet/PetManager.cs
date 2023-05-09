@@ -117,15 +117,14 @@ public class PetManager : MonoSingleton<PetManager>
     {
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
-        if (pets[selectIndex].IsInputLock) return;
 
         pets[selectIndex].MovePoint();
 
         if (pets[selectIndex].IsInteraction && SelectedObject.CurInteractObject)
         {
             pets[selectIndex].InteractionPoint();
-            pets[selectIndex].OnArrive = null;
-            pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
+            //pets[selectIndex].OnArrive = null;
+            //pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
         }
     }
 
@@ -133,8 +132,6 @@ public class PetManager : MonoSingleton<PetManager>
     {
         // 펫이 없을 때
         if (selectIndex < 0) return;
-        // Input이 Lock 걸렸을 때
-        if (pets[selectIndex].IsInputLock) return;
 
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
     }

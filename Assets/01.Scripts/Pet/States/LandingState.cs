@@ -12,7 +12,6 @@ public class LandingState : PetState
     }
 
     public override void OnExit() {
-        pet.IsInputLock = false;
         pet.SetNavEnabled(true);
     }
 

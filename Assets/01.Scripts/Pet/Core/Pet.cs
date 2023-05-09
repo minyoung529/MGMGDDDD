@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    [SerializeField] protected PetTypeSO petInform;
+    [SerializeField] public PetTypeSO petInform;
     [SerializeField] private PetEmotion emotion;
     private Vector3 originScale;
     private float originalAgentSpeed;
@@ -18,12 +18,11 @@ public abstract class Pet : MonoBehaviour
     #region 이동관련
 
     protected Transform target;
-    protected Vector3 destination;
     protected Transform player;
     public Transform Player => player;
     public Transform Target => target;
+    public Vector3 destination;
     private readonly float distanceToPlayer = 5f;
-    public Action OnArrive { get; set; }
 
     #endregion
 
@@ -35,8 +34,6 @@ public abstract class Pet : MonoBehaviour
     protected bool isMouseMove = false;
     private bool isMovePointLock = false;
     public bool IsMovePointLock { get => isMovePointLock; set => isMovePointLock = value; }
-    private bool isInputLock = false;
-    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
 
     #endregion
 
@@ -161,7 +158,6 @@ public abstract class Pet : MonoBehaviour
     public virtual void Skill()
     {
         if (isCoolTime) return;
-        if (IsInputLock) return;
         skilling = true;
         SkillDelay();
     }
@@ -183,12 +179,12 @@ public abstract class Pet : MonoBehaviour
         MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
 
+    public virtual void StopSkill() {
+        skilling = false;
+    }
     #endregion
 
     #region Move
-
-  
-
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
     {
         if (agent == null) return;
@@ -200,8 +196,6 @@ public abstract class Pet : MonoBehaviour
             agent.ResetPath();
             return;
         }
-
-        this.OnArrive = onArrive;
     }
 
     public void SetDestination(Transform target)
@@ -220,29 +214,14 @@ public abstract class Pet : MonoBehaviour
         this.player = player;
     }
 
-    public virtual void StopSkill()
-    {
-        skilling = false;
-    }
-
-    public void SetDestination(Vector3 target, float stopDistance = 0, Action onArrive = null)
+    public void SetDestination(Vector3 target, float stopDistance = 0)
     {
         if (!agent.isOnNavMesh) return;
-        this.OnArrive = onArrive;
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
         destination = AxisController.CalculateDestination(target);
-        agent.SetDestination(destination);
-    }
-
-    private void CheckArrive()
-    {
-        if (Vector3.Distance(destination, transform.position) <= 1f)
-        {
-            OnArrive?.Invoke();
-            OnArrive = null;
-        }
+        Event.TriggerEvent((int)PetEventName.OnSetDestination);
     }
     #endregion
 
@@ -292,7 +271,7 @@ public abstract class Pet : MonoBehaviour
     #region InputEvent
     public void MovePoint(bool selected = false)
     {
-        if (isInputLock || IsMovePointLock) return;
+        if (IsMovePointLock) return;
 
         if (selected)
         {
@@ -308,6 +287,7 @@ public abstract class Pet : MonoBehaviour
         {
             destination = GameManager.Instance.GetMousePos();
         }
+
         SetDestination(destination);
     }
 

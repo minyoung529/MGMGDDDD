@@ -112,7 +112,7 @@ public class OilPet : Pet
         if (IsDirectSpread)
         {
             SetDestination(oilPetSkill.StartPoint);
-            OnArrive += SpreadOil;
+            Event.StartListening((int)PetEventName.OnArrive, SpreadOil);
         }
         OnEndSkill?.Invoke();
 

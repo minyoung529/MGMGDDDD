@@ -42,7 +42,7 @@ public class Key : MonoBehaviour
         if (!own || !around) return;
 
         own = false;
-        stickyPet?.NotSticky();
+        //stickyPet?.NotSticky();
         useEvent?.Invoke();
         Destroy(gameObject);
     }

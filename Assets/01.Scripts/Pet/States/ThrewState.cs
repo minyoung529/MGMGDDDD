@@ -9,7 +9,6 @@ public class ThrewState : PetState {
         pet.Rigid.constraints = RigidbodyConstraints.None;
         pet.Rigid.velocity = Vector3.zero;
         pet.Rigid.isKinematic = false;
-        pet.IsInputLock = false;
 
         StartCoroutine(EnableColl(pet.transform.position));
 

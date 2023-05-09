@@ -27,7 +27,7 @@ public class StickyState : PetState
 
         if (sticky.CanMove)
         {
-            pet.Event.StartListening((int)PetEventName.OnMoveToDestination, OnMove);
+            pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
         }
 
         StartCoroutine(DelayParent());

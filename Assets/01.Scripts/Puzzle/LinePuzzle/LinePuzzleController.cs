@@ -158,7 +158,7 @@ public class LinePuzzleController : MonoBehaviour
 
         ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
         oilPet.SetDestination(portal.transform.position);
-        oilPet.OnArrive += ForceMoveBoard;
+        oilPet.Event.StartListening((int)PetEventName.OnArrive, ForceMoveBoard);
     }
 
     private void ForceMoveBoard()
