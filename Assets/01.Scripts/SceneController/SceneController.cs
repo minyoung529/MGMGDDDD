@@ -9,10 +9,9 @@ using UnityEngine.SceneManagement;
 public enum SceneType
 {
     LivingRoom = 0,
-    Clock = 1,
-    LoadingScene = 2,
-    Maze = 3,
-    LinePuzzle = 4,
+    Lobby_FirstFloor = 1,
+    Clock_Lobby = 2,
+    SecondScene = 3,
     Count
 }
 

@@ -10,8 +10,6 @@ public class FirePet : Pet
     protected override void ResetPet()
     {
         base.ResetPet();
-
-
     }
     #endregion
 

@@ -9,16 +9,12 @@ using UnityEngine.Events;
 
 public class RidingRail : MonoBehaviour
 {
-    [SerializeField, Range(0f, 1f)]
-    float timer;
-    [SerializeField]
-    Spline spline;
-
     private Transform railPosition;
 
     private bool isRiding = false;
     public bool IsRiding => isRiding;
 
+    [SerializeField]
     private PathFollower pathFollower;
     public PathFollower PathFollower => pathFollower;
     private Transform triggerPoint;

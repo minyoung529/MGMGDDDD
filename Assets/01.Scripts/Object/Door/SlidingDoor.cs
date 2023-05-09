@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(TogglePosition))]
 public class SlidingDoor : MonoBehaviour
@@ -9,7 +10,8 @@ public class SlidingDoor : MonoBehaviour
     [SerializeField] int needKeyCount = 1;
     [SerializeField] bool isClose = false;
     [SerializeField] bool isLock = false;
-    [SerializeField] Light[] checkLights;
+    [SerializeField] UnityEvent unlockEvent;
+
     private bool open = false;
     private int inputKeyCount = 0;
     
@@ -67,10 +69,10 @@ public class SlidingDoor : MonoBehaviour
     public void InputKey(Key key)
     {
         inputKeyCount++;
-        checkLights[key.ActiveIdx].color = key.Color;
 
         if (inputKeyCount >= needKeyCount)
         {
+            unlockEvent?.Invoke();
             UnLock();
         }
     }

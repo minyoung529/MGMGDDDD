@@ -12,5 +12,4 @@ public class StickyPet : Pet
 
         IsMovePointLock = false;
     }
-
 }

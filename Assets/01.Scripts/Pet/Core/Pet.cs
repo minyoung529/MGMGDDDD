@@ -1,4 +1,4 @@
-using DG.Tweening;
+ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,16 +7,18 @@ using UnityEngine.AI;
 
 public abstract class Pet : MonoBehaviour
 {
-    public PetTypeSO petInform;
-    
+    [SerializeField] protected PetTypeSO petInform;
+    [SerializeField] private PetEmotion emotion;
     private Vector3 originScale;
     private float originalAgentSpeed;
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
 
+
     #region 이동관련
 
     protected Transform target;
+    protected Vector3 destination;
     protected Transform player;
     public Transform Player => player;
     public Transform Target => target;
@@ -189,6 +191,7 @@ public abstract class Pet : MonoBehaviour
 
     public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
     {
+        if (agent == null) return;
         this.target = target;
         agent.stoppingDistance = stopDistance;
 
@@ -229,18 +232,29 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         this.target = null;
         agent.stoppingDistance = stopDistance;
-        agent.SetDestination(AxisController.CalculateDestination(target));
+        destination = AxisController.CalculateDestination(target);
+        agent.SetDestination(destination);
     }
 
+    private void CheckArrive()
+    {
+        if (Vector3.Distance(destination, transform.position) <= 1f)
+        {
+            OnArrive?.Invoke();
+            OnArrive = null;
+        }
+    }
     #endregion
 
     #region Nav_Get/Set
     public void SetNavIsStopped(bool value)
     {
+        if (agent == null) return;
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value)
     {
+        if (agent == null) return;
         agent.enabled = value;
     }
     public bool GetIsOnNavMesh()
@@ -288,12 +302,13 @@ public abstract class Pet : MonoBehaviour
 
         if (IsCameraAimPoint)
         {
-            SetDestination(GameManager.Instance.GetCameraHit());
+            destination = GameManager.Instance.GetCameraHit();
         }
         else
         {
-            SetDestination(GameManager.Instance.GetMousePos());
+            destination = GameManager.Instance.GetMousePos();
         }
+        SetDestination(destination);
     }
 
     public virtual void InteractionPoint()

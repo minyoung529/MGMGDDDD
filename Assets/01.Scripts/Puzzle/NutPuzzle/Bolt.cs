@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Bolt : MonoBehaviour
 {
@@ -20,10 +21,18 @@ public class Bolt : MonoBehaviour
     [SerializeField]
     private float jumpHeight = 0.5f;
 
+    [SerializeField]
+    private UnityEvent onInsertedEvent;
+
     private void Awake()
     {
         sticky = GetComponent<Sticky>();
         jumpMotion = new JumpMotion();
+
+        if(onInsertedEvent != null && onInsertedEvent.GetPersistentEventCount() > 0)
+        {
+            onInserted += onInsertedEvent.Invoke;
+        }
     }
 
     void Update()
