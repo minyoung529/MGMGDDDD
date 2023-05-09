@@ -58,8 +58,8 @@ public class CubePuzzle : MonoBehaviour
 
         if (int.Parse(other.gameObject.name) == index)
         {
-            OnSuccess?.Invoke(index + 1000);
             isSuccess = true;
+            OnSuccess?.Invoke(index + 1000);
         }
         else
         {
