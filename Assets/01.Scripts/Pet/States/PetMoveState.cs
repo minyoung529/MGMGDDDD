@@ -26,7 +26,7 @@ public class PetMoveState : PetState {
 
     private void CheckArrive() {
 
-        if (Vector3.Distance(pet.destination, pet.transform.position) <= 1.15f) {
+        if (Vector3.Distance(pet.destination, pet.transform.position) <= 1.5f) {
             pet.Event.TriggerEvent((int)PetEventName.OnArrive);
             pet.State.ChangeState((int)PetStateName.Idle);
         }

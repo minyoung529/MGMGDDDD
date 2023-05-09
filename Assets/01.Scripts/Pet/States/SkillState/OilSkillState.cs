@@ -9,15 +9,12 @@ public class OilSkillState : PetState
 {
     public override PetStateName StateName => PetStateName.Skill;
 
-    private bool isParticleOn;
     protected bool isSkillDragging;
     private bool pauseSkilling = false;
 
     [SerializeField] Transform parentController;
     [SerializeField] private NavMeshAgent pathAgent;
     private OilPetSkill oilPetSkill = new OilPetSkill();
-
-    ParticleSystem inkParticle;
 
     #region Property
     public Action OnStartSkill { get; set; }
@@ -85,10 +82,7 @@ public class OilSkillState : PetState
 
     private void SkillUp()
     {
-        Debug.Log("SkillUp ON");
         if (!pet.Skilling || !isSkillDragging) return;
-
-        Debug.Log("SkillUp");
 
         pet.Agent.isStopped = false;
         isSkillDragging = false;
@@ -100,6 +94,7 @@ public class OilSkillState : PetState
             pet.SetDestination(oilPetSkill.StartPoint, stopDistance: 0);
             pet.State.ChangeState((int)PetStateName.Move);
             pet.Event.StartListening((int)PetEventName.OnArrive, SpreadOil);
+            pet.Event.StartListening((int)PetEventName.OnStop, KillSkill);
         }
         OnEndSkill?.Invoke();
     }
@@ -109,9 +104,18 @@ public class OilSkillState : PetState
         pauseSkilling = pause;
     }
 
+    private void KillSkill()
+    {
+        oilPetSkill.KillSkill();
+        OnEndPath();
+    }
+
     private void ResetSkill()
     {
         pet.Skilling = false;
         pet.SetTargetPlayer();
+
+        pet.Event.StopListening((int)PetEventName.OnArrive, SpreadOil);
+        pet.Event.StopListening((int)PetEventName.OnStop, KillSkill);
     }
 }
