@@ -19343,6 +19343,8 @@ GameObject:
   - component: {fileID: 5238747358563090471}
   - component: {fileID: 2923300632945908935}
   - component: {fileID: -6452518914013003632}
+  - component: {fileID: 727558924}
+  - component: {fileID: 1775362184}
   m_Layer: 8
   m_Name: CutScene_FirePet
   m_TagString: FirePet
@@ -19441,6 +19443,48 @@ CapsuleCollider:
   m_Height: 1.7541577
   m_Direction: 1
   m_Center: {x: 0, y: 0.3770787, z: 0}
+--- !u!195 &727558924
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337933975264670509}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!95 &1775362184
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337933975264670509}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &6566013511403977530
 GameObject:
   m_ObjectHideFlags: 0
@@ -19486,7 +19530,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1602892866509662864, guid: f3074215ad2cb874ab61124aad551320, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1602892866509662864, guid: f3074215ad2cb874ab61124aad551320, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -19499,6 +19543,14 @@ PrefabInstance:
     - target: {fileID: 1602892866509662865, guid: f3074215ad2cb874ab61124aad551320, type: 3}
       propertyPath: m_RenderAlignment
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1602892866509662870, guid: f3074215ad2cb874ab61124aad551320, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1602892866509662870, guid: f3074215ad2cb874ab61124aad551320, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 1602892866509662871, guid: f3074215ad2cb874ab61124aad551320, type: 3}
       propertyPath: m_RootOrder
@@ -19829,6 +19881,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: dfa7a85f90c8ca340b4303e152e8ece1, type: 3}
   - {fileID: 2800000, guid: fbcc852fda691ea4ab1cdea94008ec06, type: 3}
   - {fileID: 2800000, guid: 1484a08a4d8c0494b9727788635080eb, type: 3}
+  - {fileID: 2800000, guid: 29597e524f6d32846950240c8dd97c2a, type: 3}
 --- !u!1001 &8732935521868697868
 PrefabInstance:
   m_ObjectHideFlags: 0
