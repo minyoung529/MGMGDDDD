@@ -9673,7 +9673,7 @@ GameObject:
   - component: {fileID: 1213392557}
   - component: {fileID: 1213392556}
   - component: {fileID: 1213392559}
-  - component: {fileID: 1213392560}
+  - component: {fileID: 2039875748629438874}
   m_Layer: 8
   m_Name: States
   m_TagString: Untagged
@@ -9771,7 +9771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c64f949462c7f24897b84daaa72d086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1213392560
+--- !u!114 &2039875748629438874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9780,21 +9780,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1213392552}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Script: {fileID: 11500000, guid: 784879046af557144b305a46b2d4b508, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playOnAwake: 0
-  fireEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  fireParticle:
-  - {fileID: 1190630983}
-  isDestroyType: 0
-  burnDelay: 0
-  burningTime: 2
-  isCool: 0
-  isClingTo: 1
-  onlyScriptBurn: 1
 --- !u!1 &1336233574
 GameObject:
   m_ObjectHideFlags: 0
@@ -19483,6 +19471,7 @@ GameObject:
   - component: {fileID: 349892648}
   - component: {fileID: 338144725}
   - component: {fileID: 4521875424977965004}
+  - component: {fileID: 1529920169238262046}
   m_Layer: 8
   m_Name: FirePet
   m_TagString: FirePet
@@ -19561,6 +19550,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petInform: {fileID: 11400000, guid: b5611ad453d625642a22a7de61dafb39, type: 2}
+  emotion: {fileID: 5285918091305114888}
+  destination: {x: 0, y: 0, z: 0}
   stateParent: {fileID: 1213392553}
 --- !u!136 &-6452518914013003632
 CapsuleCollider:
@@ -19615,6 +19606,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 3
+--- !u!114 &1529920169238262046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337933975264670509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  fireParticle:
+  - {fileID: 1190630983}
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isCool: 0
+  isClingTo: 1
+  onlyScriptBurn: 1
 --- !u!1 &6566013511403977530
 GameObject:
   m_ObjectHideFlags: 0
@@ -19982,6 +19997,28 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!1 &8764147572453705785 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1317379797988914568, guid: 6673c8cf6485f9f4ba19221d88137a4e, type: 3}
+  m_PrefabInstance: {fileID: 7775680510349753777}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5285918091305114888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8764147572453705785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 664b4c8810707694387f95d91eceb283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textures:
+  - {fileID: 2800000, guid: dfa7a85f90c8ca340b4303e152e8ece1, type: 3}
+  - {fileID: 2800000, guid: fbcc852fda691ea4ab1cdea94008ec06, type: 3}
+  - {fileID: 2800000, guid: 1484a08a4d8c0494b9727788635080eb, type: 3}
+  - {fileID: 2800000, guid: de58115d6ab8f8446b0017f4daeb986d, type: 3}
 --- !u!1001 &8732935521868697868
 PrefabInstance:
   m_ObjectHideFlags: 0

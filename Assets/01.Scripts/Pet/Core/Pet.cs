@@ -1,3 +1,4 @@
+
  using DG.Tweening;
 using System;
 using System.Collections;
@@ -112,6 +113,7 @@ public abstract class Pet : MonoBehaviour
     {
         State.OnUpdate();
 
+        Debug.Log((PetStateName)State.CurStateIndex);
         if(agent.isOnOffMeshLink)
         {
             agent.speed = originalAgentSpeed * 0.5f;
@@ -126,8 +128,8 @@ public abstract class Pet : MonoBehaviour
 
     protected virtual void ResetPet()
     {
-        StopSkill();
         isCoolTime = false;
+        skilling = false;
         agent.enabled = true;
         transform.localScale = originScale;
         agent.stoppingDistance = distanceToPlayer;
@@ -160,6 +162,7 @@ public abstract class Pet : MonoBehaviour
         if (isCoolTime) return;
         skilling = true;
         SkillDelay();
+        State.ChangeState((int)PetStateName.Skill);
     }
 
     private void SkillDelay()
@@ -172,6 +175,7 @@ public abstract class Pet : MonoBehaviour
         isCoolTime = true;
         yield return new WaitForSeconds(t);
         isCoolTime = false;
+        skilling = false;
     }
 
     public virtual void SkillUp()
@@ -179,9 +183,6 @@ public abstract class Pet : MonoBehaviour
         MouseUpDestination = GameManager.Instance.GetCameraHit();
     }
 
-    public virtual void StopSkill() {
-        skilling = false;
-    }
     #endregion
 
     #region Move

@@ -52,6 +52,7 @@ public class Fire : MonoBehaviour
         if (isPhysics && onlyScriptBurn) return;
 
         isBurn = true;
+
         seq = DOTween.Sequence();
         seq.AppendInterval(burnDelay);
         seq.AppendCallback(() =>

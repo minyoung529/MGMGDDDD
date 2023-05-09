@@ -10,7 +10,7 @@ public class FireSkillState : PetState
 
     private void Awake()
     {
-        fire = GetComponent<Fire>();
+        fire = GetComponentInParent<Fire>();
     }
 
     public override void OnEnter()
