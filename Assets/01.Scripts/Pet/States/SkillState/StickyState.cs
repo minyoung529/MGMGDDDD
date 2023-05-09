@@ -11,19 +11,18 @@ public class StickyState : PetState
     [SerializeField] private Transform stickyParent;
 
     private Transform originalParent = null;
-    private Sticky stickyObject = null;
     private Vector3 stickyOffset;
     private Quaternion origianalRotation;
 
     private Sticky sticky;
 
-
     public override void OnEnter()
     {
+        sticky = transform.parent.GetComponent<StickyPet>().StickyObject;
         transform.DOKill();
-
-        stickyObject = sticky;
         skillEffect.Play();
+
+        if(sticky == null) Debug.Log("NULL");
 
         if (sticky.CanMove)
         {
@@ -39,21 +38,14 @@ public class StickyState : PetState
         //stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
         //origianalRotation = stickyObject.MovableRoot.rotation;
 
-
-        // Hey Minyoung~ It is StickyAxis ERROR!!
-        // stickyObject.OnSticky(this);
+        StickyPet stickyPet = transform.parent.GetComponent<StickyPet>();
+        if (stickyPet) sticky.OnSticky(stickyPet);
     }
 
     public override void OnExit()
     {
-        pet.Rigid.isKinematic = false;
-        pet.Rigid.useGravity = true;
-
-        if (stickyObject)
-        {
-            stickyObject.MovableRoot.SetParent(originalParent);
-            stickyObject.NotSticky();
-        }
+       
+            pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
     }
 
     public override void OnUpdate()
@@ -61,15 +53,26 @@ public class StickyState : PetState
 
     }
 
+    private void OffSticky()
+    {
+        pet.Rigid.isKinematic = false;
+        pet.Rigid.useGravity = true;
+
+        if (sticky)
+        {
+            sticky.MovableRoot.SetParent(originalParent);
+            sticky.NotSticky();
+        }
+    }
+
     private IEnumerator DelayParent()
     {
         yield return null;
-
-        originalParent = stickyObject.MovableRoot.parent;
-        stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
-        origianalRotation = stickyObject.MovableRoot.rotation;
-        stickyObject.MovableRoot.SetParent(stickyParent);
-        stickyObject.MovableRoot.DOLocalMove(new Vector3(0f, 1f, 0f), 1f);
+        originalParent = sticky.MovableRoot.parent;
+        stickyOffset = sticky.MovableRoot.position - stickyParent.position;
+        origianalRotation = sticky.MovableRoot.rotation;
+        sticky.MovableRoot.SetParent(stickyParent);
+        sticky.MovableRoot.DOLocalMove(new Vector3(0f, 1f, 0f), 1f);
     }
 
     private void OnMove()

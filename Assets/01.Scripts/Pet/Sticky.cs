@@ -20,7 +20,7 @@ public class Sticky : MonoBehaviour
 
     [SerializeField] private UnityEvent<StickyPet> onStickyStart;
     [SerializeField] private UnityEvent<StickyPet> onStickyEnd;
-    private GameObject stickyPet;
+    private StickyPet stickyPet;
 
     #region Property
     public bool IsSticky { get { return isSticky; } set { isSticky = value; } }
@@ -93,13 +93,12 @@ public class Sticky : MonoBehaviour
         if (obstacle)
             obstacle.enabled = true;
 
-        // 민영아 여기야!!
-        // onStickyEnd?.Invoke(stickyPet);
+         onStickyEnd?.Invoke(stickyPet);
         stickyPet = null;
 
     }
 
-    public void OnSticky(GameObject stickyPet)
+    public void OnSticky(StickyPet stickyPet)
     {
         if (IsSticky) return;
 
@@ -109,8 +108,7 @@ public class Sticky : MonoBehaviour
 
         this.stickyPet = stickyPet;
 
-        // 민영아 여기야!!
-        //onStickyStart?.Invoke(stickyPet);
+        onStickyStart?.Invoke(stickyPet);
     }
 
     public void OnMoveChange(bool canMove)

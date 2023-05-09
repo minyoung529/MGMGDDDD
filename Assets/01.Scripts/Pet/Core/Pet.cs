@@ -292,7 +292,7 @@ public abstract class Pet : MonoBehaviour
         SetDestination(destination);
     }
 
-    public virtual void InteractionPoint()
+    public void InteractionPoint()
     {
         State.ChangeState((int)PetStateName.Interact);
     }
