@@ -6,6 +6,7 @@ using UnityEngine.Timeline;
 public class SkillTrackMixerBehaviour : PlayableBehaviour
 {
     Pet pet;
+    bool skilling = false;
     
     // NOTE: This function is called at runtime and edit time.  Keep that in mind when setting the values of properties.
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
@@ -37,10 +38,16 @@ public class SkillTrackMixerBehaviour : PlayableBehaviour
         // 클립이 1개인 곳을 지나는 중
         else if (currentInputCount == 1)
         {
+            if (pet == null) return;
+            if (pet.Skilling) return;
+            pet.Skill();
         }
         // 클립이 2개 이상인 블렌딩되고 있는 곳을 지나는 중
         else
         {
+            if (pet == null) return;
+            if (pet.Skilling) return;
+            pet.Skill();
         }
     }
 

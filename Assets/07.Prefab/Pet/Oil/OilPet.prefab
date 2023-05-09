@@ -323,13 +323,12 @@ GameObject:
   - component: {fileID: 4586198276244333030}
   - component: {fileID: 4586198276244333029}
   - component: {fileID: 4586198276244333026}
-  - component: {fileID: 4586198276244333027}
   - component: {fileID: 4586198276244333049}
   - component: {fileID: 1009855031}
-  - component: {fileID: 1009855026}
   - component: {fileID: 498263000}
   - component: {fileID: 7002649222190951664}
   - component: {fileID: 272708379305149914}
+  - component: {fileID: 3635944747377788682}
   m_Layer: 8
   m_Name: OilPet
   m_TagString: OilPet
@@ -387,28 +386,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
---- !u!195 &4586198276244333027
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4586198276244333025}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 10
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 360
-  m_StoppingDistance: 5
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 0.63
-  m_BaseOffset: 0.35
-  m_WalkableMask: 21
-  m_ObstacleAvoidanceType: 4
 --- !u!114 &4586198276244333049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,8 +399,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petInform: {fileID: 11400000, guid: d171bd30657245f49b59a14ca46daa97, type: 2}
+  emotion: {fileID: 0}
   sightRange: 5
-  collRadius: 0.7
   flyParticlePref: {fileID: 198468451835195826, guid: 7f13edbb273b9514fbf6da6e743e8586, type: 3}
   arriveParticlePref: {fileID: 198468451835195826, guid: f3b9d8c9b1301c747a43060c247cd3d8, type: 3}
   oilSkill: {fileID: 3503917110362162976, guid: 9d87604740c0fb1438c3ea57e1fc518a, type: 3}
@@ -528,25 +505,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &1009855026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4586198276244333025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce4223a9ac3d70b4f95434e9d0cf3486, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isCollide: 1
-  autoEnd: 1
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  tutorialType: 0
-  tutorialName: 
 --- !u!114 &498263000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,6 +544,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 3
+--- !u!195 &3635944747377788682
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4586198276244333025}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1001 &3437776999065935891
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -692,10 +672,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4586198276244333030}
     m_Modifications:
-    - target: {fileID: 1239350385782540757, guid: 15b6b854160728648b96676a91611dc0, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: a919096323fee274ea4fe599a54f641b, type: 2}
     - target: {fileID: 1299176460912231091, guid: 15b6b854160728648b96676a91611dc0, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -766,31 +742,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26610d8e1eb455c4aae2aaef13e2dbd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &2899592358760943771 stripped
+--- !u!1 &4920858131966589009 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 7746336965991592260, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+  m_CorrespondingSourceObject: {fileID: 574079110409623950, guid: 15b6b854160728648b96676a91611dc0, type: 3}
   m_PrefabInstance: {fileID: 4881320968481792479}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1070401904
-Animator:
-  serializedVersion: 5
+--- !u!114 &1681653420004796672
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2899592358760943771}
+  m_GameObject: {fileID: 4920858131966589009}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 6080e6fa85b40fe47b138e9ed746d2ec, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 664b4c8810707694387f95d91eceb283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textures:
+  - {fileID: 2800000, guid: 4a3cc37fee62b0f4c99b748215248f37, type: 3}
+  - {fileID: 2800000, guid: 20026eb98df852b488f2eaa0014b95cc, type: 3}
+  - {fileID: 2800000, guid: 7ba9df858bc3fd246a58e452011c7d08, type: 3}
 --- !u!1001 &5496561999625600614
 PrefabInstance:
   m_ObjectHideFlags: 0
