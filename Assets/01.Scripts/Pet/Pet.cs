@@ -8,9 +8,12 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour
 {
     [SerializeField] protected PetTypeSO petInform;
+    [SerializeField] private PetEmotion emotion;
+
     private Vector3 originScale;
     private float originalAgentSpeed;
     private ChangePetEmission emission;
+
 
     #region 이동관련
     [SerializeField] protected float sightRange = 5f;
@@ -69,7 +72,6 @@ public abstract class Pet : MonoBehaviour
     public Color petColor => petInform.outlineColor;
 
     #endregion
-
 
     private static bool isCameraAimPoint = true;
     public static bool IsCameraAimPoint
