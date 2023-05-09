@@ -110,7 +110,8 @@ public class PetManager : MonoSingleton<PetManager>
     private void OnSkillUp(InputAction input, float value)
     {
         if (selectIndex < 0) return;
-        pets[selectIndex].SkillUp();
+        //pets[selectIndex].SkillUp();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyUp);
     }
 
     private void OnClickMove(InputAction input, float value)

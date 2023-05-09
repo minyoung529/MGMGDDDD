@@ -76,6 +76,7 @@ public class OilPetSkill
         painting.IsPainting = false;
         pathAgent.gameObject.SetActive(false);
         points.Clear();
+        lineRenderer.positionCount = 0;
     }
 
     public void ShowPath()

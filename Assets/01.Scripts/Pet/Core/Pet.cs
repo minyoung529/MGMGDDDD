@@ -113,7 +113,7 @@ public abstract class Pet : MonoBehaviour
     {
         State.OnUpdate();
 
-        Debug.Log((PetStateName)State.CurStateIndex);
+        //Debug.Log((PetStateName)State.CurStateIndex);
         if(agent.isOnOffMeshLink)
         {
             agent.speed = originalAgentSpeed * 0.5f;
@@ -294,7 +294,7 @@ public abstract class Pet : MonoBehaviour
 
     public virtual void InteractionPoint()
     {
-
+        State.ChangeState((int)PetStateName.Interact);
     }
     #endregion
 

@@ -19,6 +19,8 @@ public class StickySkillState : PetState
 
     public override void OnEnter()
     {
+        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+
         Billow();
     }
 
@@ -29,6 +31,8 @@ public class StickySkillState : PetState
 
         explosion.gameObject.SetActive(false);
         OnExitBillow?.Invoke();
+
+        pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
     }
 
     public override void OnUpdate()
@@ -42,6 +46,16 @@ public class StickySkillState : PetState
         smallDirection = transform.forward;
     }
 
+    #region Listen
+
+    private void OnRecall()
+    {
+        pet.State.ChangeState((int)PetStateName.Recall);
+    }
+
+    #endregion
+
+    #region Skill
     private void Billow()
     {
         transform.DOKill();
@@ -71,5 +85,6 @@ public class StickySkillState : PetState
             SetBillow(other.transform.forward);
         }
     }
+    #endregion
 
 }

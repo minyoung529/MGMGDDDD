@@ -6,6 +6,7 @@ public enum PetEventName
     OnRecallKeyPress,
     OnRecallArrive,
     OnSkillKeyPress,
+    OnSkillKeyUp,
     OnHold,
     OnThrew,
     OnDrop,

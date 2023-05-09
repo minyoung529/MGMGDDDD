@@ -12,7 +12,7 @@ public class StickyInteractState : PetState
 
     public override void OnEnter()
     {
-        
+        ReadySticky();
     }
 
     public override void OnExit()
