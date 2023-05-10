@@ -19,11 +19,13 @@ public class StickyInteractState : PetState
 
     public override void OnEnter()
     {
+        pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
         ReadySticky();
     }
 
     public override void OnExit()
     {
+        pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
     }
 
     public override void OnUpdate()
@@ -57,5 +59,8 @@ public class StickyInteractState : PetState
         }
        
     }
-
+    private void OnMove()
+    {
+        pet.State.ChangeState((int)PetStateName.Move);
+    }
 }
