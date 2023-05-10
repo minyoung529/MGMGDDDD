@@ -8,7 +8,7 @@ using UnityEngine;
 public class Balance : MonoBehaviour
 {
     [SerializeField] private float maxRotation = 40f;
-    [SerializeField] private float rotationTime = 0.7f;
+    [SerializeField] private float rotationTime = 0.4f;
 
     [SerializeField] private BalanceFloor leftBalance;
     [SerializeField] private BalanceFloor rightBalance;
@@ -53,9 +53,9 @@ public class Balance : MonoBehaviour
         Quaternion q = Quaternion.Euler(pillar.rotation.x, pillar.rotation.y, value - 2f);
 
         pillar.DOKill();
-        pillar.DOLocalRotateQuaternion(q, rotationTime).OnComplete(()=>
+        pillar.DOLocalRotateQuaternion(q, rotationTime).OnComplete(() =>
         {
-            pillar.DOLocalRotateQuaternion(origin, rotationTime);
+            pillar.DOLocalRotateQuaternion(origin, 0.7f);
         });
     }
    
