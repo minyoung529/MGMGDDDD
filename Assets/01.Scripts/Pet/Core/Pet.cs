@@ -15,7 +15,6 @@ public abstract class Pet : MonoBehaviour
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
 
-
     #region 이동관련
 
     protected Transform target;
@@ -112,6 +111,7 @@ public abstract class Pet : MonoBehaviour
     public virtual void OnUpdate()
     {
         State.OnUpdate();
+        Chase();
 
         //Debug.Log((PetStateName)State.CurStateIndex);
         if(agent.isOnOffMeshLink)
@@ -186,13 +186,13 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     #region Move
-    public void SetTarget(Transform target, float stopDistance = 0, Action onArrive = null)
+    public void SetTarget(Transform target, float stopDistance = 0)
     {
         if (agent == null) return;
         this.target = target;
         agent.stoppingDistance = stopDistance;
 
-        if (!target)
+        if (!target || agent.enabled)
         {
             agent.ResetPath();
             return;
@@ -215,14 +215,28 @@ public abstract class Pet : MonoBehaviour
         this.player = player;
     }
 
-    public void SetDestination(Vector3 target, float stopDistance = 0)
+    public void SetDestination(Vector3 target)
     {
         if (!agent.isOnNavMesh) return;
         rigid.velocity = Vector3.zero;
-        this.target = null;
+        destination = AxisController.CalculateDestination(target);
+        Event.TriggerEvent((int)PetEventName.OnSetDestination);
+    }
+
+    public void SetDestination(Vector3 target, float stopDistance) {
+        if (!agent.isOnNavMesh) return;
+        rigid.velocity = Vector3.zero;
         agent.stoppingDistance = stopDistance;
         destination = AxisController.CalculateDestination(target);
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
+    }
+
+    private void Chase() {
+        if (!target) return;
+        if (Vector3.Distance(GetNearestNavMeshPosition(transform.position), GetNearestNavMeshPosition(target.position)) 
+            >= agent.stoppingDistance) {
+            SetDestination(target.position);
+        }
     }
     #endregion
 
@@ -289,6 +303,7 @@ public abstract class Pet : MonoBehaviour
             destination = GameManager.Instance.GetMousePos();
         }
 
+        SetTarget(null);
         SetDestination(destination);
     }
 

@@ -26,9 +26,6 @@ public class StateMachine<T> {
     }
 
     public void ChangeState(int index) {
-
-        Debug.Log(parent.GetType().Name + " > " + (PetStateName)index);
-
         curState?.OnExit();
         curStateIndex = index;
         curState = states[index];

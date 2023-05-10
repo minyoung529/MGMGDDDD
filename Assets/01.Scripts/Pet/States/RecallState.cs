@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.AI;
 
 public class RecallState : PetState {
     public override PetStateName StateName => PetStateName.Recall;
 
-    [SerializeField] private float sightRange = 10f;
+    [SerializeField] private float sightRange = 20f;
     [SerializeField] private ParticleSystem flyParticlePref;
     [SerializeField] private ParticleSystem arriveParticlePref;
     private ParticleSystem flyParticle = null;
     private ParticleSystem arriveParticle = null;
+    private NavMeshPath path;
 
     public override void OnEnter() {
         CheckDistanceToPlayer();
@@ -28,6 +30,7 @@ public class RecallState : PetState {
     private void Start() {
         flyParticle = Instantiate(flyParticlePref, pet.transform);
         arriveParticle = Instantiate(arriveParticlePref, pet.transform);
+        path = new NavMeshPath();
     }
 
     private void OnThrew() {
@@ -35,10 +38,11 @@ public class RecallState : PetState {
     }
 
     private void CheckDistanceToPlayer() {
-        if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange) {
-            pet.SetDestination(pet.Player.position);
-            if (Vector3.Distance(pet.GetDestination(), pet.Player.position) <= 1f) {
+        if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange &&
+            NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) {
+            if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f) {
                 pet.SetTargetPlayer();
+                pet.State.ChangeState((int)PetStateName.Move);
                 return;
             }
         }
@@ -63,8 +67,8 @@ public class RecallState : PetState {
             pet.Emission.EmissionOff();
             flyParticle.Stop();
             arriveParticle.Play();
+            pet.SetTargetPlayer();
             pet.PetThrow.Throw(Vector3.up * 300);
-            Debug.Log(1);
         });
     }
 
