@@ -12,6 +12,5 @@ public class StickyPet : Pet
     {
         base.ResetPet();
     }
-
   
 }

@@ -26,7 +26,7 @@ public class OilSkillState : PetState
     public Vector3 SkillStartPoint => SkillData.StartPoint;
     #endregion
 
-    private void Awake()
+    private void Start()
     {
         oilPetSkill?.Init(GetComponentInChildren<PaintingObject>(), GetComponentInChildren<LineRenderer>(), pathAgent, pet.Agent);
     }

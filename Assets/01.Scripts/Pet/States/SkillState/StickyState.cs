@@ -14,38 +14,50 @@ public class StickyState : PetState
     private Vector3 stickyOffset;
     private Quaternion origianalRotation;
 
+    StickyPet stickyPet;
     private Sticky sticky;
+
+    private void Awake()
+    {
+        stickyPet = transform.parent.GetComponent<StickyPet>();
+    }
 
     public override void OnEnter()
     {
-        sticky = transform.parent.GetComponent<StickyPet>().StickyObject;
+        sticky = stickyPet.StickyObject;
+        if(sticky == null) GetStickyAround();
+        
         transform.DOKill();
         skillEffect.Play();
 
-        if(sticky == null) Debug.Log("NULL");
-
         if (sticky.CanMove)
-        {
             pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
-        }
 
         StartCoroutine(DelayParent());
+        sticky.OnSticky(stickyPet);
+    }
 
-        // SET ORIGINAL PARENT & PARENT
-
-        // SET VARIABLE
-        //originalParent = stickyObject.MovableRoot.parent;
-        //stickyOffset = stickyObject.MovableRoot.position - stickyParent.position;
-        //origianalRotation = stickyObject.MovableRoot.rotation;
-
-        StickyPet stickyPet = transform.parent.GetComponent<StickyPet>();
-        if (stickyPet) sticky.OnSticky(stickyPet);
+    private void GetStickyAround()
+    {
+        Collider[] cols = Physics.OverlapSphere(transform.position, 2f);
+        foreach (Collider col in cols)
+        {
+            Sticky s = col.GetComponent<Sticky>();
+            if (s)
+            {
+                sticky = s;
+                break;
+            }
+        }
     }
 
     public override void OnExit()
     {
-       
+       if(sticky.CanMove)
+        {
+            stickyPet.StickyObject = null;
             pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
+        }
     }
 
     public override void OnUpdate()
@@ -68,6 +80,7 @@ public class StickyState : PetState
     private IEnumerator DelayParent()
     {
         yield return null;
+
         originalParent = sticky.MovableRoot.parent;
         stickyOffset = sticky.MovableRoot.position - stickyParent.position;
         origianalRotation = sticky.MovableRoot.rotation;
