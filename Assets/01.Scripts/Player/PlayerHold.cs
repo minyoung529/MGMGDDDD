@@ -67,6 +67,8 @@ public class PlayerHold : PlayerMono {
             return;
         }
 
+        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
+
         StartCoroutine(WaitPet(dest, () => {
             holdingPet.Event.TriggerEvent((int)PetEventName.OnHold);
             controller.Move.ChangeState(PlayerStateName.PickUp);
@@ -131,6 +133,7 @@ public class PlayerHold : PlayerMono {
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() => {
+            Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, false);
             holdingPet.Event.TriggerEvent((int)PetEventName.OnDrop);
             holdingPet = null;
         });
@@ -139,7 +142,13 @@ public class PlayerHold : PlayerMono {
     public void OnThrow() {
         isHolding = false;
         holdingPet.PetThrow.Throw(ThrowVector);
+        StartCoroutine(EnableCollision(holdingPet));
         holdingPet = null;
+    }
+
+    private IEnumerator EnableCollision(Pet holdingPet) {
+        yield return new WaitForSeconds(0.5f);
+        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, false);
     }
 
     public void OnAnimEnd() {
