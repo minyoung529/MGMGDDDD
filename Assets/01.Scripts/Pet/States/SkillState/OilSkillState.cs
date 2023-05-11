@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class OilSkillState : PetState
 {
@@ -15,6 +16,9 @@ public class OilSkillState : PetState
     [SerializeField] Transform parentController;
     [SerializeField] private NavMeshAgent pathAgent;
     private OilPetSkill oilPetSkill = new OilPetSkill();
+
+    [SerializeField]
+    private UnityEvent onOilSkill;
 
     #region Property
     public Action OnStartSkill { get; set; }
@@ -69,6 +73,7 @@ public class OilSkillState : PetState
         if (pet.Skilling && IsDirectSpread)
         {
             oilPetSkill.StartSpreadOil(() => pet.SetNavIsStopped(true), OnEndPath);
+            onOilSkill?.Invoke();
         }
     }
 

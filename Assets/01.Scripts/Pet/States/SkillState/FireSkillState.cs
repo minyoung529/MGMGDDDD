@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FireSkillState : PetState
 {
@@ -9,7 +10,7 @@ public class FireSkillState : PetState
     private Fire fire;
 
     [SerializeField]
-    private SkillVisual skillVisual;
+    private UnityEvent onFire;
 
     private void Awake()
     {
@@ -19,7 +20,7 @@ public class FireSkillState : PetState
     public override void OnEnter()
     {
         StartCoroutine(FireBurn());
-        skillVisual.Trigger();
+        onFire?.Invoke();
     }
 
     public override void OnExit()
