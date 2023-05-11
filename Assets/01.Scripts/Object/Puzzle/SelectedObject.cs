@@ -15,6 +15,7 @@ public class SelectedObject : MonoBehaviour
     private void Update()
     {
         if (PetManager.Instance.GetSelectedPet() == null) return;
+        if(IsInteraction) { return; }
         CheckObject();
     }
 
@@ -44,6 +45,7 @@ public class SelectedObject : MonoBehaviour
                 return;
             }
 
+            if (pet.IsInteraction) return;
             pet.IsInteraction = true;
             interactionObj = selected;
             CurInteractObject = selected;

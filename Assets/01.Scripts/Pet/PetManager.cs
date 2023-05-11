@@ -80,6 +80,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
         InputManager.StartListeningInput(InputAction.Down_Pet, SwitchPet);
+
         InputManager.StartListeningInput(InputAction.Select_First_Pet, SelectPet);
         InputManager.StartListeningInput(InputAction.Select_Second_Pet, SelectPet);
         InputManager.StartListeningInput(InputAction.Select_Third_Pet, SelectPet);
@@ -109,22 +110,22 @@ public class PetManager : MonoSingleton<PetManager>
     private void OnSkillUp(InputAction input, float value)
     {
         if (selectIndex < 0) return;
-        pets[selectIndex].SkillUp();
+        //pets[selectIndex].SkillUp();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyUp);
     }
 
     private void OnClickMove(InputAction input, float value)
     {
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
-        if (pets[selectIndex].IsInputLock) return;
 
         pets[selectIndex].MovePoint();
 
         if (pets[selectIndex].IsInteraction && SelectedObject.CurInteractObject)
         {
             pets[selectIndex].InteractionPoint();
-            pets[selectIndex].OnArrive = null;
-            pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
+            //pets[selectIndex].OnArrive = null;
+            //pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
         }
     }
 
@@ -132,10 +133,8 @@ public class PetManager : MonoSingleton<PetManager>
     {
         // ∆Í¿Ã æ¯¿ª ∂ß
         if (selectIndex < 0) return;
-        // Input¿Ã Lock ∞…∑»¿ª ∂ß
-        if (pets[selectIndex].IsInputLock) return;
 
-        pets[selectIndex].Skill();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
     }
 
     private void ReCall(InputAction input, float value)
@@ -146,7 +145,7 @@ public class PetManager : MonoSingleton<PetManager>
         //    p.ReCall();
         //}
 
-        pets[selectIndex].ReCall();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }
     #endregion
 

@@ -18,7 +18,6 @@ public class EventManager
         }
     }
 
-
     public static void StopListening(EventName eventName, Action<EventParam> listener)
     {
         if (eventDictionary.ContainsKey(eventName))

@@ -55,19 +55,33 @@ public class OilPetSkill
     {
         ClearOil();
         pathAgent.gameObject.SetActive(true);
-
-        pathAgent.enabled = false;
+        pathAgent.enabled = true;
 
         if (IsCrosshair)
         {
-            pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetCameraHit();
+            pathAgent.SetDestination(GameManager.Instance.GetCameraHit());
         }
         else
         {
-            pathAgent.transform.position = prevPosition = oilStartPos = GameManager.Instance.GetMousePos();
+            pathAgent.SetDestination(GameManager.Instance.GetMousePos());
         }
 
+        // 계산할 때까지 기다리기
+        painting.StartCoroutine(DelayCauclatePath());
         points.Clear();
+    }
+
+    private IEnumerator DelayCauclatePath()
+    {
+        while (pathAgent.destination.sqrMagnitude > 1000000000f)
+        {
+            yield return null;
+        }
+
+        prevPosition = oilStartPos = pathAgent.destination;
+        pathAgent.enabled = false;
+        pathAgent.transform.position = oilStartPos;
+        pathAgent.enabled = true;
     }
 
     private void ResetSkill()
@@ -76,6 +90,8 @@ public class OilPetSkill
         painting.IsPainting = false;
         pathAgent.gameObject.SetActive(false);
         points.Clear();
+        oilStartPos = prevPosition = Vector3.zero;
+        lineRenderer.positionCount = 0;
     }
 
     public void ShowPath()
@@ -92,7 +108,7 @@ public class OilPetSkill
 
         for (int i = 1; i < points.Count; i++)
         {
-            lineRenderer.SetPosition(i, points[i - 1]);
+            lineRenderer.SetPosition(i, points[i]);
         }
     }
 
@@ -125,7 +141,7 @@ public class OilPetSkill
         }
     }
 
-    private void KillSkill()
+    public void KillSkill()
     {
         OnEndSpread_Once?.Invoke();
         OnEndSpread_Once = null;
@@ -135,7 +151,7 @@ public class OilPetSkill
 
     public void Update(bool isSkilling, bool isDragging)
     {
-        if (isDragging)
+        if (isDragging && oilStartPos.sqrMagnitude > 0f)
         {
             if (IsCheckDistance && skillDistance > MAX_OIL_DIST)
             {
@@ -151,13 +167,6 @@ public class OilPetSkill
             else
             {
                 cameraHit = GameManager.Instance.GetMousePos();
-            }
-
-            if (!pathAgent.gameObject.activeSelf || !pathAgent.enabled)
-            {
-                pathAgent.gameObject.SetActive(true);
-                pathAgent.enabled = true;
-                return;
             }
 
             pathAgent.SetDestination(cameraHit);

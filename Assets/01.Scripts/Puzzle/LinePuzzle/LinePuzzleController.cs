@@ -84,7 +84,7 @@ public class LinePuzzleController : MonoBehaviour
 
     private void ResetBoard()
     {
-        oilPet.OilPetSkill.ClearOil();
+        oilPet.SkillState.SkillData.ClearOil();
         CurrentPuzzle.ResetPuzzle();
     }
 
@@ -105,12 +105,12 @@ public class LinePuzzleController : MonoBehaviour
 
         Pet.IsCameraAimPoint = false;
 
-        oilPet.IsDirectSpread = false;
-        oilPet.OnEndSkill += SetEndPiece;
-        oilPet.OnEndSkill += MoveToPortal;
-        oilPet.OnStartSkill += ResetOil;
-        oilPet.OnStartSkill += SetSelectedColor;
-        oilPet.OilPetSkill.IsCheckDistance = false;
+        oilPet.SkillState.IsDirectSpread = false;
+        oilPet.SkillState.OnEndSkill += SetEndPiece;
+        oilPet.SkillState.OnEndSkill += MoveToPortal;
+        oilPet.SkillState.OnStartSkill += ResetOil;
+        oilPet.SkillState.OnStartSkill += SetSelectedColor;
+        oilPet.SkillState.SkillData.IsCheckDistance = false;
 
         StartGame();
     }
@@ -134,13 +134,13 @@ public class LinePuzzleController : MonoBehaviour
 
         cameraController.ActiveCrossHair();
         OilPetSkill.IsCrosshair = true;
-        oilPet.IsDirectSpread = true;
+        oilPet.SkillState.IsDirectSpread = true;
 
-        oilPet.OnEndSkill -= MoveToPortal;
-        oilPet.OnEndSkill -= SetEndPiece;
-        oilPet.OnStartSkill -= ResetOil;
-        oilPet.OnStartSkill -= SetSelectedColor;
-        oilPet.OilPetSkill.IsCheckDistance = true;
+        oilPet.SkillState.OnEndSkill -= MoveToPortal;
+        oilPet.SkillState.OnEndSkill -= SetEndPiece;
+        oilPet.SkillState.OnStartSkill -= ResetOil;
+        oilPet.SkillState.OnStartSkill -= SetSelectedColor;
+        oilPet.SkillState.SkillData.IsCheckDistance = true;
 
         onExitGame?.Invoke();
     }
@@ -158,18 +158,18 @@ public class LinePuzzleController : MonoBehaviour
 
         ConnectionPortal portal = CurrentPuzzle.OilPortals[SelectedPiece.Index];
         oilPet.SetDestination(portal.transform.position);
-        oilPet.OnArrive += ForceMoveBoard;
+        oilPet.Event.StartListening((int)PetEventName.OnArrive, ForceMoveBoard);
     }
 
     private void ForceMoveBoard()
     {
         IsOilMove = true;
-        oilPet.SetForcePosition(oilPet.OilPetSkill.StartPoint);
-        oilTeleportParticle.transform.position = oilPet.OilPetSkill.StartPoint;
+        oilPet.SetForcePosition(oilPet.SkillState.SkillStartPoint);
+        oilTeleportParticle.transform.position = oilPet.SkillState.SkillStartPoint;
         oilTeleportParticle.Play();
 
-        oilPet.OilPetSkill.OnEndSpread_Once += OilBack;
-        oilPet.SpreadOil();
+        oilPet.SkillState.SkillData.OnEndSpread_Once += OilBack;
+        oilPet.SkillState.SpreadOil();
     }
 
     private void OilBack()
@@ -210,11 +210,11 @@ public class LinePuzzleController : MonoBehaviour
     private void EndPuzzle()
     {
         ExitGame();
-        oilPet.PauseSkill(false);
+        oilPet.SkillState.PauseSkill(false);
     }
 
     public void PauseOilPet(bool pause)
     {
-        oilPet.PauseSkill(pause);
+        oilPet.SkillState.PauseSkill(pause);
     }
 }
