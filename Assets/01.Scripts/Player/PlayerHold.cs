@@ -9,6 +9,10 @@ public class PlayerHold : PlayerMono {
     [SerializeField] private float distance2Pet = 1f;
     [SerializeField] [Range(0, 90)] private float throwAngle;
     [SerializeField] private float throwPow;
+
+    private float defaultThrowPower;
+    private float defaultThrowAngle;
+
     private Vector3 ThrowVector {
         get {
             return Quaternion.AngleAxis(throwAngle, -transform.right) * transform.forward * throwPow;
@@ -25,7 +29,26 @@ public class PlayerHold : PlayerMono {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
         trajectory = FindObjectOfType<Trajectory>();
+
+        defaultThrowPower = throwPow;
+        defaultThrowAngle = throwAngle;
     }
+
+    #region Set
+    public void SetThrowPower(float pow)
+    {
+        throwPow = pow;
+    }
+    public void SetThrowAngle(float angle)
+    {
+        throwAngle = angle;
+    }
+    public void SetDefaultSetting()
+    {
+        throwAngle = defaultThrowAngle;
+        throwPow = defaultThrowPower;
+    }
+    #endregion
 
     private void GetInput(InputAction action, float value) {
         if (controller.Move.IsInputLock) return;
