@@ -25,7 +25,10 @@ public class StickyState : PetState
     public override void OnEnter()
     {
         sticky = stickyPet.StickyObject;
-        if(sticky == null) GetStickyAround();
+        if (sticky == null)
+        {
+            GetStickyAround();
+        }
         
         transform.DOKill();
         skillEffect.Play();
@@ -53,7 +56,7 @@ public class StickyState : PetState
 
     public override void OnExit()
     {
-       if(sticky.CanMove)
+        if(sticky.CanMove)
         {
             stickyPet.StickyObject = null;
             pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);

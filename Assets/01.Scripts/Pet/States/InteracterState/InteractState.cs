@@ -8,13 +8,14 @@ using UnityEngine.Events;
 public class InteractState : PetState
 {
     public override PetStateName StateName => PetStateName.Interact;
-    private float radius = 2f;
+    private float radius = 4f;
 
     public Action ac;
 
     public override void OnEnter()
     {
         MoveArrived();
+
         pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
         pet.Event.StartListening((int)PetEventName.OnArrive, CheckAroundInteract);
     }
@@ -47,13 +48,22 @@ public class InteractState : PetState
             if (interact == null) continue;
 
             if (pet.GetPetType == PetType.StickyPet)
+            {
+                StickyPet stickyPet = pet.GetComponent<StickyPet>();
+                stickyPet.StickyObject = col.GetComponent<Sticky>();
+
                 interact.OnInteract(() => pet.State.ChangeState((int)PetStateName.Sticky));
+                pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
+                return;
+            }
             else
+            {
                 interact.OnInteract();
+            }
             break;
         }
-        pet.State.ChangeState((int)PetStateName.Idle);
         pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
+        pet.State.ChangeState((int)PetStateName.Idle);
     }
 
 }
