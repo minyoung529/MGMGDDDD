@@ -12,17 +12,7 @@ public class StickyExplosion : MonoBehaviour
     [SerializeField]
     private float explosionRadius = 7.5f;
 
-    [SerializeField]
-    private List<ParticleSystem> explosionParticles;
-
     private bool isExplosioning = false;
-    private Vector3 originalScale = Vector3.zero;
-
-    [SerializeField]
-    private Ease ease = Ease.InBounce;
-
-    [SerializeField]
-    private Transform visual;
 
     [SerializeField]
     private float upPower = 5f;
@@ -35,15 +25,12 @@ public class StickyExplosion : MonoBehaviour
     [SerializeField]
     private StickyPet stickyPet;
 
+    [SerializeField]
+    private SkillVisual explosionSkill;
+
     private void Awake()
     {
-        originalScale = visual.localScale;
         jumper = GetComponent<JumperObject>();
-
-        foreach(ParticleSystem particle in explosionParticles)
-        {
-            particle.transform.SetParent(visual.transform);
-        }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -72,8 +59,6 @@ public class StickyExplosion : MonoBehaviour
 
     private void Explosion()
     {
-        visual.DOScale(originalScale * 0.45f, 0.2f);
-
         Collider[] cols = Physics.OverlapSphere(transform.position, explosionRadius);
 
         foreach (Collider col in cols)
@@ -96,8 +81,6 @@ public class StickyExplosion : MonoBehaviour
                 rigid.AddExplosionForce(explosionForce * rigid.mass, transform.position, explosionRadius, upPower);
             }
         }
-
-        explosionParticles.ForEach(x => x.Play());
     }
 
     [ContextMenu("Explosion")]
@@ -110,18 +93,13 @@ public class StickyExplosion : MonoBehaviour
         if (jumper)
             jumper.CanJump = false;
 
-        Sequence seq = DOTween.Sequence();
-        seq.Append(visual.DOScale(originalScale * 6f, 1.5f).SetEase(ease));
-        seq.AppendCallback(Explosion);
-        seq.AppendInterval(3f);
-        seq.AppendCallback(SetOriginalPos);
-        seq.AppendInterval(1f);
-        seq.AppendCallback(EndExplosion);
-    }
+        explosionSkill?.Trigger();
 
-    private void SetOriginalPos()
-    {
-        visual.DOScale(originalScale, 1f);
+        Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(1.5f);
+        seq.AppendCallback(Explosion);
+        seq.AppendInterval(4f);
+        seq.AppendCallback(EndExplosion);
     }
 
     private void EndExplosion()

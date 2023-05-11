@@ -8,13 +8,16 @@ public class StickySkillState : PetState
 {
     public override PetStateName StateName => PetStateName.Skill;
 
-    [SerializeField] private Transform scaleObject;
     [SerializeField] private Transform explosion;
     [SerializeField] private UnityEvent OnBillow;
     [SerializeField] private UnityEvent OnExitBillow;
 
+    [SerializeField]
+    private SkillVisual enterVisual;
+    [SerializeField]
+    private SkillVisual exitVisual;
+
     private Vector3 smallDirection;
-    private Vector3 bigScale = new Vector3(3f, 3f, 3f);
 
 
     public override void OnEnter()
@@ -26,8 +29,7 @@ public class StickySkillState : PetState
 
     public override void OnExit()
     {
-        scaleObject.DOKill();
-        scaleObject.DOScale(Vector3.one, 0.5f);
+        exitVisual.Trigger();
 
         explosion.gameObject.SetActive(false);
         OnExitBillow?.Invoke();
@@ -37,7 +39,6 @@ public class StickySkillState : PetState
 
     public override void OnUpdate()
     {
-
     }
 
     private void Awake()
@@ -58,8 +59,8 @@ public class StickySkillState : PetState
     #region Skill
     private void Billow()
     {
-        transform.DOKill();
         BillowAction();
+        enterVisual.Trigger();
         OnBillow?.Invoke();
         explosion.gameObject.SetActive(true);
     }
@@ -67,8 +68,6 @@ public class StickySkillState : PetState
     private void BillowAction()
     {
         transform.forward = smallDirection;
-        scaleObject.DOScale(bigScale, 0.5f);
-
         smallDirection = Vector3.zero;
     }
 

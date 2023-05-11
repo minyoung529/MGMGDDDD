@@ -8,6 +8,9 @@ public class FireSkillState : PetState
 
     private Fire fire;
 
+    [SerializeField]
+    private SkillVisual skillVisual;
+
     private void Awake()
     {
         fire = GetComponentInParent<Fire>();
@@ -16,6 +19,7 @@ public class FireSkillState : PetState
     public override void OnEnter()
     {
         StartCoroutine(FireBurn());
+        skillVisual.Trigger();
     }
 
     public override void OnExit()
