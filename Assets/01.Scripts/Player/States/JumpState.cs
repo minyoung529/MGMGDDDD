@@ -4,7 +4,7 @@ using UnityEngine;
 public class JumpState : MoveState 
 {
     #region abstarct 구현 부분
-    public override StateName StateName => StateName.Jump;
+    public override PlayerStateName StateName => PlayerStateName.Jump;
 
     public override void OnInput(Vector3 inputDir) {
         if (inputDir.sqrMagnitude <= 0) {

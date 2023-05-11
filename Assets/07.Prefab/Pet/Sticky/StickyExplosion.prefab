@@ -14668,7 +14668,7 @@ GameObject:
   - component: {fileID: 2018906288315168530}
   - component: {fileID: 2018906288315168541}
   m_Layer: 0
-  m_Name: Visual
+  m_Name: Malang Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14774,6 +14774,7 @@ Transform:
   - {fileID: 953307326}
   - {fileID: 114098364}
   - {fileID: 575066130}
+  - {fileID: 6561930070036833583}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14836,18 +14837,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionForce: 3300
   explosionRadius: 7.5
-  explosionParticles:
-  - {fileID: 2536685936434361740}
-  - {fileID: 2018906288306520553}
-  - {fileID: 953307328}
-  - {fileID: 6339891671737533828}
-  ease: 29
-  visual: {fileID: 0}
   upPower: 3
   ignoreList:
   - {fileID: 0}
   - {fileID: 2018906288344426057}
   stickyPet: {fileID: 0}
+  explosionSkill: {fileID: 830532012118289699}
 --- !u!65 &3807945291528324302
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14861,6 +14856,56 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.57, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &6277956074142293890
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6561930070036833583}
+  - component: {fileID: 830532012118289699}
+  m_Layer: 0
+  m_Name: SkillVisual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6561930070036833583
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6277956074142293890}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2018906288344426050}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &830532012118289699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6277956074142293890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ba6002debe139547832bf78bfb0151e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  changedObject: {fileID: 0}
+  particles:
+  - {fileID: 2536685936434361740}
+  - {fileID: 2018906288306520553}
+  - {fileID: 953307328}
+  - {fileID: 6339891671737533828}
 --- !u!1 &6339891671755398372
 GameObject:
   m_ObjectHideFlags: 0

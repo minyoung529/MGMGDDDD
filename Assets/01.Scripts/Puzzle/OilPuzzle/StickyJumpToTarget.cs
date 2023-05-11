@@ -21,7 +21,7 @@ public class StickyJumpToTarget : MonoBehaviour
         {
             stickyPet ??= collision.gameObject.GetComponent<StickyPet>();
 
-            if (stickyPet == null || stickyPet.State != StickyState.Billow) return;
+            if (stickyPet == null || stickyPet.State.CurStateIndex != (int)PetStateName.Skill) return;
 
             Jump();
         }

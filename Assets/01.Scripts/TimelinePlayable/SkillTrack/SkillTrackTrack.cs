@@ -4,7 +4,7 @@ using UnityEngine.Timeline;
 
 [TrackColor(0.8679245f, 0.8679245f, 0.8679245f)]
 [TrackClipType(typeof(SkillTrackClip))]
-[TrackBindingType(typeof(Pet))]
+[TrackBindingType(typeof(SkillVisual))]
 public class SkillTrackTrack : TrackAsset
 {
     public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)

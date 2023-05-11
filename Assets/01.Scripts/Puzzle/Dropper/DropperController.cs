@@ -94,7 +94,7 @@ public class DropperController : MonoBehaviour
         jumpMotion.StartJump(player.transform, null, null, false, 2f);
 
         player.SetTrigger("tStateChange");
-        player.SetInteger("iStateNum", (int)StateName.Fall);
+        player.SetInteger("iStateNum", (int)PlayerStateName.Fall);
         StartCoroutine(StartPattern());
     }
 

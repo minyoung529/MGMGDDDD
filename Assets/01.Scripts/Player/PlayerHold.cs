@@ -7,12 +7,9 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerHold : PlayerMono {
     [SerializeField] private float distance2Pet = 1f;
+    [SerializeField] private Trajectory trajectory;
     [SerializeField] [Range(0, 90)] private float throwAngle;
     [SerializeField] private float throwPow;
-
-    private float defaultThrowPower;
-    private float defaultThrowAngle;
-
     private Vector3 ThrowVector {
         get {
             return Quaternion.AngleAxis(throwAngle, -transform.right) * transform.forward * throwPow;
@@ -23,32 +20,10 @@ public class PlayerHold : PlayerMono {
     private Pet holdingPet;
     private bool isHolding;
 
-    private Trajectory trajectory;
-
     private void Awake() {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
-        trajectory = FindObjectOfType<Trajectory>();
-
-        defaultThrowPower = throwPow;
-        defaultThrowAngle = throwAngle;
     }
-
-    #region Set
-    public void SetThrowPower(float pow)
-    {
-        throwPow = pow;
-    }
-    public void SetThrowAngle(float angle)
-    {
-        throwAngle = angle;
-    }
-    public void SetDefaultSetting()
-    {
-        throwAngle = defaultThrowAngle;
-        throwPow = defaultThrowPower;
-    }
-    #endregion
 
     private void GetInput(InputAction action, float value) {
         if (controller.Move.IsInputLock) return;
@@ -60,14 +35,14 @@ public class PlayerHold : PlayerMono {
                 if (!holdingPet)
                     PickUp();
                 else
-                    controller.Move.ChangeState(StateName.Drop);
+                    controller.Move.ChangeState(PlayerStateName.Drop);
                 break;
             case InputAction.Throw:
                 if (!holdingPet) {
                     controller.Move.IsInputLock = false;
                     return;
                 }
-                controller.Move.ChangeState(StateName.Throw);
+                controller.Move.ChangeState(PlayerStateName.Throw);
                 break;
             default:
                 Debug.LogError($"올바르지 않은 입력이 감지되었습니다! 입력명:{action}");
@@ -90,9 +65,11 @@ public class PlayerHold : PlayerMono {
             return;
         }
 
+        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
+
         StartCoroutine(WaitPet(dest, () => {
-            holdingPet.PetThrow.Hold(true);
-            controller.Move.ChangeState(StateName.PickUp);
+            holdingPet.Event.TriggerEvent((int)PetEventName.OnHold);
+            controller.Move.ChangeState(PlayerStateName.PickUp);
         }));
     }
 
@@ -111,7 +88,8 @@ public class PlayerHold : PlayerMono {
         dir = transform.position + dir * distance2Pet;
         dir.y = pet.transform.position.y;
 
-        pet.SetDestination(dir);
+        pet.SetTarget(null);
+        pet.SetDestination(dir, 0f);
 
         return pet.GetDestination(); 
     }
@@ -120,7 +98,7 @@ public class PlayerHold : PlayerMono {
         controller.Move.IsInputLock = true;
         destination.y = transform.position.y;
         transform.DOLookAt(destination, 0.2f);
-        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 0.5f) {
+        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 1f) {
             yield return null;
         }
         onArrive?.Invoke();
@@ -154,21 +132,27 @@ public class PlayerHold : PlayerMono {
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() => {
-            holdingPet.Coll.enabled = true;
-            holdingPet.SetNavEnabled(true);
+            Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, false);
+            holdingPet.Event.TriggerEvent((int)PetEventName.OnDrop);
             holdingPet = null;
         });
     }
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.PetThrow.Throw(transform.position, ThrowVector);
+        holdingPet.PetThrow.Throw(ThrowVector);
+        StartCoroutine(EnableCollision(holdingPet));
         holdingPet = null;
+    }
+
+    private IEnumerator EnableCollision(Pet holdingPet) {
+        yield return new WaitForSeconds(0.5f);
+        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, false);
     }
 
     public void OnAnimEnd() {
         controller.Move.IsInputLock = false;
-        controller.Move.ChangeState(StateName.DefaultMove);
+        controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion
 

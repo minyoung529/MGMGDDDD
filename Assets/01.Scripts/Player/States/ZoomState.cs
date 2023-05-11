@@ -5,7 +5,7 @@ using UnityEngine;
 public class ZoomState : MoveState
 {
     #region abstract ±¸ÇöºÎ
-    public override StateName StateName => StateName.Zoom;
+    public override PlayerStateName StateName => PlayerStateName.Zoom;
 
     public override void OnInput(Vector3 inputDir) {
         Player.SetRotate(Player.Forward);

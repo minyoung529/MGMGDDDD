@@ -31,7 +31,7 @@ public class JumpMotion
             if (isSit)
             {
                 animator.SetTrigger("tStateChange");
-                animator.SetInteger("iStateNum", (int)StateName.Sit);
+                animator.SetInteger("iStateNum", (int)PlayerStateName.Sit);
             }
             else
             {
@@ -74,7 +74,7 @@ public class JumpMotion
         if (animator == null) return;
 
         animator?.SetTrigger("tStateChange");
-        animator?.SetInteger("iStateNum", (int)StateName.Jump);
+        animator?.SetInteger("iStateNum", (int)PlayerStateName.Jump);
     }
 
     private void EndAnimation(Transform player)

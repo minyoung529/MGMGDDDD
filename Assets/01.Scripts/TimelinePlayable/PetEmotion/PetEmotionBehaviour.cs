@@ -9,7 +9,7 @@ public class PetEmotionBehaviour : PlayableBehaviour
     [SerializeField] private EmotionType emotionType;
     public EmotionType Type { get { return emotionType; } set { emotionType = value; } }
 
-    [HideInInspector] public Pet pet;
+    [HideInInspector] public PetEmotion petEmotion;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
@@ -31,8 +31,8 @@ public class PetEmotionBehaviour : PlayableBehaviour
 
     private void EmotionSetting(EmotionType type)
     {
-        if (pet == null) return;
-        pet.Emotion.SetEmotion(type);
+        if (petEmotion == null) return;
+        petEmotion.SetEmotion(type);
     }
 
 }
