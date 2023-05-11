@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4884736892528368307}
   - component: {fileID: 3200471853253183780}
   - component: {fileID: 1830736064}
+  - component: {fileID: 1735907022}
   m_Layer: 8
   m_Name: CutScene_StickyPet
   m_TagString: StickyPet
@@ -29,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 2611246238103810629}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -30.9, y: 1.33, z: -22.31}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7061654698584531914}
   - {fileID: 983100522}
@@ -62,7 +63,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2611246238103810629}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a3c97f4b0aeabb48a0f6bb571f54f76, type: 3}
   m_Name: 
@@ -162,6 +163,28 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!195 &1735907022
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611246238103810629}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &5969439458487625808
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,6 +506,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 34f4f4e2ab629414399a2c8a325b19a9, type: 3}
   - {fileID: 2800000, guid: 1dd9ff698a199e14c9f83795684a42fc, type: 3}
   - {fileID: 2800000, guid: 97d3958730a07c644ae5e39ee227ee8e, type: 3}
+  - {fileID: 2800000, guid: eeb76a42a005382419e2b967dadcbb65, type: 3}
 --- !u!1 &5956901068820478251 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4280829577060724518, guid: 23349147ccc475443b376e3cecf75ded, type: 3}

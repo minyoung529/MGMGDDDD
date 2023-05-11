@@ -8,8 +8,6 @@ using DG.Tweening;
 
 public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
 {
-    float duration = 1f;
-    float strength = 2f;
 
     float curDuration = 0f;
     Vector3 originPos = Vector3.zero;   
@@ -39,8 +37,6 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
             ScriptPlayable<CameraShakeEffectBehaviour> inputPlayable = (ScriptPlayable<CameraShakeEffectBehaviour>)playable.GetInput(i);
             input = inputPlayable.GetBehaviour();
 
-            input._duration = duration;
-            input._strength = strength;
             input.activeCamera = activeCamera;
 
             // Use the above variables to process each frame of this playable.
@@ -52,7 +48,6 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         if(curDuration > 0)
         {
         //    activeCamera.transform.localPosition = (Vector3)UnityEngine.Random.insideUnitCircle * 3f + originPos;
-            curDuration -= Time.deltaTime * 0.1f;
         }
         // 클립이 없는 곳을 지나는 중
         if (currentInputCount == 0)
@@ -62,10 +57,6 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         // 클립이 1개인 곳을 지나는 중
         else if (currentInputCount == 1)
         {
-            if (input != null)
-            {
-                curDuration = duration;
-            }
         }
         // 클립이 2개 이상인 블렌딩되고 있는 곳을 지나는 중
         else
