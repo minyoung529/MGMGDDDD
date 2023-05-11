@@ -18,7 +18,6 @@ public class CameraShakeEffectBehaviour : PlayableBehaviour
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
         base.OnBehaviourPlay(playable, info);
-        Debug.Log("Behaviour");
         CameraShake();
     }
 
@@ -28,6 +27,9 @@ public class CameraShakeEffectBehaviour : PlayableBehaviour
         if (activeCamera == null) return;
 
         shaking = true;
+
+        Debug.Log(_strength);
+        activeCamera.transform.DOKill();
         activeCamera.transform.DOShakePosition(_duration, _strength).OnComplete(()=> shaking = false);
     }
 

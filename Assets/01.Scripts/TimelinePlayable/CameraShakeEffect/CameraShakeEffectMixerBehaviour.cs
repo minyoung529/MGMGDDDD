@@ -50,7 +50,6 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         // 클립이 없는 곳을 지나는 중
         if (currentInputCount == 0)
         {
-            curDuration = 0f;
         }
         // 클립이 1개인 곳을 지나는 중
         else if (currentInputCount == 1)
