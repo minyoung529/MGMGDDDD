@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerHold : PlayerMono {
     [SerializeField] private float distance2Pet = 1f;
+    [SerializeField] private Trajectory trajectory;
     [SerializeField] [Range(0, 90)] private float throwAngle;
     [SerializeField] private float throwPow;
     private Vector3 ThrowVector {
@@ -19,12 +20,9 @@ public class PlayerHold : PlayerMono {
     private Pet holdingPet;
     private bool isHolding;
 
-    private Trajectory trajectory;
-
     private void Awake() {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
-        trajectory = FindObjectOfType<Trajectory>();
     }
 
     private void GetInput(InputAction action, float value) {
@@ -90,7 +88,8 @@ public class PlayerHold : PlayerMono {
         dir = transform.position + dir * distance2Pet;
         dir.y = pet.transform.position.y;
 
-        pet.SetDestination(dir);
+        pet.SetTarget(null);
+        pet.SetDestination(dir, 0f);
 
         return pet.GetDestination(); 
     }
@@ -99,7 +98,7 @@ public class PlayerHold : PlayerMono {
         controller.Move.IsInputLock = true;
         destination.y = transform.position.y;
         transform.DOLookAt(destination, 0.2f);
-        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 0.5f) {
+        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 1f) {
             yield return null;
         }
         onArrive?.Invoke();

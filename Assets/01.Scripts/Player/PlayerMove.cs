@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class PlayerMove : PlayerMono
 {   
-    #region 속력, 방향 관련 변수
+    #region 속력, 방향 관련 변수s
     [SerializeField] private float distanceToGround = 0;
-    [SerializeField] private const float rotateTime = 1f;
+    [SerializeField] private float rotateTime = 1f;
 
     private float curSpeed = 0;
     public float CurSpeed => curSpeed;
@@ -216,10 +216,14 @@ public class PlayerMove : PlayerMono
 
         controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
-
-    public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {
+    public void SetRotate(Vector3 dir) {
         if (inputDir.sqrMagnitude <= 0) return;
-        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
+        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
+    }
+
+    public void SetRotate(Vector3 dir, float rotateTime) {
+        if (inputDir.sqrMagnitude <= 0) return;
+        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
     }
 
     public bool CheckOnGround() {

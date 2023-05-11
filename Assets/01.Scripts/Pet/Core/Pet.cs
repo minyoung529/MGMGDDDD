@@ -192,7 +192,7 @@ public abstract class Pet : MonoBehaviour
         this.target = target;
         agent.stoppingDistance = stopDistance;
 
-        if (!target || agent.enabled)
+        if (!target && agent.enabled)
         {
             agent.ResetPath();
             return;
