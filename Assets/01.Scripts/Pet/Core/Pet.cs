@@ -15,6 +15,8 @@ public abstract class Pet : MonoBehaviour
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
 
+    public PetEmotion Emotion => emotion;
+
     #region 이동관련
 
     protected Transform target;
