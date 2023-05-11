@@ -19,10 +19,9 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
     {
         base.OnPlayableCreate(playable);
 
-        if(activeCamera) originPos= activeCamera.transform.position;
+        if(activeCamera) originPos = activeCamera.transform.position;
     }
 
-    // NOTE: This function is called at runtime and edit time.  Keep that in mind when setting the values of properties.
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
     {
         activeCamera = playerData as CinemachineVirtualCameraBase;
@@ -39,7 +38,6 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
 
             input.activeCamera = activeCamera;
 
-            // Use the above variables to process each frame of this playable.
             if (inputWeight > 0f)
             {
                 currentInputCount++;
@@ -64,16 +62,5 @@ public class CameraShakeEffectMixerBehaviour : PlayableBehaviour
         }
     }
 
-    public override void OnBehaviourPause(Playable playable, FrameData info)
-    {
-        base.OnBehaviourPause(playable, info);
-
-        curDuration = 0f;
-    }
-    public override void OnPlayableDestroy(Playable playable)
-    {
-        base.OnPlayableDestroy(playable);
-        curDuration = 0f;
-    }
 
 }
