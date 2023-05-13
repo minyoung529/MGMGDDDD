@@ -48,7 +48,7 @@ public class Bolt : MonoBehaviour
 
     private void OnInserted()
     {
-        sticky?.NotSticky();
+        sticky?.OffSticky();
 
         jumpMotion.TargetPos = targetTransform.position;
         jumpMotion.JumpHeight = jumpHeight;

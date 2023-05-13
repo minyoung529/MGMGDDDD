@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class StickyState : PetState
@@ -11,46 +12,51 @@ public class StickyState : PetState
     [SerializeField] private Transform stickyParent;
 
     private Transform originalParent = null;
-    private Vector3 stickyOffset;
     private Quaternion origianalRotation;
 
-    StickyPet stickyPet;
+    private StickyPet stickyPet;
     private Sticky sticky;
 
     private void Awake()
     {
-        stickyPet = transform.parent.GetComponent<StickyPet>();
+        stickyPet = pet.State.Parent.GetComponent<StickyPet>();
     }
 
     public override void OnEnter()
     {
-        sticky = stickyPet.StickyObject;
+            pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+
+        GetStickyAround();
         if (sticky == null)
         {
-            GetStickyAround();
+            pet.State.ChangeState((int)PetStateName.Idle);
+            return;
         }
         
-        transform.DOKill();
-        skillEffect.Play();
-
         if (sticky.CanMove)
+        {
+            pet.State.BlockState((int)PetStateName.Skill);
             pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
+        }
 
-        StartCoroutine(DelayParent());
+        OnSticky();
+    }
+
+    private void OnSticky()
+    {
+        skillEffect.Play();
+        sticky.StartListeningNotSticky(OffSticky);
         sticky.OnSticky(stickyPet);
+        StartCoroutine(DelayParent());
     }
 
     private void GetStickyAround()
     {
-        Collider[] cols = Physics.OverlapSphere(transform.position, 2f);
+        Collider[] cols = Physics.OverlapSphere(transform.position, 4f);
         foreach (Collider col in cols)
         {
-            Sticky s = col.GetComponent<Sticky>();
-            if (s)
-            {
-                sticky = s;
-                break;
-            }
+            sticky = col.GetComponent<Sticky>();
+            if (sticky)  break;
         }
     }
 
@@ -58,7 +64,6 @@ public class StickyState : PetState
     {
         if(sticky.CanMove)
         {
-            stickyPet.StickyObject = null;
             pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
         }
     }
@@ -70,14 +75,13 @@ public class StickyState : PetState
 
     private void OffSticky()
     {
+        if (sticky == null) return;
         pet.Rigid.isKinematic = false;
         pet.Rigid.useGravity = true;
 
-        if (sticky)
-        {
-            sticky.MovableRoot.SetParent(originalParent);
-            sticky.NotSticky();
-        }
+        sticky.MovableRoot.SetParent(originalParent);
+        pet.State.BlockState((int)PetStateName.Skill);
+        sticky = null;
     }
 
     private IEnumerator DelayParent()
@@ -85,7 +89,6 @@ public class StickyState : PetState
         yield return null;
 
         originalParent = sticky.MovableRoot.parent;
-        stickyOffset = sticky.MovableRoot.position - stickyParent.position;
         origianalRotation = sticky.MovableRoot.rotation;
         sticky.MovableRoot.SetParent(stickyParent);
         sticky.MovableRoot.DOLocalMove(new Vector3(0f, 1f, 0f), 1f);
@@ -94,5 +97,9 @@ public class StickyState : PetState
     private void OnMove()
     {
         pet.State.ChangeState((int)PetStateName.Move);
+    }
+    private void OnRecall()
+    {
+        pet.State.ChangeState((int)PetStateName.Recall);
     }
 }

@@ -5,12 +5,18 @@ using UnityEngine.Events;
 
 public class StickyPet : Pet
 {
-    private Sticky stickyObject;
-    public Sticky StickyObject { get { return stickyObject; }set { stickyObject = value; } }
 
+    private void Start()
+    {
+        InteractAction = InteractEvent;
+    }
     protected override void ResetPet()
     {
         base.ResetPet();
     }
   
+    private void InteractEvent()
+    {
+        State.ChangeState((int)PetStateName.Sticky);
+    }
 }

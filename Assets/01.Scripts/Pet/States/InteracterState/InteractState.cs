@@ -14,10 +14,10 @@ public class InteractState : PetState
 
     public override void OnEnter()
     {
-        MoveArrived();
-
         pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
         pet.Event.StartListening((int)PetEventName.OnArrive, CheckAroundInteract);
+
+        MoveArrived();
     }
 
     public override void OnExit()
@@ -41,29 +41,16 @@ public class InteractState : PetState
 
     private void CheckAroundInteract()
     {
+        pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
+
         Collider[] cols = Physics.OverlapSphere(transform.position, radius);
         foreach (Collider col in cols)
         {
             OutlineScript interact = col.GetComponent<OutlineScript>();
             if (interact == null) continue;
-
-            if (pet.GetPetType == PetType.StickyPet)
-            {
-                StickyPet stickyPet = pet.GetComponent<StickyPet>();
-                stickyPet.StickyObject = col.GetComponent<Sticky>();
-
-                interact.OnInteract(() => pet.State.ChangeState((int)PetStateName.Sticky));
-                pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
-                return;
-            }
-            else
-            {
-                interact.OnInteract();
-            }
+            interact.OnInteract(pet.InteractAction);
             break;
         }
-        pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
-        pet.State.ChangeState((int)PetStateName.Idle);
     }
 
 }

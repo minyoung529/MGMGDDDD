@@ -82,7 +82,7 @@ public class Sticky : MonoBehaviour
         onChangeCanMove = action;
     }
 
-    public void NotSticky()
+    public void OffSticky()
     {
         if (!IsSticky) return;
 
@@ -93,8 +93,7 @@ public class Sticky : MonoBehaviour
         if (obstacle)
             obstacle.enabled = true;
 
-        stickyPet.State.ChangeState((int)PetStateName.Idle);
-         onStickyEnd?.Invoke(stickyPet);
+        onStickyEnd?.Invoke(stickyPet);
         stickyPet = null;
 
     }
