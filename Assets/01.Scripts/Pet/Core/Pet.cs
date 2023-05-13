@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -54,7 +55,6 @@ public abstract class Pet : MonoBehaviour
 
     #region Get
 
-    public bool IsInteraction { get; set; }
     public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
@@ -82,6 +82,8 @@ public abstract class Pet : MonoBehaviour
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
 
+    public Action InteractAction { get; set; }
+
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -103,19 +105,16 @@ public abstract class Pet : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Pet>(this, states);
+
+        InteractAction = ()=> State.ChangeState((int)PetStateName.Idle);
     }
 
-    private void Start()
-    {
-        ResetPet();
-    }
 
     public virtual void OnUpdate()
     {
         State.OnUpdate();
         Chase();
 
-        //Debug.Log((PetStateName)State.CurStateIndex);
         if(agent.isOnOffMeshLink)
         {
             agent.speed = originalAgentSpeed * 0.5f;
@@ -128,13 +127,15 @@ public abstract class Pet : MonoBehaviour
 
     #region Set
 
-    protected virtual void ResetPet()
+    public virtual void ResetPet()
     {
         isCoolTime = false;
         skilling = false;
         agent.enabled = true;
         transform.localScale = originScale;
         agent.stoppingDistance = distanceToPlayer;
+
+        State.AllUnBlock();
         SetTargetPlayer();
     }
 

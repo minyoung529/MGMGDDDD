@@ -68,7 +68,7 @@ public class CubePuzzle : MonoBehaviour
 
         onPuttedCube?.Invoke(other.transform);
 
-        cubeRigid.GetComponent<Sticky>().NotSticky();
+        cubeRigid.GetComponent<Sticky>().OffSticky();
     }
 
     public void ResetPuzzle()

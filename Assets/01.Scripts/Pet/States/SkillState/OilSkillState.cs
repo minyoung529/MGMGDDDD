@@ -102,7 +102,7 @@ public class OilSkillState : PetState
         {
             pet.SetTarget(null);
             pet.SetDestination(oilPetSkill.StartPoint, stopDistance: 0);
-            oilStartTransform.position = oilPetSkill.StartPoint;
+            //oilStartTransform.position = oilPetSkill.StartPoint;
 
             pet.State.ChangeState((int)PetStateName.Move);
             pet.Event.StartListening((int)PetEventName.OnArrive, SpreadOil);

@@ -52,7 +52,6 @@ public class OutlineScript : MonoBehaviour
     [ContextMenu("OnOutline")]
     public void OnOutline()
     {
-        if (isInteract) return;
         if (outlineRenderer != null) SetEnableRenderer(true);
     }
     [ContextMenu("OffOutline")]
