@@ -109,10 +109,6 @@ public abstract class Pet : MonoBehaviour
         InteractAction = ()=> State.ChangeState((int)PetStateName.Idle);
     }
 
-    private void Start()
-    {
-        ResetPet();
-    }
 
     public virtual void OnUpdate()
     {
