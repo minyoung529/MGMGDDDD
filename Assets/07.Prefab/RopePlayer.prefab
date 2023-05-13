@@ -567,6 +567,7 @@ GameObject:
   - component: {fileID: 384537423}
   - component: {fileID: 4135225046918675315}
   - component: {fileID: 5935958867484099401}
+  - component: {fileID: 1379336032578559027}
   m_Layer: 3
   m_Name: RopePlayer
   m_TagString: Player
@@ -840,6 +841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance2Pet: 1
+  trajectory: {fileID: 0}
   throwAngle: 53.5
   throwPow: 500
 --- !u!114 &5935958867484099401
@@ -855,6 +857,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 10
+--- !u!114 &1379336032578559027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575653875229823198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fae41e56c87f72a44baa0f1b4a6e4626, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkClip: {fileID: 8300000, guid: 749f1cbfa0e26684180bbdaf2bebc638, type: 3}
+  runClip: {fileID: 0}
+  jumpClip: {fileID: 0}
+  landingClip: {fileID: 0}
 --- !u!1 &2473812658451148972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,7 +1386,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.019583885
+      value: 0.01958392
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1384,15 +1402,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.038379483
+      value: -0.038379446
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000017327507
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 6.6551104e-10
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802920, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Follow
@@ -1408,11 +1426,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802921, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.4
+      value: -6.399999
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802926, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Damping
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172443365008802926, guid: 8136b3c088afa714180f136b6f556049, type: 3}
+      propertyPath: m_Strategy
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802926, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_MaximumEffort
@@ -1424,7 +1446,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.019583885
+      value: 0.01958392
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y

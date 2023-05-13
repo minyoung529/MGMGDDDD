@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IState
 {
     public int fence { get; set; }
+    
     public abstract void SetUp(Transform root);
     public abstract void OnEnter();
     public abstract void OnUpdate();
