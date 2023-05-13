@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 32447452798939078}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0000002, y: 1, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3028693042034868652}
@@ -368,6 +368,18 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
         m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: CameraLookAt, Assembly-CSharp
+        m_MethodName: LookAtTarget
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1021,7 +1033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 935
+      value: 869
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder
@@ -1464,7 +1476,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 6843077656608709888}
+      - m_Target: {fileID: 306818956595928209}
         m_TargetAssemblyTypeName: ToggleScale, Assembly-CSharp
         m_MethodName: Size
         m_Mode: 1
@@ -1699,6 +1711,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1397593574990444993, guid: d2af421ea35743947b9198da60230a90, type: 3}
   m_PrefabInstance: {fileID: 1267834246926439833}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &250021723971185177 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1360089188397940608, guid: d2af421ea35743947b9198da60230a90, type: 3}
+  m_PrefabInstance: {fileID: 1267834246926439833}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a80bd0113c58489b67310ecc135b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1630879063424852753
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1776,6 +1799,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d2af421ea35743947b9198da60230a90, type: 3}
+--- !u!114 &306818956595928209 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1360089188397940608, guid: d2af421ea35743947b9198da60230a90, type: 3}
+  m_PrefabInstance: {fileID: 1630879063424852753}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a80bd0113c58489b67310ecc135b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &416358861363157712 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1397593574990444993, guid: d2af421ea35743947b9198da60230a90, type: 3}
@@ -2418,7 +2452,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 6843077656608709888}
+      - m_Target: {fileID: 250021723971185177}
         m_TargetAssemblyTypeName: ToggleScale, Assembly-CSharp
         m_MethodName: Size
         m_Mode: 1
