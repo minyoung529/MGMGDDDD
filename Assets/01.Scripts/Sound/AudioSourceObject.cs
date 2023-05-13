@@ -21,7 +21,7 @@ public class AudioSourceObject : MonoBehaviour
 
     private void Update()
     {
-        if (isPlaying) return;
+        if (!isPlaying) return;
 
         length -= Time.deltaTime;
 

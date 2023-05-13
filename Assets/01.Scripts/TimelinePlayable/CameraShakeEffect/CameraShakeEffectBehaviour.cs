@@ -35,7 +35,6 @@ public class CameraShakeEffectBehaviour : PlayableBehaviour
 
         shaking = true;
         activeCamera.transform.DOShakePosition(_duration, _strength).OnComplete(()=> shaking = false);
-        Debug.Log(_strength);
     }
 
 }
