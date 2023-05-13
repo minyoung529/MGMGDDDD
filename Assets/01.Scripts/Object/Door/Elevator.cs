@@ -31,14 +31,12 @@ public class Elevator : MonoBehaviour
     [ContextMenu("Open")]
     public void OpenElevator()
     {
-        Debug.Log("Open");
         leftDoor.Open();
         rightDoor.Open();
     }
     [ContextMenu("Close")]
     public void CloseElevator()
     {
-        Debug.Log("Close");
         leftDoor.Close();
         rightDoor.Close();
     }
@@ -49,7 +47,6 @@ public class Elevator : MonoBehaviour
         floor++;
         isMoving = true;
         CloseElevator();
-        Debug.Log("UP");
 
         rigid.DOMoveY(transform.position.y + distance, duration).OnComplete(() => TriggerActive(false));
         StartCoroutine(DelayOpenMove());
@@ -58,7 +55,6 @@ public class Elevator : MonoBehaviour
     public void DownElevator()
     {
         if (floor <= 1) return;
-        Debug.Log("Down");
         floor--;
         isMoving = true;
         CloseElevator();
