@@ -17,18 +17,33 @@ public class PetEmotion : MonoBehaviour
     public EmotionType GetEmotionType { get { return emotionType; } }
 
     private Material material;
-    
+
+    [SerializeField]
+    private MeshRenderer meshRenderer;
+
     private void Awake()
     {
-        material = GetComponent<MeshRenderer>()?.sharedMaterial;
+        SetMaterial();
+    }
+
+    private void SetMaterial()
+    {
+        if (meshRenderer)
+        {
+            material = meshRenderer.material;
+        }
+        else
+        {
+            material = GetComponent<MeshRenderer>()?.material;
+        }
     }
 
     public void SetEmotion(EmotionType type)
     {
         emotionType = type;
-        if(material == null)
+        if (material == null)
         {
-            material = GetComponent<MeshRenderer>().sharedMaterial;
+            SetMaterial();
         }
         material.mainTexture = textures[(int)type];
     }
