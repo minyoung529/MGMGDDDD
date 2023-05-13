@@ -4,18 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class SelectedObject : MonoBehaviour
+public  class SelectedObject : MonoBehaviour
 {
-    public bool IsInteraction { get { return interactionObj != null; } }
-    public GameObject InteractiveObj { get { return interactionObj.gameObject; } }
-    private OutlineScript interactionObj = null;
+
+    private OutlineScript interactObj;
 
     public static OutlineScript CurInteractObject;
 
     private void Update()
     {
         if (PetManager.Instance.GetSelectedPet() == null) return;
-        if(IsInteraction) { return; }
         CheckObject();
     }
 
@@ -24,13 +22,11 @@ public class SelectedObject : MonoBehaviour
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
 
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue);
+    //    Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue);
 
         if (Physics.Raycast(ray, out hit, 100f))
         {
-            Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
-            if(interactionObj != null) OffInteration();
-            
+          //  Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
 
@@ -45,12 +41,12 @@ public class SelectedObject : MonoBehaviour
                 return;
             }
 
-            if (pet.IsInteraction) return;
-            pet.IsInteraction = true;
-            interactionObj = selected;
-            CurInteractObject = selected;
-            interactionObj.SetColor(pet.petColor);
-            interactionObj.OnOutline();
+            if (selected.IsInteract) return;
+
+            CurInteractObject = interactObj;
+            interactObj = selected;
+            interactObj.SetColor(pet.petColor);
+            interactObj.OnOutline();
         }
         else
         {
@@ -60,16 +56,11 @@ public class SelectedObject : MonoBehaviour
 
     public void OffInteration()
     {
-        if (interactionObj != null)
+        if (interactObj != null)
         {
-            for (int i = 0; i < PetManager.Instance.PetCount; i++)
-            {
-                PetManager.Instance.GetPetList[i].IsInteraction = false;
-            }
-            interactionObj.OffOutline();
-            interactionObj = null;
-        }
 
-        CurInteractObject = null;
+            interactObj.OffOutline();
+            interactObj = null;
+        }
     }
 }

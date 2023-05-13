@@ -26,7 +26,8 @@ public class StateMachine<T> {
     }
 
     public void ChangeState(int index) {
-        if (states[index].fence > 0) return;
+        if (states[index].fence > 0)
+            return;
 
         curState?.OnExit();
         curStateIndex = index;

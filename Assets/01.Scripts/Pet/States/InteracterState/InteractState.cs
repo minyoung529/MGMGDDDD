@@ -48,6 +48,7 @@ public class InteractState : PetState
         {
             OutlineScript interact = col.GetComponent<OutlineScript>();
             if (interact == null) continue;
+
             interact.OnInteract(pet.InteractAction);
             break;
         }

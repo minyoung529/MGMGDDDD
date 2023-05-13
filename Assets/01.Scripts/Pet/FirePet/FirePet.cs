@@ -6,11 +6,4 @@ using UnityEngine;
 public class FirePet : Pet
 {
 
-    #region Set
-    protected override void ResetPet()
-    {
-        base.ResetPet();
-    }
-    #endregion
-
 }

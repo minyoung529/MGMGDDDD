@@ -35,6 +35,9 @@ public class Sticky : MonoBehaviour
         }
     }
     public Rigidbody Rigidbody { get; private set; }
+    private Collider col;
+    private OutlineScript outline;
+
     [field: SerializeField]
     public bool ApplyOffset { get; set; } = true;
     public bool Condition
@@ -59,6 +62,9 @@ public class Sticky : MonoBehaviour
         Rigidbody = movableRoot.GetComponentInChildren<Rigidbody>();
         obstacle = movableRoot.GetComponentInChildren<NavMeshObstacle>();
         stickyConditions = GetComponent<Conditions>();
+        col = GetComponent<Collider>();
+        outline = GetComponent<OutlineScript>();
+
     }
 
     private void Update()
@@ -82,6 +88,7 @@ public class Sticky : MonoBehaviour
         onChangeCanMove = action;
     }
 
+
     public void OffSticky()
     {
         if (!IsSticky) return;
@@ -93,6 +100,8 @@ public class Sticky : MonoBehaviour
         if (obstacle)
             obstacle.enabled = true;
 
+        outline.enabled = false;
+        col.enabled = true;
         onStickyEnd?.Invoke(stickyPet);
         stickyPet = null;
 
@@ -107,7 +116,7 @@ public class Sticky : MonoBehaviour
             obstacle.enabled = false;
 
         this.stickyPet = stickyPet;
-
+        col.enabled = false;
         onStickyStart?.Invoke(stickyPet);
     }
 

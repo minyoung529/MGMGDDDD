@@ -26,16 +26,19 @@ public class StickyState : PetState
     {
             pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
 
-        GetStickyAround();
+        sticky = SelectedObject.CurInteractObject.GetComponent<Sticky>();
         if (sticky == null)
         {
-            pet.State.ChangeState((int)PetStateName.Idle);
-            return;
+            Debug.Log("NONE");
+            GetStickyAround();
+            if(sticky == null)
+            {
+                pet.State.ChangeState((int)PetStateName.Idle);
+            }
         }
         
         if (sticky.CanMove)
         {
-            pet.State.BlockState((int)PetStateName.Skill);
             pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
         }
 
@@ -45,6 +48,10 @@ public class StickyState : PetState
     private void OnSticky()
     {
         skillEffect.Play();
+
+        pet.State.BlockState((int)PetStateName.Interact);
+        pet.State.BlockState((int)PetStateName.Sticky);
+            pet.State.BlockState((int)PetStateName.Skill);
         sticky.StartListeningNotSticky(OffSticky);
         sticky.OnSticky(stickyPet);
         StartCoroutine(DelayParent());
@@ -76,11 +83,14 @@ public class StickyState : PetState
     private void OffSticky()
     {
         if (sticky == null) return;
+
         pet.Rigid.isKinematic = false;
         pet.Rigid.useGravity = true;
 
         sticky.MovableRoot.SetParent(originalParent);
-        pet.State.BlockState((int)PetStateName.Skill);
+        pet.State.UnBlockState((int)PetStateName.Interact);
+        pet.State.UnBlockState((int)PetStateName.Sticky);
+        pet.State.UnBlockState((int)PetStateName.Skill);
         sticky = null;
     }
 

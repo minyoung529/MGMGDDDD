@@ -55,7 +55,6 @@ public abstract class Pet : MonoBehaviour
 
     #region Get
 
-    public bool IsInteraction { get; set; }
     public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
@@ -120,7 +119,6 @@ public abstract class Pet : MonoBehaviour
         State.OnUpdate();
         Chase();
 
-        Debug.Log((PetStateName)State.CurStateIndex);
         if(agent.isOnOffMeshLink)
         {
             agent.speed = originalAgentSpeed * 0.5f;
@@ -133,7 +131,7 @@ public abstract class Pet : MonoBehaviour
 
     #region Set
 
-    protected virtual void ResetPet()
+    public virtual void ResetPet()
     {
         isCoolTime = false;
         skilling = false;
