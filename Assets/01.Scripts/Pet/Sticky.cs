@@ -93,6 +93,7 @@ public class Sticky : MonoBehaviour
         if (obstacle)
             obstacle.enabled = true;
 
+        stickyPet.State.ChangeState((int)PetStateName.Idle);
          onStickyEnd?.Invoke(stickyPet);
         stickyPet = null;
 
