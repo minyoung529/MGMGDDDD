@@ -37,6 +37,5 @@ public class ThermometerController : MonoBehaviour
 
         isClear = true;
         onClearPuzzle?.Invoke();
-        Debug.Log("CLEAR!!!!!!!!!!");
     }
 }

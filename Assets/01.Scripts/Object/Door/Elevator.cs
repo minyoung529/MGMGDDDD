@@ -24,6 +24,8 @@ public class Elevator : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
+
+        CloseElevator();
     }
 
     [ContextMenu("Open")]
@@ -65,13 +67,11 @@ public class Elevator : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         OpenElevator();
-        Debug.Log("Open");
         isMoving = false;
     }
     private IEnumerator DelayCloseMove()
     {
         yield return new WaitForSeconds(duration);
-        Debug.Log("Close");
         CloseElevator();    
         isMoving = false;
     }

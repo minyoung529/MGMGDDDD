@@ -12,7 +12,6 @@ public class StopToSticky : MonoBehaviour
         if(other.CompareTag(Define.STICKY_PET_TAG))
         {
             StickyPet sticky = other.GetComponent<StickyPet>();
-            sticky.SetAnimation(false);
             sticky.Skill();
             for(int i=0; i < gear.Length; i++)
             {
@@ -26,8 +25,7 @@ public class StopToSticky : MonoBehaviour
         if (other.CompareTag(Define.STICKY_PET_TAG))
         {
             StickyPet sticky = other.GetComponent<StickyPet>();
-            sticky.SetAnimation(true);
-            sticky.NotSticky();
+            sticky.State.ChangeState((int)PetStateName.Idle);
             for (int i = 0; i < gear.Length; i++)
             {
                 gear[i].StartGear();

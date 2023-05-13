@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class PlayerMove : PlayerMono
 {   
-    #region 속력, 방향 관련 변수
+    #region 속력, 방향 관련 변수s
     [SerializeField] private float distanceToGround = 0;
-    [SerializeField] private const float rotateTime = 1f;
+    [SerializeField] private float rotateTime = 1f;
 
     private float curSpeed = 0;
     public float CurSpeed => curSpeed;
@@ -35,7 +35,7 @@ public class PlayerMove : PlayerMono
     #region 상태 관련 변수
     [SerializeField] private Transform stateParent;
     [SerializeField] private MoveState curState;
-    private Dictionary<StateName, MoveState> stateDictionary = new Dictionary<StateName, MoveState>();
+    private Dictionary<PlayerStateName, MoveState> stateDictionary = new Dictionary<PlayerStateName, MoveState>();
 
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
@@ -90,7 +90,7 @@ public class PlayerMove : PlayerMono
         actions.Add(InputAction.Jump, (action, value) => {
             if (IsInputLock) return;
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
-                ChangeState(StateName.Jump);
+                ChangeState(PlayerStateName.Jump);
         });
         foreach (var keyValue in actions) {
             InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
@@ -158,7 +158,7 @@ public class PlayerMove : PlayerMono
         }
     }
 
-    public void ChangeState(StateName state, int animIndex = -1) {
+    public void ChangeState(PlayerStateName state, int animIndex = -1) {
         MoveState targetState;
         if (!stateDictionary.TryGetValue(state, out targetState)) {
             Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
@@ -166,8 +166,6 @@ public class PlayerMove : PlayerMono
         }
         if (animIndex < 0)
             animIndex = (int)state;
-        if (!targetState.IsPlayWithAction)
-            StopAction();
         curState.OnStateEnd(() => {
             curState = targetState;
             controller.Anim.SetInteger(hash_iStateNum, animIndex);
@@ -182,10 +180,6 @@ public class PlayerMove : PlayerMono
     public void PlayAction(PlayerAction action) {
         controller.Anim.SetInteger(hash_iActionNum, (int)action);
         controller.Anim.SetBool(hash_bActionActive, true);
-    }
-
-    public void StopAction() {
-        controller.Anim.SetBool(hash_bActionActive, false);
     }
 
     #region 편의성 함수 (State에서 주로 사용)
@@ -222,10 +216,14 @@ public class PlayerMove : PlayerMono
 
         controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
-
-    public void SetRotate(Vector3 dir, float rotateTime = rotateTime) {
+    public void SetRotate(Vector3 dir) {
         if (inputDir.sqrMagnitude <= 0) return;
-        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, inputDir) / rotateTime * Time.deltaTime, 0);
+        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
+    }
+
+    public void SetRotate(Vector3 dir, float rotateTime) {
+        if (inputDir.sqrMagnitude <= 0) return;
+        transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
     }
 
     public bool CheckOnGround() {
@@ -256,7 +254,7 @@ public class PlayerMove : PlayerMono
     }
 
     public void LandingEvent() {
-        ChangeState(StateName.DefaultMove);
+        ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion
 

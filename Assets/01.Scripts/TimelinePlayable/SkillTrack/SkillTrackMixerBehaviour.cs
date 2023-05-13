@@ -5,15 +5,14 @@ using UnityEngine.Timeline;
 
 public class SkillTrackMixerBehaviour : PlayableBehaviour
 {
-    Pet pet;
-    bool skilling = false;
+    SkillVisual skill;
     
     // NOTE: This function is called at runtime and edit time.  Keep that in mind when setting the values of properties.
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
     {
-        pet = playerData as Pet;
+        skill = playerData as SkillVisual;
 
-        if (!pet) return;
+        if (!skill) return;
 
         int inputCount = playable.GetInputCount();
         int currentInputCount = 0;
@@ -24,7 +23,7 @@ public class SkillTrackMixerBehaviour : PlayableBehaviour
             ScriptPlayable<SkillTrackBehaviour> inputPlayable = (ScriptPlayable<SkillTrackBehaviour>)playable.GetInput(i);
             SkillTrackBehaviour input = inputPlayable.GetBehaviour ();
 
-            input.pet = pet;
+            input.skill = skill;
 
             // Use the above variables to process each frame of this playable.
             if (inputWeight > 0f)
@@ -38,16 +37,14 @@ public class SkillTrackMixerBehaviour : PlayableBehaviour
         // 클립이 1개인 곳을 지나는 중
         else if (currentInputCount == 1)
         {
-            if (pet == null) return;
-            if (pet.Skilling) return;
-            pet.Skill();
+            if (skill == null) return;
+            skill.Trigger();
         }
         // 클립이 2개 이상인 블렌딩되고 있는 곳을 지나는 중
         else
         {
-            if (pet == null) return;
-            if (pet.Skilling) return;
-            pet.Skill();
+            if (skill == null) return;
+            skill.Trigger();
         }
     }
 
@@ -55,8 +52,8 @@ public class SkillTrackMixerBehaviour : PlayableBehaviour
     {
         base.OnBehaviourPlay(playable, info);
 
-        if (pet == null) return;
+        if (skill == null) return;
 
-        pet.Skill();
+        skill.Trigger();
     }
 }

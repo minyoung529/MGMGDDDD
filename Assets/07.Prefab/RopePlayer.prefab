@@ -210,7 +210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1021944205}
   - component: {fileID: 1021944206}
-  - component: {fileID: 1021944207}
+  - component: {fileID: 2045439644}
   m_Layer: 3
   m_Name: Trajectory
   m_TagString: Untagged
@@ -332,7 +332,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 0
   m_Loop: 0
---- !u!114 &1021944207
+--- !u!114 &2045439644
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -567,6 +567,7 @@ GameObject:
   - component: {fileID: 384537423}
   - component: {fileID: 4135225046918675315}
   - component: {fileID: 5935958867484099401}
+  - component: {fileID: 1379336032578559027}
   m_Layer: 3
   m_Name: RopePlayer
   m_TagString: Player
@@ -702,6 +703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceToGround: 0.16
+  rotateTime: 4
   stateParent: {fileID: 2029852760411590517}
   curState: {fileID: 5148491769460052124}
   groundLayer:
@@ -839,7 +841,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance2Pet: 1
-  throwAngle: 45
+  trajectory: {fileID: 0}
+  throwAngle: 53.5
   throwPow: 500
 --- !u!114 &5935958867484099401
 MonoBehaviour:
@@ -854,6 +857,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 10
+--- !u!114 &1379336032578559027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575653875229823198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fae41e56c87f72a44baa0f1b4a6e4626, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkClip: {fileID: 8300000, guid: 749f1cbfa0e26684180bbdaf2bebc638, type: 3}
+  runClip: {fileID: 0}
+  jumpClip: {fileID: 0}
+  landingClip: {fileID: 0}
 --- !u!1 &2473812658451148972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1016,7 +1035,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 7
   sprintSpeed: 9
-  rotateTime: 2
+  rotateTime: 5
   brake: 30
   accel: 25
   oilWalkWeight: 1.2
@@ -1213,6 +1232,10 @@ MonoBehaviour:
     m_Bits: 0
   tutorialType: 3
   tutorialName: 
+  inputAction: 16
+  onKeyDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
   petCount: 2
 --- !u!1 &7058735882138405913
 GameObject:
@@ -1363,7 +1386,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.019583888
+      value: 0.01958392
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1379,15 +1402,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.03837948
+      value: -0.038379446
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0000000171937
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -6.6037176e-10
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802920, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Follow
@@ -1403,7 +1426,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802921, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.3999987
+      value: -6.399999
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802926, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Damping
@@ -1419,11 +1442,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.019583888
+      value: 0.01958392
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1e-45
+      value: -1e-45
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z

@@ -50,7 +50,7 @@ public class PlayerRespawn : PlayerMono {
         seq.AppendInterval(0.8f);
         seq.AppendCallback(() => {
             //gameObject.SetActive(true);
-            controller.Move.ChangeState(StateName.DefaultMove);
+            controller.Move.ChangeState(PlayerStateName.DefaultMove);
 
             transform.position = point;
         });
