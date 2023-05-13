@@ -25,6 +25,16 @@ public class PlayerHold : PlayerMono {
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
     }
 
+    public void SetThrowAngle(float value)
+    {
+        throwAngle= value;
+    }
+    
+    public void SetThrowPower(float value)
+    {
+        throwPow = value;
+    }
+
     private void GetInput(InputAction action, float value) {
         if (controller.Move.IsInputLock) return;
         controller.Move.IsInputLock = true;
