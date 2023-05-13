@@ -30,6 +30,9 @@ public class OilSkillState : PetState
     public Vector3 SkillStartPoint => SkillData.StartPoint;
     #endregion
 
+    [SerializeField]
+    private Transform oilStartTransform;
+
     private void Start()
     {
         oilPetSkill?.Init(GetComponentInChildren<PaintingObject>(), GetComponentInChildren<LineRenderer>(), pathAgent, pet.Agent);
@@ -74,6 +77,7 @@ public class OilSkillState : PetState
         {
             oilPetSkill.StartSpreadOil(() => pet.SetNavIsStopped(true), OnEndPath);
             onOilSkill?.Invoke();
+            StopListeningEvents();
         }
     }
 
@@ -96,7 +100,10 @@ public class OilSkillState : PetState
 
         if (IsDirectSpread)
         {
+            pet.SetTarget(null);
             pet.SetDestination(oilPetSkill.StartPoint, stopDistance: 0);
+            oilStartTransform.position = oilPetSkill.StartPoint;
+
             pet.State.ChangeState((int)PetStateName.Move);
             pet.Event.StartListening((int)PetEventName.OnArrive, SpreadOil);
             pet.Event.StartListening((int)PetEventName.OnStop, KillSkill);
@@ -119,7 +126,11 @@ public class OilSkillState : PetState
     {
         pet.Skilling = false;
         pet.SetTargetPlayer();
+        StopListeningEvents();
+    }
 
+    private void StopListeningEvents()
+    {
         pet.Event.StopListening((int)PetEventName.OnArrive, SpreadOil);
         pet.Event.StopListening((int)PetEventName.OnStop, KillSkill);
     }
