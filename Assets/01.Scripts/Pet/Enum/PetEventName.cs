@@ -1,7 +1,7 @@
 public enum PetEventName
 {
     OnSetDestination,
-    OnStop, //¸ñÀûÁö¿¡ µµ´ÞÇÏÁö ¸øÇÏ°í ¸ØÃèÀ»¶§
+    OnStop, //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     OnArrive,
     OnRecallKeyPress,
     OnRecallArrive,

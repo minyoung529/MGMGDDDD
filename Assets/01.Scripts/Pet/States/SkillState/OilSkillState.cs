@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class OilSkillState : PetState
 {
@@ -16,6 +17,9 @@ public class OilSkillState : PetState
     [SerializeField] private NavMeshAgent pathAgent;
     private OilPetSkill oilPetSkill = new OilPetSkill();
 
+    [SerializeField]
+    private UnityEvent onOilSkill;
+
     #region Property
     public Action OnStartSkill { get; set; }
     public Action OnEndSkill { get; set; }
@@ -25,6 +29,9 @@ public class OilSkillState : PetState
     public OilPetSkill SkillData => oilPetSkill;
     public Vector3 SkillStartPoint => SkillData.StartPoint;
     #endregion
+
+    [SerializeField]
+    private Transform oilStartTransform;
 
     private void Start()
     {
@@ -69,6 +76,8 @@ public class OilSkillState : PetState
         if (pet.Skilling && IsDirectSpread)
         {
             oilPetSkill.StartSpreadOil(() => pet.SetNavIsStopped(true), OnEndPath);
+            onOilSkill?.Invoke();
+            StopListeningEvents();
         }
     }
 
@@ -91,7 +100,10 @@ public class OilSkillState : PetState
 
         if (IsDirectSpread)
         {
+            pet.SetTarget(null);
             pet.SetDestination(oilPetSkill.StartPoint, stopDistance: 0);
+            oilStartTransform.position = oilPetSkill.StartPoint;
+
             pet.State.ChangeState((int)PetStateName.Move);
             pet.Event.StartListening((int)PetEventName.OnArrive, SpreadOil);
             pet.Event.StartListening((int)PetEventName.OnStop, KillSkill);
@@ -114,7 +126,11 @@ public class OilSkillState : PetState
     {
         pet.Skilling = false;
         pet.SetTargetPlayer();
+        StopListeningEvents();
+    }
 
+    private void StopListeningEvents()
+    {
         pet.Event.StopListening((int)PetEventName.OnArrive, SpreadOil);
         pet.Event.StopListening((int)PetEventName.OnStop, KillSkill);
     }

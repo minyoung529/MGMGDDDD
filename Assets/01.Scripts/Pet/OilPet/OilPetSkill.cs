@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-// ÀÎ½ºÆåÅÍ È®ÀÎ¿ë
+// ï¿½Î½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½Î¿ï¿½
 [System.Serializable]
 public class OilPetSkill
 {
@@ -66,7 +66,7 @@ public class OilPetSkill
             pathAgent.SetDestination(GameManager.Instance.GetMousePos());
         }
 
-        // °è»êÇÒ ¶§±îÁö ±â´Ù¸®±â
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½
         painting.StartCoroutine(DelayCauclatePath());
         points.Clear();
     }
@@ -116,6 +116,7 @@ public class OilPetSkill
     {
         if (!painting.IsPainting)
         {
+            Debug.Log("START SPREAD OIL");
             painting.IsPainting = true;
             onStartPath?.Invoke();
             pathAgent.enabled = false;
@@ -128,7 +129,7 @@ public class OilPetSkill
             float duration = skillDistance / agent.speed * 0.7f;
             painting.OnSpreadOil.Invoke(duration);
 
-            // ³ªÁß¿¡ ²÷±â
+            // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½
             agent.transform.DOPath(points.ToArray(), duration).OnComplete(() =>
             {
                 onEndPath?.Invoke();

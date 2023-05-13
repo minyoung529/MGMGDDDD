@@ -3,6 +3,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class StickyExplosion : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class StickyExplosion : MonoBehaviour
     private StickyPet stickyPet;
 
     [SerializeField]
-    private SkillVisual explosionSkill;
+    private UnityEvent onExplosion;
 
     private void Awake()
     {
@@ -93,7 +94,7 @@ public class StickyExplosion : MonoBehaviour
         if (jumper)
             jumper.CanJump = false;
 
-        explosionSkill?.Trigger();
+        onExplosion?.Invoke();
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(1.5f);
