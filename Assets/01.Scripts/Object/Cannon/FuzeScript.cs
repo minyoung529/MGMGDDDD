@@ -27,19 +27,28 @@ public class FuzeScript : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        Debug.Log(collision.gameObject.name);
+
         Fire fire = collision.collider.GetComponent<Fire>();
         if(fire != null)
         {
-            if (fire.IsBurn) Fire();
+            if (fire.IsBurn)
+            {
+                Fire();
+            }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
+
         Fire fire = other.GetComponent<Fire>();
         if (fire != null)
         {
-            if (fire.IsBurn) Fire();
+            if (fire.IsBurn)
+            {
+                Fire();
+            }
         }
     }
 
