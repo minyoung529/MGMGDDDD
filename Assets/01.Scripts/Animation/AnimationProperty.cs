@@ -10,9 +10,18 @@ public class AnimationProperty : MonoBehaviour
     [SerializeField]
     private string triggerName;
 
+    [SerializeField]
+    private ParticleSystem particle;
+
     public void Trigger()
     {
         Debug.Log("TRIGGER");
-        animator.Play("Fall");
+        animator.Play(triggerName);
+    }
+
+    public void ParticlePlay()
+    {
+        particle.gameObject.SetActive(true);
+        particle.Play();
     }
 }
