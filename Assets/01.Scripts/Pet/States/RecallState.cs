@@ -16,10 +16,14 @@ public class RecallState : PetState {
 
     public override void OnEnter() {
         CheckDistanceToPlayer();
+        pet.State.BlockState((int)PetStateName.Interact);
+        pet.State.BlockState((int)PetStateName.Move);
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
     }
 
     public override void OnExit() {
+        pet.State.UnBlockState((int)PetStateName.Move);
+        pet.State.UnBlockState((int)PetStateName.Interact);
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
     }
 
