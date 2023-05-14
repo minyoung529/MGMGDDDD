@@ -54,6 +54,7 @@ public class ToggleScale : MonoBehaviour
             transform.DOKill();
         transform.DOScale(targetScale, duration).OnComplete(() => OnSizeComplete.Invoke()).SetEase(ease);
         OnSize?.Invoke();
+        Debug.Log("ONSIZE");
     }
 
     [ContextMenu("ReSize")]

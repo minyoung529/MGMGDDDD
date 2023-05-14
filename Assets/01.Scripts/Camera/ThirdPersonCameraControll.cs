@@ -1,4 +1,5 @@
 using Cinemachine;
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
@@ -55,40 +56,52 @@ public class ThirdPersonCameraControll : MonoBehaviour
     }
     #endregion
 
-    private void UpdateRotate()
+    #region Look At
+
+    private float CalculateXAxis(Vector3 dir)
     {
-        float yAim = Camera.main.transform.rotation.eulerAngles.y;
-        transform.rotation = Quaternion.Euler(0, yAim, 0);
+        Vector3 yZeroDir = dir.MultiplyVec(new Vector3(1f, 0f, 1f));
+        float xAxis = Vector3.Angle(yZeroDir, Vector3.forward);
+        Vector3 cross = Vector3.Cross(yZeroDir, Vector3.forward);
+
+        if (cross.y > 0f)
+            xAxis *= -1f;
+
+        return xAxis;
     }
+
+    private float CalculateYAxis(Vector3 dir)
+    {
+        Vector3 xZeroDir = dir.MultiplyVec(new Vector3(0f, 1f, 1f));
+        float yAxis = Vector3.Angle(xZeroDir, Vector3.down);
+        
+        return 1f - yAxis / 180f;
+    }
+
+    public void LookAtTarget(Transform target, float duration = 1f)
+    {
+        Vector3 dir = target.position - transform.position;
+
+        defaultCamera.m_XAxis.m_InputAxisName = "";
+        defaultCamera.m_YAxis.m_InputAxisName = "";
+
+        DOTween.To(() => defaultCamera.m_XAxis.Value, (x) => defaultCamera.m_XAxis.Value = x, CalculateXAxis(dir), duration);
+        DOTween.To(() => defaultCamera.m_YAxis.Value, (x) => defaultCamera.m_YAxis.Value = x, CalculateYAxis(dir), duration).OnComplete(() =>
+        {
+            defaultCamera.m_XAxis.m_InputAxisName = "Mouse X";
+            defaultCamera.m_YAxis.m_InputAxisName = "Mouse Y";
+        });
+    }
+
+    #endregion
 
     private void OnAnimatorIK(int layerIndex)
     {
         animator.SetLookAtWeight(1f);
         animator.SetLookAtPosition(lookTarget.position);
     }
-    public void CalculateRotation(float mouseX, float mouseY)
-    {
-        eulerAngleY += mouseX * rotCamYAxisSpeed;
-        eulerAngleX -= mouseY * rotCamXAxisSpeed;
-        eulerAngleX = ClampAngle(eulerAngleX, limitMinX, limitMaxX);
 
-        transform.rotation = Quaternion.Euler(transform.rotation.x, eulerAngleY, transform.rotation.z);
-        followTarget.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, transform.rotation.z);
-    }
-
-    private float ClampAngle(float angle, float min, float max)
-    {
-        return Mathf.Clamp(angle, min, max);
-    }
-
-    private void ResetPos()
-    {
-        Vector3 eulerAngles = transform.eulerAngles;
-        eulerAngles.x = 0f;
-        eulerAngles.y = defaultCamera.transform.eulerAngles.y;
-        transform.eulerAngles = eulerAngles;
-    }
-
+    #region Crosshair
     public void ActiveCrossHair()
     {
         crosshairCanvas.gameObject.SetActive(true);
@@ -98,6 +111,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     {
         crosshairCanvas.gameObject.SetActive(false);
     }
+    #endregion
 
     private void OnDestroy()
     {

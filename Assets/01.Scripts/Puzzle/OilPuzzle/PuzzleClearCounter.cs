@@ -20,7 +20,13 @@ public class PuzzleClearCounter : MonoBehaviour
         count++;
         if(count == clearCount)
         {
-            onClear?.Invoke();
+            Clear();
         }
+    }
+
+    [ContextMenu("Clear")]
+    private void Clear()
+    {
+        onClear?.Invoke();
     }
 }
