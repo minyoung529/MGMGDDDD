@@ -10,8 +10,6 @@ public class InteractState : PetState
     public override PetStateName StateName => PetStateName.Interact;
     private float radius = 4f;
 
-    public Action ac;
-
     public override void OnEnter()
     {
         pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
