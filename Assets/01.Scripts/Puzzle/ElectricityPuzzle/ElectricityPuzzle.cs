@@ -13,6 +13,9 @@ public class ElectricityPuzzle : MonoBehaviour
     [SerializeField]
     private List<PathFollower> pathFollwers;
 
+    [SerializeField]
+    private List<ElectricityEffect> electricityEffects;
+
     private bool[] isVisited;
 
     private int curIdx = 0;
@@ -52,7 +55,7 @@ public class ElectricityPuzzle : MonoBehaviour
 
         onStart?.Invoke();
         isTesting = true;
-        pathFollwers[0].gameObject.SetActive(true);
+        electricityEffects[0].Play();
         pathFollwers[0].Depart();
     }
 
@@ -80,7 +83,8 @@ public class ElectricityPuzzle : MonoBehaviour
         isTesting = false;
 
         onFail?.Invoke();
-        pathFollwers.ForEach(x => x.gameObject.SetActive(false));
+        pathFollwers.ForEach(x => x.Stop());
+        electricityEffects.ForEach(x => x.Fail());
     }
 
     private void Success()
@@ -89,6 +93,7 @@ public class ElectricityPuzzle : MonoBehaviour
         {
             // Å¬¸®¾î
             Debug.Log("CLEAR");
+            electricityEffects.ForEach(x => x.Success());
             onClear?.Invoke();
         }
 
@@ -99,7 +104,7 @@ public class ElectricityPuzzle : MonoBehaviour
     {
         if (curIdx == MaxCount - 1)
         {
-            pathFollwers[1].gameObject.SetActive(true);
+            electricityEffects[1].Play();
             pathFollwers[1].Depart();
         }
     }
