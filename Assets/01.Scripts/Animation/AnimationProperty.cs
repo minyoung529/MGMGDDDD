@@ -21,7 +21,10 @@ public class AnimationProperty : MonoBehaviour
 
     public void ParticlePlay()
     {
-        particle.gameObject.SetActive(true);
-        particle.Play();
+        if(particle)
+        {
+            particle.gameObject.SetActive(true);
+            particle.Play();
+        }
     }
 }
