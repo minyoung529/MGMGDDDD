@@ -24,6 +24,13 @@ public class ElectricityPuzzle : MonoBehaviour
     [SerializeField]
     private UnityEvent onClear;
 
+    [SerializeField]
+    private UnityEvent onFail;
+
+    [SerializeField]
+    private UnityEvent onStart;
+
+
     private void Start()
     {
         isVisited = new bool[checkPoints.Length];
@@ -43,6 +50,7 @@ public class ElectricityPuzzle : MonoBehaviour
     {
         if (isTesting) return;
 
+        onStart?.Invoke();
         isTesting = true;
         pathFollwers[0].gameObject.SetActive(true);
         pathFollwers[0].Depart();
@@ -71,6 +79,7 @@ public class ElectricityPuzzle : MonoBehaviour
         curIdx = 0;
         isTesting = false;
 
+        onFail?.Invoke();
         pathFollwers.ForEach(x => x.gameObject.SetActive(false));
     }
 

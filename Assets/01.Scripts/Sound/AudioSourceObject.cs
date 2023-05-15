@@ -36,7 +36,7 @@ public class AudioSourceObject : MonoBehaviour
         managedPool = managed;
     }
 
-    public void DisableAudioSource()
+    private void DisableAudioSource()
     {
         managedPool.Release(this);
         isPlaying = false;
@@ -46,5 +46,10 @@ public class AudioSourceObject : MonoBehaviour
     {
         this.length = length;
         isPlaying = true;
+    }
+
+    public void Stop()
+    {
+        DisableAudioSource();
     }
 }

@@ -25,7 +25,10 @@ public class PlayerRespawn : PlayerMono {
 
         EventManager.StartListening(EventName.PlayerDie, OnDie);
 
-        points = spawnPointParent.GetComponentsInChildren<Transform>();
+        if(spawnPointParent != null)
+        {
+            points = spawnPointParent.GetComponentsInChildren<Transform>();
+        }
     }
 
     private void Update() {
@@ -33,6 +36,8 @@ public class PlayerRespawn : PlayerMono {
     }
 
     private void CheckSpawnPoint() {
+        if(points == null) return;
+
         for(int i = maxIndex + 1; i < points.Length; i++) {
             Vector3 dir = transform.position - points[i].position;
             if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0) {
