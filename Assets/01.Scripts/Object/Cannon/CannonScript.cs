@@ -15,7 +15,7 @@ public class CannonScript : MonoBehaviour
     [SerializeField] private ParticleSystem smoke;
 
     #region 인 게임 변수
-    private List<Pet> pets = new List<Pet>();
+    private Pet inPet;
     private bool isPlay = false;
     private Sequence seq;
     #endregion
@@ -32,7 +32,7 @@ public class CannonScript : MonoBehaviour
     }
 
     public void GetInCannon(Pet pet) {
-        pets.Add(pet);
+        inPet = pet;
         pet.SetNavEnabled(false);
         pet.Coll.enabled = false;
         pet.Rigid.isKinematic = true;
@@ -57,16 +57,19 @@ public class CannonScript : MonoBehaviour
     }
 
     private void FireCannon() {
-        if (pets.Count < 1) {
+        if (inPet) {
             smoke.Play();
             return;
         }
         explosion.Play();
-        CannonCaliber caliber = Instantiate(caliberPref, barrel);
-        caliber.transform.SetParent(null);
-        caliber.transform.localScale = Vector3.one;
-        caliber.Fire(this, pets.ToArray(), barrel.up * firePow);
-        pets.Clear();
+
+        //CannonCaliber caliber = Instantiate(caliberPref, barrel);
+        //caliber.transform.SetParent(null);
+        //caliber.transform.localScale = Vector3.one;
+        //caliber.Fire(this, inPet, barrel.up * firePow);
+
+        inPet.PetThrow.Throw(barrel.up * firePow);
+        inPet = null;
     }
 
     private void OnDisable() {
