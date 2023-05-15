@@ -45,6 +45,7 @@ public class PlayerRespawn : PlayerMono {
             Vector3 dir = transform.position - points[i].position;
             float distance = dir.magnitude;
             if(distance < min) {
+                min = distance;
                 curIndex = i;
             }
         }
