@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class CameraLookAt : MonoBehaviour
 {
     [SerializeField] private Transform lookAtTransform;
     [SerializeField] private float duration = 1f;
+
+    [SerializeField] private UnityEvent onLookAt;
 
     private ThirdPersonCameraControll cameraControll;
 
@@ -18,5 +21,6 @@ public class CameraLookAt : MonoBehaviour
     public void LookAtTarget()
     {
         cameraControll.LookAtTarget(lookAtTransform, duration);
+        onLookAt?.Invoke();
     }
 }
