@@ -7,7 +7,7 @@ public class RespawnObject : MonoBehaviour
     [SerializeField] private Transform respawnPoint;
     [SerializeField] private UnityEvent OnRespawn;
 
-    private bool canRespawn;
+    private bool canRespawn = false;
 
     private Collider col;
 
@@ -40,5 +40,9 @@ public class RespawnObject : MonoBehaviour
         {
             canRespawn = true;
         }
+    }
+
+    public void SetRespawnable(bool value) {
+        canRespawn = value;
     }
 }
