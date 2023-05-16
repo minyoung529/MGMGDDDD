@@ -10,6 +10,8 @@ public class RecallState : PetState {
     [SerializeField] private float sightRange = 20f;
     [SerializeField] private ParticleSystem flyParticlePref;
     [SerializeField] private ParticleSystem arriveParticlePref;
+    [SerializeField] PlaySound recallSound;
+
     private ParticleSystem flyParticle = null;
     private ParticleSystem arriveParticle = null;
     private NavMeshPath path;
@@ -64,6 +66,7 @@ public class RecallState : PetState {
         Vector3[] path = DrawBezier();
 
         flyParticle.Play();
+        recallSound.Play();
 
         pet.transform.DOKill();
         pet.transform.DOLookAt(pet.Player.position, 0.5f);
