@@ -1,17 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public class SameTimeTrigger : MonoBehaviour
 {
     [SerializeField] UnityEvent onClear;
+
+    [SerializeField] GameObject[] holograms;
     private Dictionary<PetType, Pet> triggerPets;
+
+    private bool playing = false;
+    Action clearTriggerAction;
 
     private void Awake()
     {
         triggerPets = new Dictionary<PetType, Pet>();
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -22,29 +30,37 @@ public class SameTimeTrigger : MonoBehaviour
 
             if (triggerPets.ContainsKey(pet.GetPetType) == false)
             {
-                triggerPets.Add(pet.GetPetType, pet);
-                if (triggerPets.Count >= 3)
-                {
-                    onClear?.Invoke();
-
-                    triggerPets[PetType.FirePet].gameObject.SetActive(false);
-                    triggerPets[PetType.StickyPet].gameObject.SetActive(false);
-                    triggerPets[PetType.OilPet].gameObject.SetActive(false);
-                }
+                InnerPet(pet);
             }
 
         }
     }
 
-    void OnTriggerExit(Collider other)
+
+    private void InnerPet(Pet p)
     {
-        if (other.gameObject.layer == Define.PET_LAYER)
+        triggerPets.Add(p.GetPetType, p);
+        p.SetTarget(holograms[((int)p.GetPetType)-1].transform);
+
+        clearTriggerAction = ()=>ClearTrigger(p);
+        p.Event.StartListening((int)PetEventName.OnArrive, clearTriggerAction);
+    }
+    private void ClearTrigger(Pet p)
+    {
+        holograms[((int)p.GetPetType) - 1].gameObject.SetActive(false);
+
+        p.Event.StopListening((int)PetEventName.OnArrive, clearTriggerAction);
+        clearTriggerAction = null;
+        p.SetTarget(null);
+
+        if (triggerPets.Count >= 3)
         {
-            Pet pet = other.GetComponent<Pet>();
-            if (triggerPets.ContainsKey(pet.GetPetType))
-            {
-                triggerPets.Remove(pet.GetPetType);
-            }
+            triggerPets[PetType.FirePet].gameObject.SetActive(false);
+            triggerPets[PetType.StickyPet].gameObject.SetActive(false);
+            triggerPets[PetType.OilPet].gameObject.SetActive(false);
+
+            onClear?.Invoke();
         }
+
     }
 }
