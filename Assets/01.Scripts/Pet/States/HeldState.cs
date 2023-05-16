@@ -8,14 +8,14 @@ public class HeldState : PetState {
     public override void OnEnter() {
         Enable();
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
-        pet.Event.StartListening((int)PetEventName.OnHold, OnDrop);
+        pet.Event.StartListening((int)PetEventName.OnDrop, OnDrop);
     }
 
     public override void OnExit() {
         Disable();
 
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
-        pet.Event.StopListening((int)PetEventName.OnHold, OnDrop);
+        pet.Event.StopListening((int)PetEventName.OnDrop, OnDrop);
     }
 
     public override void OnUpdate() {
@@ -39,7 +39,10 @@ public class HeldState : PetState {
     }
 
     private void OnDrop() {
+        Debug.Log(1);
         pet.Coll.enabled = true;
+        pet.Rigid.isKinematic = false;
+        pet.Rigid.velocity = Vector3.zero;
         pet.SetNavEnabled(true);
         pet.State.ChangeState((int)PetStateName.Idle);
     }

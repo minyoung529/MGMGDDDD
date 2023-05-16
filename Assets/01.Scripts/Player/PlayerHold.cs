@@ -138,7 +138,6 @@ public class PlayerHold : PlayerMono {
 
     public void OnDrop() {
         isHolding = false;
-        holdingPet.Rigid.isKinematic = false;
         
         seq = DOTween.Sequence();
         seq.Append(holdingPet.transform.DOMove(holdingPet.transform.position + transform.forward.normalized * 0.5f, 0.2f));

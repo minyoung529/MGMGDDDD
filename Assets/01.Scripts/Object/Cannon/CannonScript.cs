@@ -7,8 +7,7 @@ using System;
 public class CannonScript : MonoBehaviour
 {
     [Header("초기 설정")]
-    [SerializeField] private Transform barrel; 
-    [SerializeField] private Transform destination;
+    [SerializeField] private Transform barrel;
     [SerializeField] private float firePow = 500;
     [SerializeField] private float radius = 1f;
     [SerializeField] private ParticleSystem explosion;
@@ -72,7 +71,7 @@ public class CannonScript : MonoBehaviour
     private IEnumerator SetIgnore(float time, bool value) {
         yield return new WaitForSeconds(time);
         foreach (Collider coll in colls) {
-            Physics.IgnoreCollision(coll, petColl, true);
+            Physics.IgnoreCollision(coll, petColl, value);
         }
     }
 
