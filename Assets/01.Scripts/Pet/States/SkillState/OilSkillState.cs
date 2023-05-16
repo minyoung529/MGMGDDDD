@@ -30,9 +30,6 @@ public class OilSkillState : PetState
     public Vector3 SkillStartPoint => SkillData.StartPoint;
     #endregion
 
-    [SerializeField]
-    private Transform oilStartTransform;
-
     private void Start()
     {
         oilPetSkill?.Init(GetComponentInChildren<PaintingObject>(), GetComponentInChildren<LineRenderer>(), pathAgent, pet.Agent);

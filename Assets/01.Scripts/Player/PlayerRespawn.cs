@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class PlayerRespawn : PlayerMono {
     [SerializeField] private ParticleSystem dieParticlePref;
-    [SerializeField] private Transform startRespawnPoint;
     [SerializeField] private float respawnDelay = 2f;
-    [SerializeField] private Vector3 curRespawnPoint;
+    [SerializeField] private Transform spawnPointParent;
+    private Transform[] points;
+    public Vector3 CurRespawnPoint => points[curIndex].position;
+    private int curIndex = 1;
+    private int maxIndex = 1;
+
     private ParticleSystem dieParticle;
-    public Vector3 CurRespawnPoint => curRespawnPoint;
 
     [Header("Prefab")]
     private CanvasGroup dieCanvas;
@@ -17,18 +20,40 @@ public class PlayerRespawn : PlayerMono {
         CanvasGroup canvasPrefab = Resources.Load<CanvasGroup>("DieCanvas");
         dieCanvas = Instantiate(canvasPrefab);
 
-        if(startRespawnPoint != null)
-        curRespawnPoint = startRespawnPoint.position;
-
         if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
 
         EventManager.StartListening(EventName.PlayerDie, OnDie);
+
+        points = spawnPointParent.GetComponentsInChildren<Transform>();
+    }
+
+    private void Update() {
+        CheckSpawnPoint();
+    }
+
+    private void CheckSpawnPoint() {
+        for(int i = maxIndex + 1; i < points.Length; i++) {
+            Vector3 dir = transform.position - points[i].position;
+            if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0) {
+                maxIndex = i;
+            }
+        }
+
+        float min = float.MaxValue;
+        for(int i = 1; i <= maxIndex; i++) {
+            Vector3 dir = transform.position - points[i].position;
+            float distance = dir.magnitude;
+            if(distance < min) {
+                min = distance;
+                curIndex = i;
+            }
+        }
     }
 
     private void OnDie(EventParam param = null) {
         if (param == null || !param.Contain("position"))
-            Respawn(curRespawnPoint);
+            Respawn(CurRespawnPoint);
         else
             Respawn((Vector3)param["position"]);
     }
@@ -57,11 +82,11 @@ public class PlayerRespawn : PlayerMono {
         seq.AppendCallback(() => Time.timeScale = 1f);
         seq.Append(dieCanvas.DOFade(0f, 1f));
         seq.AppendCallback(() => dieCanvas.gameObject.SetActive(false));
-
     }
 
-    public void RenewSpawnPoint(Vector3 point) {
-        curRespawnPoint = point;
+    [ContextMenu("Die")]
+    private void TriggerDieEvent() {
+        EventManager.TriggerEvent(EventName.PlayerDie);
     }
 
     private void OnDestroy()

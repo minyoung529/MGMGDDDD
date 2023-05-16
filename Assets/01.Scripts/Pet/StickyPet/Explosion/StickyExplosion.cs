@@ -29,6 +29,10 @@ public class StickyExplosion : MonoBehaviour
     [SerializeField]
     private UnityEvent onExplosion;
 
+    [SerializeField]
+    private UnityEvent onBomb;
+
+
     private void Awake()
     {
         jumper = GetComponent<JumperObject>();
@@ -82,6 +86,8 @@ public class StickyExplosion : MonoBehaviour
                 rigid.AddExplosionForce(explosionForce * rigid.mass, transform.position, explosionRadius, upPower);
             }
         }
+
+        onBomb?.Invoke();
     }
 
     [ContextMenu("Explosion")]
