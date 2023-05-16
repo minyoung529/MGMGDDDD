@@ -85,7 +85,6 @@ namespace PathCreation.Examples
                 distanceTravelled += speed * Time.deltaTime /** ease*/;
 
                 Vector3 nextPos;
-                Quaternion rotation;
                 Vector3 direction;
 
                 if (reverseStartEnd)
@@ -141,6 +140,11 @@ namespace PathCreation.Examples
             {
                 transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
             }
+        }
+
+        public void Stop()
+        {
+            isStart=false;
         }
 
         private void CalculateDestination()

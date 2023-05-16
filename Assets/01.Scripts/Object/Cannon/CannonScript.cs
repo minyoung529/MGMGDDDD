@@ -2,40 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class CannonScript : MonoBehaviour
 {
     [Header("초기 설정")]
-    [SerializeField] private CannonCaliber caliberPref;
-    [SerializeField] private Transform barrel; 
-    [SerializeField] private Transform destination;
+    [SerializeField] private Transform barrel;
     [SerializeField] private float firePow = 500;
     [SerializeField] private float radius = 1f;
     [SerializeField] private ParticleSystem explosion;
     [SerializeField] private ParticleSystem smoke;
+    private Collider[] colls;
+    private Collider petColl;
 
     #region 인 게임 변수
-    private Pet inPet;
+    private Pet pet;
     private bool isPlay = false;
     private Sequence seq;
     #endregion
 
-    private void Update() {
-        Collider[] petColls = Physics.OverlapSphere(transform.position, radius, 1 << Define.PET_LAYER);
-        foreach (Collider item in petColls) {
-            Pet pet = item.GetComponent<Pet>();
-            if(!pet) {
-                continue;
-            }
-            GetInCannon(pet);
-        }
+    private void Awake() {
+        colls = GetComponentsInChildren<Collider>();
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (!pet && collision.gameObject.layer != Define.PET_LAYER) return;
+
+        petColl = collision.collider;
+        StartCoroutine(SetIgnore(0f, true));
+        GetInCannon(collision.transform.GetComponent<Pet>());
     }
 
     public void GetInCannon(Pet pet) {
-        inPet = pet;
-        pet.SetNavEnabled(false);
-        pet.Coll.enabled = false;
-        pet.Rigid.isKinematic = true;
+        this.pet = pet;
+        pet.Event.TriggerEvent((int)PetEventName.OnHold);
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));
         seq.Join(pet.transform.DOMove(barrel.position, 0.1f));
@@ -45,8 +45,8 @@ public class CannonScript : MonoBehaviour
     [ContextMenu("Trigger")]
     public void TriggerCannon() {
         if (isPlay) return;
-
         isPlay = true;
+
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 0.6f, 1.2f), 0.5f));
         seq.AppendInterval(0.1f);
@@ -57,19 +57,22 @@ public class CannonScript : MonoBehaviour
     }
 
     private void FireCannon() {
-        if (inPet) {
+        if (!pet) {
             smoke.Play();
             return;
         }
         explosion.Play();
 
-        //CannonCaliber caliber = Instantiate(caliberPref, barrel);
-        //caliber.transform.SetParent(null);
-        //caliber.transform.localScale = Vector3.one;
-        //caliber.Fire(this, inPet, barrel.up * firePow);
+        pet.PetThrow.Throw(barrel.up * firePow);
+        StartCoroutine(SetIgnore(0.5f, false));
+        pet = null;
+    }
 
-        inPet.PetThrow.Throw(barrel.up * firePow);
-        inPet = null;
+    private IEnumerator SetIgnore(float time, bool value) {
+        yield return new WaitForSeconds(time);
+        foreach (Collider coll in colls) {
+            Physics.IgnoreCollision(coll, petColl, value);
+        }
     }
 
     private void OnDisable() {

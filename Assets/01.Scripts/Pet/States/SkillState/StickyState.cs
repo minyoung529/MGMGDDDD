@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class StickyState : PetState
 {
@@ -10,6 +11,7 @@ public class StickyState : PetState
 
     [SerializeField] private ParticleSystem skillEffect;
     [SerializeField] private Transform stickyParent;
+    [SerializeField] private UnityEvent stickyEvent;
 
     private Transform originalParent = null;
     private Quaternion origianalRotation;
@@ -29,7 +31,6 @@ public class StickyState : PetState
         sticky = SelectedObject.CurInteractObject.GetComponent<Sticky>();
         if (sticky == null)
         {
-            Debug.Log("NONE");
             GetStickyAround();
             if(sticky == null)
             {
@@ -48,6 +49,7 @@ public class StickyState : PetState
     private void OnSticky()
     {
         skillEffect.Play();
+        stickyEvent?.Invoke();
 
         pet.State.BlockState((int)PetStateName.Interact);
         pet.State.BlockState((int)PetStateName.Sticky);
