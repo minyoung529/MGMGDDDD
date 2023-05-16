@@ -5,5 +5,5 @@ public enum PetType
     , OilPet = 1 << 0
     , FirePet = 1 << 1
     , StickyPet = 1 << 2
-        , PetCount = 3
+
 }
