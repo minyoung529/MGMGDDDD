@@ -34,9 +34,18 @@ public class CheckPetType : MonoBehaviour
             }
             else
             {
-                inPet.transform.position = arrivePos.position;
+                FailedPet();
                 failEvent?.Invoke();
             }
         }
+    }
+
+    private void FailedPet()
+    {
+        inPet.transform.position = arrivePos.position;
+        inPet.Rigid.velocity = Vector3.zero;
+        inPet.Rigid.isKinematic = false;
+        inPet.Coll.enabled = true;
+        inPet.SetNavEnabled(true);
     }
 }
