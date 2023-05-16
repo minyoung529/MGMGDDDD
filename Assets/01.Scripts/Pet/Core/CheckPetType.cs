@@ -6,14 +6,22 @@ using UnityEngine.Events;
 public class CheckPetType : MonoBehaviour
 {
     [SerializeField] PetType correctPetType;
+    [SerializeField] Transform arrivePos;
+
     [SerializeField] UnityEvent correctEvent;
     [SerializeField] UnityEvent failEvent;
 
     private Pet inPet;
 
+    public PetType GetInputPet => inPet.GetPetType;
+
     public void SetInPet(Pet p)
     {
         inPet = p;
+    }
+    public void SetCorrectPet(PetType type)
+    {
+        correctPetType = type;
     }
 
     public void Check()
@@ -26,6 +34,7 @@ public class CheckPetType : MonoBehaviour
             }
             else
             {
+                inPet.transform.position = arrivePos.position;
                 failEvent?.Invoke();
             }
         }
