@@ -36,7 +36,7 @@ public class PlayerRespawn : PlayerMono {
     }
 
     private void CheckSpawnPoint() {
-        if(points == null) return;
+        if (points == null) return;
 
         for(int i = maxIndex + 1; i < points.Length; i++) {
             Vector3 dir = transform.position - points[i].position;
@@ -50,6 +50,7 @@ public class PlayerRespawn : PlayerMono {
             Vector3 dir = transform.position - points[i].position;
             float distance = dir.magnitude;
             if(distance < min) {
+                min = distance;
                 curIndex = i;
             }
         }

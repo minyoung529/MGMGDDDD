@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class CannonScript : MonoBehaviour
 {
     [Header("초기 설정")]
     [SerializeField] private CannonCaliber caliberPref;
-    [SerializeField] private Transform barrel; 
+    [SerializeField] private Transform barrel;
     [SerializeField] private Transform destination;
     [SerializeField] private float firePow = 500;
     [SerializeField] private float radius = 1f;
@@ -18,21 +19,36 @@ public class CannonScript : MonoBehaviour
     private Pet inPet;
     private bool isPlay = false;
     private Sequence seq;
+    private CheckPetType checkPet;
     #endregion
 
-    private void Update() {
+    private void Awake()
+    {
+        checkPet = GetComponent<CheckPetType>();
+    }
+
+    private void Update()
+    {
         Collider[] petColls = Physics.OverlapSphere(transform.position, radius, 1 << Define.PET_LAYER);
-        foreach (Collider item in petColls) {
+        foreach (Collider item in petColls)
+        {
             Pet pet = item.GetComponent<Pet>();
-            if(!pet) {
+            if (!pet)
+            {
                 continue;
             }
             GetInCannon(pet);
         }
     }
 
-    public void GetInCannon(Pet pet) {
+    public void GetInCannon(Pet pet)
+    {
         inPet = pet;
+        if (checkPet)
+        {
+            checkPet.SetInPet(pet);
+        }
+
         pet.SetNavEnabled(false);
         pet.Coll.enabled = false;
         pet.Rigid.isKinematic = true;
@@ -43,7 +59,8 @@ public class CannonScript : MonoBehaviour
     }
 
     [ContextMenu("Trigger")]
-    public void TriggerCannon() {
+    public void TriggerCannon()
+    {
         if (isPlay) return;
 
         isPlay = true;
@@ -56,23 +73,26 @@ public class CannonScript : MonoBehaviour
         seq.AppendCallback(() => isPlay = false);
     }
 
-    private void FireCannon() {
-        if (inPet) {
+    private void FireCannon()
+    {
+        if (!inPet)
+        {
             smoke.Play();
             return;
         }
         explosion.Play();
 
-        //CannonCaliber caliber = Instantiate(caliberPref, barrel);
+        CannonCaliber caliber = Instantiate(caliberPref, barrel);
         //caliber.transform.SetParent(null);
         //caliber.transform.localScale = Vector3.one;
-        //caliber.Fire(this, inPet, barrel.up * firePow);
+        //  caliber.Fire(this, inPet, barrel.up * firePow);
 
         inPet.PetThrow.Throw(barrel.up * firePow);
         inPet = null;
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         seq.Kill();
     }
 }
