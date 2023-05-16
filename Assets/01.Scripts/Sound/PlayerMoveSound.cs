@@ -22,9 +22,6 @@ public class PlayerMoveSound : MonoBehaviour
     [SerializeField]
     private AudioClip recallClip;
 
-    [SerializeField]
-    private AudioClip respawnClip;
-
     public void WalkSound()
     {
         SoundManager.Instance.PlayRandomPitch(walkClip, transform.position);
@@ -53,10 +50,5 @@ public class PlayerMoveSound : MonoBehaviour
     public void RecallSound()
     {
         SoundManager.Instance.PlayEffect(recallClip, transform.position);
-    }
-    
-    public void RespawnSound()
-    {
-        SoundManager.Instance.PlayEffect(respawnClip, transform.position);
     }
 }

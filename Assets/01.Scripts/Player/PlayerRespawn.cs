@@ -9,6 +9,7 @@ public class PlayerRespawn : PlayerMono {
     [SerializeField] private float deadLineY = -30f;
     [SerializeField] private Transform spawnPointParent;
     [SerializeField] private UnityEvent respawnEvent; 
+    [SerializeField] private UnityEvent startFadeIn; 
 
     private Transform[] points;
     public Vector3 CurRespawnPoint => points[curIndex].position;
@@ -81,11 +82,12 @@ public class PlayerRespawn : PlayerMono {
             dieParticle.Play();
         }
 
-        respawnEvent?.Invoke();
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
         PetManager.Instance.AllPetActions(x => x.transform.position = point);
         
+        startFadeIn?.Invoke();
+
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
         seq.AppendCallback(() => {
@@ -96,7 +98,11 @@ public class PlayerRespawn : PlayerMono {
         });
         seq.AppendCallback(() => Time.timeScale = 1f);
         seq.Append(dieCanvas.DOFade(0f, 1f));
-        seq.AppendCallback(() => dieCanvas.gameObject.SetActive(false));
+        seq.AppendCallback(() => 
+        {
+            dieCanvas.gameObject.SetActive(false);
+            respawnEvent?.Invoke();
+        });
     }
 
     private void OnDestroy()
