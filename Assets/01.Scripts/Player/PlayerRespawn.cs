@@ -1,11 +1,14 @@
 using DG.Tweening;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerRespawn : PlayerMono {
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private float respawnDelay = 2f;
     [SerializeField] private Transform spawnPointParent;
+    [SerializeField] private UnityEvent respawnEvent; 
+
     private Transform[] points;
     public Vector3 CurRespawnPoint => points[curIndex].position;
     private int curIndex = 1;
@@ -68,6 +71,7 @@ public class PlayerRespawn : PlayerMono {
             dieParticle.Play();
         }
 
+        respawnEvent?.Invoke();
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
         PetManager.Instance.AllPetActions(x => x.transform.position = point);
