@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerRespawn : PlayerMono {
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private float respawnDelay = 2f;
+    [SerializeField] private float deadLineY = -30f;
     [SerializeField] private Transform spawnPointParent;
     private Transform[] points;
     public Vector3 CurRespawnPoint => points[curIndex].position;
@@ -25,14 +26,17 @@ public class PlayerRespawn : PlayerMono {
 
         EventManager.StartListening(EventName.PlayerDie, OnDie);
 
-        points = spawnPointParent.GetComponentsInChildren<Transform>();
+        if (spawnPointParent)
+            points = spawnPointParent.GetComponentsInChildren<Transform>();
     }
 
     private void Update() {
         CheckSpawnPoint();
+        CheckFallDown();
     }
 
     private void CheckSpawnPoint() {
+        if (points == null) return;
         for(int i = maxIndex + 1; i < points.Length; i++) {
             Vector3 dir = transform.position - points[i].position;
             if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0) {
@@ -48,6 +52,12 @@ public class PlayerRespawn : PlayerMono {
                 min = distance;
                 curIndex = i;
             }
+        }
+    }
+
+    private void CheckFallDown() {
+        if(transform.position.y <= deadLineY) {
+            EventManager.TriggerEvent(EventName.PlayerDie);
         }
     }
 
@@ -82,11 +92,6 @@ public class PlayerRespawn : PlayerMono {
         seq.AppendCallback(() => Time.timeScale = 1f);
         seq.Append(dieCanvas.DOFade(0f, 1f));
         seq.AppendCallback(() => dieCanvas.gameObject.SetActive(false));
-    }
-
-    [ContextMenu("Die")]
-    private void TriggerDieEvent() {
-        EventManager.TriggerEvent(EventName.PlayerDie);
     }
 
     private void OnDestroy()

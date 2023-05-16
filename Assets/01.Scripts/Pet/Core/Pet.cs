@@ -224,7 +224,6 @@ public abstract class Pet : MonoBehaviour
         rigid.velocity = Vector3.zero;
         destination = AxisController.CalculateDestination(target);
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
-        Debug.Log("SETDESTINATION");
     }
 
     public void SetDestination(Vector3 target, float stopDistance) {
@@ -233,7 +232,6 @@ public abstract class Pet : MonoBehaviour
         agent.stoppingDistance = stopDistance;
         destination = AxisController.CalculateDestination(target);
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
-        Debug.Log("SETDESTINATION");
     }
 
     private void Chase() {
