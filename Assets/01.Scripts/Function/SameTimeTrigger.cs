@@ -47,6 +47,7 @@ public class SameTimeTrigger : MonoBehaviour
     }
     private void ClearTrigger(Pet p)
     {
+        Debug.Log("Clear");
         holograms[((int)p.GetPetType) - 1].gameObject.SetActive(false);
 
         p.Event.StopListening((int)PetEventName.OnArrive, clearTriggerAction);
