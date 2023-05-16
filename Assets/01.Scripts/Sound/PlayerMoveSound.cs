@@ -16,6 +16,15 @@ public class PlayerMoveSound : MonoBehaviour
     [SerializeField]
     private AudioClip landingClip;
 
+    [SerializeField]
+    private AudioClip throwClip;
+
+    [SerializeField]
+    private AudioClip recallClip;
+
+    [SerializeField]
+    private AudioClip respawnClip;
+
     public void WalkSound()
     {
         SoundManager.Instance.PlayRandomPitch(walkClip, transform.position);
@@ -34,5 +43,20 @@ public class PlayerMoveSound : MonoBehaviour
     public void LandingSound()
     {
         SoundManager.Instance.PlayEffect(landingClip, transform.position);
+    }
+    
+    public void ThrowSound()
+    {
+        SoundManager.Instance.PlayEffect(throwClip, transform.position);
+    }
+
+    public void RecallSound()
+    {
+        SoundManager.Instance.PlayEffect(recallClip, transform.position);
+    }
+    
+    public void RespawnSound()
+    {
+        SoundManager.Instance.PlayEffect(respawnClip, transform.position);
     }
 }
