@@ -814,10 +814,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dieParticlePref: {fileID: 0}
   respawnDelay: 2
+  deadLineY: -30
   spawnPointParent: {fileID: 0}
   respawnEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1379336032578559027}
+        m_TargetAssemblyTypeName: PlayerMoveSound, Assembly-CSharp
+        m_MethodName: RespawnSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &384537423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -877,7 +890,7 @@ MonoBehaviour:
   landingClip: {fileID: 8300000, guid: e7fa21bc51c90dc4691996097788e9b8, type: 3}
   throwClip: {fileID: 8300000, guid: 0c8c95e96ea47244eb0d2d1d1c6b1af3, type: 3}
   recallClip: {fileID: 8300000, guid: 7e570e9350af6af4ab654011125bab22, type: 3}
-  respawnClip: {fileID: 0}
+  respawnClip: {fileID: 8300000, guid: 5c2f5ca33485fbd42a9e7af0cf292651, type: 3}
 --- !u!1 &2473812658451148972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1423,15 +1436,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0067386683
+      value: 0.006738668
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -1.2352246e-10
+      value: 8.159349e-10
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 8.3239595e-13
+      value: -5.498439e-12
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1463,7 +1476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802920, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Orbits.Array.data[0].m_Radius
-      value: 0.00999999
+      value: 0.01000023
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802920, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Orbits.Array.data[1].m_Radius
@@ -1507,15 +1520,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.006738668
+      value: 0.0067386683
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -8.159349e-10
+      value: -1.2352457e-10
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 5.498439e-12
+      value: 8.324102e-13
       objectReference: {fileID: 0}
     - target: {fileID: 172443365813651666, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_FollowOffset.z
