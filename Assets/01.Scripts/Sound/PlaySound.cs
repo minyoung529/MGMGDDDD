@@ -21,6 +21,8 @@ public class PlaySound : MonoBehaviour
     [Tooltip("If this variable is true, sound will play at object's position")]
     private bool isPositioning = false;
 
+    private AudioSourceObject audioSourceObject;
+
     public void Play()
     {
         if (audioClip == null) return;
@@ -35,7 +37,7 @@ public class PlaySound : MonoBehaviour
                 {
                     if (isPositioning)
                     {
-                        SoundManager.Instance.PlayEffect(audioClip, transform.position);
+                        audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position);
                     }
                     else
                     {
@@ -52,6 +54,10 @@ public class PlaySound : MonoBehaviour
         {
             case SoundType.BGM:
                 SoundManager.Instance.StopMusic(2f);
+                break;
+
+            case SoundType.SFX:
+                audioSourceObject?.Stop();
                 break;
         }
     }
