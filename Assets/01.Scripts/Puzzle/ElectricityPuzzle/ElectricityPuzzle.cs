@@ -84,7 +84,7 @@ public class ElectricityPuzzle : MonoBehaviour
 
         onFail?.Invoke();
         pathFollwers.ForEach(x => x.Stop());
-        electricityEffects.ForEach(x => x.Fail());
+        electricityEffects[0].Fail();
     }
 
     private void Success()
