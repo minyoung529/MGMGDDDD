@@ -97,11 +97,11 @@ public class PlayerRespawn : PlayerMono {
             transform.position = point;
         });
         seq.AppendCallback(() => Time.timeScale = 1f);
+        seq.AppendCallback(()=>respawnEvent?.Invoke());
         seq.Append(dieCanvas.DOFade(0f, 1f));
         seq.AppendCallback(() => 
         {
             dieCanvas.gameObject.SetActive(false);
-            respawnEvent?.Invoke();
         });
     }
 
