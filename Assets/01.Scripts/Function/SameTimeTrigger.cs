@@ -12,14 +12,13 @@ public class SameTimeTrigger : MonoBehaviour
     [SerializeField] GameObject[] holograms;
     private Dictionary<PetType, Pet> triggerPets;
 
-    private bool playing = false;
     Action clearTriggerAction;
+    Action outPetAction;
 
     private void Awake()
     {
         triggerPets = new Dictionary<PetType, Pet>();
     }
-
 
     private void OnTriggerEnter(Collider other)
     {
@@ -36,19 +35,36 @@ public class SameTimeTrigger : MonoBehaviour
         }
     }
 
+    private void OutPet(Pet p)
+    {
+        SetHologram(p.GetPetType, true);
+        
+        p.Event.StopListening((int)PetEventName.OnArrive, clearTriggerAction);
+        p.Event.StopListening((int)PetEventName.OnRecallKeyPress, outPetAction);
+        outPetAction = null;
+
+        p.State.UnBlockState((int)PetStateName.Move);
+        triggerPets.Remove(p.GetPetType);
+
+    }
 
     private void InnerPet(Pet p)
     {
         triggerPets.Add(p.GetPetType, p);
+
         p.SetTarget(holograms[((int)p.GetPetType)-1].transform);
 
         clearTriggerAction = ()=>ClearTrigger(p);
+        outPetAction = () => OutPet(p);
+
         p.Event.StartListening((int)PetEventName.OnArrive, clearTriggerAction);
+        p.Event.StartListening((int)PetEventName.OnRecallKeyPress, outPetAction);
     }
+
     private void ClearTrigger(Pet p)
     {
-        Debug.Log("Clear");
-        holograms[((int)p.GetPetType) - 1].gameObject.SetActive(false);
+        SetHologram(p.GetPetType, false);
+        p.State.BlockState((int)PetStateName.Move);
 
         p.Event.StopListening((int)PetEventName.OnArrive, clearTriggerAction);
         clearTriggerAction = null;
@@ -62,6 +78,12 @@ public class SameTimeTrigger : MonoBehaviour
 
             onClear?.Invoke();
         }
+
+    }
+
+    private void SetHologram(PetType type, bool active = false)
+    {
+        holograms[((int)type) - 1].gameObject.SetActive(active);
 
     }
 }
