@@ -141,10 +141,6 @@ public class PetManager : MonoSingleton<PetManager>
     private void ReCall(InputAction input, float value)
     {
         if (pets.Count == 0) return;
-        //foreach (Pet p in pets)
-        //{
-        //    p.ReCall();
-        //}
 
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }
