@@ -48,6 +48,7 @@ public class TriggerChangeCameraValue : MonoBehaviour
 
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
+            Debug.Log("EXIT");
             isEnter = false;
             // 나중에 고쳐야 함...
             FreeLookCameraHolder holder = other.GetComponentInChildren<FreeLookCameraHolder>();
