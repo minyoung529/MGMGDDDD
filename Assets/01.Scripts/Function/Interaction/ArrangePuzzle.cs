@@ -43,5 +43,6 @@ public class ArrangePuzzle : MonoBehaviour
     private void Arrange(GameObject obj)
     {
         obj.transform.DOMove(transform.position, 1f);
+        obj.transform.DORotate(Vector3.zero, 1f);
     }
 }

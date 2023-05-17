@@ -21,8 +21,10 @@ public class CannonScript : MonoBehaviour
     private Sequence seq;
     #endregion
 
+private CheckPetType check;
     private void Awake() {
         colls = GetComponentsInChildren<Collider>();
+        check = GetComponent<CheckPetType>();
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -35,6 +37,11 @@ public class CannonScript : MonoBehaviour
 
     public void GetInCannon(Pet pet) {
         this.pet = pet;
+if(check)
+{
+    check.SetInPet(pet);
+}
+
         pet.Event.TriggerEvent((int)PetEventName.OnHold);
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));
