@@ -39,8 +39,7 @@ public class GameManager : MonoSingleton<GameManager>
     #region 퍼즐 관련 변수
     private ButtonObject[] buttons;
     public ButtonObject[] Buttons => buttons;
-    private Pet[] pets;
-    public Pet[] Pets => pets;
+    public Pet[] Pets => PetManager.Instance.GetPetList.ToArray();
     #endregion
 
     private float st;
@@ -78,7 +77,6 @@ public class GameManager : MonoSingleton<GameManager>
     {
         Debug.Log("FIND : " + FindObjectsOfType<ButtonObject>().Length);
         buttons = FindObjectsOfType<ButtonObject>();
-        pets = FindObjectsOfType<Pet>();
     }
 
     private void SetMainCamera()
