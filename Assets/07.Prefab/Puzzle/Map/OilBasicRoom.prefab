@@ -1670,6 +1670,46 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -2854964736626054917, guid: 813578ab70c8b4842a3f5e7c951ace17, type: 3}
+--- !u!114 &1004658650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39953618946392025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fa5f9c149589604789d14b699afa04b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onCompelete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: CameraLookAt, Assembly-CSharp
+        m_MethodName: LookAtTarget
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  timer: 5
 --- !u!114 &1958665382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1690,8 +1730,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1958665384}
         m_TargetAssemblyTypeName: Liquid, Assembly-CSharp
-        m_MethodName: FillLiquid
-        m_Mode: 1
+        m_MethodName: SetFillAmount
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1700,9 +1740,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
+      - m_Target: {fileID: 1004658650}
+        m_TargetAssemblyTypeName: DelayEvent, Assembly-CSharp
+        m_MethodName: Trigger
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1710,19 +1750,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CameraLookAt, Assembly-CSharp
-        m_MethodName: LookAtTarget
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &460896873385116421 stripped
 GameObject:
@@ -1792,12 +1820,13 @@ MonoBehaviour:
   updateMode: 0
   MaxWobble: 0.02
   WobbleSpeedMove: 0.5
-  fillAmount: 2.95
+  fillAmount: 2.83
   Recovery: 1
   Thickness: 4
   CompensateShapeAmount: 0
   mesh: {fileID: 4068373912626513877, guid: 2d6bc500f2903934e962cb26d9301876, type: 3}
   rend: {fileID: 1198330308362567655}
+  fillDuration: 5
 --- !u!1 &7135409727433991531 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2087962308158495216, guid: 813578ab70c8b4842a3f5e7c951ace17, type: 3}
@@ -1849,7 +1878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 1049
+      value: 1064
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder
