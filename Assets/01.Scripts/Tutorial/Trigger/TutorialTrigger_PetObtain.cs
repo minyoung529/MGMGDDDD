@@ -6,14 +6,31 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
 {
     private Pet pet;
 
-    private void Awake()
+    private BoxCollider boxCollider;
+
+    private void Start()
     {
         pet ??= transform.parent.GetComponentInChildren<Pet>();
+        boxCollider = GetComponent<BoxCollider>();
+        
+        if(PetManager.Instance.Contain(pet))
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            keyDownAction += OffBoxCollider;
+        }
     }
 
     protected override bool Condition(Transform player)
     {
         // 가지고 있지 않으면 TRUE
         return PetManager.Instance.Contain(pet) == false;
+    }
+
+    private void OffBoxCollider(InputAction action, float value)
+    {
+        boxCollider.enabled = false;
     }
 }

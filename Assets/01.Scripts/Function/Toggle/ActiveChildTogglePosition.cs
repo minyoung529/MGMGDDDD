@@ -11,6 +11,7 @@ public class ActiveChildTogglePosition : MonoBehaviour
         togglePositions = GetComponentsInChildren<TogglePosition>();
     }
 
+    [ContextMenu("Trigger")]
     public void Trigger()
     {
         foreach (var position in togglePositions)
@@ -19,6 +20,7 @@ public class ActiveChildTogglePosition : MonoBehaviour
         }
     }
 
+    [ContextMenu("Open")]
     public void Open()
     {
         foreach (var position in togglePositions)
@@ -27,6 +29,7 @@ public class ActiveChildTogglePosition : MonoBehaviour
         }
     }
 
+    [ContextMenu("Close")]
     public void Close()
     {
         foreach (var position in togglePositions)

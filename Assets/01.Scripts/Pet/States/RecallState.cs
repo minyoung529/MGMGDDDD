@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,12 +21,16 @@ public class RecallState : PetState {
         CheckDistanceToPlayer();
         pet.State.BlockState((int)PetStateName.Interact);
         pet.State.BlockState((int)PetStateName.Move);
+        //pet.State.BlockState((int)PetStateName.Recall);
+
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
     }
 
     public override void OnExit() {
         pet.State.UnBlockState((int)PetStateName.Move);
         pet.State.UnBlockState((int)PetStateName.Interact);
+        //pet.State.UnBlockState((int)PetStateName.Recall);
+
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
     }
 
