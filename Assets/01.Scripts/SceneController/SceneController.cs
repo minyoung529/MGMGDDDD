@@ -30,12 +30,32 @@ public class SceneController : MonoBehaviour
     private static SceneType curScene;
     public static SceneType CurrentScene => curScene;
 
-    private void Start()
+    private void Awake()
     {
         loadingScene = Instantiate(loadingScenePrefab);
         Application.backgroundLoadingPriority = ThreadPriority.Low;
         loadGroup = loadingScene.GetComponent<CanvasGroup>();
         loadingScene.gameObject.SetActive(false);
+
+        if (OnEnterScene.Count == 0)
+        {
+            SceneManager.activeSceneChanged += EnterCurrentScene;
+        }
+
+        for (int i = 0; i < (int)SceneType.Count; i++)
+        {
+            Debug.Log((SceneType)i);
+
+            if (!OnEnterScene.ContainsKey((SceneType)i))
+            {
+                OnEnterScene.Add((SceneType)i, null);
+            }
+        }
+    }
+
+    private void EnterCurrentScene(Scene prev, Scene cur)
+    {
+        OnEnterScene[curScene]?.Invoke();
     }
 
     public static void ChangeScene(SceneType sceneType, bool isLoading = true)
@@ -53,6 +73,9 @@ public class SceneController : MonoBehaviour
         else
         {
             SceneManager.LoadScene(sceneType.ToString());
+
+            Check(curScene, OnEnterScene);
+
         }
     }
 
@@ -75,7 +98,9 @@ public class SceneController : MonoBehaviour
         List<SceneType> scenes = Keys(OnEnterScene.Keys);
 
         foreach (var key in scenes)
+        {
             OnEnterScene[key] += onEnter;
+        }
     }
 
     public static void ListeningExit(Action onExit)

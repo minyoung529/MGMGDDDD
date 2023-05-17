@@ -74,6 +74,7 @@ public class SoundManager : MonoSingleton<SoundManager>
     {
         AudioSourceObject obj = Instantiate(audioSourcePrefab);
         obj.SetManagedPool(pool);
+        obj.transform.SetParent(transform);
         return obj;
     }
 

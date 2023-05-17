@@ -5092,7 +5092,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationX:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -5145,7 +5145,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -14399,7 +14399,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2018906288315488917}
   serializedVersion: 8
-  lengthInSec: 8
+  lengthInSec: 4
   simulationSpeed: 5
   stopAction: 0
   cullingMode: 0
@@ -14959,7 +14959,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 200
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 1
@@ -15225,7 +15225,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 3
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -15328,66 +15328,8 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    m_BurstCount: 1
-    m_Bursts:
-    - serializedVersion: 2
-      time: 0
-      countCurve:
-        serializedVersion: 2
-        minMaxState: 0
-        scalar: 10
-        minScalar: 30
-        maxCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        minCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-      cycleCount: 1
-      repeatInterval: 0.01
-      probability: 1
+    m_BurstCount: 0
+    m_Bursts: []
   SizeModule:
     enabled: 1
     curve:
@@ -19244,7 +19186,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2611246238103810627
 Transform:
   m_ObjectHideFlags: 0
@@ -19254,7 +19196,7 @@ Transform:
   m_GameObject: {fileID: 2611246238103810629}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -30.9, y: 1.33, z: -22.31}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1788196496585228096}
@@ -52991,8 +52933,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changedObject: {fileID: 1788196496585228096}
-  targetScale: {x: 3, y: 3, z: 3}
-  duration: 0.5
+  targetScale: {x: 12, y: 12, z: 12}
+  duration: 1
 --- !u!1 &5969439458487625808
 GameObject:
   m_ObjectHideFlags: 0
@@ -53132,6 +53074,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 1dd9ff698a199e14c9f83795684a42fc, type: 3}
   - {fileID: 2800000, guid: 97d3958730a07c644ae5e39ee227ee8e, type: 3}
   - {fileID: 2800000, guid: eeb76a42a005382419e2b967dadcbb65, type: 3}
+  meshRenderer: {fileID: 8144037408484437130}
 --- !u!1 &5956901068820478251 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4280829577060724518, guid: 23349147ccc475443b376e3cecf75ded, type: 3}
@@ -53160,5 +53103,10 @@ Animator:
 --- !u!4 &6476450431575794577 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3468721129923868060, guid: 23349147ccc475443b376e3cecf75ded, type: 3}
+  m_PrefabInstance: {fileID: 7621117684188501517}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8144037408484437130 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1785335269905791623, guid: 23349147ccc475443b376e3cecf75ded, type: 3}
   m_PrefabInstance: {fileID: 7621117684188501517}
   m_PrefabAsset: {fileID: 0}

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -64,25 +64,19 @@ public class GameManager : MonoSingleton<GameManager>
         // LATER FIX
         SceneController.ListeningEnter(SetMainCamera);
         SceneController.ListeningEnter(FindPlayer);
+        SceneController.ListeningEnter(FindFindableObject);
         RenderSettingController.Start();
         CameraSwitcher.Start();
-    }
-
-    private void Update()
-    {
-        //if(Input.GetKeyDown(KeyCode.Escape))
-        //{
-        //    Cursor.visible = true;
-        //    Cursor.lockState = CursorLockMode.None;
-        //}
     }
 
     private void FindPlayer() {
         playerController = FindObjectOfType<PlayerController>();
     }
 
+    [ContextMenu("FindFindableObject")]
     private void FindFindableObject()
     {
+        Debug.Log("FIND : " + FindObjectsOfType<ButtonObject>().Length);
         buttons = FindObjectsOfType<ButtonObject>();
         pets = FindObjectsOfType<Pet>();
     }
