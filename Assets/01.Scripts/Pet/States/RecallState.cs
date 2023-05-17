@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class RecallState : PetState {
     public override PetStateName StateName => PetStateName.Recall;
@@ -15,6 +16,9 @@ public class RecallState : PetState {
     private ParticleSystem flyParticle = null;
     private ParticleSystem arriveParticle = null;
     private NavMeshPath path;
+
+    [SerializeField]
+    private UnityEvent onFlyEnd;
 
     public override void OnEnter() {
         CheckDistanceToPlayer();
@@ -52,6 +56,8 @@ public class RecallState : PetState {
                 return;
             }
         }
+
+        Debug.Log("FL:Y");
         Fly();
     }
 
@@ -73,6 +79,7 @@ public class RecallState : PetState {
         pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
             pet.Emission.EmissionOff();
             flyParticle.Stop();
+            onFlyEnd?.Invoke();
             arriveParticle.Play();
             pet.SetTargetPlayer();
             pet.PetThrow.Throw(Vector3.up * 300);
