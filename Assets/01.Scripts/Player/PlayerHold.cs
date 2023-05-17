@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerHold : PlayerMono {
@@ -45,73 +46,61 @@ public class PlayerHold : PlayerMono {
                 if (!holdingPet)
                     PickUp();
                 else
-                    controller.Move.ChangeState(PlayerStateName.Drop);
+                    Drop();
                 break;
+
             case InputAction.Throw:
-                if (!holdingPet) {
-                    controller.Move.IsInputLock = false;
-                    return;
-                }
-                controller.Move.ChangeState(PlayerStateName.Throw);
+                Throw();
                 break;
+
             default:
                 Debug.LogError($"올바르지 않은 입력이 감지되었습니다! 입력명:{action}");
                 break;
         }
     }
 
-    #region PickUp 관련
     private void PickUp() {
-        holdingPet = FindPet();
+        Dictionary<float, Pet> inDistance = new Dictionary<float, Pet>();
+        foreach (Pet item in GameManager.Instance.Pets) { //각과 거리에 해당되는 펫만 거르기
+            Vector3 dir = item.transform.position - transform.position;
+            float dot = Vector3.Dot(transform.forward, dir.normalized);
+            if (dir.magnitude <= distance2Pet && dot >= 0.5f) {
+                inDistance.Add(dot, item);
+            }
+        }
+
+        var pets = from item in inDistance
+                   orderby item.Key descending
+                   select item.Value;
+        foreach (Pet item in pets) { //각도 순으로 집어지는지 확인
+            item.Event.TriggerEvent((int)PetEventName.OnHold);
+            if (item.State.CurStateIndex == (int)PetStateName.Held) {
+                holdingPet = item;
+                break;
+            }
+        }
+
         if (!holdingPet) {
             controller.Move.IsInputLock = false;
             return;
         }
+        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
+        Vector3 petPos = holdingPet.transform.position;
+        petPos.y = transform.position.y;
+        transform.DOLookAt(petPos, 0.5f);
+        controller.Move.ChangeState(PlayerStateName.PickUp);
+    }
 
-        Vector3 dest = CallPet(holdingPet);
-        if (Vector3.Distance(dest, transform.position) > distance2Pet + 1f) { //플레이어까지 향하는 경로를 찾을 수 없을때
-            holdingPet = null;
+    private void Drop() {
+        controller.Move.ChangeState(PlayerStateName.Drop);
+    }
+
+    private void Throw() {
+        if (!holdingPet) {
             controller.Move.IsInputLock = false;
             return;
         }
-
-        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
-
-        StartCoroutine(WaitPet(dest, () => {
-            holdingPet.Event.TriggerEvent((int)PetEventName.OnHold);
-            controller.Move.ChangeState(PlayerStateName.PickUp);
-        }));
-    }
-
-    public Pet FindPet() {
-        Pet pet = PetManager.Instance.GetSelectedPet();
-        if (!pet || !pet.GetIsOnNavMesh()) {
-            return null;
-        }
-        return pet;
-    }
-
-    public Vector3 CallPet(Pet pet) {
-        Vector3 dir = pet.transform.position - transform.position;
-        dir.y = 0;
-        dir = dir.normalized;
-        dir = transform.position + dir * distance2Pet;
-        dir.y = pet.transform.position.y;
-
-        pet.SetTarget(null);
-        pet.SetDestination(dir, 0f);
-
-        return pet.GetDestination(); 
-    }
-
-    private IEnumerator WaitPet(Vector3 destination, Action onArrive) {
-        controller.Move.IsInputLock = true;
-        destination.y = transform.position.y;
-        transform.DOLookAt(destination, 0.2f);
-        while (Vector3.Distance(holdingPet.transform.position, holdingPet.GetDestination()) > 1f) {
-            yield return null;
-        }
-        onArrive?.Invoke();
+        controller.Move.ChangeState(PlayerStateName.Throw);
     }
 
     private IEnumerator MovePetToHand() {
@@ -129,7 +118,6 @@ public class PlayerHold : PlayerMono {
         }
         trajectory.StopDraw();
     }
-    #endregion
 
     #region Anim Events
     public void OnPickUp() {

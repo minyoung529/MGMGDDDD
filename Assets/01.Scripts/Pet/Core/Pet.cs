@@ -133,8 +133,8 @@ public abstract class Pet : MonoBehaviour
         skilling = false;
         agent.enabled = true;
         transform.localScale = originScale;
-        agent.stoppingDistance = distanceToPlayer;
 
+        agent.stoppingDistance = distanceToPlayer;
         State.AllUnBlock();
         SetTargetPlayer();
     }

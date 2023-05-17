@@ -39,6 +39,9 @@ public class Liquid : MonoBehaviour
     float time = 0.5f;
     Vector3 comp;
 
+    [SerializeField]
+    private float fillDuration = 2f;
+
     // Use this for initialization
     void Start()
     {
@@ -140,7 +143,7 @@ public class Liquid : MonoBehaviour
 
     public void SetFillAmount(float amount)
     {
-        DOTween.To(() => fillAmount, (x) => fillAmount = x, amount, 2f);
+        DOTween.To(() => fillAmount, (x) => fillAmount = x, amount, fillDuration);
     }
 
     void UpdatePos(float deltaTime)
