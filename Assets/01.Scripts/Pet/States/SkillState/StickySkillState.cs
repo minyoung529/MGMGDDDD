@@ -9,8 +9,8 @@ public class StickySkillState : PetState
     public override PetStateName StateName => PetStateName.Skill;
 
     [SerializeField] private Transform explosion;
-    [SerializeField] private UnityEvent OnBillow;
-    [SerializeField] private UnityEvent OnExitBillow;
+    [SerializeField] private UnityEvent onBillow;
+    [SerializeField] private UnityEvent onExitBillow;
 
     [SerializeField]
     private SkillVisual enterVisual;
@@ -19,27 +19,30 @@ public class StickySkillState : PetState
 
     private Vector3 smallDirection;
 
-
     public override void OnEnter()
     {
-        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.Skilling = true;
 
-        Billow();
+        pet.Event.StartListening((int)PetEventName.OnSkillCancel, OffBillow);
+        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.State.BlockState((int)PetStateName.Interact);
+
+        OnBillow();
     }
 
     public override void OnExit()
     {
+        pet.Skilling = false;
+        pet.State.UnBlockState((int)PetStateName.Interact);
+
         exitVisual.Trigger();
 
         explosion.gameObject.SetActive(false);
-        OnExitBillow?.Invoke();
+        onExitBillow?.Invoke();
 
         pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
     }
 
-    public override void OnUpdate()
-    {
-    }
 
     private void Awake()
     {
@@ -57,12 +60,18 @@ public class StickySkillState : PetState
     #endregion
 
     #region Skill
-    private void Billow()
+    private void OnBillow()
     {
         BillowAction();
         enterVisual.Trigger();
-        OnBillow?.Invoke();
+        onBillow?.Invoke();
         explosion.gameObject.SetActive(true);
+    }
+
+    private void OffBillow()
+    {
+        pet.Event.StopListening((int)PetEventName.OnSkillCancel, OffBillow);
+        pet.State.ChangeState((int)PetStateName.Idle);
     }
 
     private void BillowAction()
@@ -83,6 +92,10 @@ public class StickySkillState : PetState
         {
             SetBillow(other.transform.forward);
         }
+    }
+
+    public override void OnUpdate()
+    {
     }
     #endregion
 
