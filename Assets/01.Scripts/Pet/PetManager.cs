@@ -135,16 +135,21 @@ public class PetManager : MonoSingleton<PetManager>
         // 펫이 없을 때
         if (selectIndex < 0) return;
 
-        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
+        Debug.Log(pets[selectIndex].Skilling);
+
+        if (pets[selectIndex].Skilling)
+        {
+            pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
+        }
+        else
+        {
+            pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
+        }
     }
 
     private void ReCall(InputAction input, float value)
     {
         if (pets.Count == 0) return;
-        //foreach (Pet p in pets)
-        //{
-        //    p.ReCall();
-        //}
 
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }

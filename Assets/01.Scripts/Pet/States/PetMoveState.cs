@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class PetMoveState : PetState {
@@ -36,7 +37,14 @@ public class PetMoveState : PetState {
         }
     }
     private void OnSetDestination() {
-        pet.State.ChangeState((int)PetStateName.Move);
+        if (pet.Agent.enabled)
+        {
+            pet.State.ChangeState((int)PetStateName.Move);
+        }
+        else
+        {
+            Debug.Log("Agent ²¨Áü");
+        }
     }
 
     private void OnRecall() {

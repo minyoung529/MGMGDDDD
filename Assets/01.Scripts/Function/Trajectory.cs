@@ -31,9 +31,8 @@ public class Trajectory : MonoBehaviour
         float stepTime = FlightDuration / _lineSegmentCount;
         _linePoints.Clear();
 
-        Vector3 beforePoint = Vector3.zero;
         int i = 0;
-        for (; i < _lineSegmentCount; i++) {
+        for (; i < _lineSegmentCount + 10; i++) {
             float stepTimePassed = stepTime * i;
 
             Vector3 MovementVector = new Vector3(
@@ -41,12 +40,6 @@ public class Trajectory : MonoBehaviour
                 y: velocity.y * stepTimePassed - 0.5f * Physics.gravity.y * stepTimePassed * stepTimePassed,
                 z: velocity.z * stepTimePassed
                 );
-            //if (i > 0) {
-            //    if (Physics.Raycast(beforePoint, MovementVector - beforePoint, 1 << Define.BOTTOM_LAYER)) {
-            //        break;
-            //    }
-            //}
-            beforePoint = -MovementVector;
             _linePoints.Add(-MovementVector);
         }
         _lineRenderer.positionCount = i;

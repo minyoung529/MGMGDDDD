@@ -101,7 +101,14 @@ public class OilSkillState : PetState
             pet.SetDestination(oilPetSkill.StartPoint, stopDistance: 0);
             //oilStartTransform.position = oilPetSkill.StartPoint;
 
-            pet.State.ChangeState((int)PetStateName.Move);
+            if (pet.Agent.enabled)
+            {
+                pet.State.ChangeState((int)PetStateName.Move);
+            }
+            else
+            {
+                Debug.Log("Agent ²¨Áü");
+            }
             pet.Event.StartListening((int)PetEventName.OnArrive, SpreadOil);
             pet.Event.StartListening((int)PetEventName.OnStop, KillSkill);
         }

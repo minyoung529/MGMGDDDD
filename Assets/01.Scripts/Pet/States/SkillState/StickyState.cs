@@ -107,7 +107,14 @@ public class StickyState : PetState
 
     private void OnMove()
     {
-        pet.State.ChangeState((int)PetStateName.Move);
+        if (pet.Agent.enabled)
+        {
+            pet.State.ChangeState((int)PetStateName.Move);
+        }
+        else
+        {
+            Debug.Log("Agent ²¨Áü");
+        }
     }
     private void OnRecall()
     {

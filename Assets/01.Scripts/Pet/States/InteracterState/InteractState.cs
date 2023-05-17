@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class InteractState : PetState
 {
     public override PetStateName StateName => PetStateName.Interact;
-    private float radius = 4f;
+    private float radius = 5f;
 
     public override void OnEnter()
     {
@@ -32,7 +32,14 @@ public class InteractState : PetState
         if (hit != Vector3.zero)
         {
             pet.SetDestination(hit);
-            pet.State.ChangeState((int)PetStateName.Move);
+            if (pet.Agent.enabled)
+            {
+                pet.State.ChangeState((int)PetStateName.Move);
+            }
+            else
+            {
+                Debug.Log("Agent ²¨Áü");
+            }
         }
     }
 
