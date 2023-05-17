@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class InteractState : PetState
 {
     public override PetStateName StateName => PetStateName.Interact;
-    private float radius = 4f;
+    private float radius = 5f;
 
     public override void OnEnter()
     {
