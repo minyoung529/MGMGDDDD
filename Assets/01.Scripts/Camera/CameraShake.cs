@@ -9,7 +9,7 @@ public class CameraShake : MonoBehaviour
     [SerializeField] private float duration = 2f;
     [SerializeField] private bool loop = false;
 
-    private Transform camera => CameraSwitcher.activeCamera.transform;
+    new private Transform camera => CameraSwitcher.activeCamera.transform;
 
     public void Shake(float _duration)
     {
