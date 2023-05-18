@@ -50,18 +50,27 @@ public class SoundManager : MonoSingleton<SoundManager>
         effectSource.Play();
     }
 
+    public void PlayEffect(AudioClip clip, float volumeScale)
+    {
+        effectSource.clip = clip;
+        effectSource.volume = volumeScale;
+        effectSource.Play();
+    }
+
+
     /// <summary>
     /// Play Effect Sound At position
     /// </summary>
     /// <param name="clip">Audio clip to play</param>
     /// <param name="pos"></param>
-    public AudioSourceObject PlayEffect(AudioClip clip, Vector3 pos)
+    public AudioSourceObject PlayEffect(AudioClip clip, Vector3 pos, float volumeScale = 1f)
     {
         AudioSourceObject obj = pool.Get();
         AudioSource audio = obj.AudioSource;
 
         obj.transform.position = pos;
         audio.clip = clip;
+        audio.volume = volumeScale;
         audio.Play();
 
         obj.SetClipDuration(clip.length);
@@ -101,17 +110,18 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// Play effect sound as random pitch
     /// </summary>
     /// <param name="pitchRange">-pitchRange to pitchRange</param>
-    public void PlayRandomPitch(AudioClip clip, float pitchRange = defaultRandomPitch)
+    public void PlayRandomPitch(AudioClip clip, float pitchRange = defaultRandomPitch, float volume = 1f)
     {
         float randomPitch = Random.Range(-pitchRange, pitchRange);
         effectSource.pitch = 1 + randomPitch;
         effectSource.clip = clip;
+        effectSource.volume = volume;
         effectSource.Play();
     }
 
-    public void PlayRandomPitch(AudioClip clip, Vector3 pos, float pitchRange = defaultRandomPitch)
+    public void PlayRandomPitch(AudioClip clip, Vector3 pos, float pitchRange = defaultRandomPitch, float volume = 1f)
     {
-        AudioSourceObject obj = PlayEffect(clip, pos);
+        AudioSourceObject obj = PlayEffect(clip, pos, volume);
         float randomPitch = Random.Range(-pitchRange, pitchRange);
         obj.AudioSource.pitch = 1 + randomPitch;
     }
@@ -121,13 +131,12 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// Play random effect sound in clip array as random pitch
     /// </summary>
     /// <param name="pitchRange">-pitchRange to pitchRange</param>
-    public void PlayRandomPitch(AudioClip[] clips, float pitchRange = defaultRandomPitch)
+    public void PlayRandomPitch(AudioClip[] clips, float pitchRange = defaultRandomPitch, float volume = 1f)
     {
         int randomIndex = Random.Range(0, clips.Length);
         float randomPitch = Random.Range(-pitchRange, pitchRange);
         effectSource.pitch = 1 + randomPitch;
-        effectSource.clip = clips[randomIndex];
-        effectSource.Play();
+        effectSource.PlayOneShot(clips[randomIndex], volume);
     }
     #endregion
 
