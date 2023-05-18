@@ -12,4 +12,6 @@ public enum PetEventName
     OnThrew,
     OnDrop,
     OnLanding,
+    OnActiveInteract,
+    OnInteractEnd,
 }

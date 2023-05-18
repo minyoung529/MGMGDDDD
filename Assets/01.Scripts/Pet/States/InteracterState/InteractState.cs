@@ -14,12 +14,16 @@ public class InteractState : PetState
     {
         pet.Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
         pet.Event.StartListening((int)PetEventName.OnArrive, CheckAroundInteract);
+        pet.Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestinationMove);
+        pet.Event.StartListening((int)PetEventName.OnActiveInteract, Active);
 
         MoveArrived();
     }
 
     public override void OnExit()
     {
+        pet.Event.StopListening((int)PetEventName.OnActiveInteract, Active);
+        pet.Event.StopListening((int)PetEventName.OnSetDestination, OnSetDestinationMove);
     }
 
     public override void OnUpdate()
@@ -32,17 +36,18 @@ public class InteractState : PetState
         if (hit != Vector3.zero)
         {
             pet.SetDestination(hit);
-            if (pet.Agent.enabled)
-            {
-                pet.State.ChangeState((int)PetStateName.Move);
-            }
-            else
-            {
-                Debug.Log("Agent ²¨Áü");
-            }
         }
     }
 
+    private void Active()
+    {
+        pet.Event.TriggerEvent((int)PetEventName.OnInteractEnd);
+    }
+
+    private void OnSetDestinationMove()
+    {
+        pet.State.ChangeState((int)PetStateName.Move);
+    }
 
     private void CheckAroundInteract()
     {
@@ -54,7 +59,7 @@ public class InteractState : PetState
             OutlineScript interact = col.GetComponent<OutlineScript>();
             if (interact == null) continue;
 
-            interact.OnInteract(pet.InteractAction);
+            interact.OnInteract();
             break;
         }
     }

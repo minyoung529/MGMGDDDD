@@ -24,14 +24,7 @@ public class IdleState : PetState {
     }
 
     private void OnSetDestination() {
-        if (pet.Agent.enabled)
-        {
             pet.State.ChangeState((int)PetStateName.Move);
-        }
-        else
-        {
-            Debug.Log("Agent ²¨Áü");
-        }
     }
 
     private void OnRecall() {

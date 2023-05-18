@@ -11,7 +11,21 @@ public class OilPet : Pet
 
     private void Start()
     {
-        // skill = 
+        Event.StartListening((int)PetEventName.OnInteractEnd, InteractEvent);
     }
 
+    public override void ResetPet()
+    {
+        base.ResetPet();
+    }
+
+    private void InteractEvent()
+    {
+        State.ChangeState((int)PetStateName.Idle);
+    }
+
+    private void OnDisable()
+    {
+        Event.StopListening((int)PetEventName.OnInteractEnd, InteractEvent);
+    }
 }
