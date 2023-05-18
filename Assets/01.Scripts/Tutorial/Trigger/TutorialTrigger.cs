@@ -146,7 +146,6 @@ public class TutorialTrigger : MonoBehaviour
     {
         if (keyDownAction != null)
         {
-            Debug.Log("START");
             InputManager.StopListeningInput(inputAction, keyDownAction);
             InputManager.StartListeningInput(inputAction, keyDownAction);
         }
@@ -156,7 +155,6 @@ public class TutorialTrigger : MonoBehaviour
     {
         if (keyDownAction != null)
         {
-            Debug.Log("END");
             InputManager.StopListeningInput(inputAction, keyDownAction);
         }
     }

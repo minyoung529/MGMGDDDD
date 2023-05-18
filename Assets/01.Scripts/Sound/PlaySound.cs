@@ -21,6 +21,9 @@ public class PlaySound : MonoBehaviour
     [Tooltip("If this variable is true, sound will play at object's position")]
     private bool isPositioning = false;
 
+    [SerializeField]
+    private float volume = 1f;
+
     private AudioSourceObject audioSourceObject;
 
     public void Play()

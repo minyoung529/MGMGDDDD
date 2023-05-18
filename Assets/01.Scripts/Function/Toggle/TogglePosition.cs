@@ -64,11 +64,11 @@ public class TogglePosition : MonoBehaviour
 
         if (isLocal)
         {
-            transform.DOLocalMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke()).SetEase(ease);
+            transform.DOLocalMove(originalPos + targetPos, duration).SetEase(ease);
         }
         else
         {
-            transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnClose.Invoke()).SetEase(ease);
+            transform.DOMove(originalPos + targetPos, duration).SetEase(ease);
         }
 
         OnOpen?.Invoke();
@@ -88,5 +88,12 @@ public class TogglePosition : MonoBehaviour
         {
             transform.DOMove(originalPos, duration).SetEase(ease);
         }
+
+        OnClose?.Invoke();
+    }
+
+    public void SetDuration(float duration)
+    {
+        this.duration = duration;
     }
 }
