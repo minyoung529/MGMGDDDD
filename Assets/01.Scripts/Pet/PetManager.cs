@@ -124,9 +124,9 @@ public class PetManager : MonoSingleton<PetManager>
 
         if (SelectedObject.CurInteractObject)
         {
+            if (pets[selectIndex].GetInteract) return;
+
             pets[selectIndex].InteractionPoint();
-            //pets[selectIndex].OnArrive = null;
-            //pets[selectIndex].OnArrive += SelectedObject.CurInteractObject.OnInteract;
         }
     }
 

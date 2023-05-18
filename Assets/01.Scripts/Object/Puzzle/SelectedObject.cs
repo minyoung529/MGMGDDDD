@@ -58,7 +58,6 @@ public  class SelectedObject : MonoBehaviour
     {
         if (interactObj != null)
         {
-
             interactObj.OffOutline();
             interactObj = null;
         }

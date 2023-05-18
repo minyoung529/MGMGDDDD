@@ -8,16 +8,21 @@ public class StickyPet : Pet
 {
     private void Start()
     {
-        InteractAction = InteractEvent;
+        Event.StartListening((int)PetEventName.OnInteractEnd, InteractEvent);
     }
+
     public override void ResetPet()
     {
         base.ResetPet();
-
     }
   
     private void InteractEvent()
     {
         State.ChangeState((int)PetStateName.Sticky);
+    }
+
+    private void OnDisable()
+    {
+        Event.StopListening((int)PetEventName.OnInteractEnd, InteractEvent);
     }
 }

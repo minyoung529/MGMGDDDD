@@ -23,18 +23,10 @@ public class RecallState : PetState {
 
     public override void OnEnter() {
         CheckDistanceToPlayer();
-        pet.State.BlockState((int)PetStateName.Interact);
-        pet.State.BlockState((int)PetStateName.Move);
-        //pet.State.BlockState((int)PetStateName.Recall);
-
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
     }
 
     public override void OnExit() {
-        pet.State.UnBlockState((int)PetStateName.Move);
-        pet.State.UnBlockState((int)PetStateName.Interact);
-        //pet.State.UnBlockState((int)PetStateName.Recall);
-
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
     }
 
@@ -52,24 +44,17 @@ public class RecallState : PetState {
         pet.State.ChangeState((int)PetStateName.Threw);
     }
 
+
     private void CheckDistanceToPlayer() {
         if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange &&
             NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) {
             if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f) {
                 pet.SetTargetPlayer();
-                if (pet.Agent.enabled)
-                {
-                    pet.State.ChangeState((int)PetStateName.Move);
-                }
-                else
-                {
-                    Debug.Log("Agent ²¨Áü");
-                }
+                pet.State.ChangeState((int)PetStateName.Move);
                 return;
             }
         }
 
-        Debug.Log("FL:Y");
         Fly();
     }
 
