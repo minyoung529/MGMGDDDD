@@ -18,6 +18,9 @@ public class ChandlierListner : MonoBehaviour
     [SerializeField]
     private ParticleSystem[] particles;
 
+    [SerializeField]
+    private int lightIndex = 0;
+
     #region Property
     public bool IsOilContact => oilDetector.IsContactOil;
     public bool IsTouched => isTouched;
@@ -30,7 +33,7 @@ public class ChandlierListner : MonoBehaviour
     }
 
     public bool IsSuccess = false;
-
+    public int LightIndex => lightIndex;
     #endregion
 
     private void Awake()
