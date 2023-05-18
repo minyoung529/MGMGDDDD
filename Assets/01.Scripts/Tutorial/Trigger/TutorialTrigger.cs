@@ -37,14 +37,14 @@ public class TutorialTrigger : MonoBehaviour
     private UnityEvent onKeyDownEvent;
 
     protected Action<InputAction, float> keyDownAction;
+
+    private Collider col;
     #endregion
 
     private void Awake()
     {
-        if(onKeyDownEvent.GetPersistentEventCount() > 0)
-        {
-            keyDownAction = (InputAction x, float y) => onKeyDownEvent.Invoke();
-        }
+        keyDownAction = (InputAction x, float y) => onKeyDownEvent?.Invoke();
+        col = GetComponent<Collider>();
 
         onEnter += OnEnter;
         onEnter += ListeningEvent;
@@ -147,6 +147,7 @@ public class TutorialTrigger : MonoBehaviour
         if (keyDownAction != null)
         {
             Debug.Log("START");
+            InputManager.StopListeningInput(inputAction, keyDownAction);
             InputManager.StartListeningInput(inputAction, keyDownAction);
         }
     }
@@ -158,5 +159,11 @@ public class TutorialTrigger : MonoBehaviour
             Debug.Log("END");
             InputManager.StopListeningInput(inputAction, keyDownAction);
         }
+    }
+
+    public void Inactive()
+    {
+        StopListeningEvent();
+        col.enabled = false;
     }
 }
