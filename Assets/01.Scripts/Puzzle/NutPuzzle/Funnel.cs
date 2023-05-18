@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class Funnel : MonoBehaviour
 
     [SerializeField]
     private Transform boltRoot;
-    private Bolt[] bolts;
+    private List<Bolt> bolts;
 
     [Header("Clear")]
     [SerializeField]
@@ -20,7 +21,17 @@ public class Funnel : MonoBehaviour
 
     private void Awake()
     {
-        bolts = boltRoot.GetComponentsInChildren<Bolt>();
+        bolts = boltRoot.GetComponentsInChildren<Bolt>().ToList();
+
+        if(bolts==  null || bolts.Count == 0)
+        {
+                    bolts = new List<Bolt>();
+
+        for(int i = 0; i < boltRoot.childCount; i++)
+        {
+            bolts.Add(boltRoot.GetChild(i).GetComponent<Bolt>());
+        }
+        }
 
         foreach (Bolt bolt in bolts)
         {
