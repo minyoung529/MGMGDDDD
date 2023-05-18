@@ -308,7 +308,6 @@ GameObject:
   - component: {fileID: 3352819286830031789}
   - component: {fileID: 1928097846675921704}
   - component: {fileID: 6965422069262689978}
-  - component: {fileID: 7674661843883350637}
   m_Layer: 8
   m_Name: States
   m_TagString: Untagged
@@ -425,72 +424,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosion: {fileID: 983100522}
-  OnBillow:
+  onBillow:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4147953114228902565}
-        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 983100513}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1961567388}
-        m_TargetAssemblyTypeName: TogglePosition, Assembly-CSharp
-        m_MethodName: Open
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnExitBillow:
+      m_Calls: []
+  onExitBillow:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 983100513}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1961567388}
-        m_TargetAssemblyTypeName: TogglePosition, Assembly-CSharp
-        m_MethodName: Close
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   enterVisual: {fileID: 2308717100380410256}
   exitVisual: {fileID: 2528107199449142070}
 --- !u!114 &1928097846675921704
@@ -532,18 +471,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 784879046af557144b305a46b2d4b508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7674661843883350637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5118112904460571627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5124e9f45989d240aaffaae4669f255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5471342145331574753
@@ -779,17 +706,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
---- !u!114 &1961567388 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1550042230343774460, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
-  m_PrefabInstance: {fileID: 1550042231083471968}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dee6fe819650724fa338857b47ce2ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1788196496585228096 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 959873715961260832, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
@@ -895,11 +811,6 @@ PrefabInstance:
       objectReference: {fileID: 1788196496585228096}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
---- !u!1 &983100513 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2018906288344426057, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
-  m_PrefabInstance: {fileID: 2018906288704621096}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &983100522 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2018906288344426050, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}

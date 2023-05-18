@@ -44,8 +44,6 @@ public class SceneController : MonoBehaviour
 
         for (int i = 0; i < (int)SceneType.Count; i++)
         {
-            Debug.Log((SceneType)i);
-
             if (!OnEnterScene.ContainsKey((SceneType)i))
             {
                 OnEnterScene.Add((SceneType)i, null);

@@ -116,13 +116,12 @@ public class OutlineScript : MonoBehaviour
     }
     #endregion
 
-    public void OnInteract(Action act= null)
+    public void OnInteract()
     {
         if (isInteract) return;
         isInteract = true;
 
         OffOutline();
         onInteractPet?.Invoke();
-        if(act != null) act();
     }
 }

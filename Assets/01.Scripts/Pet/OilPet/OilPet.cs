@@ -22,6 +22,7 @@ public class OilPet : Pet
     private void InteractEvent()
     {
         State.ChangeState((int)PetStateName.Idle);
+        SetInteractNull();
     }
 
     private void OnDisable()

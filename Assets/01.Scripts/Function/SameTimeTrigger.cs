@@ -43,7 +43,6 @@ public class SameTimeTrigger : MonoBehaviour
         p.Event.StopListening((int)PetEventName.OnRecallKeyPress, outPetAction);
         outPetAction = null;
 
-        p.State.UnBlockState((int)PetStateName.Move);
         triggerPets.Remove(p.GetPetType);
 
     }

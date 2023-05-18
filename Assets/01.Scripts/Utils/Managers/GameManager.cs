@@ -75,7 +75,6 @@ public class GameManager : MonoSingleton<GameManager>
     [ContextMenu("FindFindableObject")]
     private void FindFindableObject()
     {
-        Debug.Log("FIND : " + FindObjectsOfType<ButtonObject>().Length);
         buttons = FindObjectsOfType<ButtonObject>();
     }
 
