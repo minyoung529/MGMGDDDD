@@ -8,10 +8,10 @@ using UnityEngine.SceneManagement;
 
 public enum SceneType
 {
-    LivingRoom = 0,
-    Lobby_FirstFloor = 1,
-    Clock_Lobby = 2,
-    SecondScene = 3,
+ //   LivingRoom = 0,
+    Lobby_FirstFloor = 0,
+    Clock_Lobby,
+    SecondScene,
     Count
 }
 
