@@ -20,6 +20,9 @@ public class CameraLookAt : MonoBehaviour
     [ContextMenu("Look At Target")]
     public void LookAtTarget()
     {
+        if (cameraControll == null) return;
+        if (lookAtTransform == null) return;
+
         cameraControll.LookAtTarget(lookAtTransform, duration);
         onLookAt?.Invoke();
     }
