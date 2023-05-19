@@ -135,8 +135,6 @@ public class PetManager : MonoSingleton<PetManager>
         // 펫이 없을 때
         if (selectIndex < 0) return;
 
-        Debug.Log(pets[selectIndex].Skilling);
-
         if (pets[selectIndex].Skilling)
         {
             pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
