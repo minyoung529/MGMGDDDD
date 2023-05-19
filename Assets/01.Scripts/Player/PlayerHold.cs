@@ -72,6 +72,7 @@ public class PlayerHold : PlayerMono {
         var pets = from item in inDistance
                    orderby item.Key descending
                    select item.Value;
+
         foreach (Pet item in pets) { //각도 순으로 집어지는지 확인
             item.Event.TriggerEvent((int)PetEventName.OnHold);
             if (item.State.CurStateIndex == (int)PetStateName.Held) {
