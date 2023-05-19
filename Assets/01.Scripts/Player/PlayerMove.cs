@@ -74,6 +74,12 @@ public class PlayerMove : PlayerMono
         SetUpStateDictionary();
     }
 
+    private void OnDestroy() {
+        foreach (var keyValue in actions) {
+            InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
+        }
+    }
+
     private void SetUpStateDictionary() {
         MoveState[] stateList = stateParent.GetComponentsInChildren<MoveState>();
         foreach (MoveState item in stateList) {
@@ -91,6 +97,10 @@ public class PlayerMove : PlayerMono
             if (IsInputLock) return;
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(PlayerStateName.Jump);
+        });
+        actions.Add(InputAction.Pet_Follow, (action, value) => {
+            if (IsInputLock) return;
+            PlayAction(PlayerAction.ReCall);
         });
         foreach (var keyValue in actions) {
             InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
@@ -168,6 +178,7 @@ public class PlayerMove : PlayerMono
             animIndex = (int)state;
         curState.OnStateEnd(() => {
             curState = targetState;
+            StopAction();
             controller.Anim.SetInteger(hash_iStateNum, animIndex);
             controller.Anim.SetTrigger(hash_tStateChange);
             curState.OnStateStart();
@@ -180,6 +191,10 @@ public class PlayerMove : PlayerMono
     public void PlayAction(PlayerAction action) {
         controller.Anim.SetInteger(hash_iActionNum, (int)action);
         controller.Anim.SetBool(hash_bActionActive, true);
+    }
+
+    public void StopAction() {
+        controller.Anim.SetBool(hash_bActionActive, false);
     }
 
     #region 편의성 함수 (State에서 주로 사용)
@@ -216,6 +231,7 @@ public class PlayerMove : PlayerMono
 
         controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
+
     public void SetRotate(Vector3 dir) {
         if (inputDir.sqrMagnitude <= 0) return;
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
@@ -257,10 +273,4 @@ public class PlayerMove : PlayerMono
         ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion
-
-    private void OnDestroy() {
-        foreach (var keyValue in actions) {
-            InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
-        }
-    }
 }
