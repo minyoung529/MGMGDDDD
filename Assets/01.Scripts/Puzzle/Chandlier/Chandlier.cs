@@ -11,9 +11,8 @@ public class Chandlier : MonoBehaviour
 
     [Header("Puzzle Setting")]
     [SerializeField] private int maxLightCount = 8;
-    [SerializeField] private List<ChandlierListner> oilGroupTransforms;
-    [SerializeField] private List<ChandlierListner> groupTransforms;
-    private int curIdx = 0;
+    private int curLightCount = 0;
+    [SerializeField] private List<ChandlierGroup> groups;
 
     private ChandlierListner[] listners;
 
@@ -25,6 +24,8 @@ public class Chandlier : MonoBehaviour
 
     private ChandlierLight[] lights;
 
+    private const short FAIL_CODE = -999;
+
     private void Awake()
     {
         listners = fireBallRoot.GetComponentsInChildren<ChandlierListner>();
@@ -35,49 +36,30 @@ public class Chandlier : MonoBehaviour
             c.ListeningOnLighting(OnLighting);
         }
 
-        oilGroupTransforms.ForEach(x => x.TouchedTime = 2f);
-        groupTransforms.ForEach(x => x.TouchedTime = 1f);
-    }
-
-    private int CheckOilGroup(ChandlierListner listner)
-    {
-        if (oilGroupTransforms.Contains(listner))    // group
-        {
-            foreach (ChandlierListner element in oilGroupTransforms)
-            {
-                if (!element.IsOilContact || !element.IsTouched)
-                {
-                    listner.BlockLighting();
-                    oilGroupTransforms.ForEach(x => x.StopFire());
-                    return -1;
-                }
-            }
-
-            oilGroupTransforms.ForEach(x => x.Fire());
-            return oilGroupTransforms.Count;
-        }
-
-        return 0;
+        groups[0].Group.ForEach(x => x.TouchedTime = 2f); // Oil Group
+        groups[1].Group.ForEach(x => x.TouchedTime = 1f); // Fire Group
     }
 
     private int CheckGroup(ChandlierListner listner)
     {
-        if (groupTransforms.Contains(listner))    // group
+        for (int i = 0; i < groups.Count; i++)
         {
-            foreach (ChandlierListner element in groupTransforms)
+            if (groups[i].Group.Contains(listner))    // group
             {
-                if (!element.IsTouched)
+                foreach (ChandlierListner element in groups[i].Group)
                 {
-                    listner.BlockLighting();
-                    groupTransforms.ForEach(x => x.StopFire());
-                    return -1;
+                    if (!element.IsTouched)
+                    {
+                        listner.BlockLighting();
+                        groups[i].Group.ForEach(x => x.StopFire());
+                        return FAIL_CODE;
+                    }
                 }
+
+                groups[i].Group.ForEach(x => x.Fire());
+                return i;
             }
-
-            groupTransforms.ForEach(x => x.Fire());
-            return groupTransforms.Count;
         }
-
         return 0;
     }
 
@@ -85,27 +67,31 @@ public class Chandlier : MonoBehaviour
     {
         if (listner.IsSuccess) return;
 
-        int check = CheckOilGroup(listner);
+        // Í∑∏Î£πÏù∏ÏßÄ Ï≤¥ÌÅ¨
+        int check = CheckGroup(listner);
 
-        if (check == 0) // ±◊∑Ïø° æ» µ«æÓ¿÷¿∏∏È ¥ŸΩ√ ∞ÀªÁ
-            check = CheckGroup(listner);
+        if (check == FAIL_CODE) return;
 
-        if (check == 0) // ±◊∑Ïø° æ» µ«æÓ¿÷¿∏∏È ¥ŸΩ√ ∞ÀªÁ
+        lights[listner.LightIndex].Lighting();
+        listner.Fire();
+
+        if(++curLightCount == maxLightCount)
         {
-            check = 1;
-            listner.Fire();
+            onClearPuzzle?.Invoke();
         }
+    }
+}
 
-        if (check == -1) return;
+[System.Serializable]
+public class ChandlierGroup
+{
+    [SerializeField]
+    private List<ChandlierListner> list;
 
-        for (int i = 0; i < check; i++)
-        {
-            lights[curIdx].Lighting();
+    public List<ChandlierListner> Group => list;
 
-            if (++curIdx >= maxLightCount)
-            {
-                onClearPuzzle?.Invoke();
-            }
-        }
+    public ChandlierListner this[int index]
+    {
+        get => list[index];
     }
 }

@@ -24,7 +24,7 @@ public class PlayerMoveSound : MonoBehaviour
 
     public void WalkSound()
     {
-        SoundManager.Instance.PlayRandomPitch(walkClip, transform.position);
+        SoundManager.Instance.PlayRandomPitch(walkClip, transform.position, 0.08f, 10f);
     }
 
     public void RunSound()

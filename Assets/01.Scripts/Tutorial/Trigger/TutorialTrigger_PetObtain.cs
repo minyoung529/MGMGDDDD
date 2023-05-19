@@ -19,7 +19,7 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
         }
         else
         {
-            keyDownAction += OffBoxCollider;
+            keyDownAction += InactiveTrigger;
         }
     }
 
@@ -29,8 +29,8 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
         return PetManager.Instance.Contain(pet) == false;
     }
 
-    private void OffBoxCollider(InputAction action, float value)
+    private void InactiveTrigger(InputAction action, float value)
     {
-        boxCollider.enabled = false;
+        Inactive();
     }
 }

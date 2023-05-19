@@ -92,12 +92,17 @@ public class ElectricityPuzzle : MonoBehaviour
         if (++curIdx == MaxCount)
         {
             // Å¬¸®¾î
-            Debug.Log("CLEAR");
             electricityEffects.ForEach(x => x.Success());
             onClear?.Invoke();
         }
 
         Split();
+    }
+
+    [ContextMenu("Clear")]
+    private void ClearFunc()
+    {
+        onClear?.Invoke();
     }
 
     private void Split()

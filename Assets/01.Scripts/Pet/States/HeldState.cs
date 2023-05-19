@@ -39,7 +39,6 @@ public class HeldState : PetState {
     }
 
     private void OnDrop() {
-        Debug.Log(1);
         pet.Coll.enabled = true;
         pet.Rigid.isKinematic = false;
         pet.Rigid.velocity = Vector3.zero;

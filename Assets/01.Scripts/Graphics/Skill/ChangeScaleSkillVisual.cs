@@ -14,9 +14,12 @@ public class ChangeScaleSkillVisual : SkillVisual
     [SerializeField]
     private float duration = 0.5f;
 
+    [SerializeField]
+    private Ease ease;
+
     protected override void OnTrigger()
     {
         changedObject.DOKill();
-        changedObject.DOScale(targetScale, duration);
+        changedObject.DOScale(targetScale, duration).SetEase(ease);
     }
 }

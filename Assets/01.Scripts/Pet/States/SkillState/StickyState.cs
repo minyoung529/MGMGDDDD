@@ -49,10 +49,8 @@ public class StickyState : PetState
     {
         skillEffect.Play();
         stickyEvent?.Invoke();
+        pet.State.BlockState((int)PetStateName.Skill);
 
-        pet.State.BlockState((int)PetStateName.Interact);
-        pet.State.BlockState((int)PetStateName.Sticky);
-            pet.State.BlockState((int)PetStateName.Skill);
         sticky.StartListeningNotSticky(OffSticky);
         sticky.OnSticky(stickyPet);
         StartCoroutine(DelayParent());
@@ -74,6 +72,7 @@ public class StickyState : PetState
         {
             pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
         }
+            pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
     }
 
     public override void OnUpdate()
@@ -85,12 +84,11 @@ public class StickyState : PetState
     {
         if (sticky == null) return;
 
+        pet.SetInteractNull();
         pet.Rigid.isKinematic = false;
         pet.Rigid.useGravity = true;
 
         sticky.MovableRoot.SetParent(originalParent);
-        pet.State.UnBlockState((int)PetStateName.Interact);
-        pet.State.UnBlockState((int)PetStateName.Sticky);
         pet.State.UnBlockState((int)PetStateName.Skill);
         sticky = null;
     }
@@ -107,14 +105,7 @@ public class StickyState : PetState
 
     private void OnMove()
     {
-        if (pet.Agent.enabled)
-        {
-            pet.State.ChangeState((int)PetStateName.Move);
-        }
-        else
-        {
-            Debug.Log("Agent ²¨Áü");
-        }
+        pet.State.ChangeState((int)PetStateName.Move);
     }
     private void OnRecall()
     {

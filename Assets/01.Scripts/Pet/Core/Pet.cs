@@ -12,6 +12,8 @@ public abstract class Pet : MonoBehaviour
     [SerializeField] private PetEmotion emotion;
     private Vector3 originScale;
     private float originalAgentSpeed;
+    private float interactRadius = 4.5f;
+
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
 
@@ -25,6 +27,7 @@ public abstract class Pet : MonoBehaviour
     public Transform Target => target;
     public Vector3 destination;
     private readonly float distanceToPlayer = 5f;
+    private OutlineScript interact = null;
 
     #endregion
 
@@ -63,7 +66,7 @@ public abstract class Pet : MonoBehaviour
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
     public Color petColor => petInform.outlineColor;
-
+    public OutlineScript GetInteract { get { return interact; } }
     #endregion
 
     private static bool isCameraAimPoint = true;
@@ -80,8 +83,6 @@ public abstract class Pet : MonoBehaviour
     public StateMachine<Pet> State => stateMachine;
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
-
-    public Action InteractAction { get; set; }
 
     protected virtual void Awake()
     {
@@ -104,8 +105,6 @@ public abstract class Pet : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Pet>(this, states);
-
-        InteractAction = ()=> State.ChangeState((int)PetStateName.Idle);
     }
 
 
@@ -134,7 +133,6 @@ public abstract class Pet : MonoBehaviour
         transform.localScale = originScale;
 
         agent.stoppingDistance = distanceToPlayer;
-        State.AllUnBlock();
         SetTargetPlayer();
     }
 
@@ -286,15 +284,9 @@ public abstract class Pet : MonoBehaviour
     #endregion
 
     #region InputEvent
-    public void MovePoint(bool selected = false)
+    public void MovePoint()
     {
         if (IsMovePointLock) return;
-
-        if (selected)
-        {
-            InteractionPoint();
-            return;
-        }
 
         if (IsCameraAimPoint)
         {
@@ -309,16 +301,61 @@ public abstract class Pet : MonoBehaviour
         SetDestination(destination);
     }
 
-    public void InteractionPoint()
-    {
-        State.ChangeState((int)PetStateName.Interact);
-    }
     #endregion
 
     public void ResetAgentValue()
     {
         agent.acceleration = beginAcceleration;
     }
+
+    #region Interact
+
+    public void InteractionPoint()
+    {
+        Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
+        Event.StartListening((int)PetEventName.OnArrive, CheckAroundInteract);
+
+        Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestinationMove);
+        Event.StartListening((int)PetEventName.OnActiveInteract, Active);
+    }
+
+    private void OnSetDestinationMove()
+    {
+        State.ChangeState((int)PetStateName.Move);
+        Event.StopListening((int)PetEventName.OnSetDestination, OnSetDestinationMove);
+    }
+
+    private void CheckAroundInteract()
+    {
+        Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
+        
+        Collider[] cols = Physics.OverlapSphere(transform.position, interactRadius);
+        foreach (Collider col in cols)
+        {
+            OutlineScript tempInteract = col.GetComponent<OutlineScript>();
+            if (tempInteract == null) continue;
+            if (tempInteract.IsInteract) continue;
+            
+            interact = tempInteract;
+            interact.OnInteract();
+            Active();
+            break;
+        }
+    }
+
+    public void SetInteractNull()
+    {
+        interact = null;
+    }
+
+    private void Active()
+    {
+        Event.TriggerEvent((int)PetEventName.OnInteractEnd);
+        Event.StopListening((int)PetEventName.OnActiveInteract, Active);
+    }
+
+
+    #endregion
 
     private void OnDisable() {
         State.OnDisable();
