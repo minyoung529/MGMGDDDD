@@ -10,8 +10,8 @@ public enum SceneType
 {
  //   LivingRoom = 0,
     Lobby_FirstFloor = 0,
-    Clock_Lobby,
-    SecondScene,
+    Clock_Lobby = 1,
+    SecondScene = 2,
     Count
 }
 

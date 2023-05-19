@@ -90,6 +90,8 @@ public class StickyState : PetState
 
         sticky.MovableRoot.SetParent(originalParent);
         pet.State.UnBlockState((int)PetStateName.Skill);
+
+        SelectedObject.CurInteractObject=null;
         sticky = null;
     }
 
