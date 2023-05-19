@@ -1,6 +1,5 @@
 using PathCreation;
 using PathCreation.Examples;
-using SplineMesh;
 using System;
 using System.Collections;
 using System.Collections.Generic;
