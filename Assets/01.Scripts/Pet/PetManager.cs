@@ -61,7 +61,7 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i].OnUpdate();
         }
 
-        Debug_CreateAndGetPet();
+       // Debug_CreateAndGetPet();
     }
 
     public bool IsGet(Pet p)
@@ -134,8 +134,6 @@ public class PetManager : MonoSingleton<PetManager>
     {
         // 펫이 없을 때
         if (selectIndex < 0) return;
-
-        Debug.Log(pets[selectIndex].Skilling);
 
         if (pets[selectIndex].Skilling)
         {

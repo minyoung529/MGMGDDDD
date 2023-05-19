@@ -54,25 +54,22 @@ public class OilPetSkill
     public void OnClickSkill()
     {
         ClearOil();
+        Vector3 dest = (IsCrosshair) ? GameManager.Instance.GetCameraHit() : GameManager.Instance.GetMousePos();
+        pathAgent.transform.position = dest;
         pathAgent.gameObject.SetActive(true);
         pathAgent.enabled = true;
 
-        if (IsCrosshair)
-        {
-            pathAgent.SetDestination(GameManager.Instance.GetCameraHit());
-        }
-        else
-        {
-            pathAgent.SetDestination(GameManager.Instance.GetMousePos());
-        }
-
-        // ����� ������ ��ٸ���
-        painting.StartCoroutine(DelayCauclatePath());
+        // Nav 계산 기다리기
+        painting.StartCoroutine(DelayCauclatePath(dest));
         points.Clear();
     }
 
-    private IEnumerator DelayCauclatePath()
+    private IEnumerator DelayCauclatePath(Vector3 dest)
     {
+        yield return null;
+
+        pathAgent.SetDestination(dest);
+
         while (pathAgent.destination.sqrMagnitude > 1000000000f)
         {
             yield return null;
