@@ -61,7 +61,7 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i].OnUpdate();
         }
 
-       // Debug_CreateAndGetPet();
+       Debug_CreateAndGetPet();
     }
 
     public bool IsGet(Pet p)

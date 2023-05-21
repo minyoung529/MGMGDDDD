@@ -41,6 +41,9 @@ public class PaintingObject : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
+    [SerializeField]
+    private Transform triggerRoots;
+
     private const int OIL_MAX_SIZE = 100;
 
     private float distanceChecker = 0f;
@@ -83,12 +86,11 @@ public class PaintingObject : MonoBehaviour
     {
         prevPosition = transform.position;
         collider = GetComponent<SphereCollider>();
-
-        Transform root = new GameObject("-- Oil Trigger Root --").transform;
+        triggerRoots.SetParent(null);
 
         for (int i = 0; i < OIL_MAX_SIZE; i++)
         {
-            PaintedOil oil = Instantiate(oilTriggerPrefab, root);
+            PaintedOil oil = Instantiate(oilTriggerPrefab, triggerRoots);
             oilList.Add(oil);
 
             oil.OnContactFirePet += Burn;

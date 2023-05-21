@@ -25,7 +25,6 @@ public class DetectOil : MonoBehaviour
                 OnEnterOil?.Invoke();
             }
         }
-
     }
 
     private void OnTriggerExit(Collider other)
@@ -39,5 +38,4 @@ public class DetectOil : MonoBehaviour
             }
         }
     }
-
 }

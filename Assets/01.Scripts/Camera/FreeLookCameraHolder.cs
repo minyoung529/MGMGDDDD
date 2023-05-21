@@ -1,5 +1,7 @@
 using Cinemachine;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,8 @@ public class FreeLookCameraHolder : MonoBehaviour
     new private CinemachineFreeLook camera;
     private Orbit[] originalOrbits;
 
-    private bool isChanging = false;
+    private TweenerCore<float, float, FloatOptions> height = null;
+    private TweenerCore<float, float, FloatOptions> radius = null;
 
     private void Awake()
     {
@@ -21,9 +24,6 @@ public class FreeLookCameraHolder : MonoBehaviour
 
     public void ChangeCameraRig(Orbit[] orbit, float duration)
     {
-        if (isChanging) return;
-        isChanging = true;
-
         for (int i = 0; i < orbit.Length; i++)
         {
             ChangeOrbit(orbit[i], originalOrbits[i], duration, i);
@@ -32,9 +32,6 @@ public class FreeLookCameraHolder : MonoBehaviour
 
     public void SetCameraRigOriginal(float duration)
     {
-        if (isChanging) return;
-        isChanging = true;
-
         for (int i = 0; i < originalOrbits.Length; i++)
         {
             ChangeOrbit(originalOrbits[i], originalOrbits[i], duration, i);
@@ -48,8 +45,11 @@ public class FreeLookCameraHolder : MonoBehaviour
 
         if (orbit.m_Radius <= 0f)
             orbit.m_Radius = original.m_Radius;
+        
+        height = DOTween.To(() => camera.m_Orbits[index].m_Height, (x) => camera.m_Orbits[index].m_Height = x, orbit.m_Height, duration);
+        radius = DOTween.To(() => camera.m_Orbits[index].m_Radius, (x) => camera.m_Orbits[index].m_Radius = x, orbit.m_Radius, duration);
 
-        DOTween.To(() => camera.m_Orbits[index].m_Height, (x) => camera.m_Orbits[index].m_Height = x, orbit.m_Height, duration);
-        DOTween.To(() => camera.m_Orbits[index].m_Radius, (x) => camera.m_Orbits[index].m_Radius = x, orbit.m_Radius, duration).OnComplete(() => isChanging = false);
+        height.Play();
+        radius.Play();
     }
 }

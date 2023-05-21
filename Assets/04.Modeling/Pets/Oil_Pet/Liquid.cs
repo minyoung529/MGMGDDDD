@@ -49,8 +49,7 @@ public class Liquid : MonoBehaviour
 
         if (rend != null)
         {
-            Material tempMaterial = new Material(rend.sharedMaterial);
-            rend.sharedMaterial = tempMaterial;
+            rend.material = new Material(rend.sharedMaterial);
         }
     }
 
