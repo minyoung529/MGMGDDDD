@@ -293,6 +293,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: 0d639b77c00b7bb41aaab644b623c05f, type: 3}
   soundType: 1
   isPositioning: 1
+  volume: 1
 --- !u!1 &5118112904460571627
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,7 +311,6 @@ GameObject:
   - component: {fileID: 3352819286830031789}
   - component: {fileID: 1928097846675921704}
   - component: {fileID: 6965422069262689978}
-  - component: {fileID: 7674661843883350637}
   m_Layer: 8
   m_Name: States
   m_TagString: Untagged
@@ -488,21 +488,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  unStickyEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1169988012719534010}
-        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6965422069262689978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,18 +498,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 784879046af557144b305a46b2d4b508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7674661843883350637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5118112904460571627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5124e9f45989d240aaffaae4669f255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5471342145331574753
@@ -574,6 +547,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: eb54a4cf02d50dc4ba8d359aad1ca94f, type: 3}
   soundType: 1
   isPositioning: 1
+  volume: 1
 --- !u!1 &5526215503126917819
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,6 +595,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: ba4b75bbec3cfff438e8e9020df2965b, type: 3}
   soundType: 1
   isPositioning: 1
+  volume: 1
 --- !u!1 &5805427370639999785
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,6 +643,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: b3aaa148f365e2a4a8931326eadb9d7a, type: 3}
   soundType: 1
   isPositioning: 1
+  volume: 1
 --- !u!1 &6276016250062199714
 GameObject:
   m_ObjectHideFlags: 0
@@ -752,6 +728,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: aaff26d6b23cb6a49aff04bd916743a9, type: 3}
   soundType: 1
   isPositioning: 1
+  volume: 1
 --- !u!1 &8817318683531304374
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,6 +776,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: ba4b75bbec3cfff438e8e9020df2965b, type: 3}
   soundType: 1
   isPositioning: 1
+  volume: 1
 --- !u!1001 &1550042231083471968
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -982,18 +960,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.99999994
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.99999994
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.29000092
       objectReference: {fileID: 0}
@@ -1033,17 +999,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11400002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.7764706
       objectReference: {fileID: 0}
-    - target: {fileID: 19900000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
-      propertyPath: m_Materials.Array.size
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.11037043
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startColor.minColor.b
+      value: 0.13333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startColor.minColor.g
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 19900002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 1
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startColor.minColor.r
+      value: 0.23290856
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800002, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
