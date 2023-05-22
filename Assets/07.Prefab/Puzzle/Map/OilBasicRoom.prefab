@@ -270,7 +270,7 @@ Transform:
   m_GameObject: {fileID: 1605383262}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.23, y: 8.003957, z: 16.19}
-  m_LocalScale: {x: 6.067964, y: 9.873085, z: 11.426769}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6534337792692438848}
@@ -1729,7 +1729,7 @@ MeshCollider:
   m_GameObject: {fileID: 8130671973917566978}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -1827,7 +1827,7 @@ MeshCollider:
   m_GameObject: {fileID: 8130671974045871940}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -1848,6 +1848,7 @@ GameObject:
   - component: {fileID: 8130671974130799026}
   - component: {fileID: 1380402392}
   - component: {fileID: 258820695}
+  - component: {fileID: 399363346}
   m_Layer: 7
   m_Name: Box
   m_TagString: Disrollable
@@ -2028,6 +2029,22 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   minDistance: 10
+--- !u!208 &399363346
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130671974130799052}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.4, y: 0.15, z: 0.4}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.16, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &8130671974282705512
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,7 +2173,7 @@ MeshCollider:
   m_GameObject: {fileID: 8130671975220625942}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -2287,7 +2304,7 @@ MeshCollider:
   m_GameObject: {fileID: 8130671975662805733}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -3186,18 +3203,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CameraLookAt, Assembly-CSharp
-        m_MethodName: LookAtTarget
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2230952948545469559}
         m_TargetAssemblyTypeName: ActiveChildTogglePosition, Assembly-CSharp
         m_MethodName: Close
@@ -3829,7 +3834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 1382
+      value: 1397
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder

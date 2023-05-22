@@ -100,6 +100,7 @@ public class Sticky : MonoBehaviour
         if (obstacle)
             obstacle.enabled = true;
 
+        SelectedObject.CurInteractObject = null;
         outline.enabled = false;
         col.enabled = true;
         onStickyEnd?.Invoke(stickyPet);

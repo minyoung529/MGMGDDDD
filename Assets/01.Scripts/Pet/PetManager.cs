@@ -122,12 +122,8 @@ public class PetManager : MonoSingleton<PetManager>
 
         pets[selectIndex].MovePoint();
 
-        if (SelectedObject.CurInteractObject)
-        {
-            if (pets[selectIndex].GetInteract) return;
-
-            pets[selectIndex].InteractionPoint();
-        }
+        if (SelectedObject.GetInteract() == null) return;
+        pets[selectIndex].InteractionPoint();
     }
 
     private void OnSkill(InputAction input, float value)
