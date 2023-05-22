@@ -7,12 +7,11 @@ public class PlayerRespawn : PlayerMono {
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private float respawnDelay = 2f;
     [SerializeField] private float deadLineY = -30f;
-    [SerializeField] private Transform spawnPointParent;
     [SerializeField] private UnityEvent respawnEvent; 
     [SerializeField] private UnityEvent startFadeIn; 
 
-    private Transform[] points;
-    public Vector3 CurRespawnPoint => points[curIndex].position;
+    private GameObject[] points;
+    public Vector3 CurRespawnPoint => points[curIndex].transform.position;
     private int curIndex = 1;
     private int maxIndex = 1;
 
@@ -30,8 +29,7 @@ public class PlayerRespawn : PlayerMono {
 
         EventManager.StartListening(EventName.PlayerDie, OnDie);
 
-        if (spawnPointParent)
-            points = spawnPointParent.GetComponentsInChildren<Transform>();
+        points = GameObject.FindGameObjectsWithTag("SpawnPoint");
     }
 
     private void Update() {
@@ -43,15 +41,15 @@ public class PlayerRespawn : PlayerMono {
         if (points == null) return;
 
         for(int i = maxIndex + 1; i < points.Length; i++) {
-            Vector3 dir = transform.position - points[i].position;
-            if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0) {
+            Vector3 dir = transform.position - points[i].transform.position;
+            if (dir.magnitude <= 20f && Vector3.Dot(points[i].transform.forward, dir) > 0) {
                 maxIndex = i;
             }
         }
 
         float min = float.MaxValue;
         for(int i = 1; i <= maxIndex; i++) {
-            Vector3 dir = transform.position - points[i].position;
+            Vector3 dir = transform.position - points[i].transform.position;
             float distance = dir.magnitude;
             if(distance < min) {
                 min = distance;
