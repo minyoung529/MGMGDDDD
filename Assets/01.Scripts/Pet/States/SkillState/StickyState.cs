@@ -25,16 +25,13 @@ public class StickyState : PetState
 
     public override void OnEnter()
     {
-            pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
 
         sticky = SelectedObject.CurInteractObject.GetComponent<Sticky>();
         if (sticky == null)
         {
-            GetStickyAround();
-            if(sticky == null)
-            {
-                pet.State.ChangeState((int)PetStateName.Idle);
-            }
+            pet.State.ChangeState((int)PetStateName.Idle);
+            return;
         }
         
         if (sticky.CanMove)
@@ -54,16 +51,6 @@ public class StickyState : PetState
         sticky.StartListeningNotSticky(OffSticky);
         sticky.OnSticky(stickyPet);
         StartCoroutine(DelayParent());
-    }
-
-    private void GetStickyAround()
-    {
-        Collider[] cols = Physics.OverlapSphere(transform.position, 4f);
-        foreach (Collider col in cols)
-        {
-            sticky = col.GetComponent<Sticky>();
-            if (sticky)  break;
-        }
     }
 
     public override void OnExit()
@@ -91,7 +78,6 @@ public class StickyState : PetState
         sticky.MovableRoot.SetParent(originalParent);
         pet.State.UnBlockState((int)PetStateName.Skill);
 
-        SelectedObject.CurInteractObject=null;
         sticky = null;
     }
 

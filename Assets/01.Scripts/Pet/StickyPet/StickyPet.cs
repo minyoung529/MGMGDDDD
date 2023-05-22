@@ -18,7 +18,6 @@ public class StickyPet : Pet
   
     private void InteractEvent()
     {
-        if(SelectedObject.CurInteractObject == null)return;
         State.ChangeState((int)PetStateName.Sticky);
     }
 

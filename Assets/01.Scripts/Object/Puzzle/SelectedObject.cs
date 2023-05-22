@@ -7,7 +7,7 @@ using UnityEngine;
 public  class SelectedObject : MonoBehaviour
 {
 
-    private OutlineScript interactObj;
+    private static OutlineScript interactObj;
 
     public static OutlineScript CurInteractObject;
 
@@ -22,13 +22,11 @@ public  class SelectedObject : MonoBehaviour
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
 
-    //    Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue);
-
         if (Physics.Raycast(ray, out hit, 100f))
         {
-          //  Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
+            if(CurInteractObject != null) return;
 
             if (selected == null || pet == null)
             {
@@ -43,7 +41,6 @@ public  class SelectedObject : MonoBehaviour
 
             if (selected.IsInteract) return;
 
-            CurInteractObject = interactObj;
             interactObj = selected;
             interactObj.SetColor(pet.petColor);
             interactObj.OnOutline();
@@ -61,5 +58,15 @@ public  class SelectedObject : MonoBehaviour
             interactObj.OffOutline();
             interactObj = null;
         }
+    }
+
+    public static void SetInteractionObject()
+    {
+        CurInteractObject = interactObj;
+    }
+
+    public static OutlineScript GetInteract()
+    {
+        return interactObj;
     }
 }

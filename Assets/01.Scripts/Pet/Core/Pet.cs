@@ -27,7 +27,6 @@ public abstract class Pet : MonoBehaviour
     public Transform Target => target;
     public Vector3 destination;
     private readonly float distanceToPlayer = 5f;
-    private OutlineScript interact = null;
 
     #endregion
 
@@ -66,7 +65,6 @@ public abstract class Pet : MonoBehaviour
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
     public Color petColor => petInform.outlineColor;
-    public OutlineScript GetInteract { get { return interact; } }
     #endregion
 
     private static bool isCameraAimPoint = true;
@@ -100,7 +98,8 @@ public abstract class Pet : MonoBehaviour
 
         PetState[] compos = stateParent.GetComponents<PetState>();
         PetState[] states = new PetState[(int)PetStateName.Length];
-        foreach (PetState item in compos) {
+        foreach (PetState item in compos)
+        {
             states[(int)item.StateName] = item;
             states[(int)item.StateName].SetUp(transform);
         }
@@ -113,7 +112,7 @@ public abstract class Pet : MonoBehaviour
         State.OnUpdate();
         Chase();
 
-        if(agent.isOnOffMeshLink)
+        if (agent.isOnOffMeshLink)
         {
             agent.speed = originalAgentSpeed * 0.5f;
         }
@@ -121,6 +120,8 @@ public abstract class Pet : MonoBehaviour
         {
             agent.speed = originalAgentSpeed;
         }
+
+        Debug.Log(SelectedObject.CurInteractObject + " : " + SelectedObject.GetInteract());
     }
 
     #region Set
@@ -223,7 +224,8 @@ public abstract class Pet : MonoBehaviour
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
     }
 
-    public void SetDestination(Vector3 target, float stopDistance) {
+    public void SetDestination(Vector3 target, float stopDistance)
+    {
         if (!agent.isOnNavMesh) return;
         rigid.velocity = Vector3.zero;
         agent.stoppingDistance = stopDistance;
@@ -231,10 +233,12 @@ public abstract class Pet : MonoBehaviour
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
     }
 
-    private void Chase() {
+    private void Chase()
+    {
         if (!target) return;
-        if (Vector3.Distance(GetNearestNavMeshPosition(transform.position), GetNearestNavMeshPosition(target.position)) 
-            >= agent.stoppingDistance) {
+        if (Vector3.Distance(GetNearestNavMeshPosition(transform.position), GetNearestNavMeshPosition(target.position))
+            >= agent.stoppingDistance)
+        {
             SetDestination(target.position);
         }
     }
@@ -312,52 +316,29 @@ public abstract class Pet : MonoBehaviour
 
     public void InteractionPoint()
     {
-        Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
-        Event.StartListening((int)PetEventName.OnArrive, CheckAroundInteract);
+        if (SelectedObject.CurInteractObject) return;
 
-        Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestinationMove);
-        Event.StartListening((int)PetEventName.OnActiveInteract, Active);
+        SelectedObject.SetInteractionObject();
+        Event.StartListening((int)PetEventName.OnArrive, CheckInteract);
     }
 
-    private void OnSetDestinationMove()
+    private void CheckInteract()
     {
-        State.ChangeState((int)PetStateName.Move);
-        Event.StopListening((int)PetEventName.OnSetDestination, OnSetDestinationMove);
-    }
-
-    private void CheckAroundInteract()
-    {
-        Event.StopListening((int)PetEventName.OnArrive, CheckAroundInteract);
+        Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
         
-        Collider[] cols = Physics.OverlapSphere(transform.position, interactRadius);
-        foreach (Collider col in cols)
-        {
-            OutlineScript tempInteract = col.GetComponent<OutlineScript>();
-            if (tempInteract == null) continue;
-            if (tempInteract.IsInteract) continue;
-            
-            interact = tempInteract;
-            interact.OnInteract();
-            Active();
-            break;
-        }
+        SelectedObject.CurInteractObject.OnInteract();
+        Event.TriggerEvent((int)PetEventName.OnInteractEnd);
     }
 
     public void SetInteractNull()
     {
-        interact = null;
+        SelectedObject.CurInteractObject = null;
     }
-
-    private void Active()
-    {
-        Event.TriggerEvent((int)PetEventName.OnInteractEnd);
-        Event.StopListening((int)PetEventName.OnActiveInteract, Active);
-    }
-
 
     #endregion
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         State.OnDisable();
     }
 }
