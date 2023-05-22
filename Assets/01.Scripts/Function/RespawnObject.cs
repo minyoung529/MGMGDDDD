@@ -10,10 +10,12 @@ public class RespawnObject : MonoBehaviour
     private bool canRespawn = false;
 
     private Collider col;
+    private Rigidbody rigid;
 
     private void Awake()
     {
         col = GetComponent<Collider>();
+        rigid = GetComponent<Rigidbody>();
     }
 
     public void Respawn()
@@ -27,11 +29,13 @@ public class RespawnObject : MonoBehaviour
     {
         col.enabled = false;
         transform.position = respawnPoint.position;
-        while (!Physics.Raycast(transform.position, Vector3.down, 1f, 1 << Define.BOTTOM_LAYER))
-        {
-            yield return null;
-        }
+        //while (!Physics.Raycast(transform.position, Vector3.down, 1f, 1 << Define.BOTTOM_LAYER))
+        //{
+        //    yield return null;
+        //}
+        rigid.constraints = RigidbodyConstraints.FreezeRotation;
         col.enabled = true;
+        yield return null;
     }
 
     public void OnInstalled(Transform transform)

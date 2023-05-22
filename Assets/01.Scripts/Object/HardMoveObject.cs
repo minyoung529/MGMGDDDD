@@ -78,7 +78,7 @@ public class HardMoveObject : MonoBehaviour
         canMove = true;
     }
 
-    private void UnMove()
+    public void UnMove()
     {
         onUnMove?.Invoke();
 

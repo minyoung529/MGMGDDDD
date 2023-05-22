@@ -121,7 +121,6 @@ public abstract class Pet : MonoBehaviour
             agent.speed = originalAgentSpeed;
         }
 
-        Debug.Log(SelectedObject.CurInteractObject + " : " + SelectedObject.GetInteract());
     }
 
     #region Set
