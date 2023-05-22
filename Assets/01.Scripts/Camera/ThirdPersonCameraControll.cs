@@ -36,7 +36,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     private void Update()
     {
         float distance = Vector3.Distance(transform.position, defaultCamera.transform.position);
-        float normalized = Mathf.Clamp01(Utils.GetNormalizedRange(1f, 3f, distance));
+        float normalized = Mathf.Clamp01(Utils.GetNormalizedRange(1.5f, 3f, distance));
         playerRenderer.material.SetFloat("_Opacity", normalized);
     }
 
