@@ -16,7 +16,7 @@ namespace PathCreation.Examples
         private bool isStop = false;
         private bool isRotate = true;
         public bool IsRotate
-        { get { return isRotate; } set {  isRotate = value; } }
+        { get { return isRotate; } set { isRotate = value; } }
         float distanceTravelled;
 
         public bool reverseStartEnd = false;
@@ -42,6 +42,12 @@ namespace PathCreation.Examples
 
         public Vector3 offset = Vector3.zero;
 
+        [SerializeField]
+        private bool playOnAwake = false;
+
+        [SerializeField]
+        private bool isRotationX = false;
+
         void Awake()
         {
             if (onArrive == null || onArrive.GetPersistentEventCount() == 0)
@@ -60,6 +66,12 @@ namespace PathCreation.Examples
             {
                 // Subscribed to the pathUpdated event so that we're notified if the path changes during the game
                 pathCreator.pathUpdated += OnPathChanged;
+            }
+
+            if (playOnAwake)
+            {
+                ReasetData();
+                StartFollowing();
             }
         }
 
@@ -109,7 +121,11 @@ namespace PathCreation.Examples
                 {
                     transform.forward = direction;
                     Vector3 euler = transform.eulerAngles;
-                    euler.x = 0f;
+
+                    if (!isRotationX)
+                    {
+                        euler.x = 0f;
+                    }
                     transform.rotation = Quaternion.Euler(euler);
                 }
             }
@@ -144,7 +160,7 @@ namespace PathCreation.Examples
 
         public void Stop()
         {
-            isStart=false;
+            isStart = false;
         }
 
         private void CalculateDestination()

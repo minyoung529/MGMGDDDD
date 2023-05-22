@@ -198,6 +198,25 @@ namespace PathCreation
             return MathUtility.TransformPoint(localPoints[index], transform, space);
         }
 
+        public float GetTimeByPoint(Vector3 point)
+        {
+            float minDist = 99999f;
+            int index = -1;
+
+            for (int i = 0; i < localPoints.Length; i++)
+            {
+                float dist = Vector3.Distance(localPoints[i], point);
+
+                if (minDist > dist)
+                {
+                    minDist = dist;
+                    index = i;
+                }
+            }
+
+            return index / localPoints.Length;
+        }
+
         /// Gets point on path based on distance travelled.
         public Vector3 GetPointAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
