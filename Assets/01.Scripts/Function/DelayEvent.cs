@@ -8,11 +8,24 @@ public class DelayEvent : MonoBehaviour
     [SerializeField] private UnityEvent onCompelete;
     [SerializeField] private float timer = 0f;
 
-    public void Trigger() {
+    [SerializeField]
+    private bool playOnAwake = false;
+
+    void Start()
+    {
+        if (playOnAwake)
+        {
+            Trigger();
+        }
+    }
+
+    public void Trigger()
+    {
         StartCoroutine(Delay());
     }
 
-    private IEnumerator Delay() {
+    private IEnumerator Delay()
+    {
         yield return new WaitForSeconds(timer);
         onCompelete?.Invoke();
     }
