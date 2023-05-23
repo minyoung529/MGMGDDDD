@@ -331,6 +331,18 @@ public class PetManager : MonoSingleton<PetManager>
     {
         return pets.Contains(pet);
     }
+
+    public Pet GetPetByKind<T>() where T : Pet
+    {
+        Pet pet = null;
+
+        foreach(Pet p in pets)
+        {
+            pet ??= p.GetComponent<T>();
+        }        
+
+        return pet;
+    }
     #endregion
 
     #region Debug

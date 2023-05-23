@@ -46,9 +46,9 @@ public class PlatformPiece : MonoBehaviour
         fire = GetComponentInChildren<Fire>();
     }
 
-    public void Initialize(int c, ref Color[] colors, ref Color[] matColors)
+    public void Initialize(int colorIdx, ref Color[] colors, ref Color[] matColors)
     {
-        if (c < 0)
+        if (colorIdx < 0)
         {
             Destroy(connectPoint);
         }
@@ -57,29 +57,13 @@ public class PlatformPiece : MonoBehaviour
             connectPoint.SetActive(true);
             pointRenderer.material = Instantiate(pointRenderer.sharedMaterial);
 
-            pointRenderer.material.SetColor("_EmissionColor", matColors[c]);
-            pointRenderer.material.color = matColors[c];
-            Color = colors[c];
-            Index = c;
+            pointRenderer.material.SetColor("_EmissionColor", matColors[colorIdx]);
+            pointRenderer.material.color = matColors[colorIdx];
+            Color = colors[colorIdx];
+            Index = colorIdx;
         }
 
         originalColor = boardRenderer.material.color;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!isBurning && other.name == "Trigger")
-        {
-            if (isDestroyed)
-            {
-                controller.PauseOilPet(true);
-            }
-            else
-            {
-                controller.PauseOilPet(false);
-                LinePuzzleController.CurrentPiece = this;
-            }
-        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -100,7 +84,12 @@ public class PlatformPiece : MonoBehaviour
         else if (other.CompareTag(Define.OIL_PET_TAG))
         {
             isLightOn = true;
-            boardRenderer.material.DOColor(LinePuzzleController.SelectedPiece.Color, 1f);
+            boardRenderer.material.DOColor(controller.SelectedPiece.Color, 1f);
+        }
+
+        else if (controller.IsPainting && !isBurning && other.name == "Trigger")
+        {
+            controller.InsertCurrentPiece(this);
         }
     }
 
@@ -142,7 +131,6 @@ public class PlatformPiece : MonoBehaviour
             renderer.enabled = true;
         }
 
-        //gameObject.SetActive(true);
         isDestroyed = false;
         isBurning = false;
     }
@@ -152,7 +140,7 @@ public class PlatformPiece : MonoBehaviour
         if (collision.gameObject.CompareTag(Define.OIL_PET_TAG))
         {
             isLightOn = true;
-            boardRenderer.material.DOColor(LinePuzzleController.SelectedPiece.Color, 1f);
+            boardRenderer.material.DOColor(controller.SelectedPiece.Color, 1f);
         }
     }
 
@@ -172,7 +160,6 @@ public class PlatformPiece : MonoBehaviour
 
     public void Burn()
     {
-        if (isLightOn)
-            fire?.Burn();
+        fire?.Burn();
     }
 }
