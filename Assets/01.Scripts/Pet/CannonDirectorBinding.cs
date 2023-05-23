@@ -15,13 +15,9 @@ public class CannonDirectorBinding : MonoBehaviour
         director = GetComponent<PlayableDirector>();
     }
 
-    private void Start()
-    {
-        PetEmotionTrackBinding();
-    }
-
     public void PetEmotionTrackBinding()
     {
+        Debug.Log(pets[(int)check.GetInputPet]);
         BindingTimeline.Binding(director, "PetEmotionTrack", pets[(int)check.GetInputPet].GetComponent<PetEmotion>());
         BindingTimeline.Binding(director, "PetActivation", pets[(int)check.GetInputPet].gameObject);
         BindingTimeline.Binding(director, "PetTransformTrack", pets[(int)check.GetInputPet].transform);
