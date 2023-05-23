@@ -15,7 +15,6 @@ public class CannonScript : MonoBehaviour
     [SerializeField] private ParticleSystem explosion;
     [SerializeField] private ParticleSystem smoke;
     [SerializeField] private UnityEvent shotEvent;
-    [SerializeField] private UnityEvent inputEvent;
 
     private Collider[] colls;
     private Collider petColl;
@@ -54,7 +53,6 @@ public class CannonScript : MonoBehaviour
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));
         seq.Join(pet.transform.DOMove(barrel.position, 0.1f));
         seq.Append(barrel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.1f));
-        inputEvent?.Invoke();
     }
 
     [ContextMenu("Trigger")]
