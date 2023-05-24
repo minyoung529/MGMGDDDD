@@ -45,24 +45,34 @@ public class LightingEntranceSign : MonoBehaviour
 
     [SerializeField]
     private int groupCount = 2;
+
+    [SerializeField]
+    private int attachedCount = 1;
     private int curIdx = 0;
 
     private List<ChangeEmissionGroup> changeGroups = new List<ChangeEmissionGroup>();
 
     private void Awake()
     {
-
         for (int i = 0; i < groupCount; i++)
         {
             changeGroups.Add(new ChangeEmissionGroup());
         }
 
+        int attachCounter = 0;
+        int indexCounter = 0;
+
         for (int i = 0; i < transform.childCount; i++)
         {
             ChangeEmission changeEmission = transform.GetChild(i).GetComponent<ChangeEmission>();
 
-            int curIdx = i % groupCount;
-            changeGroups[curIdx].Add(changeEmission);
+            changeGroups[indexCounter].Add(changeEmission);
+
+            if (++attachCounter >= attachedCount)
+            {
+                attachCounter = 0;
+                indexCounter = (indexCounter + 1) % groupCount;
+            }
         }
     }
 

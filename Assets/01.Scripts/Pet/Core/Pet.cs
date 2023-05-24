@@ -55,7 +55,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     #region Get
 
-    public bool IsCoolTime => isCoolTime;
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
@@ -144,11 +143,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
     {
         ResetPet();
         PetManager.Instance.DeletePet(this);
-    }
-
-    public void AgentEnabled(bool isEnabled)
-    {
-        agent.enabled = isEnabled;
     }
     #endregion
 
@@ -366,15 +360,13 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
 
     public void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse) {
-        Coll.enabled = true;
-        Rigid.constraints = RigidbodyConstraints.None;
-        Rigid.velocity = Vector3.zero;
-        Rigid.isKinematic = false;
         Rigid.AddForce(force, ForceMode.Impulse);
         Event.TriggerEvent((int)PetEventName.OnThrew);
     }
 
     public void OnThrow() {
+        Coll.enabled = true;
+        Rigid.constraints = RigidbodyConstraints.None;
         Rigid.velocity = Vector3.zero;
         Rigid.isKinematic = false;
     }
