@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public class CannonScript : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class CannonScript : MonoBehaviour
     [SerializeField] private float radius = 1f;
     [SerializeField] private ParticleSystem explosion;
     [SerializeField] private ParticleSystem smoke;
+    [SerializeField] private UnityEvent shotEvent;
+
     private Collider[] colls;
     private Collider petColl;
 
@@ -21,13 +25,15 @@ public class CannonScript : MonoBehaviour
     private Sequence seq;
     #endregion
 
-private CheckPetType check;
-    private void Awake() {
+    private CheckPetType check;
+    private void Awake()
+    {
         colls = GetComponentsInChildren<Collider>();
         check = GetComponent<CheckPetType>();
     }
 
-    private void OnCollisionEnter(Collision collision) {
+    private void OnCollisionEnter(Collision collision)
+    {
         if (!pet && collision.gameObject.layer != Define.PET_LAYER) return;
 
         petColl = collision.collider;
@@ -35,13 +41,13 @@ private CheckPetType check;
         GetInCannon(collision.transform.GetComponent<Pet>());
     }
 
-    public void GetInCannon(Pet pet) {
+    public void GetInCannon(Pet pet)
+    {
         this.pet = pet;
-if(check)
-{
-    check.SetInPet(pet);
-}
-
+        if (check)
+        {
+            check.SetInPet(pet);
+        }
         pet.Event.TriggerEvent((int)PetEventName.OnHold);
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));
@@ -50,10 +56,12 @@ if(check)
     }
 
     [ContextMenu("Trigger")]
-    public void TriggerCannon() {
+    public void TriggerCannon()
+    {
         if (isPlay) return;
         isPlay = true;
 
+        shotEvent?.Invoke();
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 0.6f, 1.2f), 0.5f));
         seq.AppendInterval(0.1f);
@@ -63,8 +71,10 @@ if(check)
         seq.AppendCallback(() => isPlay = false);
     }
 
-    private void FireCannon() {
-        if (!pet) {
+    private void FireCannon()
+    {
+        if (!pet)
+        {
             smoke.Play();
             return;
         }
@@ -75,14 +85,17 @@ if(check)
         pet = null;
     }
 
-    private IEnumerator SetIgnore(float time, bool value) {
+    private IEnumerator SetIgnore(float time, bool value)
+    {
         yield return new WaitForSeconds(time);
-        foreach (Collider coll in colls) {
+        foreach (Collider coll in colls)
+        {
             Physics.IgnoreCollision(coll, petColl, value);
         }
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         seq.Kill();
     }
 }

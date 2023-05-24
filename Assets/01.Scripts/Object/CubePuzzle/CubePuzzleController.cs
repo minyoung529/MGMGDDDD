@@ -16,9 +16,6 @@ public class CubePuzzleController : MonoBehaviour
         }
     }
         
-    [SerializeField]
-    private int solvedPuzzleCount = 0;
-
     List<CubePuzzle> cubePuzzles = new List<CubePuzzle>();
 
     [SerializeField]

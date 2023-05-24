@@ -30,6 +30,18 @@ public class PetManager : MonoSingleton<PetManager>
     [SerializeField]
     private GameObject[] petPrefabs;
 
+    public Pet GetPetByKind<T>() where T : Pet
+    {
+        Pet pet = null;
+
+        foreach (Pet p in pets)
+        {
+            pet ??= p.GetComponent<T>();
+        }
+
+        return pet;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -334,18 +346,6 @@ public class PetManager : MonoSingleton<PetManager>
     public bool Contain(Pet pet)
     {
         return pets.Contains(pet);
-    }
-
-    public Pet GetPetByKind<T>() where T : Pet
-    {
-        Pet pet = null;
-
-        foreach(Pet p in pets)
-        {
-            pet ??= p.GetComponent<T>();
-        }        
-
-        return pet;
     }
     #endregion
 
