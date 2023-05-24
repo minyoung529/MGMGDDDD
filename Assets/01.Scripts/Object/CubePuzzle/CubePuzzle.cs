@@ -94,7 +94,7 @@ public class CubePuzzle : MonoBehaviour
         center.y = bottomRenderer.transform.position.y;
 
         cube.DOMove(center, 0.5f).OnComplete(() => onEnd.Invoke());
-        //cube.DORotate(Vector3.zero, 0.5f);
+        cube.DOLocalRotate(Vector3.zero, 0.5f);
     }
     #endregion
 
