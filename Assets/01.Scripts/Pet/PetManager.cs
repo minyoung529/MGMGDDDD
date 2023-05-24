@@ -208,6 +208,8 @@ public class PetManager : MonoSingleton<PetManager>
     public void SelectPet(InputAction input, float index)
     {
         if (pets.Count <= 0) return;
+
+
         switch (input)
         {
             case InputAction.Select_First_Pet:
@@ -217,13 +219,13 @@ public class PetManager : MonoSingleton<PetManager>
                 break;
             case InputAction.Select_Second_Pet:
                 {
-                    if (pets.Count == 1) return;
+                    if (pets.Count <= 1) return;
                     selectIndex = 1;
                 }
                 break;
             case InputAction.Select_Third_Pet:
                 {
-                    if (pets.Count == 2) return;
+                    if (pets.Count <= 2) return;
                     selectIndex = 2;
                 }
                 break;

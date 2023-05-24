@@ -116,7 +116,6 @@ public class GameManager : MonoSingleton<GameManager>
     public void SetCursorVisible(bool visible)
     {
         Pet.IsCameraAimPoint = !visible;
-        Cursor.visible = visible;
         if(visible)
         {
             Cursor.lockState = CursorLockMode.None;

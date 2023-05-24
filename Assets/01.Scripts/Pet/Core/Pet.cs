@@ -198,6 +198,18 @@ public abstract class Pet : MonoBehaviour
             return;
         }
     }
+    
+    public void SetTargetNull()
+    {
+        if (agent == null) return;
+        target = null;
+
+        if (agent.enabled)
+        {
+            agent.ResetPath();
+            return;
+        }
+    }
 
     public void SetDestination(Transform target)
     {
