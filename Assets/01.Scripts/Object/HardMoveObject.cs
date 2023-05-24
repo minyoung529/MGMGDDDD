@@ -84,7 +84,6 @@ public class HardMoveObject : MonoBehaviour
 
         enterIdx = 0;
         rigid.constraints = RigidbodyConstraints.FreezeAll;
-        canMove = false;
     }
 
     private void OnDestroy()
