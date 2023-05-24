@@ -25,7 +25,6 @@ public class StickySkillState : PetState
 
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, OffBillow);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
-        pet.State.BlockState((int)PetStateName.Move);
 
         OnBillow();
     }
@@ -34,7 +33,6 @@ public class StickySkillState : PetState
     {
         pet.Skilling = false;
         exitVisual.Trigger();
-        pet.State.UnBlockState((int)PetStateName.Move);
 
         explosion.gameObject.SetActive(false);
         onExitBillow?.Invoke();
