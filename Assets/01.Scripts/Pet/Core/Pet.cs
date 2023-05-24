@@ -360,15 +360,15 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
 
     public void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse) {
-        Rigid.AddForce(force, ForceMode.Impulse);
+        Rigid.velocity = Vector3.zero;
+        Rigid.isKinematic = false;
+        Rigid.AddForce(force, forceMode);
         Event.TriggerEvent((int)PetEventName.OnThrew);
     }
 
     public void OnThrow() {
         Coll.enabled = true;
         Rigid.constraints = RigidbodyConstraints.None;
-        Rigid.velocity = Vector3.zero;
-        Rigid.isKinematic = false;
     }
 
     public void OnLanding() {

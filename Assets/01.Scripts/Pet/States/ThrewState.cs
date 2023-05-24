@@ -25,7 +25,7 @@ public class ThrewState : PetState {
     }
 
     private void CheckGround() {
-        if (pet.Rigid.velocity.y >= 0)
+        if (pet.Rigid.velocity.y >= -0.01)
             return;
         RaycastHit hit;
         if (!Physics.BoxCast(
