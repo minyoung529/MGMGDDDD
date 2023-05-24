@@ -139,7 +139,7 @@ public class PlayerHold : PlayerMono {
 
     public void OnThrow() {
         isHolding = false;
-        holdingPet.PetThrow.Throw(ThrowVector);
+        holdingPet.Throw(ThrowVector);
         StartCoroutine(EnableCollision(holdingPet));
         holdingPet = null;
     }

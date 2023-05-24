@@ -70,7 +70,7 @@ if(check)
         }
         explosion.Play();
 
-        pet.PetThrow.Throw(barrel.up * firePow);
+        pet.Throw(barrel.up * firePow);
         StartCoroutine(SetIgnore(0.5f, false));
         pet = null;
     }

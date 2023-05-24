@@ -40,6 +40,8 @@ public class GameManager : MonoSingleton<GameManager>
     private ButtonObject[] buttons;
     public ButtonObject[] Buttons => buttons;
     public Pet[] Pets => PetManager.Instance.GetPetList.ToArray();
+    private IThrowable[] throwables;
+    private IThrowable[] Throwables => throwables;
     #endregion
 
     private float st;
