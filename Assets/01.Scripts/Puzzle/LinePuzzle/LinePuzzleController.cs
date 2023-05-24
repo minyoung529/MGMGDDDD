@@ -70,6 +70,11 @@ public class LinePuzzleController : MonoBehaviour
             ResetBoard();
         }
 
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            GetNextPuzzle();
+        }
+
         trigger.transform.position = GameManager.Instance.GetMousePos();
     }
 
