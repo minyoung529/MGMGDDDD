@@ -6,6 +6,7 @@ public class PetMoveState : PetState {
     public override PetStateName StateName => PetStateName.Move;
 
     public override void OnEnter() {
+        pet.SetNavEnabled(true);
         pet.Agent.SetDestination(pet.destination);
         Debug.Log("Move");
         pet.Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestination);

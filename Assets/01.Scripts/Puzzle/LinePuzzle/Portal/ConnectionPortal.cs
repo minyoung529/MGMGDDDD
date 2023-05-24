@@ -31,7 +31,7 @@ public class ConnectionPortal : MonoBehaviour
 
         ParticleSystem.ColorOverLifetimeModule col = ringParticle.colorOverLifetime;
         col.color = grad;
-
+        
         pointLight.color = color;
     }
 

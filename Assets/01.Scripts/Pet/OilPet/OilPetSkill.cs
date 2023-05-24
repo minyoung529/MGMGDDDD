@@ -113,7 +113,6 @@ public class OilPetSkill
     {
         if (!painting.IsPainting)
         {
-            Debug.Log("START SPREAD OIL");
             painting.IsPainting = true;
             onStartPath?.Invoke();
             pathAgent.enabled = false;

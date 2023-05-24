@@ -29,7 +29,6 @@ public class LinePuzzle : MonoBehaviour
 
     [Header("PIECE")]
     [SerializeField]
-    //private NavMeshSurface platformPiece;
     private PlatformPiece platformPiece;
 
     [Header("OIL_PORTAL")]
@@ -56,17 +55,17 @@ public class LinePuzzle : MonoBehaviour
     public Action OnClear { get; set; }
 
 
-    private void Awake()
+    private void Start()
     {
         Initialize();
     }
 
-    public void StartGame()
+    public void StartGame(Func<bool> func)
     {
         CreatePortal(oilPortal, oilPortals, oilPortalTransform);
         CreatePortal(firePortal, firePortals, firePortalTransform);
 
-        InitializeFirePortal();
+        InitializeFirePortal(func);
     }
 
     private void Initialize()
@@ -87,18 +86,17 @@ public class LinePuzzle : MonoBehaviour
                 PlatformPiece newObj = Instantiate(platformPiece);
                 newObj.name = $"({i}, {j}) : {boardInformation[i][j]}";
                 newObj.Initialize(boardInformation[i][j] - '1', ref colors, ref matColors);
-
                 newObj.OnDestroyPlatform += CheckSolve;
+                newObj.transform.SetParent(transform);
 
                 newObj.transform.position =
                     new Vector3
                     (
-                        width / length * j * scaleWeight,
+                        -width / length * i * scaleWeight,
                         0f,
-                        -height / boardCnt * i * scaleWeight
+                        -height / boardCnt * j * scaleWeight
                     ) + offset;
 
-                newObj.transform.SetParent(transform);
 
                 Vector3 scale = newObj.transform.localScale;
                 scale.x = 1 / (float)boardInformation.Count * scaleWeight;
@@ -120,7 +118,7 @@ public class LinePuzzle : MonoBehaviour
             portals.Add(newPortal);
 
             Vector3 pos = box.transform.position;
-            pos.z -= i * box.size.z / connectCount + box.size.z / connectCount * 0.5f;
+            pos.x -= i * box.size.z / connectCount + box.size.z / connectCount * 0.5f;
             pos.y += 1f;
 
             pos += box.transform.right * 2f * box.transform.localScale.x;
@@ -129,13 +127,14 @@ public class LinePuzzle : MonoBehaviour
         }
     }
 
-    private void InitializeFirePortal()
+    private void InitializeFirePortal(Func<bool> func)
     {
         for (int i = 0; i < connectCount; i++)
         {
             FirePortal fPortal = firePortals[i] as FirePortal;
-            fPortal.Listen(pieces.Find(x => x.Index == i).Burn);
-            fPortal.Listen(pieces.FindLast(x => x.Index == i).Burn);
+            fPortal.StartListeningBurn(pieces.Find(x => x.Index == i).Burn);
+            fPortal.StartListeningBurn(pieces.FindLast(x => x.Index == i).Burn);
+            fPortal.StartListeningCanBurn(func);
         }
     }
 

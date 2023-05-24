@@ -208,7 +208,7 @@ public class PetManager : MonoSingleton<PetManager>
     public void SelectPet(InputAction input, float index)
     {
         if (pets.Count <= 0) return;
-
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
 
         switch (input)
         {
@@ -235,6 +235,8 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void SelectPet(int index)
     {
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
+
         selectIndex = index;
         OnSelectPetUI(selectIndex);
     }

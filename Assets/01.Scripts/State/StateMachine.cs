@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 
+//바꾸지마세요
 public class StateMachine<T> {
     private T parent = default;
     public T Parent => parent;
@@ -26,9 +26,6 @@ public class StateMachine<T> {
     }
 
     public void ChangeState(int index) {
-        if (states[index].fence > 0)
-            return;
-
         curState?.OnExit();
         curStateIndex = index;
         curState = states[index];
@@ -53,21 +50,5 @@ public class StateMachine<T> {
 
     public void OnDisable() {
         curState.OnExit();
-    }
-
-    public void BlockState(int index)
-    {
-        states[index].Block();
-    }
-    public void UnBlockState(int index)
-    {
-        states[index].UnBlock();
-    }
-    public void AllUnBlock()
-    {
-        foreach(IState item in states)
-        {
-            item.fence=0;
-        }
     }
 }

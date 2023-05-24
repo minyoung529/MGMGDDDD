@@ -244,10 +244,18 @@ public class PlayerMove : PlayerMono
 
     public bool CheckOnGround() {
         RaycastHit hit;
-        if (Physics.BoxCast(transform.position + Vector3.up * 0.5f, new Vector3(0.5f, 0.1f, 0.5f), Vector3.down, out hit, Quaternion.identity, 1.3f, groundLayer)) {
-            if (Vector3.Dot(Vector3.up, hit.normal) >= 0.4f) return true;
-        }
-        return false;
+        if (!Physics.BoxCast(
+            transform.position + Vector3.up * 0.5f,
+            new Vector3(0.5f, 0.1f, 0.5f),
+            Vector3.down,
+            out hit,
+            Quaternion.identity, 1.3f,
+            groundLayer
+            ))
+            return false;
+        if (Vector3.Dot(Vector3.up, hit.normal) <= 0.4f)
+            return false;
+        return true;
     }
 
     public void LockInput(float time) {

@@ -63,7 +63,6 @@ public class SameTimeTrigger : MonoBehaviour
     private void ClearTrigger(Pet p)
     {
         SetHologram(p.GetPetType, false);
-        p.State.BlockState((int)PetStateName.Move);
 
         p.Event.StopListening((int)PetEventName.OnArrive, clearTriggerAction);
         clearTriggerAction = null;

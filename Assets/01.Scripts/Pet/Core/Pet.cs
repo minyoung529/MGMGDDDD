@@ -6,7 +6,7 @@ using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class Pet : MonoBehaviour
+public abstract class Pet : MonoBehaviour//, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
     [SerializeField] private PetEmotion emotion;
@@ -45,7 +45,6 @@ public abstract class Pet : MonoBehaviour
     protected Collider coll;
     protected Rigidbody rigid;
     protected NavMeshAgent agent;
-    protected PetThrow petThrow;
     private float beginAcceleration;
     public float AgentAcceleration
     {
@@ -60,7 +59,6 @@ public abstract class Pet : MonoBehaviour
     public Vector3 MouseUpDestination { get; private set; }
     public Rigidbody Rigid => rigid;
     public Collider Coll => coll;
-    public PetThrow PetThrow => petThrow;
     public NavMeshAgent Agent => agent;
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
@@ -87,7 +85,6 @@ public abstract class Pet : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
-        petThrow = GetComponent<PetThrow>();
         emission = GetComponentInChildren<ChangePetEmission>();
 
         AxisController = new AxisController(transform);
@@ -352,4 +349,39 @@ public abstract class Pet : MonoBehaviour
     {
         State.OnDisable();
     }
+
+    #region IThrowable
+    public void OnHold() {
+        Rigid.velocity = Vector3.zero;
+        Rigid.isKinematic = true;
+        Coll.enabled = false;
+        SetNavEnabled(false);
+    }
+
+    public void OnDrop() {
+        Coll.enabled = true;
+        Rigid.isKinematic = false;
+        Rigid.velocity = Vector3.zero;
+        SetNavEnabled(true);
+    }
+
+    public void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse) {
+        Coll.enabled = true;
+        Rigid.constraints = RigidbodyConstraints.None;
+        Rigid.velocity = Vector3.zero;
+        Rigid.isKinematic = false;
+        Rigid.AddForce(force, ForceMode.Impulse);
+        Event.TriggerEvent((int)PetEventName.OnThrew);
+    }
+
+    public void OnThrow() {
+        Rigid.velocity = Vector3.zero;
+        Rigid.isKinematic = false;
+    }
+
+    public void OnLanding() {
+        Rigid.constraints = RigidbodyConstraints.FreezeAll &~ RigidbodyConstraints.FreezePositionY;
+        Rigid.velocity = Vector3.zero;
+    }
+    #endregion
 }
