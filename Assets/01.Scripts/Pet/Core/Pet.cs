@@ -19,7 +19,7 @@ public abstract class Pet : MonoBehaviour//, IThrowable
 
     public PetEmotion Emotion => emotion;
 
-    #region �̵�����
+    #region Property
 
     protected Transform target;
     protected Transform player;
