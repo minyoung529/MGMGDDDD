@@ -8,7 +8,6 @@ public class PetMoveState : PetState {
     public override void OnEnter() {
         pet.SetNavEnabled(true);
         pet.Agent.SetDestination(pet.destination);
-        Debug.Log("Move");
         pet.Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestination);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnSkillKeyPress, OnSKill);

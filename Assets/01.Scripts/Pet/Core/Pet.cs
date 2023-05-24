@@ -6,7 +6,7 @@ using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class Pet : MonoBehaviour//, IThrowable
+public abstract class Pet : MonoBehaviour, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
     [SerializeField] private PetEmotion emotion;
