@@ -7,6 +7,7 @@ public enum PetStateName
     Threw,
     Landing,
     Recall,
+    Pause,
     Sticky,
     Length
 }
