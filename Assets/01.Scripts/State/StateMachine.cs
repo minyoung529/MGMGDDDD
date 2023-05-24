@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 //바꾸지마세요
 public class StateMachine<T> {
