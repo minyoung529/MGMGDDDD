@@ -59,7 +59,12 @@ public class MazeButton : MonoBehaviour
         for (int i = 0; i < wallToggle.Length; i++)
         {
             wallToggle[i].Trigger();
-            navMeshObstacles[i].enabled = !navMeshObstacles[i].enabled;
+            StartCoroutine(DisableObstacle(i, wallToggle[i].Duration));
         }
+    }
+    public IEnumerator DisableObstacle(int index, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+            navMeshObstacles[index].enabled = !navMeshObstacles[index].enabled;
     }
 }

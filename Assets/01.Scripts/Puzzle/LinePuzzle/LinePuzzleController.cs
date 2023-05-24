@@ -70,6 +70,11 @@ public class LinePuzzleController : MonoBehaviour
             ResetBoard();
         }
 
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            GetNextPuzzle();
+        }
+
         trigger.transform.position = GameManager.Instance.GetMousePos();
     }
 
@@ -136,7 +141,7 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.SkillState.OnStartSkill -= StartPaintingOil;
         oilPet.SkillState.SkillData.IsCheckDistance = true;
 
-        onExitGame?.Invoke();
+            onExitGame?.Invoke();
     }
 
     private void StartGame()

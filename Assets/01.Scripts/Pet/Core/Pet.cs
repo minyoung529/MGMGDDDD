@@ -19,7 +19,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     public PetEmotion Emotion => emotion;
 
-    #region �̵�����
+    #region Property
 
     protected Transform target;
     protected Transform player;
@@ -184,6 +184,18 @@ public abstract class Pet : MonoBehaviour, IThrowable
         agent.stoppingDistance = stopDistance;
 
         if (!target && agent.enabled)
+        {
+            agent.ResetPath();
+            return;
+        }
+    }
+    
+    public void SetTargetNull()
+    {
+        if (agent == null) return;
+        target = null;
+
+        if (agent.enabled)
         {
             agent.ResetPath();
             return;
