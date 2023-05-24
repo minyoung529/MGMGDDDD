@@ -137,7 +137,9 @@ public class InputManager : MonoSingleton<InputManager>
 
     static public void StopListeningInput(InputAction action, Action<InputAction, float> listener) {
         if (eventDictionary.ContainsKey(action)) {
+
             eventDictionary[action] -= listener;
+            
             if (eventDictionary[action] == null) {
                 eventDictionary.Remove(action);
             }
