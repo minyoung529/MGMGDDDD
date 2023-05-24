@@ -20,7 +20,7 @@ public class CannonDirectorBinding : MonoBehaviour
 
     public void PetStickyBinding()
     {
-        DirectorTrackBinding.Binding(correctDirector, "PetTransformTrack", PetManager.Instance.GetPetByKind<StickyPet>().Agent);
+        DirectorTrackBinding.Binding(correctDirector, "PetTransformTrack", PetManager.Instance.GetPetByKind<StickyPet>().transform);
         DirectorTrackBinding.Binding(correctDirector, "StickyPetActive", PetManager.Instance.GetPetByKind<StickyPet>().gameObject);
     }
 }
