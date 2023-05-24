@@ -46,7 +46,6 @@ public class StickyState : PetState
     {
         skillEffect.Play();
         stickyEvent?.Invoke();
-        pet.State.BlockState((int)PetStateName.Skill);
 
         sticky.StartListeningNotSticky(OffSticky);
         sticky.OnSticky(stickyPet);
@@ -76,7 +75,6 @@ public class StickyState : PetState
         pet.Rigid.useGravity = true;
 
         sticky.MovableRoot.SetParent(originalParent);
-        pet.State.UnBlockState((int)PetStateName.Skill);
 
         sticky = null;
     }

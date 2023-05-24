@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -14,6 +15,12 @@ public class JumpState : MoveState
         Player.Accelerate(inputDir, accel, brake, maxSpeed);
         Player.SetRotate(inputDir);
     }
+
+    public override void OnStateEnd(Action onChange) {
+        StopAllCoroutines();
+        Player.Controller.Anim.SetBool(hash_bLanding, false);
+        base.OnStateEnd(onChange);
+    }
     #endregion
 
     [SerializeField] private float jumpPower = 10;
@@ -21,7 +28,7 @@ public class JumpState : MoveState
     [SerializeField] private float accel = 1f;
     [SerializeField] private float brake = 5f;
 
-    private int hash_tLanding = Animator.StringToHash("tLanding");
+    private int hash_bLanding = Animator.StringToHash("bLanding");
 
     public void Jump() {
         Vector3 dir = Player.Controller.Rigid.velocity;
@@ -32,10 +39,9 @@ public class JumpState : MoveState
     }
 
     private IEnumerator LandingCoroutine() {
-        yield return new WaitForSeconds(1f);
-        while(!Player.CheckOnGround()) {
+        while(!(Player.Controller.Rigid.velocity.y < -0.01f) || !Player.CheckOnGround()) {
             yield return null;
         }
-        Player.Controller.Anim.SetTrigger(hash_tLanding);
+        Player.Controller.Anim.SetBool(hash_bLanding, true);
     }
 }

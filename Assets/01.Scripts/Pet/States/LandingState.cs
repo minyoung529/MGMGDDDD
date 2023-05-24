@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class LandingState : PetState
 {
     public override PetStateName StateName => PetStateName.Landing;
 
     public override void OnEnter() {
-        FindButton();
-        pet.State.ChangeState((int)PetStateName.Idle);
+        //FindButton();
+        WakeUp();
     }
 
     public override void OnExit() {
@@ -16,7 +15,18 @@ public class LandingState : PetState
     }
 
     public override void OnUpdate() {
+        
+    }
 
+    private void WakeUp() {
+        pet.transform.DOKill();
+        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 0.5f);
+        Landing();
+    }
+
+    private void Landing() {
+        pet.OnLanding();
+        pet.State.ChangeState((int)PetStateName.Idle);
     }
 
     /// <summary>
