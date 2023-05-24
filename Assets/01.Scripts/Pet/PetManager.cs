@@ -64,7 +64,7 @@ public class PetManager : MonoSingleton<PetManager>
             if (pets[i] == null)
             {
                 pets[i] = FindObjectOfType(pets[i].GetType()) as Pet;
-                pets[i].SetPlayerTransform(FindObjectOfType<PlayerMove>().transform);
+                pets[i].SetPlayerTransform(GameManager.Instance.PlayerController.transform);
                 pets[i].SetTargetPlayer();
 
                 if (pets[i] == null) continue;
@@ -286,10 +286,15 @@ public class PetManager : MonoSingleton<PetManager>
     }
     public void DeletePet(Pet p)
     {
+        int index = pets.IndexOf(p);
+        DisablePetUI(index);
+
+        petInvens.Remove(petInvens[index]);
+        petImages.Remove(petImages[index]);
         pets.Remove(p);
 
-        OffSelectPetUI();
-        DisablePetUI(--selectIndex);
+        SelectPet(0);
+        p.gameObject.SetActive(false);
     }
 
     #endregion

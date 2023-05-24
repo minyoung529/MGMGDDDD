@@ -91,7 +91,7 @@ public class RidingRail : MonoBehaviour
     private IEnumerator DelayPets(Vector3 destination, bool reverse)
     {
         List<Pet> petList = PetManager.Instance.GetPetList;
-        petList.ForEach(x => x.AgentEnabled(false));
+        petList.ForEach(x => x.Agent.enabled = false);
 
         for (int i = 0; i < petList.Count; i++)
         {
@@ -103,7 +103,7 @@ public class RidingRail : MonoBehaviour
 
             UnityAction<Destination> onArrive = (x) =>
             {
-                pet.AgentEnabled(true);
+                pet.Agent.enabled = true;
                 pet.SetTargetPlayer();
             };
 
