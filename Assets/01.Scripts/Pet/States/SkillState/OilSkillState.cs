@@ -40,6 +40,7 @@ public class OilSkillState : PetState
     public override void OnEnter()
     {
         pet.Event.StartListening((int)PetEventName.OnSkillKeyUp, SkillUp);
+        pet.Event.StartListening((int)PetEventName.OnSkillCancel, KillSkill);
 
         OnSkill();
     }
@@ -47,6 +48,7 @@ public class OilSkillState : PetState
     public override void OnExit()
     {
         pet.Event.StopListening((int)PetEventName.OnSkillKeyUp, SkillUp);
+        pet.Event.StopListening((int)PetEventName.OnSkillCancel, KillSkill);
     }
 
     public override void OnUpdate()
@@ -56,8 +58,8 @@ public class OilSkillState : PetState
             oilPetSkill.Update(pet.Skilling, isSkillDragging);
         }
     }
-    #region Skill
 
+    #region Skill
     // Active skill
     private void OnSkill()
     {

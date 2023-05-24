@@ -92,9 +92,9 @@ public class LinePuzzle : MonoBehaviour
                 newObj.transform.position =
                     new Vector3
                     (
-                        -width / length * j * scaleWeight,
+                        -width / length * i * scaleWeight,
                         0f,
-                        -height / boardCnt * i * scaleWeight
+                        -height / boardCnt * j * scaleWeight
                     ) + offset;
 
 

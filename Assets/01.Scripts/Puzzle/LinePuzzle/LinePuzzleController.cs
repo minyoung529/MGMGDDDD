@@ -116,7 +116,8 @@ public class LinePuzzleController : MonoBehaviour
 
     public void InsertCurrentPiece(PlatformPiece piece)
     {
-        if (!SelectedPieces.Contains(piece))
+        int count = SelectedPieces.Count;
+        if (SelectedPieces.Count == 0 || SelectedPieces[count - 1] != piece)
         {
             SelectedPieces.Add(piece);
         }
@@ -216,6 +217,7 @@ public class LinePuzzleController : MonoBehaviour
         seq.Join(topCamera.transform.DOShakePosition(1.2f, 0.75f));
 
         seq.AppendCallback(() => linePuzzles[idx].StartGame(GetIsOilMove));
+        SelectedPieces?.Clear();
     }
 
     private void StartPaintingOil()
@@ -239,10 +241,14 @@ public class LinePuzzleController : MonoBehaviour
     private bool InvalidLine()
     {
         bool isInvalidLine = SelectedPiece == null || EndPiece == null; // Is Null
+
+        if (isInvalidLine)
+            return true;
+
         isInvalidLine |= SelectedPiece.Index < 0 || CurrentPuzzle.OilPortals.Count <= SelectedPiece.Index;  // Invalid Index
         isInvalidLine |= (EndPiece.Index != SelectedPiece.Index); // Is Different Node (EndPiece, SelectedPiece)
         isInvalidLine |= (EndPiece == SelectedPiece); // Is Same Node
-        isInvalidLine |= SelectedPieces.FindAll(x => x.Index >= 0).Count > 2; // Selected Nodes Count have to be two
+        isInvalidLine |= SelectedPieces.FindAll(x => EndPiece.Index != x.Index && x.Index >= 0).Count > 0; // Selected Nodes Count have to be two
 
         return isInvalidLine;
     }
