@@ -42,7 +42,7 @@ public class PaintingObject : MonoBehaviour
     private LayerMask layerMask;
 
     [SerializeField]
-    private Transform triggerRoots;
+    private OilRoot triggerRoots;
 
     private const int OIL_MAX_SIZE = 100;
 
@@ -51,8 +51,8 @@ public class PaintingObject : MonoBehaviour
     PaintStructure[] paintLogs = new PaintStructure[OIL_MAX_SIZE];
 
     [SerializeField]
-    private PaintedOil oilTriggerPrefab;
-    private List<PaintedOil> oilList = new List<PaintedOil>();
+    private Fire oilTriggerPrefab;
+    private List<Fire> oilList = new List<Fire>();
 
     private readonly float OIL_PAINT_DURATION = 0.5f;
 
@@ -86,16 +86,18 @@ public class PaintingObject : MonoBehaviour
     {
         prevPosition = transform.position;
         collider = GetComponent<SphereCollider>();
-        triggerRoots.SetParent(null);
+        triggerRoots.transform.SetParent(null);
+
+        triggerRoots.OnContactFirePet += Burn;
 
         for (int i = 0; i < OIL_MAX_SIZE; i++)
         {
-            PaintedOil oil = Instantiate(oilTriggerPrefab, triggerRoots);
-            oilList.Add(oil);
+            Fire fire = Instantiate(oilTriggerPrefab, triggerRoots.transform);
+            oilList.Add(fire);
+            triggerRoots.AddFire(fire);
 
-            oil.OnContactFirePet += Burn;
-            oil.gameObject.SetActive(false);
-            oil.transform.localScale = Vector3.one * radius * 1.5f;
+            fire.gameObject.SetActive(false);
+            fire.transform.localScale = Vector3.one * radius * 1.5f;
         }
     }
 
@@ -143,9 +145,9 @@ public class PaintingObject : MonoBehaviour
 
     void CreateOilPaint(Vector3 point, Paintable p)
     {
-        PaintedOil oil = oilList[curIdx];
-        oil.transform.position = point;
-        oil.gameObject.SetActive(true);
+        Transform oilTransform = oilList[curIdx].transform;
+        oilTransform.position = point;
+        oilTransform.gameObject.SetActive(true);
 
         PaintStructure paintData = new PaintStructure();
         paintData.DataSet(p, point, radius, 0.2f, 1f, color);
@@ -205,7 +207,7 @@ public class PaintingObject : MonoBehaviour
 
         OnResetOil?.Invoke();
         curIdx = 0;
-        oilList.ForEach(x => x.ResetOil());
+        triggerRoots.ResetAllOil();
         isBurning = false;
     }
 
@@ -214,7 +216,7 @@ public class PaintingObject : MonoBehaviour
         if (isBurning) return;
         isBurning = true;
 
-        int index = oilList.IndexOf((PaintedOil)sender);
+        int index = oilList.IndexOf((Fire)sender);
         StartCoroutine(BurnCoroutine(index));
     }
 
@@ -239,6 +241,7 @@ public class PaintingObject : MonoBehaviour
             yield return fireDelay;
         }
 
-        yield return new WaitForSeconds(oilList[index].BurnDuration);
+        yield return new WaitForSeconds(triggerRoots.BurnDuration);
+        isBurning = false;
     }
 }

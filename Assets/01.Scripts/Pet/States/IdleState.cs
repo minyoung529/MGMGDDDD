@@ -24,7 +24,7 @@ public class IdleState : PetState {
     }
 
     private void OnSetDestination() {
-            pet.State.ChangeState((int)PetStateName.Move);
+        pet.State.ChangeState((int)PetStateName.Move);
     }
 
     private void OnRecall() {

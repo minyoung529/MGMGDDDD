@@ -20,6 +20,8 @@ public class OilSkillState : PetState
     [SerializeField]
     private UnityEvent onOilSkill;
 
+    private Transform prevTransform;
+
     #region Property
     public Action OnStartSkill { get; set; }
     public Action OnEndSkill { get; set; }
@@ -38,6 +40,7 @@ public class OilSkillState : PetState
     public override void OnEnter()
     {
         pet.Event.StartListening((int)PetEventName.OnSkillKeyUp, SkillUp);
+        pet.Event.StartListening((int)PetEventName.OnSkillCancel, KillSkill);
 
         OnSkill();
     }
@@ -45,6 +48,7 @@ public class OilSkillState : PetState
     public override void OnExit()
     {
         pet.Event.StopListening((int)PetEventName.OnSkillKeyUp, SkillUp);
+        pet.Event.StopListening((int)PetEventName.OnSkillCancel, KillSkill);
     }
 
     public override void OnUpdate()
@@ -54,8 +58,8 @@ public class OilSkillState : PetState
             oilPetSkill.Update(pet.Skilling, isSkillDragging);
         }
     }
-    #region Skill
 
+    #region Skill
     // Active skill
     private void OnSkill()
     {
@@ -70,7 +74,7 @@ public class OilSkillState : PetState
 
     public void SpreadOil()
     {
-        if (pet.Skilling && IsDirectSpread)
+        if (pet.Skilling)
         {
             oilPetSkill.StartSpreadOil(() => pet.SetNavIsStopped(true), OnEndPath);
             onOilSkill?.Invoke();
@@ -80,7 +84,9 @@ public class OilSkillState : PetState
 
     private void OnEndPath()
     {
+        prevTransform = pet.Target;
         pet.SetTarget(null);
+
         pet.SetNavIsStopped(false);
         ResetSkill();
         pet.IsMovePointLock = false;
@@ -99,7 +105,6 @@ public class OilSkillState : PetState
         {
             pet.SetTarget(null);
             pet.SetDestination(oilPetSkill.StartPoint, stopDistance: 0);
-            //oilStartTransform.position = oilPetSkill.StartPoint;
 
             pet.State.ChangeState((int)PetStateName.Move);
             pet.Event.StartListening((int)PetEventName.OnArrive, SpreadOil);
@@ -113,7 +118,7 @@ public class OilSkillState : PetState
         pauseSkilling = pause;
     }
 
-    private void KillSkill()
+    public void KillSkill()
     {
         oilPetSkill.KillSkill();
         OnEndPath();
@@ -122,7 +127,7 @@ public class OilSkillState : PetState
     private void ResetSkill()
     {
         pet.Skilling = false;
-        pet.SetTargetPlayer();
+        pet.SetTarget(prevTransform);
         StopListeningEvents();
     }
 

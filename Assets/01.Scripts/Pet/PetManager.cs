@@ -30,6 +30,18 @@ public class PetManager : MonoSingleton<PetManager>
     [SerializeField]
     private GameObject[] petPrefabs;
 
+    public Pet GetPetByKind<T>() where T : Pet
+    {
+        Pet pet = null;
+
+        foreach (Pet p in pets)
+        {
+            pet ??= p.GetComponent<T>();
+        }
+
+        return pet;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -196,6 +208,8 @@ public class PetManager : MonoSingleton<PetManager>
     public void SelectPet(InputAction input, float index)
     {
         if (pets.Count <= 0) return;
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
+
         switch (input)
         {
             case InputAction.Select_First_Pet:
@@ -221,6 +235,8 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void SelectPet(int index)
     {
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
+
         selectIndex = index;
         OnSelectPetUI(selectIndex);
     }

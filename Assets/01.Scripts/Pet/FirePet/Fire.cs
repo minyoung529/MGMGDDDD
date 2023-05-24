@@ -156,7 +156,6 @@ public class Fire : MonoBehaviour
         {
             if (f.IsBurn) continue;
             transform.DOKill();
-
             f.Burn(true);
         }
     }
@@ -177,6 +176,7 @@ public class Fire : MonoBehaviour
         foreach (Fire f in fires)
         {
             if (f.IsBurn) continue;
+
             transform.DOKill();
             f.Burn(true);
         }

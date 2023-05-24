@@ -8,9 +8,9 @@ public class WallMove : MonoBehaviour
 
     void Awake()
     {
-        tileMoves = new TileMoveController[transform.childCount];
+        tileMoves = new TileMoveController[transform.childCount - 1];
 
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount - 1; i++)
         {
             tileMoves[i] = transform.GetChild(i).GetComponent<TileMoveController>();
         }
@@ -19,7 +19,7 @@ public class WallMove : MonoBehaviour
     [ContextMenu("MOVE WALL")]
     public void MoveWall()
     {
-        foreach(TileMoveController moveController in tileMoves)
+        foreach (TileMoveController moveController in tileMoves)
         {
             moveController.SetActivate();
         }

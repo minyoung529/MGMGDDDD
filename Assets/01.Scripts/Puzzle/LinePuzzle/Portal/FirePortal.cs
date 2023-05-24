@@ -6,6 +6,7 @@ using UnityEngine;
 public class FirePortal : ConnectionPortal
 {
     public Action OnFire { get; set; }
+    private Func<bool> CanBurn;
     private Fire fire;
 
     int key = 0;
@@ -19,7 +20,7 @@ public class FirePortal : ConnectionPortal
         {
             fire ??= other.GetComponent<Fire>();
 
-            if (fire.IsBurn && !LinePuzzleController.IsOilMove)
+            if (fire.IsBurn && !CanBurn.Invoke())
             {
                 fireKey = key;
                 OnFire?.Invoke();
@@ -35,8 +36,13 @@ public class FirePortal : ConnectionPortal
         }
     }
 
-    public void Listen(Action action)
+    public void StartListeningBurn(Action action)
     {
         OnFire += action;
+    }
+
+    public void StartListeningCanBurn(Func<bool> func)
+    {
+        CanBurn += func;
     }
 }

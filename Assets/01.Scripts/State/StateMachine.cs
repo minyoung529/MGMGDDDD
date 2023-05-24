@@ -27,7 +27,10 @@ public class StateMachine<T> {
 
     public void ChangeState(int index) {
         if (states[index].fence > 0)
+        {
+            Debug.Log((PetStateName)index);
             return;
+        }
 
         curState?.OnExit();
         curStateIndex = index;
