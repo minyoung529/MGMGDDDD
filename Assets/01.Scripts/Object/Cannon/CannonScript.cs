@@ -43,6 +43,8 @@ public class CannonScript : MonoBehaviour
 
     public void GetInCannon(Pet pet)
     {
+        if (this.pet != null) return;
+
         this.pet = pet;
         if (check)
         {
