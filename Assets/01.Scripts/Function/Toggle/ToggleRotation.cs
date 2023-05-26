@@ -30,6 +30,7 @@ public class ToggleRotation : MonoBehaviour
     [ContextMenu("Trigger")]
     public void Trigger()
     {
+        Debug.Log("Trigger");
         if (isOpen)
             Close();
         else
@@ -41,6 +42,8 @@ public class ToggleRotation : MonoBehaviour
     public void Open()
     {
         transform.DOKill();
+
+        Debug.Log("Open");
 
         if (isLocal)
         {
@@ -54,6 +57,7 @@ public class ToggleRotation : MonoBehaviour
 
     public void Close()
     {
+        Debug.Log("Close");
         transform.DOKill();
 
         if (isLocal)

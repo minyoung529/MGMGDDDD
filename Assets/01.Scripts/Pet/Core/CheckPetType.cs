@@ -42,6 +42,7 @@ public class CheckPetType : MonoBehaviour
 
     public void ActivePet(Transform arrivePos)
     {
+        inPet.SetNavEnabled(false);
         inPet.transform.position = arrivePos.position;
         inPet.Rigid.velocity = Vector3.zero;
         inPet.Rigid.isKinematic = false;
