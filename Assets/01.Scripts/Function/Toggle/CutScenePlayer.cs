@@ -1,30 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
-public class ToggleCutScene : MonoBehaviour
+public class CutScenePlayer : MonoBehaviour
 {
-    [SerializeField] private string cutSceneName;
-
     [SerializeField]
     private LayerMask layerMask;
 
     [SerializeField]
     private bool isCollide = true;
 
-    private bool isPlay = false;
-
     [SerializeField]
     private float speed = 1f;
 
     [SerializeField]
-    private bool isStart = false;
+    private bool playOnAwake = false;
+
+    private PlayableDirector director;
+
+    void Awake()
+    {
+        director = GetComponent<PlayableDirector>();
+    }
 
     private void Start()
     {
-        if(isStart)
+        if (playOnAwake)
         {
-            Trigger();
+            Play();
         }
     }
 
@@ -33,15 +37,13 @@ public class ToggleCutScene : MonoBehaviour
         if (isCollide)
         {
             if (((1 << other.gameObject.layer) & layerMask) != 0)
-                Trigger();
+                Play();
         }
     }
 
-    public void Trigger()
+    [ContextMenu("Play")]
+    public void Play()
     {
-        if (isPlay) return;
-
-        isPlay = true;
         CameraSwitcher.ChangeSwitchBlend(2f);
         StartCoroutine(DelayOneFrame());
     }
@@ -49,6 +51,6 @@ public class ToggleCutScene : MonoBehaviour
     private IEnumerator DelayOneFrame()
     {
         yield return null;
-        GameManager.Instance.CutSceneManager.Play(cutSceneName, speed);
+        CutSceneManager.Instance.Play(director, speed);
     }
 }

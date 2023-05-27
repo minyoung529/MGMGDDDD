@@ -12,7 +12,10 @@ public class CubePuzzle : MonoBehaviour
     private bool hasCube = false;
     [SerializeField] private Renderer bottomRenderer;
 
-    private Rigidbody cubeRigid;
+    #region  Installed Cube
+    private CubeObject cubeObject;
+    private int cubeIdx = 0;
+    #endregion
 
     private readonly string CUBE_PUZZPE_TAG = "CubePuzzle";
 
@@ -20,25 +23,13 @@ public class CubePuzzle : MonoBehaviour
 
     [SerializeField] private UnityEvent<Transform> onPuttedCube;
 
+    [SerializeField]
+    private HotAirController hotAirController;
 
     private void Start()
     {
         index = transform.GetSiblingIndex();
         OnSuccess += LightBottom;
-    }
-
-    private void Update()
-    {
-        if (hasCube && cubeRigid)
-        {
-            Vector3 cubePos = cubeRigid.position;
-            cubePos.y = bottomRenderer.transform.position.y;
-
-            if (Vector3.Distance(cubePos, bottomRenderer.transform.position) > 0.1f)
-            {
-                ResetPuzzle();
-            }
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,10 +44,14 @@ public class CubePuzzle : MonoBehaviour
     {
         if (hasCube || isSuccess) return;
 
-        cubeRigid = other.attachedRigidbody;
+        cubeObject = other.GetComponent<CubeObject>();
+        cubeObject.Installed();
+
         MoveCubeToCenter(other.transform, () => hasCube = true);
 
-        if (int.Parse(other.gameObject.name) == index)
+        cubeIdx= int.Parse(other.gameObject.name);
+
+        if (cubeIdx == index)
         {
             isSuccess = true;
             OnSuccess?.Invoke(index + 1000);
@@ -68,7 +63,7 @@ public class CubePuzzle : MonoBehaviour
 
         onPuttedCube?.Invoke(other.transform);
 
-        cubeRigid.GetComponent<Sticky>().OffSticky();
+        hotAirController.SetIndex(cubeIdx, index);
     }
 
     public void ResetPuzzle()
@@ -76,7 +71,9 @@ public class CubePuzzle : MonoBehaviour
         hasCube = false;
         isSuccess = false;
         bottomRenderer.material.SetColor("_EmissionColor", Color.white);
-        cubeRigid = null;
+        cubeObject?.Respawn();
+        cubeObject = null;
+        hotAirController.OnReset(cubeIdx);
     }
 
     #region SUCCESS
@@ -88,13 +85,11 @@ public class CubePuzzle : MonoBehaviour
 
     private void MoveCubeToCenter(Transform cube, Action onEnd)
     {
-        cubeRigid.constraints = RigidbodyConstraints.FreezeAll;
-
         Vector3 center = bottomRenderer.transform.position;
         center.y = bottomRenderer.transform.position.y;
 
         cube.DOMove(center, 0.5f).OnComplete(() => onEnd.Invoke());
-        cube.DOLocalRotate(Vector3.zero, 0.5f);
+        cube.DOLocalRotate(Vector3.up * 90f, 0.5f);
     }
     #endregion
 
@@ -105,26 +100,4 @@ public class CubePuzzle : MonoBehaviour
         else
             OnSuccess -= action;
     }
-
-    #region RESPAWN
-    public void Respawn()
-    {
-        if (!cubeRigid) return;
-        StartCoroutine(RespawnCoroutine());
-    }
-
-    private IEnumerator RespawnCoroutine()
-    {
-        Transform cubeTransform = cubeRigid.transform;
-        float targetY = cubeTransform.position.y - 4f;
-        cubeTransform.GetComponent<Collider>().enabled = false;
-        cubeRigid.constraints = RigidbodyConstraints.FreezeRotation;
-        while (cubeTransform.position.y - targetY > 0.1f)
-        {
-            yield return null;
-        }
-        cubeTransform.GetComponent<RespawnObject>().Respawn();
-        cubeRigid = null;
-    }
-    #endregion
 }

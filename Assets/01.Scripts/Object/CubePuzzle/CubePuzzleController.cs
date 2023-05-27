@@ -45,39 +45,10 @@ public class CubePuzzleController : MonoBehaviour
         }
     }
 
-    [ContextMenu("ButtonTest")]
-    public void CheckSuccess()
-    {
-        if (SuccessCnt == cubeCount)
-        {
-            SolvePuzzle();
-        }
-        else
-        {
-            OnPressButton?.Invoke(SuccessCnt);
-            ResetPuzzle();
-        }
-    }
-
     [ContextMenu("SolvePuzzle")]
     private void SolvePuzzle()
     {
-        Debug.Log("SOLVE");
         OnSolvePuzzle?.Invoke(SuccessCnt);
-    }
-
-    public void ResetPuzzle()
-    {
-        for (int i = 0; i < cubeCount; i++)
-        {
-            visited[i] = false;
-        }
-
-        foreach (CubePuzzle item in cubePuzzles)
-        {
-            item.ResetPuzzle();
-            item.Respawn();
-        }
     }
 
     public bool IsVisited(int v)

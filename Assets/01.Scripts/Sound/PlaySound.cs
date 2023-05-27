@@ -26,6 +26,7 @@ public class PlaySound : MonoBehaviour
 
     private AudioSourceObject audioSourceObject;
 
+    [ContextMenu("Play")]
     public void Play()
     {
         if (audioClip == null) return;

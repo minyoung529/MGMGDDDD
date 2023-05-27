@@ -31,6 +31,9 @@ public class ThirdPersonCameraControll : MonoBehaviour
         ResetCamera();
 
         animator = GetComponent<Animator>();
+
+        CutSceneManager.Instance.AddStartCutscene(InactiveCrossHair);
+        CutSceneManager.Instance.AddEndCutscene(ActiveCrossHair);
     }
 
     private void Update()
@@ -74,7 +77,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
     {
         Vector3 xZeroDir = dir.MultiplyVec(new Vector3(0f, 1f, 1f));
         float yAxis = Vector3.Angle(xZeroDir, Vector3.down);
-        
+
         return 1f - yAxis / 180f;
     }
 
@@ -115,7 +118,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void OnDestroy()
     {
-        CutSceneManager.RemoveStartCutscene(InactiveCrossHair);
-        CutSceneManager.RemoveEndCutscene(ActiveCrossHair);
+        CutSceneManager.Instance?.RemoveStartCutscene(InactiveCrossHair);
+        CutSceneManager.Instance?.RemoveEndCutscene(ActiveCrossHair);
     }
 }
