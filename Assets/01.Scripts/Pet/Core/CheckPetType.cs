@@ -6,8 +6,6 @@ using UnityEngine.Events;
 public class CheckPetType : MonoBehaviour
 {
     [SerializeField] PetType correctPetType;
-    [SerializeField] Transform correctPos;
-    [SerializeField] Transform failedPos;
 
     [SerializeField] UnityEvent correctEvent;
     [SerializeField] UnityEvent failEvent;

@@ -21,19 +21,31 @@ public class PlayerHold : PlayerMono {
     private Pet holdingPet;
     private bool isHolding;
 
+    private float defaultAngle;
+    private float defaultPower;
     private void Awake() {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
+
+        defaultAngle = throwAngle;
+        defaultPower = throwPow;
     }
 
     public void SetThrowAngle(float value)
     {
+        if (value > 90) value = 90;
         throwAngle= value;
     }
     
     public void SetThrowPower(float value)
     {
         throwPow = value;
+    }
+    
+    public void SetDefault()
+    {
+        SetThrowPower(defaultPower);
+        SetThrowAngle(defaultAngle);
     }
 
     private void GetInput(InputAction action, float value) {
