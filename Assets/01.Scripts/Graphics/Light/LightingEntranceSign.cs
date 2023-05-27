@@ -82,7 +82,7 @@ public class LightingEntranceSign : MonoBehaviour
             StartLighting();
     }
 
-    void StartLighting()
+    public void StartLighting()
     {
         StartCoroutine(LoopLighting());
     }
