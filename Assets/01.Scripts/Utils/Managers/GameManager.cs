@@ -16,19 +16,6 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-    private CutSceneManager cutSceneManager;
-    public CutSceneManager CutSceneManager
-    {
-        get
-        {
-            if (cutSceneManager)
-                return cutSceneManager;
-
-            cutSceneManager = FindObjectOfType<CutSceneManager>();
-            return cutSceneManager;
-        }
-    }
-
     #region CORE
     public UIManager UI { get; private set; } = new UIManager();
     #endregion

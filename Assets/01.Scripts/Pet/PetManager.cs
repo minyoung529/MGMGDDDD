@@ -47,8 +47,8 @@ public class PetManager : MonoSingleton<PetManager>
         base.Awake();
 
         StartListen();
-        CutSceneManager.AddStartCutscene(InactivePetCanvas);
-        CutSceneManager.AddEndCutscene(ActivePetCanvas);
+        CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
+        CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
     }
 
     private void Start()
@@ -73,7 +73,7 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i].OnUpdate();
         }
 
-       Debug_CreateAndGetPet();
+        Debug_CreateAndGetPet();
     }
 
     public bool IsGet(Pet p)
@@ -83,9 +83,12 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnDestroy()
     {
-        CutSceneManager.RemoveStartCutscene(InactivePetCanvas);
-        CutSceneManager.RemoveEndCutscene(ActivePetCanvas);
-        StopListen();
+        if (gameObject)
+        {
+            CutSceneManager.Instance.RemoveStartCutscene(InactivePetCanvas);
+            CutSceneManager.Instance.RemoveEndCutscene(ActivePetCanvas);
+            StopListen();
+        }
     }
 
     #region Listen

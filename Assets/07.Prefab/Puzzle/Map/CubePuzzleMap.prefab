@@ -8455,7 +8455,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4988
+  m_VersionIndex: 5003
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -17829,6 +17829,7 @@ GameObject:
   - component: {fileID: 3615903827451033601}
   - component: {fileID: 28202013072159550}
   - component: {fileID: 1908085176}
+  - component: {fileID: 2045885000}
   m_Layer: 0
   m_Name: Bridge (Cutscene)
   m_TagString: Untagged
@@ -17946,6 +17947,24 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2045885000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8754215103753887018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d83042948f118840ba01f9147afc5a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  isCollide: 0
+  speed: 1
+  playOnAwake: 0
 --- !u!1 &8883963969935986868
 GameObject:
   m_ObjectHideFlags: 0
@@ -20932,7 +20951,15 @@ PrefabInstance:
     - target: {fileID: 612076592292969541, guid: 8c620fe3018e188409cd5907e9c2b1bb, type: 3}
       propertyPath: fireEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 3615903827451033601}
+      objectReference: {fileID: 2045885000}
+    - target: {fileID: 612076592292969541, guid: 8c620fe3018e188409cd5907e9c2b1bb, type: 3}
+      propertyPath: fireEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Play
+      objectReference: {fileID: 0}
+    - target: {fileID: 612076592292969541, guid: 8c620fe3018e188409cd5907e9c2b1bb, type: 3}
+      propertyPath: fireEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CutScenePlayer, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1386677245732218674, guid: 8c620fe3018e188409cd5907e9c2b1bb, type: 3}
       propertyPath: m_NavMeshData
       value: 
@@ -21792,7 +21819,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 5000
+      value: 5015
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -24265,7 +24292,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 4385
+      value: 4400
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456531, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_RootOrder
@@ -24342,7 +24369,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4799125767608456535, guid: 59785471338618a4482aba317f5fa49c, type: 3}
   m_PrefabInstance: {fileID: 6158442436957325300}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &2045885000
+--- !u!54 &6331560699910587574
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
