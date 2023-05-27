@@ -13,6 +13,7 @@ public class CannonDirectorBinding : MonoBehaviour
 
     public void PetEmotionTrackBinding()
     {
+        Debug.Log((int)check.GetInputPet);
         DirectorTrackBinding.Binding(failDirector, "PetEmotionTrack", pets[(int)check.GetInputPet].GetComponent<PetEmotion>());
         DirectorTrackBinding.Binding(failDirector, "PetActivation", pets[(int)check.GetInputPet].gameObject);
         DirectorTrackBinding.Binding(failDirector, "PetTransformTrack", pets[(int)check.GetInputPet].transform);
@@ -20,7 +21,7 @@ public class CannonDirectorBinding : MonoBehaviour
 
     public void PetStickyBinding()
     {
-        DirectorTrackBinding.Binding(correctDirector, "PetTransformTrack", PetManager.Instance.GetPetByKind<StickyPet>().transform);
-        DirectorTrackBinding.Binding(correctDirector, "StickyPetActive", PetManager.Instance.GetPetByKind<StickyPet>().gameObject);
+        DirectorTrackBinding.Binding(correctDirector, "PetTransformTrack", PetManager.Instance.GetPetByKind<FirePet>().transform);
+        DirectorTrackBinding.Binding(correctDirector, "StickyPetActive", PetManager.Instance.GetPetByKind<FirePet>().gameObject);
     }
 }

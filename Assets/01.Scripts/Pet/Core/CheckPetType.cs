@@ -6,8 +6,6 @@ using UnityEngine.Events;
 public class CheckPetType : MonoBehaviour
 {
     [SerializeField] PetType correctPetType;
-    [SerializeField] Transform correctPos;
-    [SerializeField] Transform failedPos;
 
     [SerializeField] UnityEvent correctEvent;
     [SerializeField] UnityEvent failEvent;
@@ -42,6 +40,7 @@ public class CheckPetType : MonoBehaviour
 
     public void ActivePet(Transform arrivePos)
     {
+        inPet.SetNavEnabled(false);
         inPet.transform.position = arrivePos.position;
         inPet.Rigid.velocity = Vector3.zero;
         inPet.Rigid.isKinematic = false;

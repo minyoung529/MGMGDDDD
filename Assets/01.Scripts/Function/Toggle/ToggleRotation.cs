@@ -54,6 +54,7 @@ public class ToggleRotation : MonoBehaviour
 
     public void Close()
     {
+        Debug.Log("Close");
         transform.DOKill();
 
         if (isLocal)
