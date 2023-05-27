@@ -13,7 +13,9 @@ public class TogglePosition : MonoBehaviour
     public Vector3 MoveDir => targetPos;
 
     [SerializeField] private UnityEvent OnOpen;
+    [SerializeField] private UnityEvent OnOpenComplete;
     [SerializeField] private UnityEvent OnClose;
+    [SerializeField] private UnityEvent OnCloseComplete;
 
     [SerializeField] Ease ease = Ease.Unset;
 
@@ -66,11 +68,11 @@ public class TogglePosition : MonoBehaviour
 
         if (isLocal)
         {
-            transform.DOLocalMove(originalPos + targetPos, duration).SetEase(ease);
+            transform.DOLocalMove(originalPos + targetPos, duration).OnComplete(() => OnOpenComplete?.Invoke()).SetEase(ease);
         }
         else
         {
-            transform.DOMove(originalPos + targetPos, duration).SetEase(ease);
+            transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnOpenComplete?.Invoke()).SetEase(ease);
         }
 
         OnOpen?.Invoke();
@@ -84,11 +86,11 @@ public class TogglePosition : MonoBehaviour
 
         if (isLocal)
         {
-            transform.DOLocalMove(originalPos, duration).SetEase(ease);
+            transform.DOLocalMove(originalPos, duration).OnComplete(() => OnCloseComplete?.Invoke()).SetEase(ease);
         }
         else
         {
-            transform.DOMove(originalPos, duration).SetEase(ease);
+            transform.DOMove(originalPos, duration).OnComplete(() => OnCloseComplete?.Invoke()).SetEase(ease);
         }
 
         OnClose?.Invoke();
