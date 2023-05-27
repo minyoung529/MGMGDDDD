@@ -83,12 +83,9 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnDestroy()
     {
-        if (gameObject)
-        {
-            CutSceneManager.Instance.RemoveStartCutscene(InactivePetCanvas);
-            CutSceneManager.Instance.RemoveEndCutscene(ActivePetCanvas);
-            StopListen();
-        }
+        CutSceneManager.Instance?.RemoveStartCutscene(InactivePetCanvas);
+        CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
+        StopListen();
     }
 
     #region Listen

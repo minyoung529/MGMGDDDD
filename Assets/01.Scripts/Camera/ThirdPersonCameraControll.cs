@@ -118,10 +118,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (gameObject)
-        {
-            CutSceneManager.Instance.RemoveStartCutscene(InactiveCrossHair);
-            CutSceneManager.Instance.RemoveEndCutscene(ActiveCrossHair);
-        }
+        CutSceneManager.Instance?.RemoveStartCutscene(InactiveCrossHair);
+        CutSceneManager.Instance?.RemoveEndCutscene(ActiveCrossHair);
     }
 }
