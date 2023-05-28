@@ -284,8 +284,9 @@ public class PetManager : MonoSingleton<PetManager>
         ActivePetUI(selectIndex);
         SelectPet(selectIndex);
     }
-    public void DeletePet(Pet p)
+    public void DeletePet(PetType type)
     {
+        Pet p = GetPetByKind<StickyPet>();
         int index = pets.IndexOf(p);
         DisablePetUI(index);
 

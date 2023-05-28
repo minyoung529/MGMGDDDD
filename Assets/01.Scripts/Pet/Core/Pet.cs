@@ -139,11 +139,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
         SetTargetPlayer();
         PetManager.Instance.AddPet(this);
     }
-    public void LosePet()
-    {
-        ResetPet();
-        PetManager.Instance.DeletePet(this);
-    }
     #endregion
 
     #region Skill
