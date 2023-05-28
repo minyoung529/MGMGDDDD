@@ -69,4 +69,14 @@ public class CutSceneManager : MonoSingleton<CutSceneManager>
         bottomBar.rectTransform.DOAnchorPosY(0, 1f);
         topBar.rectTransform.DOAnchorPosY(0, 1f);
     }
+
+    public void EnterCutscene()
+    {
+        OnCutsceneStart?.Invoke();
+    }
+
+    public void ExitCutscene()
+    {
+        OnCutsceneEnd?.Invoke();
+    }
 }

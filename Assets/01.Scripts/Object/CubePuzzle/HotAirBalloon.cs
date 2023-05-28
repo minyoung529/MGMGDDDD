@@ -22,9 +22,11 @@ public class HotAirBalloon : MonoBehaviour
         particle.transform.SetParent(transform.parent);
         gameObject?.SetActive(false);
     }
-    
+
     public void MoveCubeToThis(int index)
     {
+        if (gameObject.activeSelf) return;
+
         gameObject?.SetActive(true);
         transform.localPosition = recordedPositions[index];
         particle?.Play();
@@ -33,6 +35,8 @@ public class HotAirBalloon : MonoBehaviour
 
     public void OnReset()
     {
+        if (!gameObject.activeSelf) return;
+
         particle?.Play();
         gameObject?.SetActive(false);
         onReset?.Invoke();
