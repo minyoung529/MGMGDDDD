@@ -27,7 +27,6 @@ public class CubeObject : MonoBehaviour
         if (rigid && isInstalled)
         {
             rigid.constraints = RigidbodyConstraints.FreezeAll;
-            Debug.Log("FREEZEALL");
         }
     }
 
