@@ -29,6 +29,11 @@ public class HotAirController : MonoBehaviour
         if (cubeIdx == puzzleIdx)
         {
             clearChecker[cubeIdx] = true;
+
+            if (CheckClear())
+            {
+                Clear();
+            }
         }
     }
 
@@ -42,5 +47,16 @@ public class HotAirController : MonoBehaviour
     private void Clear()
     {
         onClear?.Invoke();
+    }
+
+    private bool CheckClear()
+    {
+        foreach (bool b in clearChecker)
+        {
+            if (!b)
+                return false;
+        }
+
+        return true;
     }
 }
