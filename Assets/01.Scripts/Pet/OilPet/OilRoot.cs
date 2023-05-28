@@ -30,7 +30,6 @@ public class OilRoot : MonoBehaviour
             firePet ??= obj.GetComponent<Fire>();
             if (firePet.gameObject == obj.gameObject && firePet.IsBurn)
             {
-                Debug.Log(obj.name);
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);
             }
         }
@@ -40,7 +39,6 @@ public class OilRoot : MonoBehaviour
 
             if (fire != null && fire.IsBurn)
             {
-                Debug.Log(obj.name);
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);
             }
         }
