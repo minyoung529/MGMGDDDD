@@ -63,17 +63,21 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// </summary>
     /// <param name="clip">Audio clip to play</param>
     /// <param name="pos"></param>
-    public AudioSourceObject PlayEffect(AudioClip clip, Vector3 pos, float volumeScale = 1f)
+    public AudioSourceObject PlayEffect(AudioClip clip, Vector3 pos, float volumeScale = 1f, bool loop = false)
     {
         AudioSourceObject obj = pool.Get();
         AudioSource audio = obj.AudioSource;
 
-        obj.transform.position = pos;
+        if (pos != Vector3.zero)
+        {
+            obj.transform.position = pos;
+        }
         audio.clip = clip;
         audio.volume = volumeScale;
+        audio.loop = loop;
         audio.Play();
 
-        obj.SetClipDuration(clip.length);
+        if (!loop) obj.SetClipDuration(clip.length);
         return obj;
     }
     #endregion
@@ -145,7 +149,7 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// <summary>
     /// Play BGM
     /// </summary>
-    public void PlayMusic(AudioClip clip)
+    public void PlayMusic(AudioClip clip, bool loop = false)
     {
         musicSource.clip = clip;
         musicSource.Play();

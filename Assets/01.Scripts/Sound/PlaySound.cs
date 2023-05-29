@@ -18,6 +18,12 @@ public class PlaySound : MonoBehaviour
     private SoundType soundType;
 
     [SerializeField]
+    private bool playOnAwake;
+
+    [SerializeField]
+    private bool loop;
+
+    [SerializeField]
     [Tooltip("If this variable is true, sound will play at object's position")]
     private bool isPositioning = false;
 
@@ -25,6 +31,14 @@ public class PlaySound : MonoBehaviour
     private float volume = 1f;
 
     private AudioSourceObject audioSourceObject;
+
+    private void Start()
+    {
+        if(playOnAwake)
+        {
+            Play();
+        }
+    }
 
     [ContextMenu("Play")]
     public void Play()
@@ -41,11 +55,12 @@ public class PlaySound : MonoBehaviour
                 {
                     if (isPositioning)
                     {
-                        audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position);
+                        audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position, volume, loop);
                     }
                     else
                     {
-                        SoundManager.Instance.PlayEffect(audioClip);
+                    Debug.Log(loop);
+                        SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
                     }
                 }
                 break;
