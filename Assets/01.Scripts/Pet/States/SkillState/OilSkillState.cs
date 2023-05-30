@@ -86,9 +86,9 @@ public class OilSkillState : PetState
     {
         prevTransform = pet.Target;
         pet.SetTarget(null);
+        StopListeningEvents();
 
         pet.SetNavIsStopped(false);
-        ResetSkill();
         pet.IsMovePointLock = false;
     }
 
@@ -120,8 +120,15 @@ public class OilSkillState : PetState
 
     public void KillSkill()
     {
+        isSkillDragging = false;
+        pet.Skilling = false;
+
+        pauseSkilling = false;
+
         oilPetSkill.KillSkill();
         OnEndPath();
+
+        pet.State.ChangeState((int)PetStateName.Idle);
     }
 
     private void ResetSkill()
