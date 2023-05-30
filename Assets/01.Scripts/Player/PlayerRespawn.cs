@@ -3,11 +3,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerRespawn : PlayerMono {
+public class PlayerRespawn : PlayerMono
+{
     [SerializeField] private ParticleSystem dieParticlePref;
     [SerializeField] private float respawnDelay = 2f;
     [SerializeField] private float deadLineY = -30f;
-    [SerializeField] private UnityEvent respawnEvent; 
+    [SerializeField] private UnityEvent respawnEvent;
     [SerializeField] private UnityEvent startFadeIn;
 
     private Transform pointParent;
@@ -21,7 +22,10 @@ public class PlayerRespawn : PlayerMono {
     [Header("Prefab")]
     private CanvasGroup dieCanvas;
 
-    private void Awake() {
+    private bool isDie = false;
+
+    private void Awake()
+    {
         CanvasGroup canvasPrefab = Resources.Load<CanvasGroup>("DieCanvas");
         dieCanvas = Instantiate(canvasPrefab);
 
@@ -34,49 +38,63 @@ public class PlayerRespawn : PlayerMono {
         points = pointParent.GetComponentsInChildren<Transform>();
     }
 
-    private void Update() {
+    private void Update()
+    {
         CheckSpawnPoint();
         CheckFallDown();
     }
 
-    private void CheckSpawnPoint() {
+    private void CheckSpawnPoint()
+    {
         if (points == null) return;
 
-        for(int i = maxIndex + 1; i < points.Length; i++) {
+        for (int i = maxIndex + 1; i < points.Length; i++)
+        {
             Vector3 dir = transform.position - points[i].position;
-            if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0) {
+            if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0)
+            {
                 maxIndex = i;
             }
         }
 
         float min = float.MaxValue;
-        for(int i = 1; i <= maxIndex; i++) {
+        for (int i = 1; i <= maxIndex; i++)
+        {
             Vector3 dir = transform.position - points[i].position;
             float distance = dir.magnitude;
-            if(distance < min) {
+            if (distance < min)
+            {
                 min = distance;
                 curIndex = i;
             }
         }
     }
 
-    private void CheckFallDown() {
-        if(transform.position.y <= deadLineY) {
+    private void CheckFallDown()
+    {
+        if (transform.position.y <= deadLineY)
+        {
             EventManager.TriggerEvent(EventName.PlayerDie);
         }
     }
 
-    private void OnDie(EventParam param = null) {
+    private void OnDie(EventParam param = null)
+    {
         if (param == null || !param.Contain("position"))
             Respawn(CurRespawnPoint);
         else
             Respawn((Vector3)param["position"]);
     }
 
-    private void Respawn(Vector3 point) {
+    private void Respawn(Vector3 point)
+    {
         //gameObject.SetActive(false);
 
-        if (dieParticle) {
+        if (isDie) return;
+        isDie = true;
+
+        if (dieParticle)
+        {
             dieParticle.Stop();
             dieParticle.transform.position = transform.position;
             dieParticle.Play();
@@ -85,23 +103,25 @@ public class PlayerRespawn : PlayerMono {
         Sequence seq = DOTween.Sequence();
         dieCanvas.gameObject.SetActive(true);
         PetManager.Instance.AllPetActions(x => x.transform.position = point);
-        
+
         startFadeIn?.Invoke();
 
         seq.Append(dieCanvas.DOFade(1f, 1f));
         seq.AppendInterval(0.8f);
-        seq.AppendCallback(() => {
+        seq.AppendCallback(() =>
+        {
             //gameObject.SetActive(true);
             controller.Move.ChangeState(PlayerStateName.DefaultMove);
 
             transform.position = point;
         });
         seq.AppendCallback(() => Time.timeScale = 1f);
-        seq.AppendCallback(()=>respawnEvent?.Invoke());
+        seq.AppendCallback(() => respawnEvent?.Invoke());
         seq.Append(dieCanvas.DOFade(0f, 1f));
-        seq.AppendCallback(() => 
+        seq.AppendCallback(() =>
         {
             dieCanvas.gameObject.SetActive(false);
+            isDie = false;
         });
     }
 

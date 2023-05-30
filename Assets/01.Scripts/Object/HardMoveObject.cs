@@ -24,7 +24,7 @@ public class HardMoveObject : MonoBehaviour
         rigidbodyConstraints = rigid.constraints;
 
         OilPetSkill.OnClearOil += UnMove;
-        UnMove();
+        rigid.constraints = RigidbodyConstraints.FreezeAll ^ RigidbodyConstraints.FreezePositionY;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -83,7 +83,7 @@ public class HardMoveObject : MonoBehaviour
         onUnMove?.Invoke();
 
         enterIdx = 0;
-        rigid.constraints = RigidbodyConstraints.FreezeAll;
+        rigid.constraints = RigidbodyConstraints.FreezeAll ^ RigidbodyConstraints.FreezePositionY;
     }
 
     private void OnDestroy()

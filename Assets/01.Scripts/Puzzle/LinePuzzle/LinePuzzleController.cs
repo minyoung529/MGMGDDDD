@@ -70,7 +70,7 @@ public class LinePuzzleController : MonoBehaviour
             ResetBoard();
         }
 
-        if(Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.G))
         {
             GetNextPuzzle();
         }
@@ -141,7 +141,7 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.SkillState.OnStartSkill -= StartPaintingOil;
         oilPet.SkillState.SkillData.IsCheckDistance = true;
 
-            onExitGame?.Invoke();
+        onExitGame?.Invoke();
     }
 
     private void StartGame()
@@ -256,5 +256,34 @@ public class LinePuzzleController : MonoBehaviour
         isInvalidLine |= SelectedPieces.FindAll(x => EndPiece.Index != x.Index && x.Index >= 0).Count > 0; // Selected Nodes Count have to be two
 
         return isInvalidLine;
+    }
+
+    [ContextMenu("Open")]
+    public void Open()
+    {
+        for (int i = 1; i < linePuzzles.Length; i++)
+        {
+            linePuzzles[i].gameObject.SetActive(false);
+        }
+
+        int boardCount = linePuzzles[0].BoardCount;
+        int powBoardCount = Mathf.RoundToInt(Mathf.Pow((float)linePuzzles[0].BoardCount, 2f));
+
+        for (int i = 0; i < powBoardCount; i++)
+        {
+            Transform board = linePuzzles[0][i].transform;
+            Vector3 pos = board.position;
+
+            if (i % boardCount >= boardCount / 2) // right
+            {
+                board.position += board.right * 10f;
+            }
+            else
+            {
+                board.position -= board.right * 10f;
+            }
+
+            board.DOMove(pos, 1.5f).SetEase(Ease.OutQuad);
+        }
     }
 }

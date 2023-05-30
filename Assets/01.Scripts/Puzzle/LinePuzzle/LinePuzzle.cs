@@ -50,6 +50,13 @@ public class LinePuzzle : MonoBehaviour
     #endregion
 
     private List<PlatformPiece> pieces = new();
+    public PlatformPiece this[int index]
+    {
+        get => pieces[index];
+    }
+
+    public int BoardCount => boardInformation.Count;
+
     private int destroyPuzzleCnt = 0;
 
     public Action OnClear { get; set; }

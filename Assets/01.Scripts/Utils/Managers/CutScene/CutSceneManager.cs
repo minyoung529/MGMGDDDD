@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -6,67 +7,53 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 
-public class CutSceneManager : MonoBehaviour
+public class CutSceneManager : MonoSingleton<CutSceneManager>
 {
-    private PlayableDirector[] scenes = null;
-    private Dictionary<string, PlayableDirector> sceneDictionary = new Dictionary<string, PlayableDirector>();
-
-    private static Action OnCutsceneStart;
-    private static Action OnCutsceneEnd;
+    private Action OnCutsceneStart;
+    private Action OnCutsceneEnd;
 
     [SerializeField]
     protected Image topBar;
     [SerializeField]
     protected Image bottomBar;
 
-    private void Awake()
+    public void Play(PlayableDirector director, float speed = 1f)
     {
-        scenes = GetComponentsInChildren<PlayableDirector>();
-        for (int i = 0; i < scenes.Length; i++)
-        {
-            sceneDictionary.Add(scenes[i].name, scenes[i]);
-            scenes[i].gameObject.SetActive(false);
-        }
-    }
+        if(director == null) return;
 
-    public void Play(string sceneName, float speed = 1f)
-    {
-        if (!sceneDictionary.ContainsKey(sceneName)) return;
-
-        sceneDictionary[sceneName].gameObject.SetActive(true);
-        sceneDictionary[sceneName].Play();
-        sceneDictionary[sceneName].playableGraph.GetRootPlayable(0).SetSpeed(speed);
+        director.gameObject.SetActive(true);
+        director.Play();
+        director.playableGraph.GetRootPlayable(0).SetSpeed(speed);
         OnCutsceneStart?.Invoke();
 
-        StartCoroutine(WaitForDuration(sceneDictionary[sceneName]));
+        StartCoroutine(WaitForDuration(director, (float)director.duration * speed));
     }
 
-    private IEnumerator WaitForDuration(PlayableDirector playableDirector)
+    private IEnumerator WaitForDuration(PlayableDirector playableDirector, float duration)
     {
         ActiveBlackBar();
 
-        yield return new WaitForSeconds((float)playableDirector.duration);
-        playableDirector.gameObject.SetActive(false);
+        yield return new WaitForSeconds(duration);
         OnCutsceneEnd?.Invoke();
         InactiveBlackBar();
     }
 
-    public static void AddStartCutscene(Action action)
+    public void AddStartCutscene(Action action)
     {
         OnCutsceneStart += action;
     }
 
-    public static void RemoveStartCutscene(Action action)
+    public void RemoveStartCutscene(Action action)
     {
         OnCutsceneStart -= action;
     }
 
-    public static void AddEndCutscene(Action action)
+    public void AddEndCutscene(Action action)
     {
         OnCutsceneEnd += action;
     }
 
-    public static void RemoveEndCutscene(Action action)
+    public void RemoveEndCutscene(Action action)
     {
         OnCutsceneEnd -= action;
     }
@@ -81,5 +68,15 @@ public class CutSceneManager : MonoBehaviour
     {
         bottomBar.rectTransform.DOAnchorPosY(0, 1f);
         topBar.rectTransform.DOAnchorPosY(0, 1f);
+    }
+
+    public void EnterCutscene()
+    {
+        OnCutsceneStart?.Invoke();
+    }
+
+    public void ExitCutscene()
+    {
+        OnCutsceneEnd?.Invoke();
     }
 }

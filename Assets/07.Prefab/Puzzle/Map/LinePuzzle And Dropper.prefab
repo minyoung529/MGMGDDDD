@@ -5793,10 +5793,10 @@ MonoBehaviour:
   onDropperClear:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3225804593188365953}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 6696906747746012294}
+        m_TargetAssemblyTypeName: CutScenePlayer, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -14980,7 +14980,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3225804592932078292}
-  - component: {fileID: 3225804592932078290}
   - component: {fileID: 3225804592932078293}
   m_Layer: 0
   m_Name: CutScene
@@ -15010,20 +15009,6 @@ Transform:
   m_Father: {fileID: 3225804592261965066}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3225804592932078290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3225804592932078295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee7c2c121b7e8454db7d1c13a554da41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  topBar: {fileID: 0}
-  bottomBar: {fileID: 0}
 --- !u!114 &3225804592932078293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15406,6 +15391,7 @@ GameObject:
   - component: {fileID: 3225804593188366078}
   - component: {fileID: 3225804593188366076}
   - component: {fileID: 3225804593188366079}
+  - component: {fileID: 6696906747746012294}
   m_Layer: 0
   m_Name: DropperClearCutScene
   m_TagString: Untagged
@@ -15445,7 +15431,7 @@ PlayableDirector:
   m_Enabled: 1
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: bca238e83ea04bf49b898c90fa525045, type: 2}
-  m_InitialState: 1
+  m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
@@ -15516,6 +15502,24 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &6696906747746012294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3225804593188365953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d83042948f118840ba01f9147afc5a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  isCollide: 1
+  speed: 1
+  playOnAwake: 0
 --- !u!1 &3225804593212206268
 GameObject:
   m_ObjectHideFlags: 0
@@ -27938,11 +27942,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1709534465797860295, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000011444092
       objectReference: {fileID: 0}
     - target: {fileID: 1709534465797860295, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00002527237
       objectReference: {fileID: 0}
     - target: {fileID: 1709534465797860295, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.z
@@ -27994,11 +27998,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466983766871, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000011444092
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466983766871, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00002527237
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466983766871, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.z
@@ -28022,11 +28026,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1709534467021068289, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000011444092
       objectReference: {fileID: 0}
     - target: {fileID: 1709534467021068289, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00002527237
       objectReference: {fileID: 0}
     - target: {fileID: 1709534467021068289, guid: 1aad536f43c58c645b54355ddb6c5c02, type: 3}
       propertyPath: m_LocalPosition.z

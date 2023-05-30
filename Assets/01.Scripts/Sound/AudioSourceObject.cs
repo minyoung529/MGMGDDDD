@@ -11,7 +11,7 @@ public class AudioSourceObject : MonoBehaviour
     private AudioSource audioSource;
     public AudioSource AudioSource => audioSource;
 
-    private float length = 0f;
+    private float length = -1f;
     private bool isPlaying = false;
 
     private void Awake()
@@ -21,7 +21,7 @@ public class AudioSourceObject : MonoBehaviour
 
     private void Update()
     {
-        if (!isPlaying) return;
+        if (!isPlaying && length < 0f) return;
 
         length -= Time.deltaTime;
 
@@ -38,8 +38,11 @@ public class AudioSourceObject : MonoBehaviour
 
     private void DisableAudioSource()
     {
-        managedPool.Release(this);
-        isPlaying = false;
+        if (managedPool != null)
+        {
+            managedPool.Release(this);
+            isPlaying = false;
+        }
     }
 
     public void SetClipDuration(float length)
@@ -52,4 +55,9 @@ public class AudioSourceObject : MonoBehaviour
     {
         DisableAudioSource();
     }
+
+    // void OnDestroy()
+    // {
+    //     DisableAudioSource();
+    // }
 }
