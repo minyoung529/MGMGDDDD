@@ -23,7 +23,7 @@ public class Paintable : MonoBehaviour
     [SerializeField]
     private int scale = 1;
 
-    void Start()
+    void Awake()
     {
         maskRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE* scale, 0);
         maskRenderTexture.filterMode = FilterMode.Bilinear;
@@ -39,7 +39,10 @@ public class Paintable : MonoBehaviour
 
         rend = GetComponent<Renderer>();
         rend.material.SetTexture(maskTextureID, extendIslandsRenderTexture);
+    }
 
+    void Start()
+    {
         PaintManager.Instance.InitTextures(this);
     }
 
