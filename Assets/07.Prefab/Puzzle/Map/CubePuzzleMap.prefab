@@ -127,12 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: 1848999269aa35e43a15eb92ec674d32, type: 3}
+  audioClip: {fileID: 8300000, guid: e850f75354a8e2241900874e025850c8, type: 3}
   soundType: 1
   playOnAwake: 1
   loop: 1
   isPositioning: 1
-  volume: 1
+  isChildToTransform: 1
+  volume: 3
 --- !u!1 &1259238465
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,6 +688,7 @@ MonoBehaviour:
   playOnAwake: 0
   loop: 0
   isPositioning: 1
+  isChildToTransform: 0
   volume: 1
 --- !u!1 &1801383657729748
 GameObject:
@@ -3486,6 +3488,18 @@ MonoBehaviour:
       - m_Target: {fileID: 4122631729157484683}
         m_TargetAssemblyTypeName: IsolatedCubePuzzle, Assembly-CSharp
         m_MethodName: StartFollow
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 612327075295570675}
+        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
+        m_MethodName: Play
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6595,7 +6609,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1763
+  m_VersionIndex: 1769
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -14356,7 +14370,8 @@ MonoBehaviour:
   playOnAwake: 1
   loop: 1
   isPositioning: 1
-  volume: 0.6
+  isChildToTransform: 0
+  volume: 0.3
 --- !u!1 &7377406299848925325 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7377406300253566092, guid: 4b986933fd6eee14cb3817dd851001b8, type: 3}
@@ -16945,7 +16960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 1775
+      value: 1781
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -18057,6 +18072,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &612327075295570675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3844309964899852240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: c8e178d298d42e44fbfa9d0b9c9dcb3d, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 1
+  volume: 1
 --- !u!114 &4122631729638007271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19354,7 +19388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 1157
+      value: 1163
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456531, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_RootOrder
