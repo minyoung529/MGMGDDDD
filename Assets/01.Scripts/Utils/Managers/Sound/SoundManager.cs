@@ -101,6 +101,11 @@ public class SoundManager : MonoSingleton<SoundManager>
         obj.AudioSource.Stop();
         obj.AudioSource.clip = null;
         obj.gameObject.SetActive(false);
+
+        if (SoundManager.Instance)
+        {
+            obj.transform.SetParent(SoundManager.Instance.transform);
+        }
     }
 
     public void OnDestroyed(AudioSourceObject obj)

@@ -28,13 +28,17 @@ public class PlaySound : MonoBehaviour
     private bool isPositioning = false;
 
     [SerializeField]
+    [Tooltip("If this variable is true, sound object will be a child of this object")]
+    private bool isChildToTransform = false;
+
+    [SerializeField]
     private float volume = 1f;
 
     private AudioSourceObject audioSourceObject;
 
     private void Start()
     {
-        if(playOnAwake)
+        if (playOnAwake)
         {
             Play();
         }
@@ -45,7 +49,7 @@ public class PlaySound : MonoBehaviour
     {
         if (audioClip == null) return;
 
-        switch(soundType)
+        switch (soundType)
         {
             case SoundType.BGM:
                 SoundManager.Instance.PlayMusic(audioClip);
@@ -56,10 +60,14 @@ public class PlaySound : MonoBehaviour
                     if (isPositioning)
                     {
                         audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position, volume, loop);
+
+                        if (isChildToTransform)
+                        {
+                            audioSourceObject.transform.SetParent(transform);
+                        }
                     }
                     else
                     {
-                    Debug.Log(loop);
                         SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
                     }
                 }
