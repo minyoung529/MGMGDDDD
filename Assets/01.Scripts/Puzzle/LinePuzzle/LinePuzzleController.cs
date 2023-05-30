@@ -56,7 +56,7 @@ public class LinePuzzleController : MonoBehaviour
     private void Start()
     {
         foreach (LinePuzzle puzzle in linePuzzles)
-        {
+        {   
             puzzle.OnClear += GetNextPuzzle;
         }
     }
@@ -266,6 +266,8 @@ public class LinePuzzleController : MonoBehaviour
             linePuzzles[i].gameObject.SetActive(false);
         }
 
+        linePuzzles[0].gameObject.SetActive(true);
+
         int boardCount = linePuzzles[0].BoardCount;
         int powBoardCount = Mathf.RoundToInt(Mathf.Pow((float)linePuzzles[0].BoardCount, 2f));
 
@@ -283,7 +285,7 @@ public class LinePuzzleController : MonoBehaviour
                 board.position -= board.right * 10f;
             }
 
-            board.DOMove(pos, 1.5f).SetEase(Ease.OutQuad);
+            board.DOMove(pos, 0.65f).SetEase(Ease.InExpo);
         }
     }
 }
