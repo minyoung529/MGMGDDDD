@@ -38,7 +38,6 @@ public class LinePuzzleController : MonoBehaviour
     [SerializeField] private UnityEvent onExitGame;
 
     public CinemachineVirtualCameraBase topCamera;
-
     #region Property
     public bool isOilMove = false;
     public bool IsPainting { get; private set; } = false;
@@ -254,6 +253,7 @@ public class LinePuzzleController : MonoBehaviour
         isInvalidLine |= (EndPiece.Index != SelectedPiece.Index); // Is Different Node (EndPiece, SelectedPiece)
         isInvalidLine |= (EndPiece == SelectedPiece); // Is Same Node
         isInvalidLine |= SelectedPieces.FindAll(x => EndPiece.Index != x.Index && x.Index >= 0).Count > 0; // Selected Nodes Count have to be two
+        isInvalidLine |= SelectedPieces.FindAll(x => x.IsDestroyed).Count > 0;
 
         return isInvalidLine;
     }
