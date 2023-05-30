@@ -39,7 +39,6 @@ public class PlayerHold : PlayerMono {
     private void GetInput(InputAction action, float value) {
         if (controller.Move.IsInputLock) return;
         controller.Move.IsInputLock = true;
-        controller.Rigid.velocity = Vector3.zero;
 
         switch (action) {
             case InputAction.PickUp_And_Drop:
@@ -89,10 +88,12 @@ public class PlayerHold : PlayerMono {
         Vector3 petPos = holdingPet.transform.position;
         petPos.y = transform.position.y;
         transform.DOLookAt(petPos, 0.5f);
+        controller.Rigid.velocity = Vector3.zero;
         controller.Move.ChangeState(PlayerStateName.PickUp);
     }
 
     private void Drop() {
+        controller.Rigid.velocity = Vector3.zero;
         controller.Move.ChangeState(PlayerStateName.Drop);
     }
 
@@ -138,6 +139,9 @@ public class PlayerHold : PlayerMono {
     }
 
     public void OnThrow() {
+        Vector3 dir = Vector3.zero;
+        dir.y = controller.Rigid.velocity.y;
+        controller.Rigid.velocity = dir;
         isHolding = false;
         holdingPet.Throw(ThrowVector);
         StartCoroutine(EnableCollision(holdingPet));

@@ -10,6 +10,7 @@ public class Fire : MonoBehaviour
 {
     [SerializeField] bool playOnAwake = false;
     [SerializeField] UnityEvent fireEvent;
+    [SerializeField] UnityEvent onFireComplete;
     [SerializeField] ParticleSystem[] fireParticle;
     [SerializeField] bool isDestroyType = false;
     [SerializeField] float burnDelay = 0f;
@@ -60,7 +61,7 @@ public class Fire : MonoBehaviour
             isBurn = true;
 
             FireParticlePlay();
-            if (isDestroyType) DestroyBurn();
+            if (isDestroyType) StartCoroutine(DestroyBurn());
             fireEvent?.Invoke();
 
             if (isCool)
@@ -97,11 +98,14 @@ public class Fire : MonoBehaviour
     {
         isBurn = false;
         FireParticleStop();
+        onFireComplete?.Invoke();
     }
 
-    public void DestroyBurn()
+    public IEnumerator DestroyBurn()
     {
-        Destroy(gameObject, burningTime);
+        yield return new WaitForSeconds(burningTime);
+        onFireComplete?.Invoke();
+        Destroy(gameObject);
     }
 
     public void DestroyBurn(float destroyTime)
