@@ -75,6 +75,7 @@ public class Fire : MonoBehaviour
         yield return new WaitForSeconds(burningTime);
         StopBurn();
     }
+
     private void FireParticlePlay()
     {
         if (fireParticle == null) return;

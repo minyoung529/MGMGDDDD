@@ -25,7 +25,6 @@ public class AudioSourceObject : MonoBehaviour
 
         length -= Time.deltaTime;
 
-            Debug.Log(audioSource.clip.name + " : " + isPlaying);
         if (length < 0f)
         {
             DisableAudioSource();

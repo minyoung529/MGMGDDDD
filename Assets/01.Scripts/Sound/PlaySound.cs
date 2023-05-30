@@ -34,7 +34,7 @@ public class PlaySound : MonoBehaviour
 
     private void Start()
     {
-        if(playOnAwake)
+        if (playOnAwake)
         {
             Play();
         }
@@ -45,7 +45,7 @@ public class PlaySound : MonoBehaviour
     {
         if (audioClip == null) return;
 
-        switch(soundType)
+        switch (soundType)
         {
             case SoundType.BGM:
                 SoundManager.Instance.PlayMusic(audioClip);
@@ -56,11 +56,11 @@ public class PlaySound : MonoBehaviour
                     if (isPositioning)
                     {
                         audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position, volume, loop);
+
                     }
                     else
                     {
-                    Debug.Log(loop);
-                        SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
+                        audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
                     }
                 }
                 break;
@@ -79,5 +79,10 @@ public class PlaySound : MonoBehaviour
                 audioSourceObject?.Stop();
                 break;
         }
+    }
+
+    public void SetVolume(float volume)
+    {
+        audioSourceObject.AudioSource.volume = volume;
     }
 }
