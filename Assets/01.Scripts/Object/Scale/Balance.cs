@@ -2,9 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/// <summary>
-/// 최원빈죽어라주ㅜㄲ어어어ㅓㅇ
-/// </summary>
+
 public class Balance : MonoBehaviour
 {
     [SerializeField] private float maxRotation = 40f;
@@ -31,6 +29,7 @@ public class Balance : MonoBehaviour
     {
         CompareWeight();
     }
+    
     private void FixedUpdate()
     {
         leftPillar.position = leftAnchor.position;
@@ -58,5 +57,4 @@ public class Balance : MonoBehaviour
             pillar.DOLocalRotateQuaternion(origin, 0.7f);
         });
     }
-   
 }

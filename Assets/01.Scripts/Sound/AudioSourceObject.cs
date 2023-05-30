@@ -38,8 +38,11 @@ public class AudioSourceObject : MonoBehaviour
 
     private void DisableAudioSource()
     {
-        managedPool.Release(this);
-        isPlaying = false;
+        if (managedPool != null)
+        {
+            managedPool.Release(this);
+            isPlaying = false;
+        }
     }
 
     public void SetClipDuration(float length)
@@ -52,4 +55,9 @@ public class AudioSourceObject : MonoBehaviour
     {
         DisableAudioSource();
     }
+
+    // void OnDestroy()
+    // {
+    //     DisableAudioSource();
+    // }
 }

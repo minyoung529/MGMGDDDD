@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BalanceFloor : MonoBehaviour
 {
@@ -8,6 +9,11 @@ public class BalanceFloor : MonoBehaviour
     public float GetWeight { get { return curWeight; } }
 
     private Balance mainBalance;
+
+    [SerializeField]
+    private UnityEvent onIncrease;
+    [SerializeField]
+    private UnityEvent onDecrease;
 
     private void Awake()
     {
@@ -22,13 +28,16 @@ public class BalanceFloor : MonoBehaviour
         curWeight += weightObj.GetMass;
         
         mainBalance.CompareWeight();
+
+        onIncrease?.Invoke();
     }
 
     public void IncreaseWeight(float value)
     {
         curWeight += value;
-        
         mainBalance.CompareWeight();
+
+        onIncrease?.Invoke();
     }
 
     public void DecreaseWeight(WeightObject weightObj)
@@ -42,6 +51,7 @@ public class BalanceFloor : MonoBehaviour
             curWeight = 0;
         }
         mainBalance.CompareWeight();
+        onDecrease?.Invoke();
     }
     public void DecreaseWeight(float value)
     {
@@ -51,6 +61,7 @@ public class BalanceFloor : MonoBehaviour
             curWeight = 0;
         }
         mainBalance.CompareWeight();
+        onDecrease?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)

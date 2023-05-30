@@ -28,6 +28,10 @@ public class PlaySound : MonoBehaviour
     private bool isPositioning = false;
 
     [SerializeField]
+    [Tooltip("If this variable is true, sound object will be a child of this object")]
+    private bool isChildToTransform = false;
+
+    [SerializeField]
     private float volume = 1f;
 
     private AudioSourceObject audioSourceObject;
@@ -56,11 +60,14 @@ public class PlaySound : MonoBehaviour
                     if (isPositioning)
                     {
                         audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position, volume, loop);
-
                     }
                     else
                     {
                         audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
+                        if (isChildToTransform)
+                        {
+                            audioSourceObject.transform.SetParent(transform);
+                        }
                     }
                 }
                 break;
