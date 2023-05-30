@@ -65,6 +65,7 @@ public class LinePuzzle : MonoBehaviour
     private void Start()
     {
         Initialize();
+        gameObject.SetActive(false);
     }
 
     public void StartGame(Func<bool> func)
