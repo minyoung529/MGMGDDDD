@@ -11,7 +11,7 @@ public class AudioSourceObject : MonoBehaviour
     private AudioSource audioSource;
     public AudioSource AudioSource => audioSource;
 
-    private float length = 0f;
+    private float length = -1f;
     private bool isPlaying = false;
 
     private void Awake()
@@ -21,10 +21,11 @@ public class AudioSourceObject : MonoBehaviour
 
     private void Update()
     {
-        if (!isPlaying) return;
+        if (!isPlaying && length < 0f) return;
 
         length -= Time.deltaTime;
 
+            Debug.Log(audioSource.clip.name + " : " + isPlaying);
         if (length < 0f)
         {
             DisableAudioSource();
