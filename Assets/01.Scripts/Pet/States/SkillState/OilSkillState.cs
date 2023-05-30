@@ -65,6 +65,7 @@ public class OilSkillState : PetState
     {
         if (isSkillDragging || pauseSkilling) return;
 
+        prevTransform = pet.Target;
         OnStartSkill?.Invoke();
         isSkillDragging = true;
         pet.Skilling = true;
@@ -84,9 +85,7 @@ public class OilSkillState : PetState
 
     private void OnEndPath()
     {
-        prevTransform = pet.Target;
-        pet.SetTarget(null);
-        StopListeningEvents();
+        ResetSkill();
 
         pet.SetNavIsStopped(false);
         pet.IsMovePointLock = false;
@@ -134,7 +133,16 @@ public class OilSkillState : PetState
     private void ResetSkill()
     {
         pet.Skilling = false;
-        pet.SetTarget(prevTransform);
+
+        if (prevTransform == GameManager.Instance.PlayerController.transform)
+        {
+            pet.SetTargetPlayer();
+        }
+        else
+        {
+            pet.SetTarget(prevTransform);
+        }
+        
         StopListeningEvents();
     }
 
