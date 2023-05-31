@@ -8,11 +8,16 @@ public enum EmotionType
     Smile,
     Hate,
     Angry,
+    Dizzy,
+    Afraid, 
+    Sad,
+    Amazing,
+    Satisfied,
+    Twinkle,
+    Count
 }
 public class PetEmotion : MonoBehaviour
 {
-    [SerializeField] Texture2D[] textures;
-
     private EmotionType emotionType = EmotionType.None;
     public EmotionType GetEmotionType { get { return emotionType; } }
 
@@ -49,6 +54,5 @@ public class PetEmotion : MonoBehaviour
         {
             SetMaterial();
         }
-        material.mainTexture = textures[(int)type];
     }
 }

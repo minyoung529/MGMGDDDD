@@ -6,7 +6,8 @@ using DG.Tweening;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-public class RecallState : PetState {
+public class RecallState : PetState
+{
     public override PetStateName StateName => PetStateName.Recall;
 
     [SerializeField] private float sightRange = 20f;
@@ -21,34 +22,42 @@ public class RecallState : PetState {
     [SerializeField]
     private UnityEvent onFlyEnd;
 
-    public override void OnEnter() {
+    public override void OnEnter()
+    {
         CheckDistanceToPlayer();
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
     }
 
-    public override void OnExit() {
+    public override void OnExit()
+    {
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
     }
 
-    public override void OnUpdate() {
+    public override void OnUpdate()
+    {
 
     }
 
-    private void Start() {
+    private void Start()
+    {
         flyParticle = Instantiate(flyParticlePref, pet.transform);
         arriveParticle = Instantiate(arriveParticlePref, pet.transform);
         path = new NavMeshPath();
     }
 
-    private void OnThrew() {
+    private void OnThrew()
+    {
         pet.State.ChangeState((int)PetStateName.Threw);
     }
 
 
-    private void CheckDistanceToPlayer() {
+    private void CheckDistanceToPlayer()
+    {
         if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange &&
-            NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) {
-            if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f) {
+            NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path))
+        {
+            if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f)
+            {
                 pet.SetTargetPlayer();
                 pet.State.ChangeState((int)PetStateName.Move);
                 return;
@@ -58,7 +67,8 @@ public class RecallState : PetState {
         Fly();
     }
 
-    private void Fly() {
+    private void Fly()
+    {
         pet.SetNavEnabled(false);
         pet.Coll.enabled = false;
         pet.Rigid.isKinematic = true;
@@ -73,7 +83,8 @@ public class RecallState : PetState {
 
         pet.transform.DOKill();
         pet.transform.DOLookAt(pet.Player.position, 0.5f);
-        pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
+        pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() =>
+        {
             pet.Emission.EmissionOff();
             flyParticle.Stop();
             onFlyEnd?.Invoke();
@@ -83,7 +94,8 @@ public class RecallState : PetState {
         });
     }
 
-    private Vector3[] DrawBezier() {
+    private Vector3[] DrawBezier()
+    {
         Vector3 dest = pet.Player.position + (transform.position - pet.Player.position).normalized * 2f;
         dest = pet.GetNearestNavMeshPosition(dest) + Vector3.up * 1.5f;
 

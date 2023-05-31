@@ -37,5 +37,6 @@ public class ExplosionSkillVisual : SkillVisual
 
         seq.AppendInterval(3.2f);
         seq.Append(changedObject.DOScale(originalScale, 1f));
+        seq.AppendCallback(() => onComplete?.Invoke());
     }
 }

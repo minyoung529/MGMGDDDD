@@ -20,6 +20,6 @@ public class ChangeScaleSkillVisual : SkillVisual
     protected override void OnTrigger()
     {
         changedObject.DOKill();
-        changedObject.DOScale(targetScale, duration).SetEase(ease);
+        changedObject.DOScale(targetScale, duration).SetEase(ease).OnComplete(onComplete.Invoke);
     }
 }
