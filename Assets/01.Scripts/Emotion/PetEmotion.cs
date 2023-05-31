@@ -21,6 +21,8 @@ public class PetEmotion : MonoBehaviour
     [SerializeField]
     private MeshRenderer meshRenderer;
 
+    private int tileHash = Shader.PropertyToID("_Tile");
+
     private void Awake()
     {
         SetMaterial();
@@ -41,16 +43,12 @@ public class PetEmotion : MonoBehaviour
     public void SetEmotion(EmotionType type)
     {
         emotionType = type;
+        material.SetFloat(tileHash, (int)type);
+
         if (material == null)
         {
             SetMaterial();
         }
         material.mainTexture = textures[(int)type];
-    }
-
-    [ContextMenu("Test")]
-    public void Test()
-    {
-        SetEmotion(EmotionType.Smile);
     }
 }
