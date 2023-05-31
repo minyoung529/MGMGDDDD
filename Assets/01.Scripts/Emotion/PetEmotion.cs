@@ -49,6 +49,5 @@ public class PetEmotion : MonoBehaviour
         {
             SetMaterial();
         }
-        material.mainTexture = textures[(int)type];
     }
 }
