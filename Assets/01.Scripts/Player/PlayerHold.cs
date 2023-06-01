@@ -23,6 +23,7 @@ public class PlayerHold : PlayerMono {
 
     private float defaultAngle;
     private float defaultPower;
+
     private void Awake() {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
