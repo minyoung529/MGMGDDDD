@@ -315,6 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillBar: {fileID: 664621518685000697}
+  canvasGroup: {fileID: 8294387616671469174}
 --- !u!114 &8666505422587178732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -717,6 +718,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2227015152453210215}
   - component: {fileID: 2227015152453210214}
+  - component: {fileID: 195780699313769513}
   m_Layer: 5
   m_Name: Player
   m_TagString: Player
@@ -763,6 +765,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &195780699313769513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2227015152453210222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fae41e56c87f72a44baa0f1b4a6e4626, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkClip: {fileID: 0}
+  runClip: {fileID: 0}
+  jumpClip: {fileID: 0}
+  landingClip: {fileID: 0}
+  throwClip: {fileID: 0}
+  recallClip: {fileID: 0}
 --- !u!1 &2700957132203861253
 GameObject:
   m_ObjectHideFlags: 0
@@ -1437,7 +1457,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5375530071488202587}
-  - component: {fileID: 5150609429048428062}
   m_Layer: 5
   m_Name: Interaction
   m_TagString: Untagged
@@ -1460,26 +1479,6 @@ Transform:
   m_Father: {fileID: 2227015152453210215}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5150609429048428062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6213855347129453504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cfe6a079ac794d4ea094ea56627f907, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isCollide: 0
-  autoEnd: 1
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  tutorialType: 3
-  tutorialName: 
-  petCount: 2
 --- !u!1 &6292509702039914651
 GameObject:
   m_ObjectHideFlags: 0
@@ -2031,8 +2030,7 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 10
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 144993824392493169, guid: 9a94032a75bf5964db4472bf7f170406, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a94032a75bf5964db4472bf7f170406, type: 3}
 --- !u!114 &664621518685000697 stripped
 MonoBehaviour:

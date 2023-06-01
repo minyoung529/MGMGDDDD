@@ -20,7 +20,6 @@ public class SceneController : MonoBehaviour
 {
     [SerializeField]
     private LoadingScene loadingScenePrefab;
-    private static CanvasGroup loadGroup;
     private static LoadingScene loadingScene;
 
     public static Dictionary<SceneType, Action> OnEnterScene = new();
@@ -30,12 +29,11 @@ public class SceneController : MonoBehaviour
     private static SceneType curScene;
     public static SceneType CurrentScene => curScene;
 
-    private void Awake()
+    private void Start()
     {
         loadingScene = Instantiate(loadingScenePrefab);
-        Application.backgroundLoadingPriority = ThreadPriority.Low;
-        loadGroup = loadingScene.GetComponent<CanvasGroup>();
         loadingScene.gameObject.SetActive(false);
+        Application.backgroundLoadingPriority = ThreadPriority.Low;
 
         if (OnEnterScene.Count == 0)
         {
@@ -65,21 +63,18 @@ public class SceneController : MonoBehaviour
 
         if (isLoading)
         {
-            loadingScene.gameObject.SetActive(true);
-            loadGroup.DOFade(1f, 0.5f).OnComplete(() => loadingScene.ChangeScene());
+            loadingScene.ChangeScene();
         }
         else
         {
             SceneManager.LoadScene(sceneType.ToString());
-
             Check(curScene, OnEnterScene);
-
         }
     }
 
     public static void ChangeScene(AsyncOperation op)
     {
-        loadGroup.DOFade(0f, 0.5f).OnComplete(() => loadingScene.gameObject.SetActive(false));
+        loadingScene.InactiveScene();
         Check(curScene, OnEnterScene);
         OnEnterScene[curScene]?.Invoke();
     }

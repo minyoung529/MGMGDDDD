@@ -65,9 +65,9 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// <param name="pos"></param>
     public AudioSourceObject PlayEffect(AudioClip clip, Vector3 pos, float volumeScale = 1f, bool loop = false)
     {
+        if (clip == null) return null;
         AudioSourceObject obj = pool.Get();
         AudioSource audio = obj.AudioSource;
-
 
         if (pos != Vector3.zero)
         {
@@ -131,6 +131,8 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     public void PlayRandomPitch(AudioClip clip, Vector3 pos, float pitchRange = defaultRandomPitch, float volume = 1f)
     {
+        if (clip == null) return;
+
         AudioSourceObject obj = PlayEffect(clip, pos, volume);
         float randomPitch = Random.Range(-pitchRange, pitchRange);
         obj.AudioSource.pitch = 1 + randomPitch;
