@@ -9,15 +9,12 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
-    [SerializeField] private PetEmotion emotion;
     private Vector3 originScale;
     private float originalAgentSpeed;
     private float interactRadius = 4.5f;
 
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
-
-    public PetEmotion Emotion => emotion;
 
     #region Property
 
