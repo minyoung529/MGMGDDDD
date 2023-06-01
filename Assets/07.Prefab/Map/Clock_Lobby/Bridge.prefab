@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 153849629}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5200081, y: 7.849999, z: -88.41}
-  m_LocalScale: {x: 11.953056, y: 1, z: 58.4}
+  m_LocalPosition: {x: -0.56653214, y: 7.837503, z: -74.28484}
+  m_LocalScale: {x: 11.953056, y: 1, z: 30}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3938965259278226008}
@@ -94,7 +94,7 @@ BoxCollider:
   m_GameObject: {fileID: 153849629}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -116,6 +116,18 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
+        - m_Target: {fileID: 153849631}
+          m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
+          m_MethodName: set_enabled
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
         - m_Target: {fileID: 1766617522}
           m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
           m_MethodName: set_enabled
@@ -222,7 +234,6 @@ GameObject:
   - component: {fileID: 1766617526}
   - component: {fileID: 1766617525}
   - component: {fileID: 1766617524}
-  - component: {fileID: 1766617523}
   - component: {fileID: 1766617522}
   m_Layer: 0
   m_Name: NavObstacle
@@ -239,8 +250,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1766617521}
   m_LocalRotation: {x: 0.000000029802322, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5200081, y: 13.0096, z: -61.51126}
-  m_LocalScale: {x: 11.953056, y: 11.3192005, z: 4.602504}
+  m_LocalPosition: {x: -0.5200081, y: 17.762, z: -60.5575}
+  m_LocalScale: {x: 11.953056, y: 20.823637, z: 2.6952262}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3938965259278226008}
@@ -296,19 +307,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1766617523
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1766617521}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!208 &1766617522
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -788,8 +786,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 743939694853855397}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: -30.08}
-  m_LocalScale: {x: 16.717562, y: 1, z: 58.4}
+  m_LocalPosition: {x: 0, y: 0, z: -16.0743}
+  m_LocalScale: {x: 16.717562, y: 1, z: 30.243313}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 743939693383149585}
@@ -1013,9 +1011,37 @@ PrefabInstance:
     m_TransformParent: {fileID: 743939694714536560}
     m_Modifications:
     - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
       propertyPath: onClear.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 743939692771591539}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4365766949374901734}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Play
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlaySound, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2070721656, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+      propertyPath: onEquip.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 1422051367015315984, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
       propertyPath: m_Name
       value: RemakeNew3DecoBody
@@ -1030,7 +1056,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1799175422017937578, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.224317
+      value: 8.44
       objectReference: {fileID: 0}
     - target: {fileID: 1799175422017937578, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1075,3 +1101,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1799175422017937578, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
   m_PrefabInstance: {fileID: 743939694074457485}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1868753167618971549 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1422051367015315984, guid: 6d34ea754056adb4f8e039a9b93403eb, type: 3}
+  m_PrefabInstance: {fileID: 743939694074457485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4365766949374901734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1868753167618971549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: b062e806efcc9b74385cde27d5bda3f1, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 0
+  volume: 1

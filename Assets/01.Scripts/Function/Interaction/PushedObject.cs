@@ -48,6 +48,7 @@ public class PushedObject : MonoBehaviour
         if (other.gameObject.CompareTag(Define.PLAYER_TAG))
         {
             isContactPlayer = true;
+
         }
     }
 
@@ -56,6 +57,7 @@ public class PushedObject : MonoBehaviour
         if (other.gameObject.CompareTag(Define.PLAYER_TAG))
         {
             isContactPlayer = false;
+            onPushEnd?.Invoke();
         }
     }
 }
