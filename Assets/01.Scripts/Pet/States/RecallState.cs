@@ -69,6 +69,7 @@ public class RecallState : PetState
 
     private void Fly()
     {
+        pet.Event.TriggerEvent((int)PetEventName.OnFly);
         pet.SetNavEnabled(false);
         pet.Coll.enabled = false;
         pet.Rigid.isKinematic = true;
@@ -91,6 +92,8 @@ public class RecallState : PetState
             arriveParticle.Play();
             pet.SetTargetPlayer();
             pet.Throw(Vector3.up * 300);
+
+            pet.Event.TriggerEvent((int)PetEventName.OnFlyEnd);
         });
     }
 

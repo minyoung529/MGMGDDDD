@@ -13,6 +13,9 @@ public class ChangePetEmotion : MonoBehaviour
 
     private void Start()
     {
+        pet = GetComponent<Pet>();
+        petEmotion = pet.GetComponentInChildren<PetEmotion>();
+
         foreach (EmotionByPetEvent emotionEvent in emotionByPetEvents)
         {
             emotionEvent.StartListening(() => petEmotion.SetEmotion(emotionEvent.emotionType));

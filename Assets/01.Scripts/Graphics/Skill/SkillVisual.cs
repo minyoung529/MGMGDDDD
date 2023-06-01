@@ -14,12 +14,12 @@ public class SkillVisual : MonoBehaviour
 
     protected virtual void OnTrigger() { }
 
-    public void OnListeningCompleteEvent(Action action)
+    public void ListenCompleteEvent(Action action)
     {
         onComplete += action;
     }
 
-    public void OnRemoveCompleteEvent(Action action)
+    public void RemoveCompleteEvent(Action action)
     {
         onComplete -= action;
     }

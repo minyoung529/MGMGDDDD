@@ -46,6 +46,9 @@ public class StickySkillState : PetState
     {
         explosion.gameObject.SetActive(false);
         smallDirection = transform.forward;
+
+        enterVisual.ListenCompleteEvent(() => pet.Event.TriggerEvent((int)PetEventName.OnSkillComplete));
+        exitVisual.ListenCompleteEvent(() => pet.Event.TriggerEvent((int)PetEventName.OnSkillOffComplete));
     }
 
     #region Listen

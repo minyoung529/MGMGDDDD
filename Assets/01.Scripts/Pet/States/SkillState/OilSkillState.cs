@@ -78,6 +78,7 @@ public class OilSkillState : PetState
         if (pet.Skilling)
         {
             oilPetSkill.StartSpreadOil(() => pet.SetNavIsStopped(true), OnEndPath);
+            pet.Event.TriggerEvent((int)PetEventName.OnDrawStart);
             onOilSkill?.Invoke();
             StopListeningEvents();
         }
@@ -144,6 +145,7 @@ public class OilSkillState : PetState
         }
         
         StopListeningEvents();
+        pet.Event.TriggerEvent((int)PetEventName.OnSkillComplete);
     }
 
     private void StopListeningEvents()

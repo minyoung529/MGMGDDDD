@@ -36,6 +36,8 @@ public class Fire : MonoBehaviour
 
     public float BurningTime => burningTime;
 
+    public UnityEvent OnBurn => fireEvent;
+
     private void Awake()
     {
         isBurn = playOnAwake;
