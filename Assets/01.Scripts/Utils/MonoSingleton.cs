@@ -44,9 +44,4 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         //    Destroy(this);
         //}
     }
-
-    void OnDestroy()
-    {
-        shuttingDown = true;
-    }
 }
