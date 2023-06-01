@@ -87,6 +87,11 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (PetManager.Instance.PetCount < 2) return;
 
+         for (int i = 0; i < linePuzzles.Length; i++)
+        {
+            linePuzzles[i].gameObject.SetActive(true);
+        }
+
         isPlaying = true;
         onEnterGame?.Invoke();
 
