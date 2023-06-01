@@ -47,13 +47,14 @@ public class PetManager : MonoSingleton<PetManager>
         base.Awake();
 
         StartListen();
-        CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
-        CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
     }
 
     private void Start()
     {
         ResetPetManager();
+
+        CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
+        CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
     }
 
 
@@ -167,17 +168,20 @@ public class PetManager : MonoSingleton<PetManager>
     {
         if (PetCount <= 0) return;
 
+        if (pets[selectIndex].GetPetType == PetType.OilPet)
+            pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
+
         addIndex = 0;
 
         if (input == InputAction.Up_Pet && !isSwitching) addIndex = -1;
         else if (input == InputAction.Down_Pet && !isSwitching) addIndex = 1;
         else return;
 
-        SwitchPetIndex((int)addIndex);
+        SwitchPetIndex(selectIndex + (int)addIndex);
     }
     private void SwitchPetIndex(int addIndex)
     {
-        selectIndex += addIndex;
+        selectIndex = addIndex;
 
         if (selectIndex >= pets.Count) selectIndex = 0;
         else if (selectIndex < 0) selectIndex = pets.Count - 1;
@@ -208,35 +212,33 @@ public class PetManager : MonoSingleton<PetManager>
     public void SelectPet(InputAction input, float index)
     {
         if (pets.Count <= 0) return;
-        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
+        if (pets[selectIndex].GetPetType == PetType.OilPet)
+            pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
 
         switch (input)
         {
             case InputAction.Select_First_Pet:
                 {
-                    selectIndex = 0;
+                    SelectPet(0);
                 }
                 break;
             case InputAction.Select_Second_Pet:
                 {
                     if (pets.Count <= 1) return;
-                    selectIndex = 1;
+                    SelectPet(1);
                 }
                 break;
             case InputAction.Select_Third_Pet:
                 {
                     if (pets.Count <= 2) return;
-                    selectIndex = 2;
+                    SelectPet(2);
                 }
                 break;
         }
-        OnSelectPetUI(selectIndex);
     }
 
     public void SelectPet(int index)
     {
-        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
-
         selectIndex = index;
         OnSelectPetUI(selectIndex);
     }

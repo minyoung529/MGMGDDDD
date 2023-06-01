@@ -6,7 +6,8 @@ using DG.Tweening;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-public class RecallState : PetState {
+public class RecallState : PetState
+{
     public override PetStateName StateName => PetStateName.Recall;
 
     [SerializeField] private float sightRange = 20f;
@@ -21,29 +22,33 @@ public class RecallState : PetState {
     [SerializeField]
     private UnityEvent onFlyEnd;
 
-    public override void OnEnter() {
+    public override void OnEnter()
+    {
         CheckDistanceToPlayer();
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
     }
 
-    public override void OnExit() {
+    public override void OnExit()
+    {
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
     }
 
-    public override void OnUpdate() {
+    public override void OnUpdate()
+    {
 
     }
 
-    private void Start() {
+    private void Start()
+    {
         flyParticle = Instantiate(flyParticlePref, pet.transform);
         arriveParticle = Instantiate(arriveParticlePref, pet.transform);
         path = new NavMeshPath();
     }
 
-    private void OnThrew() {
+    private void OnThrew()
+    {
         pet.State.ChangeState((int)PetStateName.Threw);
     }
-
 
     private void CheckDistanceToPlayer() {
         if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange && //네브매쉬 위에 존재하며 플레이어가 시야거리 안에 있고 네브매쉬상에서 플레이어와의 경로가 그려진다면 걸어간다.
@@ -58,7 +63,9 @@ public class RecallState : PetState {
         Fly();
     }
 
-    private void Fly() {
+    private void Fly()
+    {
+        pet.Event.TriggerEvent((int)PetEventName.OnFly);
         pet.SetNavEnabled(false);
         pet.Coll.enabled = false;
         pet.Rigid.isKinematic = true;
@@ -73,17 +80,21 @@ public class RecallState : PetState {
 
         pet.transform.DOKill();
         pet.transform.DOLookAt(pet.Player.position, 0.5f);
-        pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() => {
+        pet.transform.DOPath(path, 2f, PathType.CubicBezier).SetEase(Ease.InSine).OnComplete(() =>
+        {
             pet.Emission.EmissionOff();
             flyParticle.Stop();
             onFlyEnd?.Invoke();
             arriveParticle.Play();
             pet.SetTargetPlayer();
             pet.Throw(Vector3.up * 300);
+
+            pet.Event.TriggerEvent((int)PetEventName.OnFlyEnd);
         });
     }
 
-    private Vector3[] DrawBezier() {
+    private Vector3[] DrawBezier()
+    {
         Vector3 dest = pet.Player.position + (transform.position - pet.Player.position).normalized * 2f;
         dest = pet.GetNearestNavMeshPosition(dest) + Vector3.up * 1.5f;
 

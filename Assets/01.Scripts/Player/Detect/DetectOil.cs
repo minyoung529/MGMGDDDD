@@ -15,11 +15,26 @@ public class DetectOil : MonoBehaviour
 
     public bool IsContactOil { get; set; }
 
-    private void OnTriggerEnter(Collider other)
+    private LayerMask oilLayer;
+
+    void Start()
     {
-        if (other.CompareTag(Define.OIL_BULLET_TAG))
+        oilLayer = LayerMask.GetMask("Ignore Raycast");
+    }
+
+    void Update()
+    {
+        if (IsContactOil)
         {
-            if (cnt++ == 0)
+            if (!IsDetectOil())
+            {
+                IsContactOil = false;
+                OnExitOil?.Invoke();
+            }
+        }
+        else
+        {
+            if (IsDetectOil())
             {
                 IsContactOil = true;
                 OnEnterOil?.Invoke();
@@ -27,15 +42,18 @@ public class DetectOil : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private bool IsDetectOil()
     {
-        if (other.CompareTag(Define.OIL_BULLET_TAG))
+        Collider[] cols = Physics.OverlapSphere(transform.position, 3f, oilLayer);
+
+        foreach (Collider col in cols)
         {
-            if (--cnt == 0)
+            if (col.CompareTag(Define.OIL_BULLET_TAG))
             {
-                IsContactOil = false;
-                OnExitOil?.Invoke();
+                return true;
             }
         }
+
+        return false;
     }
 }

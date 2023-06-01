@@ -142,6 +142,7 @@ GameObject:
   - component: {fileID: 6023911479676705648}
   - component: {fileID: 6161769497807858884}
   - component: {fileID: 1199883930639905955}
+  - component: {fileID: 2866644248254371026}
   m_Layer: 0
   m_Name: IntaglioBox
   m_TagString: Untagged
@@ -244,6 +245,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2866644248254371026}
+        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  hotAirController: {fileID: 0}
 --- !u!54 &1199883930639905955
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -260,6 +274,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &2866644248254371026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6289896837670110718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: f2e84197eb779a548955c781d0ebd4b2, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 0
+  volume: 1
 --- !u!1 &6418576918429773266
 GameObject:
   m_ObjectHideFlags: 0

@@ -65,6 +65,7 @@ public class LinePuzzle : MonoBehaviour
     private void Start()
     {
         Initialize();
+        gameObject.SetActive(false);
     }
 
     public void StartGame(Func<bool> func)
@@ -96,14 +97,12 @@ public class LinePuzzle : MonoBehaviour
                 newObj.OnDestroyPlatform += CheckSolve;
                 newObj.transform.SetParent(transform);
 
-                newObj.transform.position =
-                    new Vector3
-                    (
-                        -width / length * i * scaleWeight,
-                        0f,
-                        -height / boardCnt * j * scaleWeight
-                    ) + offset;
+                Vector3 platformPos = offset;
+                platformPos += board.forward * -width / length * i * scaleWeight;
+                platformPos += board.right *  height / boardCnt * j * scaleWeight;
 
+                newObj.transform.position = platformPos;
+                newObj.transform.localRotation = Quaternion.identity;
 
                 Vector3 scale = newObj.transform.localScale;
                 scale.x = 1 / (float)boardInformation.Count * scaleWeight;

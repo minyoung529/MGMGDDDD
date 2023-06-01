@@ -17,20 +17,22 @@ public class Funnel : MonoBehaviour
 
     [Header("Clear")]
     [SerializeField]
+    private UnityEvent onEquip;
+    [SerializeField]
     private UnityEvent onClear;
 
     private void Awake()
     {
         bolts = boltRoot.GetComponentsInChildren<Bolt>().ToList();
 
-        if(bolts==  null || bolts.Count == 0)
+        if (bolts == null || bolts.Count == 0)
         {
-                    bolts = new List<Bolt>();
+            bolts = new List<Bolt>();
 
-        for(int i = 0; i < boltRoot.childCount; i++)
-        {
-            bolts.Add(boltRoot.GetChild(i).GetComponent<Bolt>());
-        }
+            for (int i = 0; i < boltRoot.childCount; i++)
+            {
+                bolts.Add(boltRoot.GetChild(i).GetComponent<Bolt>());
+            }
         }
 
         foreach (Bolt bolt in bolts)
@@ -42,6 +44,7 @@ public class Funnel : MonoBehaviour
     private void OnInsertBolt()
     {
         curBoltCount++;
+        onEquip?.Invoke();
 
         if (curBoltCount == boltCount)
         {

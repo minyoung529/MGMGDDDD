@@ -32,37 +32,22 @@ public class StickyExplosion : MonoBehaviour
     [SerializeField]
     private UnityEvent onBomb;
 
+    [SerializeField]
+    private ExplosionSkillVisual bombSkillVisual;
+
+    private Fire fire;
 
     private void Awake()
     {
         jumper = GetComponent<JumperObject>();
+        fire = GetComponent<Fire>();
+        fire.OnBurn.AddListener(Explosion);
+
+        bombSkillVisual?.ListenCompleteEvent(() => stickyPet.Event.TriggerEvent((int)PetEventName.OnExplosionEnd));
+        bombSkillVisual?.ListenOnSizeSmall(() => stickyPet.Event.TriggerEvent((int)PetEventName.OnExplosionSmall));
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (isExplosioning) return;
-
-        Fire fire = collision.gameObject.GetComponent<Fire>();
-
-        if (fire && fire.IsBurn)
-        {
-            ExplosionAnimation();
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (isExplosioning) return;
-
-        Fire fire = other.GetComponent<Fire>();
-
-        if (fire && fire.IsBurn)
-        {
-            ExplosionAnimation();
-        }
-    }
-
-    private void Explosion()
+    private void DetectExplosionObject()
     {
         Collider[] cols = Physics.OverlapSphere(transform.position, explosionRadius);
 
@@ -91,10 +76,11 @@ public class StickyExplosion : MonoBehaviour
     }
 
     [ContextMenu("Explosion")]
-    private void ExplosionAnimation()
+    private void Explosion()
     {
         if (isExplosioning) return;
 
+        stickyPet.Event.TriggerEvent((int)PetEventName.OnExplosion);
         isExplosioning = true;
 
         if (jumper)
@@ -104,7 +90,7 @@ public class StickyExplosion : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(1.5f);
-        seq.AppendCallback(Explosion);
+        seq.AppendCallback(DetectExplosionObject);
         seq.AppendInterval(4f);
         seq.AppendCallback(EndExplosion);
     }
@@ -126,5 +112,13 @@ public class StickyExplosion : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
+    }
+
+    void OnDestroy()
+    {
+        if (fire && fire.OnBurn != null)
+        {
+            fire.OnBurn.RemoveListener(Explosion);
+        }
     }
 }

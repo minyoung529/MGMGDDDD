@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ public class ExplosionSkillVisual : SkillVisual
     private List<ParticleSystem> particles = new List<ParticleSystem>();
 
     private Vector3 originalScale = Vector3.one;
+
+    private Action onSizeSmall;
 
     private void Start()
     {
@@ -31,11 +34,23 @@ public class ExplosionSkillVisual : SkillVisual
 
         seq.AppendCallback(() =>
         {
+            onSizeSmall?.Invoke();
             changedObject.DOScale(originalScale * 0.45f, 0.2f);
             particles.ForEach(x => x.Play());
         });
 
         seq.AppendInterval(3.2f);
         seq.Append(changedObject.DOScale(originalScale, 1f));
+        seq.AppendCallback(() => onComplete?.Invoke());
+    }
+
+    public void ListenOnSizeSmall(Action action)
+    {
+        onSizeSmall += action;
+    }
+
+    public void RemoveOnSizeSmall(Action action)
+    {
+        onSizeSmall -= action;
     }
 }

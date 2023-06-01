@@ -37,6 +37,8 @@ public class Fire : MonoBehaviour
 
     public float BurningTime => burningTime;
 
+    public UnityEvent OnBurn => fireEvent;
+
     private void Awake()
     {
         isBurn = playOnAwake;
@@ -76,6 +78,7 @@ public class Fire : MonoBehaviour
         yield return new WaitForSeconds(burningTime);
         StopBurn();
     }
+
     private void FireParticlePlay()
     {
         if (fireParticle == null) return;

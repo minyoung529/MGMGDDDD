@@ -36,6 +36,8 @@ public class PlatformPiece : MonoBehaviour
     public Action OnDestroyPlatform { get; set; }
     public int Index { get; set; } = -1;
     public Color Color { get; set; }
+
+    public bool IsDestroyed => isDestroyed;
     #endregion
 
     private LinePuzzleController controller;

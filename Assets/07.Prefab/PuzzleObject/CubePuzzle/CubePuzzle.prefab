@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: 4848590945336588120}
   - component: {fileID: 7682177461584635383}
   - component: {fileID: 2660162797933495990}
+  - component: {fileID: 1088077964403717121}
+  - component: {fileID: 4267006902223788772}
   m_Layer: 0
   m_Name: CubePuzzle
   m_TagString: CubePuzzle
@@ -265,6 +267,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43fb1ebeeb5b9a48b027fdcc9cc5f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1088077964403717121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896001081959153202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aae5a53dbb79ce42858ccbf3ec28e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPushStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4267006902223788772}
+        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onPushEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4267006902223788772}
+        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4267006902223788772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896001081959153202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 123a7d3f526beec4b865bf0f540ea306, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 1
+  volume: 1
 --- !u!1 &896001082353816761
 GameObject:
   m_ObjectHideFlags: 0

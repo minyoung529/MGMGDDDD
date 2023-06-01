@@ -5421,7 +5421,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 0d639b77c00b7bb41aaab644b623c05f, type: 3}
   soundType: 1
+  playOnAwake: 0
+  loop: 0
   isPositioning: 1
+  isChildToTransform: 0
   volume: 1
 --- !u!1 &4586198276244333025
 GameObject:
@@ -5439,6 +5442,7 @@ GameObject:
   - component: {fileID: 272708379305149914}
   - component: {fileID: 3635944747377788682}
   - component: {fileID: 1406320506}
+  - component: {fileID: 9056051558382372819}
   m_Layer: 8
   m_Name: OilPet
   m_TagString: OilPet
@@ -5510,7 +5514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petInform: {fileID: 11400000, guid: d171bd30657245f49b59a14ca46daa97, type: 2}
-  emotion: {fileID: 6119126831778040031}
+  emotion: {fileID: 1892053490445220863}
   destination: {x: 0, y: 0, z: 0}
   stateParent: {fileID: 8440512425066578941}
   skill: {fileID: 1853507546124268364}
@@ -5582,6 +5586,33 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &9056051558382372819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4586198276244333025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2afd12b5c2e02b4fa587fab3d24317d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emotionByPetEvents:
+  - eventName: 9
+    emotionType: 2
+  - eventName: 11
+    emotionType: 0
+  - eventName: 8
+    emotionType: 1
+  - eventName: 16
+    emotionType: 9
+  - eventName: 17
+    emotionType: 4
+  - eventName: 21
+    emotionType: 8
+  - eventName: 14
+    emotionType: 0
 --- !u!1 &4596888867862978123
 GameObject:
   m_ObjectHideFlags: 0
@@ -10507,7 +10538,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: eb54a4cf02d50dc4ba8d359aad1ca94f, type: 3}
   soundType: 1
+  playOnAwake: 0
+  loop: 0
   isPositioning: 0
+  isChildToTransform: 0
   volume: 1
 --- !u!1 &6137814611862324600
 GameObject:
@@ -25179,7 +25213,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: ca271768a10f52c4383c73986955af1f, type: 3}
   soundType: 1
+  playOnAwake: 0
+  loop: 0
   isPositioning: 1
+  isChildToTransform: 0
   volume: 1
 --- !u!1001 &4881320968481792479
 PrefabInstance:
@@ -25188,14 +25225,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4586198276244333030}
     m_Modifications:
-    - target: {fileID: 1299176460912231091, guid: 15b6b854160728648b96676a91611dc0, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 45f5185da54d09e48a3a03d89a7c8f51, type: 2}
-    - target: {fileID: 1681653420004796672, guid: 15b6b854160728648b96676a91611dc0, type: 3}
-      propertyPath: textures.Array.data[3]
-      value: 
-      objectReference: {fileID: 2800000, guid: 69dc668d295d8a740950d8454f34b32a, type: 3}
     - target: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -25246,6 +25275,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+--- !u!114 &1892053490445220863 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6484061063821367840, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+  m_PrefabInstance: {fileID: 4881320968481792479}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 664b4c8810707694387f95d91eceb283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2555435789304613409 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}
@@ -25260,17 +25300,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26610d8e1eb455c4aae2aaef13e2dbd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6119126831778040031 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1681653420004796672, guid: 15b6b854160728648b96676a91611dc0, type: 3}
-  m_PrefabInstance: {fileID: 4881320968481792479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 664b4c8810707694387f95d91eceb283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5496561999625600614

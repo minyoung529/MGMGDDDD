@@ -38,7 +38,6 @@ public class LinePuzzleController : MonoBehaviour
     [SerializeField] private UnityEvent onExitGame;
 
     public CinemachineVirtualCameraBase topCamera;
-
     #region Property
     public bool isOilMove = false;
     public bool IsPainting { get; private set; } = false;
@@ -87,6 +86,11 @@ public class LinePuzzleController : MonoBehaviour
     public void EnterGame()
     {
         if (PetManager.Instance.PetCount < 2) return;
+
+         for (int i = 0; i < linePuzzles.Length; i++)
+        {
+            linePuzzles[i].gameObject.SetActive(true);
+        }
 
         isPlaying = true;
         onEnterGame?.Invoke();
@@ -254,17 +258,20 @@ public class LinePuzzleController : MonoBehaviour
         isInvalidLine |= (EndPiece.Index != SelectedPiece.Index); // Is Different Node (EndPiece, SelectedPiece)
         isInvalidLine |= (EndPiece == SelectedPiece); // Is Same Node
         isInvalidLine |= SelectedPieces.FindAll(x => EndPiece.Index != x.Index && x.Index >= 0).Count > 0; // Selected Nodes Count have to be two
+        isInvalidLine |= SelectedPieces.FindAll(x => x.IsDestroyed).Count > 0;
 
         return isInvalidLine;
     }
 
-    [ContextMenu("Open")]
-    public void Open()
+    [ContextMenu("Close")]
+    public void Close()
     {
         for (int i = 1; i < linePuzzles.Length; i++)
         {
             linePuzzles[i].gameObject.SetActive(false);
         }
+
+        linePuzzles[0].gameObject.SetActive(true);
 
         int boardCount = linePuzzles[0].BoardCount;
         int powBoardCount = Mathf.RoundToInt(Mathf.Pow((float)linePuzzles[0].BoardCount, 2f));
@@ -283,7 +290,13 @@ public class LinePuzzleController : MonoBehaviour
                 board.position -= board.right * 10f;
             }
 
-            board.DOMove(pos, 1.5f).SetEase(Ease.OutQuad);
+            board.DOMove(pos, 0.65f).SetEase(Ease.InExpo).OnComplete(() =>
+            {
+                for (int i = 1; i < linePuzzles.Length; i++)
+                {
+                    linePuzzles[i].gameObject.SetActive(true);
+                }
+            });
         }
     }
 }

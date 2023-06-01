@@ -9820,7 +9820,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: d673473162fc6ab41a377b466ea078eb, type: 3}
   soundType: 1
+  playOnAwake: 0
+  loop: 0
   isPositioning: 1
+  isChildToTransform: 0
   volume: 1
 --- !u!1 &687090998813229738
 GameObject:
@@ -14750,7 +14753,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: e0f91ddffa364d743a6b45a40f8721a7, type: 3}
   soundType: 1
+  playOnAwake: 0
+  loop: 0
   isPositioning: 1
+  isChildToTransform: 0
   volume: 1
 --- !u!1 &2018906288315168536
 GameObject:
@@ -14847,6 +14853,7 @@ GameObject:
   - component: {fileID: 2018906288344426062}
   - component: {fileID: 2018906288344426051}
   - component: {fileID: 3807945291528324302}
+  - component: {fileID: 8536747490291986273}
   m_Layer: 0
   m_Name: StickyExplosion
   m_TagString: Untagged
@@ -14869,6 +14876,7 @@ Transform:
   - {fileID: 6561930070036833583}
   - {fileID: 2993629085032055158}
   - {fileID: 2518699472352857507}
+  - {fileID: 1071587594795003796}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14963,6 +14971,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7269264775887567079}
+        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onBomb:
     m_PersistentCalls:
       m_Calls:
@@ -14978,6 +14998,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  bombSkillVisual: {fileID: 830532012118289699}
 --- !u!65 &3807945291528324302
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14991,6 +15012,29 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.57, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8536747490291986273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018906288344426057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2cc743d0dee94e4d84e9d69ec6da510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playOnAwake: 0
+  fireEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  fireParticle: []
+  isDestroyType: 0
+  burnDelay: 0
+  burningTime: 2
+  isCool: 1
+  isClingTo: 0
+  onlyScriptBurn: 0
 --- !u!1 &6277956074142293890
 GameObject:
   m_ObjectHideFlags: 0
@@ -34189,6 +34233,57 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &6551171035125830843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1071587594795003796}
+  - component: {fileID: 7269264775887567079}
+  m_Layer: 0
+  m_Name: ExplosionInflatingSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1071587594795003796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6551171035125830843}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2018906288344426050}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7269264775887567079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6551171035125830843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: d769447773393e943ba5b1df3923c958, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 0
+  volume: 5
 --- !u!1001 &2018906288292765227
 PrefabInstance:
   m_ObjectHideFlags: 0

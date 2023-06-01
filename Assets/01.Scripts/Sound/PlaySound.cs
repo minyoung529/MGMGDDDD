@@ -60,15 +60,14 @@ public class PlaySound : MonoBehaviour
                     if (isPositioning)
                     {
                         audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, transform.position, volume, loop);
-
+                    }
+                    else
+                    {
+                        audioSourceObject = SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
                         if (isChildToTransform)
                         {
                             audioSourceObject.transform.SetParent(transform);
                         }
-                    }
-                    else
-                    {
-                        SoundManager.Instance.PlayEffect(audioClip, Vector3.zero, volume, loop);
                     }
                 }
                 break;
@@ -87,5 +86,10 @@ public class PlaySound : MonoBehaviour
                 audioSourceObject?.Stop();
                 break;
         }
+    }
+
+    public void SetVolume(float volume)
+    {
+        audioSourceObject.AudioSource.volume = volume;
     }
 }

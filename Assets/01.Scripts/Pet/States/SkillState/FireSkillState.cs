@@ -41,6 +41,7 @@ public class FireSkillState : PetState
     public void OffSkill()
     {
         fire.StopBurn();
+        pet.Event.TriggerEvent((int)PetEventName.OnSkillComplete);
         pet.State.ChangeState((int)PetStateName.Idle);
     }
 

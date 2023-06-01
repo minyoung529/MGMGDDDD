@@ -68,6 +68,7 @@ public class SoundManager : MonoSingleton<SoundManager>
         AudioSourceObject obj = pool.Get();
         AudioSource audio = obj.AudioSource;
 
+
         if (pos != Vector3.zero)
         {
             obj.transform.position = pos;

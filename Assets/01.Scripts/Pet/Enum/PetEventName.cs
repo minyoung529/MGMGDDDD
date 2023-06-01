@@ -14,4 +14,15 @@ public enum PetEventName
     OnLanding,
     OnActiveInteract,
     OnInteractEnd,
+
+    OnSkillComplete,
+    OnSkillOffComplete, // Sticky (ON/OFF)
+    OnFly,
+    OnFlyEnd,
+    OnExplosion,
+    OnExplosionSmall,
+    OnExplosionEnd,
+    OnDrawStart, // OilPet (OnSkillStart)
+
+    Count
 }
