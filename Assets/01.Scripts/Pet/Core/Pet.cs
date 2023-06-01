@@ -100,6 +100,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Pet>(this, states);
+
+        CutSceneManager.Instance.AddStartCutscene(Pause);
     }
 
 
@@ -117,6 +119,10 @@ public abstract class Pet : MonoBehaviour, IThrowable
             agent.speed = originalAgentSpeed;
         }
 
+    }
+
+    public void Pause() {
+        State.ChangeState((int)PetStateName.Pause);
     }
 
     #region Set
@@ -245,6 +251,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public void SetNavIsStopped(bool value)
     {
         if (agent == null) return;
+        if (!agent.enabled) return;
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value)
