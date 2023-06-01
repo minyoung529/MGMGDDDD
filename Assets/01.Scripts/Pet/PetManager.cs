@@ -47,13 +47,14 @@ public class PetManager : MonoSingleton<PetManager>
         base.Awake();
 
         StartListen();
-        CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
-        CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
     }
 
     private void Start()
     {
         ResetPetManager();
+
+        CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
+        CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
     }
 
 
