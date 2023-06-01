@@ -21,8 +21,6 @@ public class DropperController : MonoBehaviour
     [SerializeField]
     private Transform playerSpawnPosition;
 
-    private Animator player;
-
     private JumpMotion jumpMotion = new();
 
     [Header("PATTERN")]
@@ -50,10 +48,9 @@ public class DropperController : MonoBehaviour
     private bool isPlaying = false;
     private bool isClear = false;
 
-    private void Awake()
+    private void Start()
     {
-        player = FindObjectOfType<PlayerMove>().GetComponent<Animator>();
-        cameraController = player.GetComponentInChildren<ThirdPersonCameraControll>();
+        cameraController = GameManager.Instance.PlayerController.GetComponent<ThirdPersonCameraControll>();
         jumpMotion.TargetPos = playerSpawnPosition.position;
 
         for (int i = 0; i < patternRoot.childCount; i++)
@@ -90,11 +87,13 @@ public class DropperController : MonoBehaviour
         DirectionalLightController.ChangeRotation(Quaternion.Euler(new Vector3(90f, 0f, 0f)), 1f);
 
         // FUNCTION
-        walls.ForEach(x => x.Active());
-        jumpMotion.StartJump(player.transform, null, null, false, 2f);
 
-        player.SetTrigger("tStateChange");
-        player.SetInteger("iStateNum", (int)PlayerStateName.Fall);
+        Animator animator = GameManager.Instance.PlayerController.Anim;
+        walls.ForEach(x => x.Active());
+        jumpMotion.StartJump(GameManager.Instance.PlayerController.transform, null, null, false, 2f);
+        
+        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.Fall);
+
         StartCoroutine(StartPattern());
     }
 
@@ -108,6 +107,8 @@ public class DropperController : MonoBehaviour
     {
         ResetDropperData();
         onDropperClear?.Invoke();
+
+        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
         isClear = true;
     }
 

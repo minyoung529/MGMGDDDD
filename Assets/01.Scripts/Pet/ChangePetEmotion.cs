@@ -19,8 +19,9 @@ public class ChangePetEmotion : MonoBehaviour
         foreach (EmotionByPetEvent emotionEvent in emotionByPetEvents)
         {
             emotionEvent.StartListening(() => petEmotion.SetEmotion(emotionEvent.emotionType));
-            pet.Event.StartListening((int)emotionEvent.eventName, emotionEvent.Action);
         }
+
+        AddAllListener();
     }
 
     private void OnDestroy()
@@ -28,6 +29,19 @@ public class ChangePetEmotion : MonoBehaviour
         if (pet == null) return;
         if (pet.Event == null) return;
 
+        RemoveAllListener();
+    }
+
+    public void AddAllListener()
+    {
+        foreach (EmotionByPetEvent emotionEvent in emotionByPetEvents)
+        {
+            pet.Event.StartListening((int)emotionEvent.eventName, emotionEvent.Action);
+        }
+    }
+
+    public void RemoveAllListener()
+    {
         foreach (EmotionByPetEvent emotionEvent in emotionByPetEvents)
         {
             pet.Event.StopListening((int)emotionEvent.eventName, emotionEvent.Action);

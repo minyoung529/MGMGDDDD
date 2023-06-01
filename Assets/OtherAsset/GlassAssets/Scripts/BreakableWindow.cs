@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using UnityEngine;
+using UnityEngine.Events;
 
-[AddComponentMenu("Breakable Windows/Breakable Window")]
-[RequireComponent(typeof(AudioSource))]
 public class BreakableWindow : MonoBehaviour
 {
     [Tooltip("Layer should be TransparentFX or your own layer for breakable windows.")]
@@ -32,10 +31,6 @@ public class BreakableWindow : MonoBehaviour
     [Tooltip("Seconds after window is broken that splinters have to be destroyed.")]
     public float destroySplintersTime = 0;
 
-    [Space]
-    public AudioClip breakingSound;
-
-
     [HideInInspector]
     public bool isBroken = false;
     [HideInInspector]
@@ -48,6 +43,9 @@ public class BreakableWindow : MonoBehaviour
     int[] tris;
 
     private List<Rigidbody> splinterRigids = new List<Rigidbody>();
+
+    [SerializeField]
+    private UnityEvent onBreak;
 
     void Start()
     {
@@ -273,7 +271,7 @@ public class BreakableWindow : MonoBehaviour
             isBroken = true;
         }
 
-        GetComponent<AudioSource>().Play();
+        onBreak.Invoke();
     }
 
     [ContextMenu("BreakWindow")]
