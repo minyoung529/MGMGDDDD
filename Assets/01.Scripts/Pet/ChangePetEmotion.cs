@@ -33,6 +33,11 @@ public class ChangePetEmotion : MonoBehaviour
             pet.Event.StopListening((int)emotionEvent.eventName, emotionEvent.Action);
         }
     }
+
+    public void ChangeEmotion(EmotionType type)
+    {
+        petEmotion.SetEmotion(type);
+    }
 }
 
 [System.Serializable]

@@ -24,5 +24,8 @@ public enum PetEventName
     OnExplosionEnd,
     OnDrawStart, // OilPet (OnSkillStart)
 
+    // Animation Event
+    OnAfraid,
+
     Count
 }

@@ -1,5 +1,56 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1580502350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1580502351}
+  - component: {fileID: 1580502352}
+  m_Layer: 8
+  m_Name: Sound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1580502351
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580502350}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2611246238103810627}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1580502352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580502350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: f647b6bb9810a27489625b907c77fd9c, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 0
+  volume: 1
 --- !u!1 &1301286451771402472
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,6 +163,7 @@ GameObject:
   - component: {fileID: 2026869122}
   - component: {fileID: 8213678212866010226}
   - component: {fileID: 9209618355673903033}
+  - component: {fileID: 8437390581075250133}
   m_Layer: 8
   m_Name: StickyPet
   m_TagString: StickyPet
@@ -137,6 +189,7 @@ Transform:
   - {fileID: 816428402338977558}
   - {fileID: 1683757980992159576}
   - {fileID: 1253882418130302453}
+  - {fileID: 1580502351}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -191,7 +244,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petInform: {fileID: 11400000, guid: 44204a8ab7f9d0e41a1b1bf3840dc187, type: 2}
-  emotion: {fileID: 7640903426983005058}
   destination: {x: 0, y: 0, z: 0}
   stateParent: {fileID: 1683757980992159576}
 --- !u!135 &3200471853253183780
@@ -266,6 +318,21 @@ MonoBehaviour:
     emotionType: 4
   - eventName: 20
     emotionType: 0
+--- !u!114 &8437390581075250133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611246238103810629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2feb1b9511853aa4ab76f0b52937a36e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animByPetEvents:
+  - eventName: 16
+    animType: 0
 --- !u!1 &4191933907231695496
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,17 +960,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4265280580296371605, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
   m_PrefabInstance: {fileID: 1550042231083471968}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7640903426983005058 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9190485770148159458, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
-  m_PrefabInstance: {fileID: 1550042231083471968}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 664b4c8810707694387f95d91eceb283, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2018906288704621096
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -915,6 +971,14 @@ PrefabInstance:
       propertyPath: changedObject
       value: 
       objectReference: {fileID: 1788196496585228096}
+    - target: {fileID: 2018906288306632777, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288306632779, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2018906288344426050, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
       propertyPath: m_RootOrder
       value: 1
