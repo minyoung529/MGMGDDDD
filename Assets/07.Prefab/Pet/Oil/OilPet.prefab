@@ -5215,6 +5215,7 @@ GameObject:
   - component: {fileID: 9122027718754727766}
   - component: {fileID: 1463218476093845099}
   - component: {fileID: 1853507546124268364}
+  - component: {fileID: 6472210464352981259}
   m_Layer: 8
   m_Name: States
   m_TagString: Untagged
@@ -5375,6 +5376,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &6472210464352981259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347124260004987493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebcc0610a39f3ce44b08e560ed63afa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2976147761122023681
 GameObject:
   m_ObjectHideFlags: 0
@@ -5441,8 +5454,8 @@ GameObject:
   - component: {fileID: 498263000}
   - component: {fileID: 272708379305149914}
   - component: {fileID: 3635944747377788682}
-  - component: {fileID: 1406320506}
   - component: {fileID: 9056051558382372819}
+  - component: {fileID: 6858652989761132319}
   m_Layer: 8
   m_Name: OilPet
   m_TagString: OilPet
@@ -5514,7 +5527,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petInform: {fileID: 11400000, guid: d171bd30657245f49b59a14ca46daa97, type: 2}
-  emotion: {fileID: 1892053490445220863}
   destination: {x: 0, y: 0, z: 0}
   stateParent: {fileID: 8440512425066578941}
   skill: {fileID: 1853507546124268364}
@@ -5566,26 +5578,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 21
   m_ObstacleAvoidanceType: 4
---- !u!95 &1406320506
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4586198276244333025}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!114 &9056051558382372819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5613,6 +5605,19 @@ MonoBehaviour:
     emotionType: 8
   - eventName: 14
     emotionType: 0
+--- !u!114 &6858652989761132319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4586198276244333025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2feb1b9511853aa4ab76f0b52937a36e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animByPetEvents: []
 --- !u!1 &4596888867862978123
 GameObject:
   m_ObjectHideFlags: 0
@@ -25225,6 +25230,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4586198276244333030}
     m_Modifications:
+    - target: {fileID: 1299176460912231091, guid: 15b6b854160728648b96676a91611dc0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -25275,17 +25284,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15b6b854160728648b96676a91611dc0, type: 3}
---- !u!114 &1892053490445220863 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6484061063821367840, guid: 15b6b854160728648b96676a91611dc0, type: 3}
-  m_PrefabInstance: {fileID: 4881320968481792479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 664b4c8810707694387f95d91eceb283, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &2555435789304613409 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6974761637342850046, guid: 15b6b854160728648b96676a91611dc0, type: 3}

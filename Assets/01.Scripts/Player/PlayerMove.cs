@@ -40,6 +40,9 @@ public class PlayerMove : PlayerMono
     private bool isInputLock = false;
     public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
 
+    private bool isBlockJump = false;
+    public bool IsBlockJump { get { return isBlockJump; } set { isBlockJump = value; } }
+
     [SerializeField] private LayerMask groundLayer;
     #endregion
 
@@ -78,6 +81,8 @@ public class PlayerMove : PlayerMono
         foreach (var keyValue in actions) {
             InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
         }
+        CutSceneManager.Instance?.RemoveStartCutscene(LockInput);
+        CutSceneManager.Instance?.RemoveEndCutscene(UnLockInput);
     }
 
     private void SetUpStateDictionary() {
@@ -95,6 +100,7 @@ public class PlayerMove : PlayerMono
         actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
         actions.Add(InputAction.Jump, (action, value) => {
             if (IsInputLock) return;
+            if (IsBlockJump) return;
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(PlayerStateName.Jump);
         });
@@ -105,6 +111,8 @@ public class PlayerMove : PlayerMono
         foreach (var keyValue in actions) {
             InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
         }
+        CutSceneManager.Instance.AddStartCutscene(LockInput);
+        CutSceneManager.Instance.AddEndCutscene(UnLockInput);
     }
     #endregion
 
@@ -256,6 +264,13 @@ public class PlayerMove : PlayerMono
         if (Vector3.Dot(Vector3.up, hit.normal) <= 0.4f)
             return false;
         return true;
+    }
+    public void LockInput() {
+        IsInputLock = true;
+    }
+
+    public void UnLockInput() {
+        IsInputLock = false;
     }
 
     public void LockInput(float time) {

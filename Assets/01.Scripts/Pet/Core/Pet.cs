@@ -9,15 +9,12 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
-    [SerializeField] private PetEmotion emotion;
     private Vector3 originScale;
     private float originalAgentSpeed;
     private float interactRadius = 4.5f;
 
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
-
-    public PetEmotion Emotion => emotion;
 
     #region Property
 
@@ -100,6 +97,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Pet>(this, states);
+
+        CutSceneManager.Instance.AddStartCutscene(Pause);
     }
 
 
@@ -117,6 +116,10 @@ public abstract class Pet : MonoBehaviour, IThrowable
             agent.speed = originalAgentSpeed;
         }
 
+    }
+
+    public void Pause() {
+        State.ChangeState((int)PetStateName.Pause);
     }
 
     #region Set
@@ -245,6 +248,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public void SetNavIsStopped(bool value)
     {
         if (agent == null) return;
+        if (!agent.enabled) return;
         agent.isStopped = value;
     }
     public void SetNavEnabled(bool value)

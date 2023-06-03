@@ -11,9 +11,13 @@ public class StateMachine<T> {
     private int curStateIndex;
     public int CurStateIndex => curStateIndex;
 
+    private int beforeStateIndex;
+    public int BeforeStateIndex => beforeStateIndex;
+
     public StateMachine(T parent, List<IState> states, int startIndex = 0) {
         this.parent = parent;
         this.states = states;
+        curStateIndex = startIndex;
         ChangeState(startIndex);
     }
 
@@ -22,11 +26,13 @@ public class StateMachine<T> {
         foreach (IState item in states) {
             this.states.Add(item);
         }
+        curStateIndex = startIndex;
         ChangeState(startIndex);
     }
 
     public void ChangeState(int index) {
         curState?.OnExit();
+        beforeStateIndex = CurStateIndex;
         curStateIndex = index;
         curState = states[index];
         curState.OnEnter();
@@ -40,6 +46,7 @@ public class StateMachine<T> {
                 return;
             };
         }
+        beforeStateIndex = CurStateIndex;
         curStateIndex = states.Count;
         states.Add(state);
     }

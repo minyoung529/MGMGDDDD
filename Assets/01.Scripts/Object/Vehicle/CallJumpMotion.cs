@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 public class CallJumpMotion : MonoBehaviour
 {
@@ -19,9 +20,13 @@ public class CallJumpMotion : MonoBehaviour
 
     private JumpMotion jumpMotion = new();
 
+    [SerializeField]
+    private Ease ease = Ease.InOutSine;
+
     [ContextMenu("PLAYER")]
     public void JumpToTarget()
     {
+        jumpMotion.SetEase(ease);
         jumpMotion.Jump(player, target, duration, endEvent);
     }
 }
