@@ -68,7 +68,7 @@ public class LinePuzzle : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void StartGame(Func<bool> func)
+    public void StartGame(Func<int, bool> func)
     {
         CreatePortal(oilPortal, oilPortals, oilPortalTransform);
         CreatePortal(firePortal, firePortals, firePortalTransform);
@@ -133,14 +133,16 @@ public class LinePuzzle : MonoBehaviour
         }
     }
 
-    private void InitializeFirePortal(Func<bool> func)
+    private void InitializeFirePortal(Func<int, bool> func)
     {
         for (int i = 0; i < connectCount; i++)
         {
             FirePortal fPortal = firePortals[i] as FirePortal;
             fPortal.StartListeningBurn(pieces.Find(x => x.Index == i).Burn);
             fPortal.StartListeningBurn(pieces.FindLast(x => x.Index == i).Burn);
-            fPortal.StartListeningCanBurn(func);
+            fPortal.StartListeningCanNotBurn(func);
+            fPortal.StartListeningCanNotBurn(IsDestroyed);
+            fPortal.SetIndex(i);
         }
     }
 
@@ -172,5 +174,10 @@ public class LinePuzzle : MonoBehaviour
         ResetOil();
         pieces.ForEach(x => x.ResetPuzzle());
         destroyPuzzleCnt = 0;
+    }
+
+    private bool IsDestroyed(int idx)
+    {
+        return pieces.Find(x => x.Index == idx).IsDestroyed;
     }
 }

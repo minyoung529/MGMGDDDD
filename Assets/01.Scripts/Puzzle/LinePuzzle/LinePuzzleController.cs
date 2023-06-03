@@ -134,7 +134,7 @@ public class LinePuzzleController : MonoBehaviour
 
     public void ExitGame()
     {
-        GameManager.Instance.SetCursorVisible(true);
+        GameManager.Instance.SetCursorVisible(false);
         isPlaying = false;
 
         cameraController.ActiveCrossHair();
@@ -153,7 +153,7 @@ public class LinePuzzleController : MonoBehaviour
         linePuzzles[idx].StartGame(GetIsOilMove);
     }
 
-    private bool GetIsOilMove()
+    private bool GetIsOilMove(int idx = -1)
     {
         return isOilMove;
     }
