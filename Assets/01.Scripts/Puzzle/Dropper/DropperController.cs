@@ -105,7 +105,6 @@ public class DropperController : MonoBehaviour
 
     public void Clear()
     {
-        ResetDropperData();
         onDropperClear?.Invoke();
 
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
@@ -132,9 +131,10 @@ public class DropperController : MonoBehaviour
 
         particleSystems.ForEach(x => x.Stop());
         patterns.ForEach(x => x.ResetPattern());
-        walls.ForEach(x => x.Active());
 
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(1f);
+        walls.ForEach(x => x.Active());
+        yield return new WaitForSecondsRealtime(1f);
 
         StartDropper();
     }

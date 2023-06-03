@@ -62,6 +62,5 @@ public class TileMoveController : MonoBehaviour
     public void SetInactivate()
     {
         isActive = false;
-        gameObject.SetActive(false);
     }
 }
