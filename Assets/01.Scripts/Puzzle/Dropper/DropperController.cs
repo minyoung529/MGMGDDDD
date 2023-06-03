@@ -88,11 +88,11 @@ public class DropperController : MonoBehaviour
 
         // FUNCTION
 
-        Animator animator = GameManager.Instance.PlayerController.Anim;
         walls.ForEach(x => x.Active());
         jumpMotion.StartJump(GameManager.Instance.PlayerController.transform, null, null, false, 2f);
-        
+
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.Fall);
+        GameManager.Instance.PlayerController.Move.IsBlockJump = true;
 
         StartCoroutine(StartPattern());
     }
@@ -105,11 +105,11 @@ public class DropperController : MonoBehaviour
 
     public void Clear()
     {
-        ResetDropperData();
         onDropperClear?.Invoke();
 
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
         isClear = true;
+        GameManager.Instance.PlayerController.Move.IsBlockJump = false;
     }
 
     private void ResetDropperData()
@@ -132,6 +132,8 @@ public class DropperController : MonoBehaviour
         particleSystems.ForEach(x => x.Stop());
         patterns.ForEach(x => x.ResetPattern());
 
+        yield return new WaitForSecondsRealtime(1f);
+        walls.ForEach(x => x.Active());
         yield return new WaitForSecondsRealtime(1f);
 
         StartDropper();
