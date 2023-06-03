@@ -15,7 +15,6 @@ public class AnimationProperty : MonoBehaviour
 
     public void Trigger()
     {
-        Debug.Log("TRIGGER");
         animator.Play(triggerName);
     }
 
