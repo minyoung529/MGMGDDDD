@@ -81,8 +81,8 @@ public class PlayerMove : PlayerMono
         foreach (var keyValue in actions) {
             InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
         }
-        CutSceneManager.Instance.RemoveStartCutscene(LockInput);
-        CutSceneManager.Instance.RemoveEndCutscene(UnLockInput);
+        CutSceneManager.Instance?.RemoveStartCutscene(LockInput);
+        CutSceneManager.Instance?.RemoveEndCutscene(UnLockInput);
     }
 
     private void SetUpStateDictionary() {
