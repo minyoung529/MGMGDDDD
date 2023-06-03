@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class TogglePosition : MonoBehaviour
 {
     [SerializeField] private float duration = 4f;
+    [SerializeField] private float delay = 0f;
     [SerializeField] private Vector3 targetPos;
     private Vector3 originalPos;
     private bool isOpen = false;
@@ -65,8 +66,23 @@ public class TogglePosition : MonoBehaviour
     public void Open()
     {
         if (isPrevKill)
+        {
             transform.DOKill();
+            StopAllCoroutines();
+        }
 
+        if (delay == 0f)
+        {
+            StartOpenSystem();
+        }
+        else
+        {
+            StartCoroutine(Delay(StartOpenSystem));
+        }
+    }
+
+    private void StartOpenSystem()
+    {
         if (isLocal)
         {
             transform.DOLocalMove(originalPos + targetPos, duration).SetEase(ease).OnComplete(OnEndOpen.Invoke);
@@ -83,8 +99,23 @@ public class TogglePosition : MonoBehaviour
     public void Close()
     {
         if (isPrevKill)
+        {
             transform.DOKill();
+            StopAllCoroutines();
+        }
 
+        if (delay == 0f)
+        {
+            StartCloseSystem();
+        }
+        else
+        {
+            StartCoroutine(Delay(StartCloseSystem));
+        }
+    }
+
+    private void StartCloseSystem()
+    {
         if (isLocal)
         {
             transform.DOLocalMove(originalPos, duration).SetEase(ease).OnComplete(OnEndClose.Invoke);
@@ -95,6 +126,28 @@ public class TogglePosition : MonoBehaviour
         }
 
         OnClose?.Invoke();
+    }
+
+    public void ForceClosePosition()
+    {
+        if (isLocal)
+            transform.localPosition = originalPos;
+        else
+            transform.position = originalPos;
+    }
+
+    public void ForceOpenPosition()
+    {
+        if (isLocal)
+            transform.localPosition = originalPos + targetPos;
+        else
+            transform.position = originalPos + targetPos;
+    }
+
+    private IEnumerator Delay(System.Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action?.Invoke();
     }
 
     public void SetDuration(float duration)
