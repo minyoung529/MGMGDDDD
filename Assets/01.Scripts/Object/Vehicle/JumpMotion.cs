@@ -12,6 +12,8 @@ public class JumpMotion
 
     private Animator animator;
 
+    private Ease jumpEase = Ease.InOutSine;
+
     private Vector3[] GetWayPoints(Transform player)
     {
         Vector3[] points = { player.position, Vector3.zero, TargetPos };
@@ -38,7 +40,7 @@ public class JumpMotion
                 EndAnimation(player);
             }
             OnEndJump?.Invoke();
-        }).SetEase(Ease.InOutQuint);
+        }).SetEase(jumpEase);
     }
 
     public void Jump(Transform player, Transform target, float duration, UnityEvent endEvent = null)
@@ -50,7 +52,7 @@ public class JumpMotion
         player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
         {
             endEvent?.Invoke();
-        }).SetEase(Ease.InOutSine);
+        }).SetEase(jumpEase);
     }
 
     public void Jump(Transform player, Transform target, float duration, Action action = null)
@@ -64,7 +66,7 @@ public class JumpMotion
         player.DOPath(GetWayPoints(player), duration, PathType.CatmullRom).OnComplete(() =>
         {
             action?.Invoke();
-        }).SetEase(Ease.InOutSine);
+        }).SetEase(jumpEase);
     }
 
 
@@ -81,5 +83,10 @@ public class JumpMotion
     {
         animator ??= player.GetComponent<Animator>();
         animator?.SetTrigger("tLanding");
+    }
+
+    public void SetEase(Ease ease)
+    {
+        jumpEase = ease;
     }
 }
