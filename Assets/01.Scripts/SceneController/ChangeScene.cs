@@ -18,6 +18,7 @@ public class ChangeScene : MonoBehaviour
     [SerializeField] private LayerMask collideLayer;
     [SerializeField] private bool loading = true;
 
+    [ContextMenu("Go To")]
     public void GoTo()
     {
         if (go) return;

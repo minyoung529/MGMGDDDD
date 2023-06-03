@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class LoadingScene : MonoBehaviour
 {
@@ -14,7 +15,16 @@ public class LoadingScene : MonoBehaviour
     private float timer = 0f;
     private float changeDuration = 5f;
 
+    [SerializeField]
+    private CanvasGroup canvasGroup;
+
     public void ChangeScene()
+    {
+        gameObject.SetActive(true);
+        canvasGroup.DOFade(1f, 0.5f).OnComplete(LoadSceneAsync);
+    }
+
+    private void LoadSceneAsync()
     {
         operation = SceneManager.LoadSceneAsync(SceneController.CurrentScene.ToString()/*, LoadSceneMode.Additive*/);
         operation.allowSceneActivation = false;
@@ -49,5 +59,10 @@ public class LoadingScene : MonoBehaviour
     {
         SceneController.ChangeScene(op);
         //SceneManager.UnloadSceneAsync(SceneController.prevScene.ToString());
+    }
+
+    public void InactiveScene()
+    {
+        canvasGroup.DOFade(0f, 0.5f).OnComplete(() => gameObject.SetActive(false));
     }
 }

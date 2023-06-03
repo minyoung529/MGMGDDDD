@@ -30,30 +30,30 @@ public class PlayerMoveSound : MonoBehaviour
     public void RunSound()
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(runClip, transform.position);
-        obj.transform.SetParent(transform);
+        obj?.transform.SetParent(transform);
     }
 
     public void JumpSound()
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(jumpClip, transform.position);
-        obj.transform.SetParent(transform);
+        obj?.transform.SetParent(transform);
     }
 
     public void LandingSound()
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(landingClip, transform.position);
-        obj.transform.SetParent(transform);
+        obj?.transform.SetParent(transform);
     }
 
     public void ThrowSound()
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(throwClip, transform.position);
-        obj.transform.SetParent(transform);
+        obj?.transform.SetParent(transform);
     }
 
     public void RecallSound()
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(recallClip, transform.position);
-        obj.transform.SetParent(transform);
+        obj?.transform.SetParent(transform);
     }
 }

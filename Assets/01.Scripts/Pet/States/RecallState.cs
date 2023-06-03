@@ -50,14 +50,10 @@ public class RecallState : PetState
         pet.State.ChangeState((int)PetStateName.Threw);
     }
 
-
-    private void CheckDistanceToPlayer()
-    {
-        if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange &&
-            NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path))
-        {
-            if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f)
-            {
+    private void CheckDistanceToPlayer() {
+        if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange && //네브매쉬 위에 존재하며 플레이어가 시야거리 안에 있고 네브매쉬상에서 플레이어와의 경로가 그려진다면 걸어간다.
+            NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) {
+            if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f) {
                 pet.SetTargetPlayer();
                 pet.State.ChangeState((int)PetStateName.Move);
                 return;

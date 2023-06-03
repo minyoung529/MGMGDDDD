@@ -121,6 +121,7 @@ public class Lever : MonoBehaviour
             isNear = true;
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if(other.CompareTag(Define.PLAYER_TAG))

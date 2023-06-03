@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class ThrewState : PetState {
     [SerializeField] private LayerMask landingLayer;
+    private float bodyRadius = 0.7f;
+    [SerializeField] private float timeToWake = 1f;
     public override PetStateName StateName => PetStateName.Threw;
+    private float landingTime = 0f;
 
     public override void OnEnter() {
         pet.OnThrow();
@@ -21,26 +24,30 @@ public class ThrewState : PetState {
         if(pet.transform.position.y <= -100f) {
             pet.Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
         }
-        CheckGround();
+        UpdateLandingTime();
     }
 
-    private void CheckGround() {
-        if (pet.Rigid.velocity.y >= -0.01)
+    private void UpdateLandingTime() {
+        if (!CheckGround()) {
+            landingTime = 0;
             return;
+        }
+        landingTime += Time.deltaTime;
+        if (landingTime >= timeToWake)
+            pet.Event.TriggerEvent((int)PetEventName.OnLanding);
+    }
+
+    private bool CheckGround() {
         RaycastHit hit;
-        if (!Physics.BoxCast(
-            transform.position + Vector3.up * 0.1f,
-            new Vector3(0.5f, 0.05f, 0.5f),
-            Vector3.down,
-            out hit,
-            Quaternion.identity,
-            1f,
-            landingLayer
-            ))
-            return;
-        if (Vector3.Dot(Vector3.up, hit.normal) <= 0.4f)
-            return;
-        pet.Event.TriggerEvent((int)PetEventName.OnLanding);
+        if (!Physics.SphereCast(
+            pet.transform.position + Vector3.up * bodyRadius, 
+            bodyRadius, 
+            Vector3.down, 
+            out hit, 
+            bodyRadius, 
+            landingLayer)) return false;
+        if (Vector3.Dot(Vector3.up, hit.normal) < 0.4f) return false;
+        return true;
     }
 
     private void OnLanding() {
@@ -50,5 +57,8 @@ public class ThrewState : PetState {
     private void OnRecall() {
         pet.State.ChangeState((int)PetStateName.Recall);
     }
-}
 
+    private void OnDrawGizmos() {
+
+    }
+}

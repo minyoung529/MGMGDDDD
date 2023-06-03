@@ -20,7 +20,7 @@ public class LandingState : PetState
 
     private void WakeUp() {
         pet.transform.DOKill();
-        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 0.5f);
+        transform.DORotate(new Vector3(0, transform.rotation.eulerAngles.y, 0), 2f);
         Landing();
     }
 
