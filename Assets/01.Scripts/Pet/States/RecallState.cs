@@ -51,17 +51,22 @@ public class RecallState : PetState
     }
 
     private void CheckDistanceToPlayer() {
-        if (pet.GetIsOnNavMesh() && Vector3.Distance(transform.position, pet.Player.position) <= sightRange && //네브매쉬 위에 존재하며 플레이어가 시야거리 안에 있고 네브매쉬상에서 플레이어와의 경로가 그려진다면 걸어간다.
-            NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) {
-            if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) <= 1f) {
-                pet.SetTargetPlayer();
-                pet.State.ChangeState((int)PetStateName.Move);
-                return;
-            }
+        if (CheckConditionsToWalk()) {
+            pet.SetTargetPlayer();
+            pet.State.ChangeState((int)PetStateName.Move);
+            return;
         }
-
         Fly();
     }
+
+    private bool CheckConditionsToWalk() {
+        if (!pet.GetIsOnNavMesh()) return false; //네브메쉬 위인지
+        if (Vector3.Distance(pet.transform.position, pet.Player.position) > sightRange) return false; //시야범위 안인지
+        if (!NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) return false; //경로가 그려지는지
+        if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) > 1f) return false; //경로의 도착지가 플레이어 근처인지
+        return true;
+    }
+
 
     private void Fly()
     {
@@ -92,7 +97,6 @@ public class RecallState : PetState
             pet.Event.TriggerEvent((int)PetEventName.OnFlyEnd);
         });
     }
-
     private Vector3[] DrawBezier()
     {
         Vector3 dest = pet.Player.position + (transform.position - pet.Player.position).normalized * 2f;

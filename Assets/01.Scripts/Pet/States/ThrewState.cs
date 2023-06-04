@@ -13,11 +13,13 @@ public class ThrewState : PetState {
         pet.OnThrow();
         pet.Event.StartListening((int)PetEventName.OnLanding, OnLanding);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
     }
 
     public override void OnExit() {
         pet.Event.StopListening((int)PetEventName.OnLanding, OnLanding);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
     }
 
     public override void OnUpdate() {
@@ -56,6 +58,10 @@ public class ThrewState : PetState {
 
     private void OnRecall() {
         pet.State.ChangeState((int)PetStateName.Recall);
+    }
+
+    private void OnHold() {
+        pet.State.ChangeState((int)PetStateName.Held);
     }
 
     private void OnDrawGizmos() {

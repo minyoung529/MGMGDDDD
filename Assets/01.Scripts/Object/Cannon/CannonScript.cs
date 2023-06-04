@@ -87,6 +87,13 @@ public class CannonScript : MonoBehaviour
         pet = null;
     }
 
+    public void GetOutPet() {
+        if (!pet) return;
+        pet.Throw(barrel.up * 500);
+        StartCoroutine(SetIgnore(0.5f, false));
+        pet = null;
+    }
+
     private IEnumerator SetIgnore(float time, bool value)
     {
         yield return new WaitForSeconds(time);
