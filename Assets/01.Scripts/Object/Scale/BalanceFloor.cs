@@ -20,16 +20,9 @@ public class BalanceFloor : MonoBehaviour
         mainBalance = GetComponentInParent<Balance>();
     }
 
-    public void IncreaseWeight(WeightObject weightObj)
+    public void EnterBalanceFloor(WeightObject weightObj)
     {
-        if (weightObj.InWeight) return;
-        weightObj.InWeight = true;
-
-        curWeight += weightObj.GetMass;
-        
-        mainBalance.CompareWeight();
-
-        onIncrease?.Invoke();
+        weightObj.EnterFloor(this);
     }
 
     public void IncreaseWeight(float value)
@@ -40,18 +33,12 @@ public class BalanceFloor : MonoBehaviour
         onIncrease?.Invoke();
     }
 
-    public void DecreaseWeight(WeightObject weightObj)
+    public void ExitBalanceFloor(WeightObject weightObj)
     {
         if (!weightObj.InWeight) return;
-        weightObj.InWeight = false;
+        weightObj.ExitFloor(this);
 
-        curWeight -= weightObj.GetMass;
-        if (curWeight < 0)
-        {
-            curWeight = 0;
-        }
-        mainBalance.CompareWeight();
-        onDecrease?.Invoke();
+        DecreaseWeight(weightObj.GetMass);
     }
     public void DecreaseWeight(float value)
     {
@@ -64,15 +51,15 @@ public class BalanceFloor : MonoBehaviour
         onDecrease?.Invoke();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         WeightObject weightObject = other.GetComponent<WeightObject>();
-        if (weightObject != null) IncreaseWeight(weightObject);
+        if (weightObject != null) EnterBalanceFloor(weightObject);
     }
 
     private void OnTriggerExit(Collider other)
     {
         WeightObject weightObject = other.GetComponent<WeightObject>();
-        if (weightObject != null) DecreaseWeight(weightObject);
+        if (weightObject != null) ExitBalanceFloor(weightObject);
     }
 }
