@@ -37,8 +37,8 @@ public class PlayerMove : PlayerMono
     [SerializeField] private MoveState curState;
     private Dictionary<PlayerStateName, MoveState> stateDictionary = new Dictionary<PlayerStateName, MoveState>();
 
-    private bool isInputLock = false;
-    public bool IsInputLock { get { return isInputLock; } set { isInputLock = value; } }
+    private int isInputLock = 0;
+    public bool IsInputLock { get { return isInputLock > 0; }}
 
     private bool isBlockJump = false;
     public bool IsBlockJump { get { return isBlockJump; } set { isBlockJump = value; } }
@@ -54,6 +54,7 @@ public class PlayerMove : PlayerMono
     private int hash_fCurSpeed = Animator.StringToHash("fCurSpeed");
     private int hash_iActionNum = Animator.StringToHash("iActionNum");
     private int hash_bActionActive = Animator.StringToHash("bActionActive");
+    private float animSpeed = 1f;
     #endregion
 
     private Camera mainCam;
@@ -266,11 +267,11 @@ public class PlayerMove : PlayerMono
         return true;
     }
     public void LockInput() {
-        IsInputLock = true;
+        isInputLock++;
     }
 
     public void UnLockInput() {
-        IsInputLock = false;
+        isInputLock--;
     }
 
     public void LockInput(float time) {
@@ -278,9 +279,9 @@ public class PlayerMove : PlayerMono
     }
 
     private IEnumerator LockTimer(float time) {
-        IsInputLock = true;
+        isInputLock++;
         yield return new WaitForSeconds(time);
-        IsInputLock = false;
+        isInputLock++;
     }
     #endregion
 
