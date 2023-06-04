@@ -37,7 +37,7 @@ public class OilRoot : MonoBehaviour
         {
             Fire fire = obj.GetComponent<Fire>();
 
-            if (fire != null && fire.IsBurn)
+            if (fire != null && fire.IsBurn && fire.IsClingTo)
             {
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);
             }

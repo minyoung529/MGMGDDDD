@@ -1063,7 +1063,7 @@ MonoBehaviour:
   loop: 1
   isPositioning: 1
   isChildToTransform: 0
-  volume: 1
+  volume: 0.1
 --- !u!1 &170279051460646694
 GameObject:
   m_ObjectHideFlags: 0
@@ -11587,7 +11587,7 @@ MonoBehaviour:
   loop: 1
   isPositioning: 1
   isChildToTransform: 0
-  volume: 1
+  volume: 0.1
 --- !u!64 &1993612982
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -14164,7 +14164,7 @@ MonoBehaviour:
   loop: 1
   isPositioning: 1
   isChildToTransform: 0
-  volume: 0.3
+  volume: 0.05
 --- !u!1 &3790268699236558730 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3790268698820339616, guid: f19765d41b2e3cb4c8f0069baea5e55e, type: 3}
@@ -14511,7 +14511,7 @@ MonoBehaviour:
   loop: 1
   isPositioning: 1
   isChildToTransform: 0
-  volume: 0.3
+  volume: 0.05
 --- !u!1 &7377406299848925325 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7377406300253566092, guid: 4b986933fd6eee14cb3817dd851001b8, type: 3}
@@ -15622,29 +15622,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.5
+  delay: 0
   targetPos: {x: 0, y: -0.3, z: 0}
   OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnOpenComplete:
     m_PersistentCalls:
       m_Calls: []
   OnClose:
     m_PersistentCalls:
       m_Calls: []
-  OnEndOpen:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2182370309113758733}
-        m_TargetAssemblyTypeName: TogglePosition, Assembly-CSharp
-        m_MethodName: Close
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnEndClose:
+  OnCloseComplete:
     m_PersistentCalls:
       m_Calls: []
   ease: 0

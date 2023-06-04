@@ -90,6 +90,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
         GameManager.Instance.SetCursorVisible(true);
         PetManager.Instance.AllPetActions(x => x.AgentAcceleration = 80);
+        PetManager.Instance.StopListen(InputAction.Pet_Follow);
     }
 
     public void OnCrossHairMove(bool value)
@@ -170,6 +171,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
         Pet.IsCameraAimPoint = true;
         PetManager.Instance.AllPetActions(x => x.ResetAgentValue());
+        PetManager.Instance.StartListen(InputAction.Pet_Follow);
     }
 
     #endregion

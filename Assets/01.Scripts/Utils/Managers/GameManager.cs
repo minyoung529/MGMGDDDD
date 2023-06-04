@@ -21,14 +21,25 @@ public class GameManager : MonoSingleton<GameManager>
     #endregion
 
     private PlayerController playerController = null;
-    public PlayerController PlayerController => playerController;
+    public PlayerController PlayerController
+    {
+        get
+        {
+            if (playerController)
+                return playerController;
+
+            else
+                playerController = FindObjectOfType<PlayerController>();
+            return playerController;
+        }
+    }
 
     #region 퍼즐 관련 변수
     private ButtonObject[] buttons;
     public ButtonObject[] Buttons => buttons;
     public Pet[] Pets => PetManager.Instance.GetPetList.ToArray();
-  //  private IThrowable[] throwables;
-   // private IThrowable[] Throwables => throwables;
+    //  private IThrowable[] throwables;
+    // private IThrowable[] Throwables => throwables;
     #endregion
 
     private float st;
@@ -57,7 +68,8 @@ public class GameManager : MonoSingleton<GameManager>
         CameraSwitcher.Start();
     }
 
-    private void FindPlayer() {
+    private void FindPlayer()
+    {
         playerController = FindObjectOfType<PlayerController>();
     }
 
@@ -105,7 +117,9 @@ public class GameManager : MonoSingleton<GameManager>
     public void SetCursorVisible(bool visible)
     {
         Pet.IsCameraAimPoint = !visible;
-        if(visible)
+        Cursor.visible = visible;
+
+        if (visible)
         {
             Cursor.lockState = CursorLockMode.None;
         }

@@ -101,6 +101,11 @@ public abstract class Pet : MonoBehaviour, IThrowable
         CutSceneManager.Instance.AddStartCutscene(Pause);
     }
 
+    void OnDestroy()
+    {
+        CutSceneManager.Instance?.RemoveStartCutscene(Pause);
+    }
+
 
     public virtual void OnUpdate()
     {

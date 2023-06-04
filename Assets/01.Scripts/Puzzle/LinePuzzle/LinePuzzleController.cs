@@ -87,7 +87,7 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (PetManager.Instance.PetCount < 2) return;
 
-         for (int i = 0; i < linePuzzles.Length; i++)
+        for (int i = 0; i < linePuzzles.Length; i++)
         {
             linePuzzles[i].gameObject.SetActive(true);
         }
@@ -98,6 +98,8 @@ public class LinePuzzleController : MonoBehaviour
         GameManager.Instance.SetCursorVisible(true);
         cameraController.InactiveCrossHair();
         OilPetSkill.IsCrosshair = false;
+        GameManager.Instance.PlayerController.Move.LockInput();
+        PetManager.Instance.StopListen(InputAction.Pet_Follow);
 
         PetSetting();
         StartGame();
@@ -134,7 +136,7 @@ public class LinePuzzleController : MonoBehaviour
 
     public void ExitGame()
     {
-        GameManager.Instance.SetCursorVisible(true);
+        GameManager.Instance.SetCursorVisible(false);
         isPlaying = false;
 
         cameraController.ActiveCrossHair();
@@ -144,6 +146,8 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.SkillState.OnEndSkill -= MoveToPortal;
         oilPet.SkillState.OnStartSkill -= StartPaintingOil;
         oilPet.SkillState.SkillData.IsCheckDistance = true;
+        GameManager.Instance.PlayerController.Move.UnLockInput();
+        PetManager.Instance.StartListen(InputAction.Pet_Follow);
 
         onExitGame?.Invoke();
     }
@@ -153,7 +157,7 @@ public class LinePuzzleController : MonoBehaviour
         linePuzzles[idx].StartGame(GetIsOilMove);
     }
 
-    private bool GetIsOilMove()
+    private bool GetIsOilMove(int idx = -1)
     {
         return isOilMove;
     }

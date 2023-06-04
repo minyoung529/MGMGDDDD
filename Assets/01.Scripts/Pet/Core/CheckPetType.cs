@@ -46,5 +46,6 @@ public class CheckPetType : MonoBehaviour
         inPet.Rigid.isKinematic = false;
         inPet.Coll.enabled = true;
         inPet.SetNavEnabled(true);
+        inPet.State.ChangeState((int)PetStateName.Idle);
     }
 }
