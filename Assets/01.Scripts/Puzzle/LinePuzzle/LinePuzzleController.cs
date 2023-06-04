@@ -44,6 +44,9 @@ public class LinePuzzleController : MonoBehaviour
     public List<PlatformPiece> SelectedPieces { get; set; } = new List<PlatformPiece>();
     public PlatformPiece SelectedPiece => (SelectedPieces.Count > 0) ? SelectedPieces[0] : null;
     public PlatformPiece EndPiece => (SelectedPieces.Count > 0) ? SelectedPieces[SelectedPieces.Count - 1] : null;
+
+    public List<PlatformPiece> BurningPieces { get; set; } = new List<PlatformPiece>();
+    private bool isBurning = false;
     #endregion
 
     private void Awake()
@@ -75,6 +78,24 @@ public class LinePuzzleController : MonoBehaviour
         }
 
         trigger.transform.position = GameManager.Instance.GetMousePos();
+        CheckBurning();
+    }
+
+    private void CheckBurning()
+    {
+        if (!isBurning && BurningPieces.Count > 0)
+        {
+            isBurning = true;
+            PetManager.Instance.StopListen(InputAction.Pet_Skill);
+            PetManager.Instance.StopListen(InputAction.Pet_Skill_Up);
+        }
+
+        else if (isBurning && BurningPieces.Count == 0)
+        {
+            isBurning = false;
+            PetManager.Instance.StartListen(InputAction.Pet_Skill);
+            PetManager.Instance.StartListen(InputAction.Pet_Skill_Up);
+        }
     }
 
     private void ResetBoard()
@@ -171,6 +192,7 @@ public class LinePuzzleController : MonoBehaviour
         {
             oilSkillState.KillSkill();
             oilPet.State.ChangeState((int)PetStateName.Idle);
+            SelectedPieces.Clear();
             return;
         }
 
@@ -207,6 +229,7 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.SetForcePosition(oilSpawnPosition.position);
         oilTeleportParticle.transform.position = oilSpawnPosition.position;
         oilTeleportParticle.Play();
+        SelectedPieces.Clear();
 
         isOilMove = false;
     }
@@ -235,7 +258,7 @@ public class LinePuzzleController : MonoBehaviour
 
     private void StartPaintingOil()
     {
-        SelectedPieces.Clear();
+        // SelectedPieces.Clear();
         IsPainting = true;
         CurrentPuzzle.ResetOil();
     }

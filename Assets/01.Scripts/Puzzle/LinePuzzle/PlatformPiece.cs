@@ -83,7 +83,7 @@ public class PlatformPiece : MonoBehaviour
             }
         }
 
-        else if (other.CompareTag(Define.OIL_PET_TAG))
+        else if (other.CompareTag(Define.OIL_PET_TAG) && controller.SelectedPieces.Contains(this))
         {
             isLightOn = true;
             boardRenderer.material.DOColor(controller.SelectedPiece.Color, 1f);
@@ -100,6 +100,7 @@ public class PlatformPiece : MonoBehaviour
         if (isBurning || isDestroyed) return;
         if (!gameObject.activeSelf) return;
 
+        controller.BurningPieces.Add(this);
         isBurning = true;
         isDestroyed = true;
 
@@ -110,6 +111,7 @@ public class PlatformPiece : MonoBehaviour
         {
             destroyParticle.Play();
             OnDestroyPlatform?.Invoke();
+            controller.BurningPieces.Remove(this);
         });
     }
 
@@ -139,7 +141,7 @@ public class PlatformPiece : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag(Define.OIL_PET_TAG))
+        if (collision.gameObject.CompareTag(Define.OIL_PET_TAG) && controller.SelectedPieces.Contains(this))
         {
             isLightOn = true;
             boardRenderer.material.DOColor(controller.SelectedPiece.Color, 1f);
