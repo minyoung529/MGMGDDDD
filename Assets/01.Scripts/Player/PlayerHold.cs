@@ -94,7 +94,7 @@ public class PlayerHold : PlayerMono {
         }
 
         if (!holdingPet) {
-            controller.Move.LockInput();
+            controller.Move.UnLockInput();
             return;
         }
         Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
