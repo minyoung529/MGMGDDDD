@@ -19,6 +19,10 @@ public class CutScenePlayer : MonoBehaviour
 
     private PlayableDirector director;
 
+    [SerializeField]
+    private bool isOnce = true;
+    private bool hasPlayed = false;
+
     void Awake()
     {
         director = GetComponent<PlayableDirector>();
@@ -44,6 +48,9 @@ public class CutScenePlayer : MonoBehaviour
     [ContextMenu("Play")]
     public void Play()
     {
+        if (hasPlayed && isOnce) return;
+        
+        hasPlayed = true;
         CameraSwitcher.ChangeSwitchBlend(2f);
         StartCoroutine(DelayOneFrame());
     }
