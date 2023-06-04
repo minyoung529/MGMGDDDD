@@ -6,11 +6,13 @@ using UnityEngine;
 public class FirePortal : ConnectionPortal
 {
     public Action OnFire { get; set; }
-    private Func<bool> CanBurn;
+    List<Func<int, bool>> canNotBurn = new List<Func<int, bool>>();
     private Fire fire;
 
     int key = 0;
     int fireKey = -1;
+
+    private int index;
 
     private void OnTriggerStay(Collider other)
     {
@@ -18,9 +20,9 @@ public class FirePortal : ConnectionPortal
 
         if (other.CompareTag(Define.FIRE_PET_TAG))
         {
-            fire ??= other.GetComponent<Fire>();
+            fire ??= other.GetComponentInChildren<Fire>();
 
-            if (fire.IsBurn && !CanBurn.Invoke())
+            if (fire.IsBurn && !CanNotBurn())
             {
                 fireKey = key;
                 OnFire?.Invoke();
@@ -41,8 +43,24 @@ public class FirePortal : ConnectionPortal
         OnFire += action;
     }
 
-    public void StartListeningCanBurn(Func<bool> func)
+    public void StartListeningCanNotBurn(Func<int, bool> func)
     {
-        CanBurn += func;
+        canNotBurn.Add(func);
+    }
+
+    public bool CanNotBurn()
+    {
+        foreach (Func<int, bool> func in canNotBurn)
+        {
+            if (func.Invoke(index))
+                return true;
+        }
+
+        return false;
+    }
+
+    public void SetIndex(int index)
+    {
+        this.index = index;
     }
 }
