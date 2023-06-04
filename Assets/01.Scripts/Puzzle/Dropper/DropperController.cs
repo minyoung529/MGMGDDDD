@@ -113,6 +113,7 @@ public class DropperController : MonoBehaviour
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.Fall);
         GameManager.Instance.PlayerController.Move.IsBlockJump = true;
         PetManager.Instance.StopListen(InputAction.Pet_Follow);
+        PetManager.Instance.InactivePetCanvas();
         
         StartCoroutine(StartPattern());
     }
@@ -125,6 +126,8 @@ public class DropperController : MonoBehaviour
 
     public void Clear()
     {
+        PetManager.Instance.ActivePetCanvas();
+
         onDropperClear?.Invoke();
 
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);

@@ -22,6 +22,11 @@ public class PauseState : PetState {
         pet.Rigid.velocity = velocity;
     }
 
+    private void OnDestroy()
+    {
+        CutSceneManager.Instance?.RemoveEndCutscene(OnEndCutScene);
+    }
+
     public override void OnUpdate() {
 
     }

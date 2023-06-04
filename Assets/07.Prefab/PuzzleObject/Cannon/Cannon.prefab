@@ -104,6 +104,8 @@ GameObject:
   - component: {fileID: 5771586400422726030}
   - component: {fileID: 621564882680605645}
   - component: {fileID: 1626203134}
+  - component: {fileID: 5601210408499672942}
+  - component: {fileID: 1227260275341864491}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -257,6 +259,54 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &5601210408499672942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5771586400422726024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4223a9ac3d70b4f95434e9d0cf3486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCollide: 1
+  autoEnd: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  tutorialType: 1
+  tutorialName: "\uAEBC\uB0B4\uAE30"
+  inputAction: 16
+  onKeyDownEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5771586400422726030}
+        m_TargetAssemblyTypeName: CannonScript, Assembly-CSharp
+        m_MethodName: GetOutPet
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &1227260275341864491
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5771586400422726024}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6, y: 6, z: 6}
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!1 &5771586400431283918
 GameObject:
   m_ObjectHideFlags: 0

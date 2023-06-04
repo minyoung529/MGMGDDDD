@@ -67,11 +67,6 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (!isPlaying) return;
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            ResetBoard();
-        }
-
         if (Input.GetKeyDown(KeyCode.G))
         {
             GetNextPuzzle();
@@ -79,6 +74,16 @@ public class LinePuzzleController : MonoBehaviour
 
         trigger.transform.position = GameManager.Instance.GetMousePos();
         CheckBurning();
+    }
+
+    public void StartListenReset()
+    {
+        InputManager.StartListeningInput(InputAction.Interaction, ResetBoard);
+    }
+
+    public void StopListenReset()
+    {
+        InputManager.StopListeningInput(InputAction.Interaction, ResetBoard);
     }
 
     private void CheckBurning()
@@ -98,7 +103,7 @@ public class LinePuzzleController : MonoBehaviour
         }
     }
 
-    private void ResetBoard()
+    private void ResetBoard(InputAction action = InputAction.Interaction, float value = 0f)
     {
         oilPet.SkillState.SkillData.ClearOil();
         CurrentPuzzle.ResetPuzzle();
