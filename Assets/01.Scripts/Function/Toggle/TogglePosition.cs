@@ -7,16 +7,16 @@ using UnityEngine.Events;
 public class TogglePosition : MonoBehaviour
 {
     [SerializeField] private float duration = 4f;
+    [SerializeField] private float delay = 0f;
     [SerializeField] private Vector3 targetPos;
     private Vector3 originalPos;
     private bool isOpen = false;
     public Vector3 MoveDir => targetPos;
 
     [SerializeField] private UnityEvent OnOpen;
+    [SerializeField] private UnityEvent OnOpenComplete;
     [SerializeField] private UnityEvent OnClose;
-    [SerializeField] private UnityEvent OnEndOpen;
-    [SerializeField] private UnityEvent OnEndClose;
-
+    [SerializeField] private UnityEvent OnCloseComplete;
 
     [SerializeField] Ease ease = Ease.Unset;
 
@@ -65,15 +65,30 @@ public class TogglePosition : MonoBehaviour
     public void Open()
     {
         if (isPrevKill)
-            transform.DOKill();
-
-        if (isLocal)
         {
-            transform.DOLocalMove(originalPos + targetPos, duration).SetEase(ease).OnComplete(OnEndOpen.Invoke);
+            transform.DOKill();
+            StopAllCoroutines();
+        }
+
+        if (delay == 0f)
+        {
+            StartOpenSystem();
         }
         else
         {
-            transform.DOMove(originalPos + targetPos, duration).SetEase(ease).OnComplete(OnEndOpen.Invoke);
+            StartCoroutine(Delay(StartOpenSystem));
+        }
+    }
+
+    private void StartOpenSystem()
+    {
+        if (isLocal)
+        {
+            transform.DOLocalMove(originalPos + targetPos, duration).OnComplete(() => OnOpenComplete?.Invoke()).SetEase(ease);
+        }
+        else
+        {
+            transform.DOMove(originalPos + targetPos, duration).OnComplete(() => OnOpenComplete?.Invoke()).SetEase(ease);
         }
 
         OnOpen?.Invoke();
@@ -83,18 +98,55 @@ public class TogglePosition : MonoBehaviour
     public void Close()
     {
         if (isPrevKill)
-            transform.DOKill();
-
-        if (isLocal)
         {
-            transform.DOLocalMove(originalPos, duration).SetEase(ease).OnComplete(OnEndClose.Invoke);
+            transform.DOKill();
+            StopAllCoroutines();
+        }
+
+        if (delay == 0f)
+        {
+            StartCloseSystem();
         }
         else
         {
-            transform.DOMove(originalPos, duration).SetEase(ease).OnComplete(OnEndClose.Invoke);
+            StartCoroutine(Delay(StartCloseSystem));
+        }
+    }
+
+    private void StartCloseSystem()
+    {
+        if (isLocal)
+        {
+            transform.DOLocalMove(originalPos, duration).OnComplete(() => OnCloseComplete?.Invoke()).SetEase(ease);
+        }
+        else
+        {
+            transform.DOMove(originalPos, duration).OnComplete(() => OnCloseComplete?.Invoke()).SetEase(ease);
         }
 
         OnClose?.Invoke();
+    }
+
+    public void ForceClosePosition()
+    {
+        if (isLocal)
+            transform.localPosition = originalPos;
+        else
+            transform.position = originalPos;
+    }
+
+    public void ForceOpenPosition()
+    {
+        if (isLocal)
+            transform.localPosition = originalPos + targetPos;
+        else
+            transform.position = originalPos + targetPos;
+    }
+
+    private IEnumerator Delay(System.Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action?.Invoke();
     }
 
     public void SetDuration(float duration)

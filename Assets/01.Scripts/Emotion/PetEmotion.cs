@@ -9,7 +9,7 @@ public enum EmotionType
     Hate,
     Angry,
     Dizzy,
-    Afraid, 
+    Afraid,
     Sad,
     Amazing,
     Satisfied,
@@ -18,6 +18,7 @@ public enum EmotionType
 }
 public class PetEmotion : MonoBehaviour
 {
+    [SerializeField]
     private EmotionType emotionType = EmotionType.None;
     public EmotionType GetEmotionType { get { return emotionType; } }
 
@@ -28,9 +29,20 @@ public class PetEmotion : MonoBehaviour
 
     private int tileHash = Shader.PropertyToID("_Tile");
 
+    [SerializeField]
+    private bool changeOnAwake = false;
+
     private void Awake()
     {
         SetMaterial();
+    }
+
+    void Start()
+    {
+        if (changeOnAwake)
+        {
+            SetEmotion(emotionType);
+        }
     }
 
     private void SetMaterial()

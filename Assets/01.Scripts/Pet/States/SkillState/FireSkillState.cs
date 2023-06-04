@@ -12,9 +12,9 @@ public class FireSkillState : PetState
     [SerializeField]
     private UnityEvent onFire;
 
-    private void Awake()
+    private void Start()
     {
-        fire = GetComponentInParent<Fire>();
+        fire = pet.GetComponentInChildren<Fire>();
     }
 
     public override void OnEnter()

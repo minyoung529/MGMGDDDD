@@ -24,6 +24,10 @@ public class PuzzleClearCounter : MonoBehaviour
         }
     }
 
+    public void CancelClear() {
+        count--;
+    }
+
     [ContextMenu("Clear")]
     private void Clear()
     {

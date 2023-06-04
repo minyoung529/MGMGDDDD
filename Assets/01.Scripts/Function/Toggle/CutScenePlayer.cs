@@ -44,7 +44,6 @@ public class CutScenePlayer : MonoBehaviour
     [ContextMenu("Play")]
     public void Play()
     {
-        // + ¿Œ«≤ ∏∑±‚
         CameraSwitcher.ChangeSwitchBlend(2f);
         StartCoroutine(DelayOneFrame());
     }

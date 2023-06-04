@@ -43,6 +43,10 @@ public class DropperController : MonoBehaviour
     [SerializeField]
     private ChangeRenderSettings renderSettings;
 
+    [SerializeField]
+    private GameObject pets;
+    private ActiveChildTogglePosition changePetPos;
+
     private ThirdPersonCameraControll cameraController;
 
     private bool isPlaying = false;
@@ -52,6 +56,12 @@ public class DropperController : MonoBehaviour
     {
         cameraController = GameManager.Instance.PlayerController.GetComponent<ThirdPersonCameraControll>();
         jumpMotion.TargetPos = playerSpawnPosition.position;
+
+        if (pets)
+        {
+            pets = Instantiate(pets);
+            changePetPos = pets.GetComponent<ActiveChildTogglePosition>();
+        }
 
         for (int i = 0; i < patternRoot.childCount; i++)
         {
@@ -85,6 +95,15 @@ public class DropperController : MonoBehaviour
         particleSystems.ForEach(x => x.Play());
         cameraController.InactiveCrossHair();
         DirectionalLightController.ChangeRotation(Quaternion.Euler(new Vector3(90f, 0f, 0f)), 1f);
+
+        if (pets)
+        {
+            pets.gameObject.SetActive(true);
+            pets.gameObject.transform.SetParent(GameManager.Instance.PlayerController.transform);
+            pets.transform.localPosition = Vector3.zero;
+            pets.transform.localRotation = Quaternion.identity;
+            changePetPos.Open();
+        }
 
         // FUNCTION
 
@@ -134,6 +153,12 @@ public class DropperController : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1f);
         walls.ForEach(x => x.Active());
+
+        if (pets)
+        {
+            changePetPos.ForceClosePos();
+        }
+
         yield return new WaitForSecondsRealtime(1f);
 
         StartDropper();

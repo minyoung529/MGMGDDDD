@@ -37,4 +37,21 @@ public class ActiveChildTogglePosition : MonoBehaviour
             position.Close();
         }
     }
+
+    public void ForceClosePos()
+    {
+        foreach (var position in togglePositions)
+        {
+            position.ForceClosePosition();
+        }
+
+    }
+
+    public void ForceOpenPos()
+    {
+        foreach (var position in togglePositions)
+        {
+            position.ForceOpenPosition();
+        }
+    }
 }
