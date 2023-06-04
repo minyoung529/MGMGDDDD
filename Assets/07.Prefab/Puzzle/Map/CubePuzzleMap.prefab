@@ -688,8 +688,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313850475}
   m_LocalRotation: {x: -0, y: -0.090988725, z: -0, w: 0.995852}
-  m_LocalPosition: {x: 6.805, y: 3.6524, z: 53.0822}
-  m_LocalScale: {x: 34.23795, y: 0.6562338, z: 5.2843227}
+  m_LocalPosition: {x: 8.3957, y: 3.6524, z: 51.3006}
+  m_LocalScale: {x: 36.722572, y: 0.6562338, z: 9.364824}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4122631730679916034}
@@ -3062,7 +3062,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2767961916735186986}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 110.5, y: -9.5, z: 1.4}
+  m_LocalPosition: {x: 109.3, y: -9.5, z: 1.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4011,7 +4011,7 @@ MonoBehaviour:
   onClear:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1174033141}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ToggleScale, Assembly-CSharp
         m_MethodName: Trigger
         m_Mode: 1
@@ -4074,7 +4074,19 @@ MonoBehaviour:
   cubeCount: 4
   OnSolvePuzzle:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2045885000}
+        m_TargetAssemblyTypeName: CutScenePlayer, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnPressButton:
     m_PersistentCalls:
       m_Calls: []
@@ -7125,7 +7137,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2009
+  m_VersionIndex: 2018
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13789,8 +13801,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8754215103753887018}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 111.5, y: -42.9, z: 1.6}
+  m_LocalRotation: {x: -0, y: 0.048119158, z: -0, w: 0.99884164}
+  m_LocalPosition: {x: 107.004074, y: -22.2, z: 3.6453934}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13806,7 +13818,7 @@ Transform:
   - {fileID: 1924561430}
   m_Father: {fileID: 4122631730867163380}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 5.516, z: 0}
 --- !u!320 &3615903827451033601
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -16856,6 +16868,10 @@ PrefabInstance:
       propertyPath: audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 860f4fbdaa0b97b4c87ed24929e3b3a3, type: 3}
+    - target: {fileID: 8066311053986793451, guid: 8c620fe3018e188409cd5907e9c2b1bb, type: 3}
+      propertyPath: m_TagString
+      value: Disrollable
+      objectReference: {fileID: 0}
     - target: {fileID: 9007586854737115826, guid: 8c620fe3018e188409cd5907e9c2b1bb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.69
@@ -20340,7 +20356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 1403
+      value: 1412
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456531, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_RootOrder
@@ -21089,6 +21105,10 @@ PrefabInstance:
     - target: {fileID: 240910751389182573, guid: 1df30eb5294e53d44b7016347b4e32d4, type: 3}
       propertyPath: m_Name
       value: SlidingBottom
+      objectReference: {fileID: 0}
+    - target: {fileID: 2281578376928630080, guid: 1df30eb5294e53d44b7016347b4e32d4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4804182896198580698, guid: 1df30eb5294e53d44b7016347b4e32d4, type: 3}
       propertyPath: m_RootOrder
