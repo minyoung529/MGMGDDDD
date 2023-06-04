@@ -167,7 +167,7 @@ public class PlayerHold : PlayerMono {
     }
 
     public void OnAnimEnd() {
-        controller.Move.LockInput();
+        controller.Move.UnLockInput();
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion
