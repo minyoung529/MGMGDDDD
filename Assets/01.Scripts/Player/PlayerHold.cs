@@ -51,7 +51,7 @@ public class PlayerHold : PlayerMono {
 
     private void GetInput(InputAction action, float value) {
         if (controller.Move.IsInputLock) return;
-        controller.Move.IsInputLock = true;
+        controller.Move.LockInput();
 
         switch (action) {
             case InputAction.PickUp_And_Drop:
@@ -94,7 +94,7 @@ public class PlayerHold : PlayerMono {
         }
 
         if (!holdingPet) {
-            controller.Move.IsInputLock = false;
+            controller.Move.LockInput();
             return;
         }
         Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
@@ -112,7 +112,7 @@ public class PlayerHold : PlayerMono {
 
     private void Throw() {
         if (!holdingPet) {
-            controller.Move.IsInputLock = false;
+            controller.Move.UnLockInput();
             return;
         }
         controller.Move.ChangeState(PlayerStateName.Throw);
@@ -167,7 +167,7 @@ public class PlayerHold : PlayerMono {
     }
 
     public void OnAnimEnd() {
-        controller.Move.IsInputLock = false;
+        controller.Move.LockInput();
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion
