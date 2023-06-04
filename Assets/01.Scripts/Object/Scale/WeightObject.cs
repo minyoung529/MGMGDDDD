@@ -11,6 +11,8 @@ public class WeightObject : MonoBehaviour
     public float GetMass{ get { return mass; }}
     public bool InWeight { get { return inWeight; } set { inWeight = value; } }
 
+    private BalanceFloor floor;
+
     public void DecreaseMass(float value)
     {
         mass -= value;
@@ -22,5 +24,23 @@ public class WeightObject : MonoBehaviour
     public void IncreaseMass(float value)
     {
         mass += value;
+    }
+
+    public void EnterFloor(BalanceFloor _floor)
+    {
+        if(InWeight)
+        {
+            if (floor != _floor) floor.DecreaseWeight(mass);
+            else return;
+        }
+
+        InWeight = true;
+        floor = _floor;
+        floor.IncreaseWeight(mass);
+    }
+    public void ExitFloor(BalanceFloor _floor)
+    {
+        floor = null;
+        InWeight = false;
     }
 }
