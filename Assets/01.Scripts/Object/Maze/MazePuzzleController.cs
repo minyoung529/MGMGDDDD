@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 {
     [SerializeField] UnityEvent enterEvent;
-    [SerializeField] UnityEvent exitEvent;
+    [SerializeField] UnityEvent clearEvent;
 
     [SerializeField] CinemachineFreeLook defaultCam;
     [SerializeField] CinemachineVirtualCamera fireCam;
@@ -22,7 +22,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     private const int maxUndoCount = 2;
     private bool crossHairMove = false;
-    private int exitPetCount = 0;
     private int undoCount = 2;
 
     private RectTransform crosshair;
@@ -73,7 +72,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     private void ResetController()
     {
         undoCount = maxUndoCount;
-        exitPetCount = 0;
         countText.text = string.Format($"{undoCount}");
     }
 
@@ -111,6 +109,19 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         }
         crosshair.anchoredPosition = new Vector3(0, 0, 0);
         yield return null;
+    }
+
+    public void ClearMaze()
+    {
+        clearEvent?.Invoke();
+
+        StopListen();
+        CameraSwitcher.SwitchCamera(defaultCam);
+        OnCrossHairMove(false);
+
+        Pet.IsCameraAimPoint = false;
+        PetManager.Instance.AllPetActions(x => x.ResetAgentValue());
+        PetManager.Instance.StartListen(InputAction.Pet_Follow);
     }
     #endregion
 
@@ -150,31 +161,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     #endregion
 
-    #region ExitGame
-    public void EnterExitPet()
-    {
-        exitPetCount++;
-        if (exitPetCount >= 2) ExitGame();
-    }
-    public void ExitPet()
-    {
-        exitPetCount--;
-    }
-
-    public void ExitGame()
-    {
-        exitEvent?.Invoke();
-
-        StopListen();
-        CameraSwitcher.SwitchCamera(defaultCam);
-        OnCrossHairMove(false);
-
-        Pet.IsCameraAimPoint = true;
-        PetManager.Instance.AllPetActions(x => x.ResetAgentValue());
-        PetManager.Instance.StartListen(InputAction.Pet_Follow);
-    }
-
-    #endregion
+   
 
     #region Camera
 
