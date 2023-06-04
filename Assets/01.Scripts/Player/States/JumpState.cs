@@ -39,7 +39,8 @@ public class JumpState : MoveState
     }
 
     private IEnumerator LandingCoroutine() {
-        while(!(Player.Controller.Rigid.velocity.y < -0.01f) || !Player.CheckOnGround()) {
+        yield return new WaitForSeconds(0.2f);
+        while(!Player.CheckOnGround()) {
             yield return null;
         }
         Player.Controller.Anim.SetBool(hash_bLanding, true);
