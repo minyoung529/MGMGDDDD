@@ -7,6 +7,7 @@ public class PushedObject : MonoBehaviour
 {
     private bool isContactPlayer = false;
     private bool isMove = false;
+    private bool isPushed = false;
 
     [SerializeField]
     private UnityEvent onPushStart;
@@ -24,20 +25,22 @@ public class PushedObject : MonoBehaviour
     private void Update()
     {
         bool prevMove = isMove;
-        isMove = ((prevPosition - transform.position).sqrMagnitude > 0.001f);
+        isMove = ((prevPosition - transform.position).sqrMagnitude > 0.0001f);
         prevPosition = transform.position;
-        
+
         if (isContactPlayer)
         {
             if (prevMove != isMove)
             {
                 if (isMove)
                 {
+                    isPushed = true;
                     onPushStart?.Invoke();
                 }
-                else
+                else if (isPushed)
                 {
                     onPushEnd?.Invoke();
+                    isPushed = false;
                 }
             }
         }
@@ -48,7 +51,6 @@ public class PushedObject : MonoBehaviour
         if (other.gameObject.CompareTag(Define.PLAYER_TAG))
         {
             isContactPlayer = true;
-
         }
     }
 
@@ -56,8 +58,12 @@ public class PushedObject : MonoBehaviour
     {
         if (other.gameObject.CompareTag(Define.PLAYER_TAG))
         {
-            isContactPlayer = false;
-            onPushEnd?.Invoke();
+            if (isPushed)
+            {
+                isContactPlayer = false;
+                onPushEnd?.Invoke();
+                isPushed = false;
+            }
         }
     }
 }
