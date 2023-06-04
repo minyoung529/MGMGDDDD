@@ -10,14 +10,16 @@ public class CheckPetType : MonoBehaviour
     [SerializeField] UnityEvent correctEvent;
     [SerializeField] UnityEvent failEvent;
 
-    private Pet inPet;
+    private CannonScript cannon;
+    public PetType GetInputPet { get { return inPet.GetPetType; } }
+    private Pet inPet => cannon.InPet;
 
-    public PetType GetInputPet => inPet.GetPetType;
-
-    public void SetInPet(Pet p)
+    
+    private void Awake()
     {
-        inPet = p;
+        cannon= GetComponent<CannonScript>();
     }
+
     public void SetCorrectPet(PetType type)
     {
         correctPetType = type;
@@ -36,10 +38,6 @@ public class CheckPetType : MonoBehaviour
                 Debug.Log("Fail");
                 failEvent?.Invoke();
             }
-        }
-        else
-        {
-                failEvent?.Invoke();
         }
     }
 

@@ -19,17 +19,17 @@ public class CannonScript : MonoBehaviour
     private Collider[] colls;
     private Collider petColl;
 
+    public Pet InPet { get { return pet; } }
+
     #region 인 게임 변수
     private Pet pet;
     private bool isPlay = false;
     private Sequence seq;
     #endregion
 
-    private CheckPetType check;
     private void Awake()
     {
         colls = GetComponentsInChildren<Collider>();
-        check = GetComponent<CheckPetType>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -46,10 +46,6 @@ public class CannonScript : MonoBehaviour
         if (this.pet != null) return;
 
         this.pet = pet;
-        if (check)
-        {
-            check.SetInPet(pet);
-        }
         pet.Event.TriggerEvent((int)PetEventName.OnHold);
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));

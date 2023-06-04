@@ -13,7 +13,6 @@ public class CannonDirectorBinding : MonoBehaviour
 
     public void PetEmotionTrackBinding()
     {
-        Debug.Log((int)check.GetInputPet);
         DirectorTrackBinding.Binding(failDirector, "PetEmotionTrack", pets[(int)check.GetInputPet].GetComponent<PetEmotion>());
         DirectorTrackBinding.Binding(failDirector, "PetActivation", pets[(int)check.GetInputPet].gameObject);
         DirectorTrackBinding.Binding(failDirector, "PetTransformTrack", pets[(int)check.GetInputPet].transform);
