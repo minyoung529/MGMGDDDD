@@ -28,6 +28,8 @@ public class OilRoot : MonoBehaviour
         if (obj.CompareTag(Define.FIRE_PET_TAG))
         {
             firePet ??= obj.GetComponent<Fire>();
+            if(firePet == null) return;
+            
             if (firePet.gameObject == obj.gameObject && firePet.IsBurn)
             {
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);
