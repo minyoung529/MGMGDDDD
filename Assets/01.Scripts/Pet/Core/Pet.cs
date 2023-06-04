@@ -103,7 +103,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     void OnDestroy()
     {
-        CutSceneManager.Instance.RemoveStartCutscene(Pause);
+        CutSceneManager.Instance?.RemoveStartCutscene(Pause);
     }
 
 

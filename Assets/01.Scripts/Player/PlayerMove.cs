@@ -281,7 +281,7 @@ public class PlayerMove : PlayerMono
     private IEnumerator LockTimer(float time) {
         isInputLock++;
         yield return new WaitForSeconds(time);
-        isInputLock++;
+        isInputLock--;
     }
     #endregion
 
