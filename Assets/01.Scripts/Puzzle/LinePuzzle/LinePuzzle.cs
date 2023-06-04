@@ -98,8 +98,8 @@ public class LinePuzzle : MonoBehaviour
                 newObj.transform.SetParent(transform);
 
                 Vector3 platformPos = offset;
-                platformPos += board.forward * -width / length * i * scaleWeight;
-                platformPos += board.right *  height / boardCnt * j * scaleWeight;
+                platformPos += board.forward * -width / (float)length * i * scaleWeight;
+                platformPos += board.right *  height / (float)boardCnt * j * scaleWeight;
 
                 newObj.transform.position = platformPos;
                 newObj.transform.localRotation = Quaternion.identity;
