@@ -12,6 +12,7 @@ public class PetManager : MonoSingleton<PetManager>
     private List<Image> petImages = new List<Image>();
     private List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
+    private List<Type> petTypes = new List<Type>();
 
     private int selectIndex = -1;
     private float switchDelay = 0.2f;
@@ -30,14 +31,22 @@ public class PetManager : MonoSingleton<PetManager>
     [SerializeField]
     private GameObject[] petPrefabs;
 
+    private Dictionary<InputAction, Action<InputAction, float>> inputActions = new();
+
     public Pet GetPetByKind<T>() where T : Pet
     {
         Pet pet = null;
 
         foreach (Pet p in pets)
         {
-            pet ??= p.GetComponent<T>();
+            if (p)
+            {
+                pet ??= p.GetComponent<T>();
+            }
         }
+
+        if (pet == null)
+            pet = FindObjectOfType<T>();
 
         return pet;
     }
@@ -46,7 +55,17 @@ public class PetManager : MonoSingleton<PetManager>
     {
         base.Awake();
 
-        StartListen();
+        inputActions.Add(InputAction.Up_Pet, SwitchPet);
+        inputActions.Add(InputAction.Down_Pet, SwitchPet);
+        inputActions.Add(InputAction.Select_First_Pet, SelectPet);
+        inputActions.Add(InputAction.Select_Second_Pet, SelectPet);
+        inputActions.Add(InputAction.Select_Third_Pet, SelectPet);
+        inputActions.Add(InputAction.Pet_Skill, OnSkill);
+        inputActions.Add(InputAction.Pet_Move, OnClickMove);
+        inputActions.Add(InputAction.Pet_Skill_Up, OnSkillUp);
+        inputActions.Add(InputAction.Pet_Follow, ReCall);
+
+        StartAllListen();
     }
 
     private void Start()
@@ -54,7 +73,9 @@ public class PetManager : MonoSingleton<PetManager>
         ResetPetManager();
 
         CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
+        CutSceneManager.Instance.AddStartCutscene(StopAllListen);
         CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
+        CutSceneManager.Instance.AddEndCutscene(StartAllListen);
     }
 
 
@@ -64,14 +85,20 @@ public class PetManager : MonoSingleton<PetManager>
         {
             if (pets[i] == null)
             {
-                pets[i] = FindObjectOfType(pets[i].GetType()) as Pet;
-                pets[i].SetPlayerTransform(GameManager.Instance.PlayerController.transform);
-                pets[i].SetTargetPlayer();
+                pets[i] = FindObjectOfType(petTypes[i]) as Pet;
 
-                if (pets[i] == null) continue;
+                if (pets[i] == null)
+                {
+                    // LATER: FIX
+                    DeletePet(i);
+                    break;
+                }
+
+                pets[i]?.SetPlayerTransform(GameManager.Instance.PlayerController.transform);
+                pets[i]?.SetTargetPlayer();
             }
 
-            pets[i].OnUpdate();
+            pets[i]?.OnUpdate();
         }
 
         Debug_CreateAndGetPet();
@@ -86,39 +113,46 @@ public class PetManager : MonoSingleton<PetManager>
     {
         CutSceneManager.Instance?.RemoveStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
-        StopListen();
+        StopAllListen();
     }
 
     #region Listen
-    private void StartListen()
+    private void StartAllListen()
     {
-        InputManager.StartListeningInput(InputAction.Up_Pet, SwitchPet);
-        InputManager.StartListeningInput(InputAction.Down_Pet, SwitchPet);
-
-        InputManager.StartListeningInput(InputAction.Select_First_Pet, SelectPet);
-        InputManager.StartListeningInput(InputAction.Select_Second_Pet, SelectPet);
-        InputManager.StartListeningInput(InputAction.Select_Third_Pet, SelectPet);
-
-        InputManager.StartListeningInput(InputAction.Pet_Skill, OnSkill);
-        InputManager.StartListeningInput(InputAction.Pet_Move, OnClickMove);
-        InputManager.StartListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
-
-        InputManager.StartListeningInput(InputAction.Pet_Follow, ReCall);
+        foreach (var pair in inputActions)
+        {
+            StartListen(pair.Key, pair.Value);
+        }
     }
 
-    private void StopListen()
+    private void StopAllListen()
     {
-        InputManager.StopListeningInput(InputAction.Up_Pet, SwitchPet);
-        InputManager.StopListeningInput(InputAction.Down_Pet, SwitchPet);
-        InputManager.StopListeningInput(InputAction.Select_First_Pet, SelectPet);
-        InputManager.StopListeningInput(InputAction.Select_Second_Pet, SelectPet);
-        InputManager.StopListeningInput(InputAction.Select_Third_Pet, SelectPet);
+        foreach (var pair in inputActions)
+        {
+            StopListen(pair.Key, pair.Value);
+        }
+    }
 
-        InputManager.StopListeningInput(InputAction.Pet_Skill, OnSkill);
-        InputManager.StopListeningInput(InputAction.Pet_Move, OnClickMove);
-        InputManager.StopListeningInput(InputAction.Pet_Skill_Up, OnSkillUp);
+    public void StartListen(InputAction inputAction, Action<InputAction, float> action = null)
+    {
+        if (!inputActions.ContainsKey(inputAction))
+        {
+            if (action == null) return;
+            inputActions.Add(inputAction, action);
+        }
 
-        InputManager.StopListeningInput(InputAction.Pet_Follow, ReCall);
+        InputManager.StartListeningInput(inputAction, inputActions[inputAction]);
+    }
+
+    public void StopListen(InputAction inputAction, Action<InputAction, float> action = null)
+    {
+        if (!inputActions.ContainsKey(inputAction))
+        {
+            if (action == null) return;
+            inputActions.Add(inputAction, action);
+        }
+
+        InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
     }
 
     private void OnSkillUp(InputAction input, float value)
@@ -281,6 +315,7 @@ public class PetManager : MonoSingleton<PetManager>
     public void AddPet(Pet p)
     {
         pets.Add(p);
+        petTypes.Add(p.GetType());
         selectIndex = pets.Count - 1;
 
         ActivePetUI(selectIndex);
@@ -290,6 +325,8 @@ public class PetManager : MonoSingleton<PetManager>
     {
         Pet p = GetPetByKind<StickyPet>();
         int index = pets.IndexOf(p);
+        petTypes.RemoveAt(index);
+
         DisablePetUI(index);
 
         petInvens.Remove(petInvens[index]);
@@ -299,6 +336,20 @@ public class PetManager : MonoSingleton<PetManager>
         SelectPet(0);
         p.gameObject.SetActive(false);
     }
+
+    public void DeletePet(int index)
+    {
+        petTypes.RemoveAt(index);
+
+        DisablePetUI(index);
+
+        petInvens.Remove(petInvens[index]);
+        petImages.Remove(petImages[index]);
+        pets.RemoveAt(index);
+
+        SelectPet(0);
+    }
+
 
     #endregion
 

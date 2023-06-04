@@ -21,7 +21,18 @@ public class GameManager : MonoSingleton<GameManager>
     #endregion
 
     private PlayerController playerController = null;
-    public PlayerController PlayerController => playerController;
+    public PlayerController PlayerController
+    {
+        get
+        {
+            if (playerController)
+                return playerController;
+
+            else
+                playerController = FindObjectOfType<PlayerController>();
+            return playerController;
+        }
+    }
 
     #region 퍼즐 관련 변수
     private ButtonObject[] buttons;
