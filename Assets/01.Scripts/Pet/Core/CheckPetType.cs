@@ -33,8 +33,13 @@ public class CheckPetType : MonoBehaviour
             }
             else
             {
+                Debug.Log("Fail");
                 failEvent?.Invoke();
             }
+        }
+        else
+        {
+                failEvent?.Invoke();
         }
     }
 

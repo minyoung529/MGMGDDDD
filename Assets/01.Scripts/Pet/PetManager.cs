@@ -323,7 +323,21 @@ public class PetManager : MonoSingleton<PetManager>
     }
     public void DeletePet(PetType type)
     {
-        Pet p = GetPetByKind<StickyPet>();
+        Pet p = null;
+        switch (type)
+        {
+            case PetType.FirePet:
+              p = GetPetByKind<FirePet>();
+                break;
+            case PetType.StickyPet:
+              p = GetPetByKind<StickyPet>();
+                break;
+            case PetType.OilPet:
+              p = GetPetByKind<OilPet>();
+                break;
+        }
+        if (p == null) return;
+
         int index = pets.IndexOf(p);
         petTypes.RemoveAt(index);
 

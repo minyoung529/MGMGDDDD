@@ -263,6 +263,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
     public bool GetIsOnNavMesh()
     {
+        if (!agent.enabled) return false;
         return agent.isOnNavMesh;
     }
     public Vector3 GetDestination()
