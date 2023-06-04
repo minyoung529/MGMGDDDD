@@ -24,7 +24,7 @@ public class PauseState : PetState {
 
     private void OnDestroy()
     {
-        CutSceneManager.Instance.RemoveEndCutscene(OnEndCutScene);
+        CutSceneManager.Instance?.RemoveEndCutscene(OnEndCutScene);
     }
 
     public override void OnUpdate() {

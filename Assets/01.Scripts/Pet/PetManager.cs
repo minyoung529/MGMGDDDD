@@ -385,12 +385,12 @@ public class PetManager : MonoSingleton<PetManager>
         petInvens[index].gameObject.SetActive(false);
     }
 
-    private void ActivePetCanvas()
+    public void ActivePetCanvas()
     {
         transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    private void InactivePetCanvas()
+    public void InactivePetCanvas()
     {
         transform.GetChild(0).gameObject.SetActive(false);
     }
