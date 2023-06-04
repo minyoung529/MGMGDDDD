@@ -10,18 +10,26 @@ public class TriggerSlidingDoor : MonoBehaviour
 
     private bool isTrigger = false;
     private TogglePosition[] doors;
+    private ToggleScale[] doorScale;
 
     private void Awake()
     {
         doors = GetComponentsInChildren<TogglePosition>();
+        doorScale = GetComponentsInChildren<ToggleScale>();
     }
 
+    [ContextMenu("Trigger")]
     public void Trigger()
     {
         if (once && isTrigger) return;
 
         isTrigger = true;
         foreach (TogglePosition toggle in doors)
+        {
+            toggle.Trigger();
+        }
+
+        foreach (ToggleScale toggle in doorScale)
         {
             toggle.Trigger();
         }
