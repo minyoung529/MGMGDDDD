@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class LinePuzzleController : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class LinePuzzleController : MonoBehaviour
     private LinePuzzle CurrentPuzzle => linePuzzles[idx];
 
     private ThirdPersonCameraControll cameraController;
+
+    [SerializeField]
+    private TextMeshPro roundText;
 
     [SerializeField]
     private Transform oilSpawnPosition;
@@ -36,6 +40,7 @@ public class LinePuzzleController : MonoBehaviour
     [Header("EVENTS")]
     [SerializeField] private UnityEvent onEnterGame;
     [SerializeField] private UnityEvent onExitGame;
+    [SerializeField] private UnityEvent onClearRound;
 
     public CinemachineVirtualCameraBase topCamera;
     #region Property
@@ -105,8 +110,14 @@ public class LinePuzzleController : MonoBehaviour
 
     private void ResetBoard(InputAction action = InputAction.Interaction, float value = 0f)
     {
-        oilPet.SkillState.SkillData.ClearOil();
         CurrentPuzzle.ResetPuzzle();
+        isOilMove = false;
+
+        SelectedPieces.Clear();
+        BurningPieces.Clear();
+
+        oilSkillState.SkillData.ClearOil();
+        oilSkillState.KillSkill();
     }
 
     public void EnterGame()
@@ -180,6 +191,7 @@ public class LinePuzzleController : MonoBehaviour
 
     private void StartGame()
     {
+        roundText.SetText($"ROUND 1");
         linePuzzles[idx].StartGame(GetIsOilMove);
     }
 
@@ -247,6 +259,7 @@ public class LinePuzzleController : MonoBehaviour
             return;
         }
 
+        onClearRound?.Invoke();
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
         seq.AppendCallback(() =>
@@ -258,6 +271,7 @@ public class LinePuzzleController : MonoBehaviour
         seq.Join(topCamera.transform.DOShakePosition(1.2f, 0.75f));
 
         seq.AppendCallback(() => linePuzzles[idx].StartGame(GetIsOilMove));
+        seq.AppendCallback(() => roundText.SetText($"ROUND {idx + 1}"));
         SelectedPieces?.Clear();
     }
 

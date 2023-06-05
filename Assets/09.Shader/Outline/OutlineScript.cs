@@ -128,8 +128,6 @@ public class OutlineScript : MonoBehaviour
         if (used) return;
         used = true;
 
-        Debug.Log("SET");
-
         SelectedObject.CurInteractObject = this;
         OffOutline();
         onInteractPet?.Invoke();
