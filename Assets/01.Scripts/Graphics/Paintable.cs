@@ -21,20 +21,22 @@ public class Paintable : MonoBehaviour
     public Renderer GetRenderer() => rend;
 
     [SerializeField]
-    private int scale = 1;
+    private float scale = 1;
 
     void Awake()
     {
-        maskRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE* scale, 0);
+        int newScale = (int)(TEXTURE_SIZE * scale);
+
+        maskRenderTexture = new RenderTexture(newScale, newScale, 0);
         maskRenderTexture.filterMode = FilterMode.Bilinear;
 
-        extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE * scale, 0);
+        extendIslandsRenderTexture = new RenderTexture(newScale, newScale, 0);
         extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE * scale, 0);
+        uvIslandsRenderTexture = new RenderTexture(newScale, newScale, 0);
         uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        supportTexture = new RenderTexture(TEXTURE_SIZE * scale, TEXTURE_SIZE * scale, 0);
+        supportTexture = new RenderTexture(newScale, newScale, 0);
         supportTexture.filterMode = FilterMode.Bilinear;
 
         rend = GetComponent<Renderer>();
