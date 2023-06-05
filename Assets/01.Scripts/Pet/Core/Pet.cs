@@ -241,6 +241,10 @@ public abstract class Pet : MonoBehaviour, IThrowable
     private void Chase()
     {
         if (!target) return;
+        if (!IsTargetOnRoute(target)) {
+            SetTargetNull();
+            return;
+        }
         if (Vector3.Distance(GetNearestNavMeshPosition(transform.position), GetNearestNavMeshPosition(target.position))
             >= agent.stoppingDistance)
         {
@@ -291,6 +295,14 @@ public abstract class Pet : MonoBehaviour, IThrowable
         {
             return position;
         }
+    }
+
+    public bool IsTargetOnRoute(Transform target) {
+        if (!GetIsOnNavMesh()) return false; //네브메쉬 위인지
+        NavMeshPath path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path)) return false; //경로가 그려지는지
+        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 1f) return false; //경로의 도착지가 플레이어 근처인지
+        return true;
     }
     #endregion
 

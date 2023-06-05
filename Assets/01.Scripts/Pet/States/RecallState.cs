@@ -17,7 +17,6 @@ public class RecallState : PetState
 
     private ParticleSystem flyParticle = null;
     private ParticleSystem arriveParticle = null;
-    private NavMeshPath path;
 
     [SerializeField]
     private UnityEvent onFlyEnd;
@@ -42,7 +41,6 @@ public class RecallState : PetState
     {
         flyParticle = Instantiate(flyParticlePref, pet.transform);
         arriveParticle = Instantiate(arriveParticlePref, pet.transform);
-        path = new NavMeshPath();
     }
 
     private void OnThrew()
@@ -51,20 +49,13 @@ public class RecallState : PetState
     }
 
     private void CheckDistanceToPlayer() {
-        if (CheckConditionsToWalk()) {
+        if (Vector3.Distance(transform.position, pet.Player.position) <= sightRange &&
+            pet.IsTargetOnRoute(pet.Player)) {
             pet.SetTargetPlayer();
             pet.State.ChangeState((int)PetStateName.Move);
             return;
         }
         Fly();
-    }
-
-    private bool CheckConditionsToWalk() {
-        if (!pet.GetIsOnNavMesh()) return false; //네브메쉬 위인지
-        if (Vector3.Distance(pet.transform.position, pet.Player.position) > sightRange) return false; //시야범위 안인지
-        if (!NavMesh.CalculatePath(transform.position, pet.Player.position, NavMesh.AllAreas, path)) return false; //경로가 그려지는지
-        if (Vector3.Distance(pet.Player.position, path.corners[path.corners.Length - 1]) > 1f) return false; //경로의 도착지가 플레이어 근처인지
-        return true;
     }
 
 
