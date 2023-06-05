@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class StickyState : PetState
+public class StickyState : MonoBehaviour
 {
-    public override PetStateName StateName => PetStateName.Sticky;
-
     [SerializeField] private ParticleSystem skillEffect;
     [SerializeField] private Transform stickyParent;
     [SerializeField] private UnityEvent stickyEvent;
@@ -15,55 +13,29 @@ public class StickyState : PetState
     private Transform originalParent = null;
     private Quaternion origianalRotation;
 
-    private StickyPet stickyPet;
+    private StickyPet pet;
     private Sticky sticky;
 
     private void Start()
     {
-        stickyPet = pet.State.Parent.GetComponent<StickyPet>();
+        pet = transform.parent.GetComponent<StickyPet>();
     }
 
-    public override void OnEnter()
+    public void OnSticky()
     {
-        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
-
         sticky = SelectedObject.CurInteractObject.GetComponent<Sticky>();
         if (sticky == null)
         {
             pet.State.ChangeState((int)PetStateName.Idle);
             return;
         }
-        
-        if (sticky.CanMove)
-        {
-            pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
-        }
 
-        OnSticky();
-    }
-
-    private void OnSticky()
-    {
         skillEffect.Play();
         stickyEvent?.Invoke();
 
         sticky.StartListeningNotSticky(OffSticky);
-        sticky.OnSticky(stickyPet);
+        sticky.OnSticky(pet);
         StartCoroutine(DelayParent());
-    }
-
-    public override void OnExit()
-    {
-        if(sticky.CanMove)
-        {
-            pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
-        }
-            pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
-    }
-
-    public override void OnUpdate()
-    {
-
     }
 
     private void OffSticky()
@@ -89,12 +61,4 @@ public class StickyState : PetState
         sticky.MovableRoot.DOLocalMove(new Vector3(0f, 1f, 0f), 1f);
     }
 
-    private void OnMove()
-    {
-        pet.State.ChangeState((int)PetStateName.Move);
-    }
-    private void OnRecall()
-    {
-        pet.State.ChangeState((int)PetStateName.Recall);
-    }
 }

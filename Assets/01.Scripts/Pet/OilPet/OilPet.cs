@@ -11,7 +11,7 @@ public class OilPet : Pet
 
     private void Start()
     {
-        Event.StartListening((int)PetEventName.OnInteractEnd, InteractEvent);
+        Event.StartListening((int)PetEventName.OnInteractArrive, InteractEvent);
     }
 
     public override void ResetPet()
@@ -27,6 +27,6 @@ public class OilPet : Pet
 
     private void OnDisable()
     {
-        Event.StopListening((int)PetEventName.OnInteractEnd, InteractEvent);
+        Event.StopListening((int)PetEventName.OnInteractArrive, InteractEvent);
     }
 }

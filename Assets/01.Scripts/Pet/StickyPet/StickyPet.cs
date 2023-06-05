@@ -6,9 +6,12 @@ using UnityEngine.Events;
 
 public class StickyPet : Pet
 {
+    StickyState stickyInteract;
+
     private void Start()
     {
-        Event.StartListening((int)PetEventName.OnInteractEnd, InteractEvent);
+        stickyInteract = GetComponentInChildren<StickyState>();
+        Event.StartListening((int)PetEventName.OnInteractArrive, InteractEvent);
     }
 
     public override void ResetPet()
@@ -18,11 +21,11 @@ public class StickyPet : Pet
   
     private void InteractEvent()
     {
-        State.ChangeState((int)PetStateName.Sticky);
+        stickyInteract.OnSticky();
     }
 
     private void OnDisable()
     {
-        Event.StopListening((int)PetEventName.OnInteractEnd, InteractEvent);
+        Event.StopListening((int)PetEventName.OnInteractArrive, InteractEvent);
     }
 }

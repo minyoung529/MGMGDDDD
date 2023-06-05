@@ -105,7 +105,6 @@ public class Sticky : MonoBehaviour
         col.enabled = true;
         onStickyEnd?.Invoke(stickyPet);
         stickyPet = null;
-
     }
 
     public void OnSticky(StickyPet stickyPet)
