@@ -39,6 +39,7 @@ public class OilSkillState : PetState
 
     public override void OnEnter()
     {
+        Debug.Log("Oil");
         pet.Event.StartListening((int)PetEventName.OnSkillKeyUp, SkillUp);
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, KillSkill);
 

@@ -88,7 +88,13 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
         GameManager.Instance.SetCursorVisible(true);
         PetManager.Instance.AllPetActions(x => x.AgentAcceleration = 80);
+    }
+
+    public void StopPetAction()
+    {
         PetManager.Instance.StopListen(InputAction.Pet_Follow);
+        PetManager.Instance.StopListen(InputAction.Pet_Skill);
+        PetManager.Instance.StopListen(InputAction.Pet_Skill_Up);
     }
 
     public void OnCrossHairMove(bool value)
@@ -122,6 +128,8 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         GameManager.Instance.SetCursorVisible(false);
         PetManager.Instance.AllPetActions(x => x.ResetAgentValue());
         PetManager.Instance.StartListen(InputAction.Pet_Follow);
+        PetManager.Instance.StartListen(InputAction.Pet_Skill);
+        PetManager.Instance.StartListen(InputAction.Pet_Skill_Up);
     }
     #endregion
 
@@ -165,7 +173,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     #region Camera
 
-    private void ChangeCam()
+    public void ChangeCam()
     {
         Pet p = PetManager.Instance.GetSelectPet;
         if (p.GetPetType == PetType.FirePet)
