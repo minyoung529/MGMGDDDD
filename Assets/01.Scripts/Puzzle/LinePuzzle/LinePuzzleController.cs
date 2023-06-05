@@ -120,6 +120,7 @@ public class LinePuzzleController : MonoBehaviour
         oilSkillState.KillSkill();
     }
 
+    [ContextMenu("ENTER GAME")]
     public void EnterGame()
     {
         if (PetManager.Instance.PetCount < 2) return;

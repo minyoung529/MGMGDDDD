@@ -99,7 +99,7 @@ public class LinePuzzle : MonoBehaviour
 
                 Vector3 platformPos = offset;
                 platformPos += board.forward * -width / (float)length * i * scaleWeight;
-                platformPos += board.right *  height / (float)boardCnt * j * scaleWeight;
+                platformPos += board.right * height / (float)boardCnt * j * scaleWeight;
 
                 newObj.transform.position = platformPos;
                 newObj.transform.localRotation = Quaternion.identity;
@@ -124,10 +124,10 @@ public class LinePuzzle : MonoBehaviour
             portals.Add(newPortal);
 
             Vector3 pos = box.transform.position;
-            pos.x -= i * box.size.z / connectCount + box.size.z / connectCount * 0.5f;
+            pos += -box.transform.forward * i * box.size.z / (float)connectCount;
+            pos += box.transform.right * box.transform.localScale.x * 1.5f;
+            pos.x -= box.size.z / (float)connectCount * 0.5f;
             pos.y += 1f;
-
-            pos += box.transform.right * 2f * box.transform.localScale.x;
 
             newPortal.transform.position = pos;
         }
