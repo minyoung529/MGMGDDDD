@@ -27,13 +27,18 @@ public class StickyState : PetState
     {
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
 
+        if (SelectedObject.CurInteractObject == null)
+        {
+            pet.State.ChangeState((int)PetStateName.Idle);
+            return;
+        }   
         sticky = SelectedObject.CurInteractObject.GetComponent<Sticky>();
         if (sticky == null)
         {
             pet.State.ChangeState((int)PetStateName.Idle);
             return;
         }
-        
+
         if (sticky.CanMove)
         {
             pet.Event.StartListening((int)PetEventName.OnSetDestination, OnMove);
@@ -54,11 +59,12 @@ public class StickyState : PetState
 
     public override void OnExit()
     {
-        if(sticky.CanMove)
+        if (sticky && sticky.CanMove)
         {
             pet.Event.StopListening((int)PetEventName.OnSetDestination, OnMove);
         }
-            pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+
+        pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
     }
 
     public override void OnUpdate()

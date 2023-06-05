@@ -29,7 +29,7 @@ public class Bolt : MonoBehaviour
         sticky = GetComponent<Sticky>();
         jumpMotion = new JumpMotion();
 
-        if(onInsertedEvent != null && onInsertedEvent.GetPersistentEventCount() > 0)
+        if (onInsertedEvent != null && onInsertedEvent.GetPersistentEventCount() > 0)
         {
             onInserted += onInsertedEvent.Invoke;
         }
@@ -49,6 +49,8 @@ public class Bolt : MonoBehaviour
     private void OnInserted()
     {
         sticky?.OffSticky();
+        Destroy(sticky);
+        Destroy(GetComponent<OutlineScript>());
 
         jumpMotion.TargetPos = targetTransform.position;
         jumpMotion.JumpHeight = jumpHeight;
