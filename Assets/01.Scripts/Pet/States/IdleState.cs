@@ -10,6 +10,7 @@ public class IdleState : PetState {
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
+        pet.Event.StartListening((int)PetEventName.OnInputInteractAction, OnInteraction);
     }
 
     public override void OnExit() {
@@ -17,6 +18,7 @@ public class IdleState : PetState {
         pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StopListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StopListening((int)PetEventName.OnHold, OnHold);
+        pet.Event.StopListening((int)PetEventName.OnInputInteractAction, OnInteraction);
     }
 
     public override void OnUpdate() {
@@ -26,10 +28,15 @@ public class IdleState : PetState {
     private void OnSetDestination() {
         pet.State.ChangeState((int)PetStateName.Move);
     }
-
+    
+    private void OnInteraction() {
+        pet.InteractionPoint();
+    }
+    
     private void OnRecall() {
         pet.State.ChangeState((int)PetStateName.Recall);
     }
+
 
     private void OnSKill() {
         pet.State.ChangeState((int)PetStateName.Skill);

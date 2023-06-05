@@ -21,6 +21,12 @@ public class StickySkillState : PetState
 
     public override void OnEnter()
     {
+        if(SelectedObject.CurInteractObject)
+        {
+            pet.State.ChangeState(pet.State.BeforeStateIndex);
+            return;
+        }
+
         pet.Skilling = true;
 
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, OffBillow);
@@ -31,7 +37,9 @@ public class StickySkillState : PetState
 
     public override void OnExit()
     {
-        pet.Skilling = false;
+        if (SelectedObject.CurInteractObject) return;
+
+            pet.Skilling = false;
         exitVisual.Trigger();
 
         explosion.gameObject.SetActive(false);
@@ -48,6 +56,7 @@ public class StickySkillState : PetState
         smallDirection = transform.forward;
 
         enterVisual.ListenCompleteEvent(() => pet.Event.TriggerEvent((int)PetEventName.OnSkillComplete));
+        enterVisual.ListenCompleteEvent(() => explosion.gameObject.SetActive(true));
         exitVisual.ListenCompleteEvent(() => pet.Event.TriggerEvent((int)PetEventName.OnSkillOffComplete));
     }
 
@@ -66,7 +75,6 @@ public class StickySkillState : PetState
         BillowAction();
         enterVisual.Trigger();
         onBillow?.Invoke();
-        explosion.gameObject.SetActive(true);
     }
 
     private void OffBillow()
@@ -76,7 +84,10 @@ public class StickySkillState : PetState
 
     private void BillowAction()
     {
-        transform.forward = smallDirection;
+        if (smallDirection.sqrMagnitude != 0f)
+        {
+            transform.forward = smallDirection;
+        }
         smallDirection = Vector3.zero;
     }
 

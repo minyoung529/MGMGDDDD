@@ -12,8 +12,8 @@ public enum PetEventName
     OnThrew,
     OnDrop,
     OnLanding,
-    OnActiveInteract,
-    OnInteractEnd,
+    OnInputInteractAction,
+    OnInteractArrive,
 
     OnSkillComplete,
     OnSkillOffComplete, // Sticky (ON/OFF)

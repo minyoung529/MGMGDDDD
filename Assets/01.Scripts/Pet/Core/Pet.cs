@@ -76,6 +76,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
 
+
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -332,7 +333,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
 
     #region Interact
-
     public void InteractionPoint()
     {
         if (SelectedObject.CurInteractObject) return;
@@ -346,7 +346,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
         
         SelectedObject.CurInteractObject.OnInteract();
-        Event.TriggerEvent((int)PetEventName.OnInteractEnd);
+        Event.TriggerEvent((int)PetEventName.OnInteractArrive);
     }
 
     public void SetInteractNull()

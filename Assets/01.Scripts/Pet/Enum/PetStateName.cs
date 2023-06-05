@@ -8,6 +8,5 @@ public enum PetStateName
     Landing,
     Recall,
     Pause,
-    Sticky,
     Length
 }

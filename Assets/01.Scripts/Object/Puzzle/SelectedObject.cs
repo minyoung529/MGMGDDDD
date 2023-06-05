@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public  class SelectedObject : MonoBehaviour
+public class SelectedObject : MonoBehaviour
 {
 
     private static OutlineScript interactObj;
@@ -19,6 +19,8 @@ public  class SelectedObject : MonoBehaviour
 
     public void CheckObject()
     {
+        if (CurInteractObject != null) return;
+
         RaycastHit hit;
         Ray ray = GameManager.Instance.MainCam.ViewportPointToRay(Vector2.one * 0.5f);
 
@@ -26,7 +28,6 @@ public  class SelectedObject : MonoBehaviour
         {
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
-            if(CurInteractObject != null) return;
 
             if (selected == null || pet == null)
             {

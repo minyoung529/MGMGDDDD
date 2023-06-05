@@ -64,6 +64,7 @@ public class PetManager : MonoSingleton<PetManager>
         inputActions.Add(InputAction.Pet_Move, OnClickMove);
         inputActions.Add(InputAction.Pet_Skill_Up, OnSkillUp);
         inputActions.Add(InputAction.Pet_Follow, ReCall);
+        inputActions.Add(InputAction.Pet_Interaction, OnPetInteraction);
 
         StartAllListen();
     }
@@ -168,9 +169,15 @@ public class PetManager : MonoSingleton<PetManager>
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
         pets[selectIndex].MovePoint();
+    }
+    
+    private void OnPetInteraction(InputAction input, float value)
+    {
+        if (selectIndex < 0) return;
+        if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (SelectedObject.GetInteract() == null) return;
-        pets[selectIndex].InteractionPoint();
+        pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnInputInteractAction);
     }
 
     private void OnSkill(InputAction input, float value)
