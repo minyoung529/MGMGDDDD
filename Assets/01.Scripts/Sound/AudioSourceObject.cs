@@ -38,9 +38,11 @@ public class AudioSourceObject : MonoBehaviour
 
     private void DisableAudioSource()
     {
-        if (managedPool != null || audioSource.clip != null)
+        if (managedPool != null && audioSource != null && audioSource.clip != null)
         {
-            audioSource.clip = null;
+            if (audioSource)
+                audioSource.clip = null;
+
             managedPool?.Release(this);
             isPlaying = false;
         }
