@@ -88,6 +88,7 @@ public class RecallState : PetState
             pet.Event.TriggerEvent((int)PetEventName.OnFlyEnd);
         });
     }
+
     private Vector3[] DrawBezier()
     {
         Vector3 dest = pet.Player.position + (transform.position - pet.Player.position).normalized * 2f;

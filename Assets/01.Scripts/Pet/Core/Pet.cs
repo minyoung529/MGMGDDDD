@@ -241,7 +241,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     private void Chase()
     {
-        if (!target) return;
+        if (!target || !GetIsOnNavMesh()) return;
         if (!IsTargetOnRoute(target)) {
             SetTargetNull();
             return;
