@@ -8,22 +8,16 @@ public class Balance : MonoBehaviour
     [SerializeField] private float maxRotation = 40f;
     [SerializeField] private float rotationTime = 0.4f;
 
+    [SerializeField]  private Transform pillar;
     [SerializeField] private BalanceFloor leftBalance;
     [SerializeField] private BalanceFloor rightBalance;
 
     [SerializeField] private Transform leftPillar;
     [SerializeField] private Transform rightPillar;
-    
-    private Transform leftAnchor;
-    private Transform rightAnchor;
-    private Transform pillar;
 
-    private void Awake()
-    {
-        pillar = transform.GetChild(0);
-        leftAnchor = pillar.GetChild(0);
-        rightAnchor = pillar.GetChild(1);
-    }
+    [SerializeField] private Transform leftAnchor;
+    [SerializeField] private Transform rightAnchor;
+
 
     private void Start()
     {

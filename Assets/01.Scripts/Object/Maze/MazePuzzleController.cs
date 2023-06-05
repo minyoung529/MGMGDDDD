@@ -119,7 +119,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         CameraSwitcher.SwitchCamera(defaultCam);
         OnCrossHairMove(false);
 
-        Pet.IsCameraAimPoint = false;
+        GameManager.Instance.SetCursorVisible(false);
         PetManager.Instance.AllPetActions(x => x.ResetAgentValue());
         PetManager.Instance.StartListen(InputAction.Pet_Follow);
     }
