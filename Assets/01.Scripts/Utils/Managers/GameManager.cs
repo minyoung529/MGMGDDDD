@@ -108,6 +108,7 @@ public class GameManager : MonoSingleton<GameManager>
         if (Physics.Raycast(ray, out hit, MainCam.farClipPlane, cameraHitLayerMask))
         {
             Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
+            Debug.Log(hit.point);
             return hit.point;
         }
 
