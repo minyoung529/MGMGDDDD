@@ -27,12 +27,12 @@ public class OutlineScript : MonoBehaviour
     private List<Renderer> outlineRenderer = new List<Renderer>();
 
     private int outlineLayer;
-    private bool used  = false;
+    private bool used = false;
     public bool IsInteract => used;
 
     void Start()
     {
-        outlineLayer = Utils.LayerToInteger( LayerMask.GetMask("Outline"));
+        outlineLayer = Utils.LayerToInteger(LayerMask.GetMask("Outline"));
 
         InitRenderer();
     }
@@ -67,7 +67,7 @@ public class OutlineScript : MonoBehaviour
         }
     }
 
-        private void SetEnableRenderer(bool value)
+    private void SetEnableRenderer(bool value)
     {
         for (int i = 0; i < outlineRenderer.Count; i++)
         {
@@ -127,6 +127,8 @@ public class OutlineScript : MonoBehaviour
     {
         if (used) return;
         used = true;
+
+        Debug.Log("SET");
 
         SelectedObject.CurInteractObject = this;
         OffOutline();
