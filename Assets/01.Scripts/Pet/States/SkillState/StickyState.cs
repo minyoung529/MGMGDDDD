@@ -23,6 +23,12 @@ public class StickyState : MonoBehaviour
 
     public void OnSticky()
     {
+        if (SelectedObject.CurInteractObject == null)
+        {
+            pet.State.ChangeState((int)PetStateName.Idle);
+            return;
+        }
+
         sticky = SelectedObject.CurInteractObject.GetComponent<Sticky>();
         if (sticky == null)
         {
