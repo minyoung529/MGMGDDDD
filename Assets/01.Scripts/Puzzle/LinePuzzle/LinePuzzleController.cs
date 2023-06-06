@@ -3,8 +3,8 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
-using TMPro;
 
 public class LinePuzzleController : MonoBehaviour
 {
@@ -15,7 +15,7 @@ public class LinePuzzleController : MonoBehaviour
     private ThirdPersonCameraControll cameraController;
 
     [SerializeField]
-    private TextMeshPro roundText;
+    private Text roundText;
 
     [SerializeField]
     private Transform oilSpawnPosition;
@@ -138,6 +138,7 @@ public class LinePuzzleController : MonoBehaviour
         OilPetSkill.IsCrosshair = false;
         GameManager.Instance.PlayerController.Move.LockInput();
         PetManager.Instance.StopListen(InputAction.Pet_Follow);
+        PetManager.Instance.InactivePetCanvas();
 
         PetSetting();
         StartGame();
@@ -186,13 +187,14 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.SkillState.SkillData.IsCheckDistance = true;
         GameManager.Instance.PlayerController.Move.UnLockInput();
         PetManager.Instance.StartListen(InputAction.Pet_Follow);
+        PetManager.Instance.ActivePetCanvas();
 
         onExitGame?.Invoke();
     }
 
     private void StartGame()
     {
-        roundText.SetText($"ROUND 1");
+        roundText.text = $"ROUND 1";
         linePuzzles[idx].StartGame(GetIsOilMove);
     }
 
@@ -272,7 +274,7 @@ public class LinePuzzleController : MonoBehaviour
         seq.Join(topCamera.transform.DOShakePosition(1.2f, 0.75f));
 
         seq.AppendCallback(() => linePuzzles[idx].StartGame(GetIsOilMove));
-        seq.AppendCallback(() => roundText.SetText($"ROUND {idx + 1}"));
+        seq.AppendCallback(() => roundText.text = $"ROUND {idx + 1}");
         SelectedPieces?.Clear();
     }
 

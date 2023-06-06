@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WallMove : MonoBehaviour
 {
     private TileMoveController[] tileMoves;
+
+    [SerializeField]
+    private UnityEvent onMoveWall;
 
     void Awake()
     {
@@ -19,6 +23,8 @@ public class WallMove : MonoBehaviour
     [ContextMenu("MOVE WALL")]
     public void MoveWall()
     {
+        onMoveWall?.Invoke();
+        
         foreach (TileMoveController moveController in tileMoves)
         {
             moveController.SetActivate();
