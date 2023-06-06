@@ -30,7 +30,7 @@ public class TileMoveController : MonoBehaviour
 
         foreach (Transform child in childs)
         {
-            child.Translate(Vector3.up * speed * Time.deltaTime);
+            child.Translate(Vector3.up * speed * Time.deltaTime, Space.Self);
         }
 
         curDistance += speed * Time.deltaTime;

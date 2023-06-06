@@ -28,6 +28,9 @@ public class DropperPattern : MonoBehaviour
 
     [SerializeField]
     private UnityEvent onStartPattern;
+    [SerializeField]
+    private UnityEvent onEndPattern;
+
 
     [SerializeField]
     private float duration = 0.3f;
@@ -67,10 +70,13 @@ public class DropperPattern : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        onStartPattern?.Invoke();
         EnterPatternAnimation();
 
-        transform.DOMoveY(transform.position.y + Vector3.Distance(target.position, transform.position) + 25f, 2.65f);
+        if (target)
+        {
+            transform.DOMoveY(transform.position.y + Vector3.Distance(target.position, transform.position) + 25f, 2.65f);
+        }
+        onStartPattern?.Invoke();
     }
 
     private void EnterPatternAnimation()
