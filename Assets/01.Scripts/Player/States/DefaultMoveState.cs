@@ -58,7 +58,7 @@ public class DefaultMoveState : MoveState
     private void Stop() {
         if (Player.Controller.Anim.GetBool(hash_bSprint) && Player.CurSpeed >= sprintSpeed) {
             Player.Controller.Anim.SetTrigger(hash_tStop);
-            Player.LockInput(0.3f);
+            Player.LockInput(0.1f);
         }
         MaxSpeed = walkSpeed;
         Player.Controller.Anim.SetBool(hash_bSprint, false);
