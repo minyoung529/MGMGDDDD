@@ -42,6 +42,9 @@ public class OilSkillState : PetState
         pet.Event.StartListening((int)PetEventName.OnSkillKeyUp, SkillUp);
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, KillSkill);
 
+        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, KillSkill);
+        pet.Event.StartListening((int)PetEventName.OnHold, KillSkill);
+
         OnSkill();
     }
 
@@ -128,6 +131,9 @@ public class OilSkillState : PetState
         oilPetSkill.KillSkill();
         OnEndPath();
 
+        pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, KillSkill);
+        pet.Event.StopListening((int)PetEventName.OnHold, KillSkill);
+
         pet.State.ChangeState((int)PetStateName.Idle);
     }
 
@@ -143,7 +149,7 @@ public class OilSkillState : PetState
         {
             pet.SetTarget(prevTransform);
         }
-        
+
         StopListeningEvents();
         pet.Event.TriggerEvent((int)PetEventName.OnSkillComplete);
     }

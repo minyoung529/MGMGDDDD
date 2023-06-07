@@ -46,6 +46,7 @@ public class AudioSourceObject : MonoBehaviour
             managedPool?.Release(this);
             isPlaying = false;
         }
+        
     }
 
     public void SetClipDuration(float length)
