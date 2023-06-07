@@ -117,6 +117,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         yield return null;
     }
 
+    [ContextMenu("Clear")]
     public void ClearMaze()
     {
         clearEvent?.Invoke();
