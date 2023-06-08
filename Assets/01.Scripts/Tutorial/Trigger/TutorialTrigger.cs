@@ -10,8 +10,11 @@ public class TutorialTrigger : MonoBehaviour
     [SerializeField]
     private bool isCollide = true;
 
-    [SerializeField]
+    [SerializeField, Tooltip("시간이 지나면 자동으로 없어지는지")]
     private bool autoEnd = true;
+
+    [SerializeField, Tooltip("콜라이더가 나가면 자동으로 없어지는지")]
+    private bool exitEqualsUnShow = true;
 
     [SerializeField]
     LayerMask layerMask;
@@ -69,13 +72,13 @@ public class TutorialTrigger : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (autoEnd || !isEnter) return;
+        if (!exitEqualsUnShow) return;
 
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
             int len = Physics.OverlapBox(transform.position, transform.localScale * 0.5f, transform.rotation, layerMask).Length;
             if (len != 0)
             {
-                Debug.Log("RETURN ~~~");
                 return;
             }
 
