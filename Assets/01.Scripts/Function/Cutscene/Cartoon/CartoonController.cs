@@ -42,6 +42,8 @@ public class CartoonController : MonoBehaviour
         {
             if (skipPlay)
             {
+                gameObject.SetActive(false);
+                canvasGroup.gameObject.SetActive(false);
                 onClear?.Invoke();
             }
             else
