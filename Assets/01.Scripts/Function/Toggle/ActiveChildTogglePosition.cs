@@ -6,7 +6,7 @@ public class ActiveChildTogglePosition : MonoBehaviour
 {
     private TogglePosition[] togglePositions;
 
-    private void Start()
+    private void Awake()
     {
         togglePositions = GetComponentsInChildren<TogglePosition>();
     }

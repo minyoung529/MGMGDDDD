@@ -16,13 +16,15 @@ public class PuzzleController : MonoBehaviour
     }
     private void LoadPuzzle(EventParam eventParam = null)
     {
-        if ((int)ChapterManager.Instance.CurChapter <= (int)chapter) return;
-
-        for(int i=0;i<cutscenes.Count;i++)
+        if ((int)ChapterManager.Instance.CurChapter < (int)chapter) return;
+        if ((int)ChapterManager.Instance.CurChapter > (int)chapter)
         {
-            cutscenes[i].SetHasplayed(true);
+            for (int i = 0; i < cutscenes.Count; i++)
+            {
+                cutscenes[i].SetHasplayed(true);
+            }
         }
-        onLoadEvent.Invoke();
+        onLoadEvent?.Invoke();
     }
 
     private void OnDestroy()

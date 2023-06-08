@@ -67,11 +67,12 @@ public class PetManager : MonoSingleton<PetManager>
         inputActions.Add(InputAction.Pet_Interaction, OnPetInteraction);
 
         StartAllListen();
+        ResetPetManager();
+        EventManager.StartListening(EventName.LoadChapter, LoadPet);
     }
 
     private void Start()
     {
-        ResetPetManager();
 
         CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance.AddStartCutscene(StopAllListen);
@@ -79,6 +80,17 @@ public class PetManager : MonoSingleton<PetManager>
         CutSceneManager.Instance.AddEndCutscene(StartAllListen);
     }
 
+    private void LoadPet(EventParam eventParam = null)
+    {
+        if (!eventParam.Contain("pets")) return;
+        List<Pet> petList = (List<Pet>)eventParam["pets"];
+
+        for (int i=0;i< petList.Count;i++)
+        {
+            petList[i].GetPet(GameManager.Instance.PlayerController.transform);
+            petList[i].SetForcePosition((Vector3)eventParam["position"]);
+        }
+    }
 
     private void Update()
     {
@@ -114,6 +126,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         CutSceneManager.Instance?.RemoveStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
+        EventManager.StopListening(EventName.LoadChapter, LoadPet);
         StopAllListen();
     }
 

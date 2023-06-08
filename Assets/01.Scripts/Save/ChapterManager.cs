@@ -77,7 +77,8 @@ public class ChapterManager : MonoSingleton<ChapterManager>
             EventParam eventParam = new();
             eventParam["position"] = chapters[(int)curChapter].savePoint;
             EventManager.TriggerEvent(EventName.PlayerRespawn, eventParam);
-            EventManager.TriggerEvent(EventName.LoadChapter);
+            eventParam["pets"] = loadData.pets;
+            EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
         }
         else
         {
