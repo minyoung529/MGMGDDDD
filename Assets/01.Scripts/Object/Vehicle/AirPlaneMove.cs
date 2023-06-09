@@ -40,6 +40,7 @@ public class AirPlaneMove : MonoBehaviour
     private bool isStartIdle = true;
 
     private float positionY = 0f;
+    private float percentage = 0f;
 
     [SerializeField]
     private float wayPointDuration = 10f;
@@ -95,8 +96,8 @@ public class AirPlaneMove : MonoBehaviour
             {
                 transform.DOPath(wayPoints, wayPointDuration, PathType.CatmullRom)
                 .OnComplete(() => OnArrive.Invoke(down))
-                .SetEase(Ease.InOutQuad)
-                .SetLookAt(0.1f);
+                .SetEase(Ease.InOutQuad);
+                // .SetLookAt())
             }
             else
             {
