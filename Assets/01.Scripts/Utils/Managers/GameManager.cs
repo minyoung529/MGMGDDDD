@@ -51,8 +51,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     protected override void Awake()
     {
-        FindFindableObject();
         FindPlayer();
+        FindFindableObject();
         st = Time.time;
 
         base.Awake();

@@ -18,8 +18,7 @@ public enum Chapter
     Cinema = 6,
     Cannon = 7,
     Balance = 8,
-    Line = 9,
-    Dropper = 10,
+    GameLand = 9,
 
     // Second Scene
     Maze = 11,
@@ -55,12 +54,16 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         SaveChapter();
     }
 
-    public void SetMaxChapter(Chapter _saveMaxChapter, Vector3 _savePosition)
+    public void SetMaxChapter(Chapter _saveMaxChapter)
     {
         maxClearChapter = _saveMaxChapter;
-        chapters[(int)maxClearChapter].savePoint = _savePosition;
 
         SaveChapter();
+    }
+
+    public void SetSavePoint(Vector3 _savePosition)
+    {
+        chapters[(int)maxClearChapter].savePoint = _savePosition;
     }
 
     #region Save
@@ -77,7 +80,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
             EventParam eventParam = new();
             eventParam["position"] = chapters[(int)curChapter].savePoint;
             EventManager.TriggerEvent(EventName.PlayerRespawn, eventParam);
-            eventParam["pets"] = loadData.pets;
+            eventParam["pets"] = save.pets;
             EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
         }
         else

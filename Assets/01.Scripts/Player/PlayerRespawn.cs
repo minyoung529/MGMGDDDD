@@ -60,7 +60,7 @@ public class PlayerRespawn : PlayerMono
                 maxIndex = i;
                 if (points[i].IsCheckPoint)
                 {
-                    ChapterManager.Instance.SetMaxChapter(points[i].Chapter, points[i].transform.position);
+                    ChapterManager.Instance.SetMaxChapter(points[i].Chapter);
                 }
             }
         }
@@ -78,6 +78,7 @@ public class PlayerRespawn : PlayerMono
                 if (points[i].IsCheckPoint)
                 {
                     ChapterManager.Instance.SetCurChapter(points[i].Chapter);
+                    ChapterManager.Instance.SetSavePoint(points[i].transform.position);
                 }
             }
         }

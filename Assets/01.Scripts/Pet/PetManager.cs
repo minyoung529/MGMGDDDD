@@ -87,8 +87,8 @@ public class PetManager : MonoSingleton<PetManager>
 
         for (int i=0;i< petList.Count;i++)
         {
-            petList[i].GetPet(GameManager.Instance.PlayerController.transform);
             petList[i].SetForcePosition((Vector3)eventParam["position"]);
+            petList[i].GetPet(GameManager.Instance.PlayerController.transform);
         }
     }
 
