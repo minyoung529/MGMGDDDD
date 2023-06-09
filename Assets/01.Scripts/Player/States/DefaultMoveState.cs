@@ -51,8 +51,9 @@ public class DefaultMoveState : MoveState
 
     private void Sprint(InputAction action, float param) {
         if (!Player.Controller.Anim.GetBool(hash_bWalk)) return;
-        Player.Controller.Anim.SetBool(hash_bSprint, true);
-        MaxSpeed = sprintSpeed;
+        bool isSprint = Player.Controller.Anim.GetBool(hash_bSprint);
+        Player.Controller.Anim.SetBool(hash_bSprint, !isSprint);
+        MaxSpeed = !isSprint ? sprintSpeed : walkSpeed;
     }
 
     private void Stop() {

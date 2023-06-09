@@ -285,10 +285,10 @@ public abstract class Pet : MonoBehaviour, IThrowable
         transform.position = position;
         agent.enabled = true;
     }
-    public Vector3 GetNearestNavMeshPosition(Vector3 position)
+    public Vector3 GetNearestNavMeshPosition(Vector3 position, float maxDistance = 5f)
     {
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(position, out hit, 5f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(position, out hit, maxDistance, NavMesh.AllAreas))
         {
             return hit.position;
         }
@@ -301,8 +301,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public bool IsTargetOnRoute(Transform target) {
         if (!GetIsOnNavMesh()) return false; //네브메쉬 위인지
         NavMeshPath path = new NavMeshPath();
-        if (!NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path)) return false; //경로가 그려지는지
-        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 1f) return false; //경로의 도착지가 플레이어 근처인지
+        NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //경로가 그려지는지
+        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //경로의 도착지가 플레이어 근처인지
         return true;
     }
     #endregion
