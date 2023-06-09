@@ -244,11 +244,9 @@ public class PetManager : MonoSingleton<PetManager>
         yield return new WaitForSeconds(switchDelay);
         isSwitching = false;
     }
-
     #endregion
 
     #region SELECT
-
     public void SelectPet(InputAction input, float index)
     {
         if (pets.Count <= 0) return;

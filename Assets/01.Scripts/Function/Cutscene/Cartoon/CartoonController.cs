@@ -19,6 +19,9 @@ public class CartoonController : MonoBehaviour
     [SerializeField]
     private CanvasGroup canvasGroup;
 
+    [SerializeField]
+    private bool skipPlay = false;
+
     private void Awake()
     {
         cartoonPlayers = new CartoonPlayer[transform.childCount][];
@@ -37,7 +40,16 @@ public class CartoonController : MonoBehaviour
     {
         if (playOnAwake)
         {
-            Play();
+            if (skipPlay)
+            {
+                gameObject.SetActive(false);
+                canvasGroup.gameObject.SetActive(false);
+                onClear?.Invoke();
+            }
+            else
+            {
+                Play();
+            }
         }
     }
 
@@ -67,7 +79,7 @@ public class CartoonController : MonoBehaviour
             cartoons[i].gameObject.SetActive(false);
         }
 
-            CutSceneManager.Instance.ExitCutscene();
+        CutSceneManager.Instance.ExitCutscene();
 
         canvasGroup?.DOFade(0f, 1f).OnComplete(() =>
         {

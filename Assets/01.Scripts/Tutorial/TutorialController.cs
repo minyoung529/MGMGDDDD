@@ -5,7 +5,13 @@ using UnityEngine;
 
 public enum TutorialType
 {
-    Move, Interaction, PetBasic, PetSelect
+    Move,
+    Interaction,
+    PetMove,
+    PetSelect,
+    Recall,
+    Hold,
+    Skill
 }
 
 public class TutorialController : MonoBehaviour

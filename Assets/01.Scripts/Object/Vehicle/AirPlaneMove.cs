@@ -41,6 +41,9 @@ public class AirPlaneMove : MonoBehaviour
 
     private float positionY = 0f;
 
+    [SerializeField]
+    private float wayPointDuration = 10f;
+
     private void Awake()
     {
         if (!isDown && isStartIdle)
@@ -90,13 +93,14 @@ public class AirPlaneMove : MonoBehaviour
 
             if (tempDown)
             {
-                transform.DOPath(wayPoints, 5f, PathType.CatmullRom).OnComplete(() => OnArrive.Invoke(down));
-                transform.DORotate(targetPath[^1].eulerAngles, 5f);
+                transform.DOPath(wayPoints, wayPointDuration, PathType.CatmullRom)
+                .OnComplete(() => OnArrive.Invoke(down))
+                .SetEase(Ease.InOutQuad)
+                .SetLookAt(0.1f);
             }
             else
             {
-                transform.DOMove(originalPosition, 5f).OnComplete(() => OnArrive.Invoke(down));
-                transform.DORotateQuaternion(originalRotation, 5f);
+                transform.DOMove(originalPosition, wayPointDuration).OnComplete(() => OnArrive.Invoke(down));
             }
         }
         else

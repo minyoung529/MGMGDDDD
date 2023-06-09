@@ -38,8 +38,8 @@ public class Lever : MonoBehaviour
 
     protected virtual void SetLever()
     {
-       //OnLever.AddListener(DebugOnLever);
-       //OffLever.AddListener(DebugOffLever);
+        //OnLever.AddListener(DebugOnLever);
+        //OffLever.AddListener(DebugOffLever);
 
         handle = transform.GetChild(0);
     }
@@ -57,12 +57,18 @@ public class Lever : MonoBehaviour
     // Event Toggle
     [ContextMenu("Lever")]
 
-    private void ToggleEvent(InputAction action, float value)
+    public void ToggleEvent(InputAction action, float value)
+    {
+        ToggleEvent();
+    }
+
+    // Inspector View
+    public void ToggleEvent()
     {
         if (!CheckLever()) return;
 
         toggle = !toggle;
-        if(disposable) toggle = true;
+        if (disposable) toggle = true;
 
         if (toggle)
         {
@@ -116,7 +122,7 @@ public class Lever : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag(Define.PLAYER_TAG))
+        if (other.CompareTag(Define.PLAYER_TAG))
         {
             isNear = true;
         }
@@ -124,7 +130,7 @@ public class Lever : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag(Define.PLAYER_TAG))
+        if (other.CompareTag(Define.PLAYER_TAG))
         {
             isNear = false;
         }

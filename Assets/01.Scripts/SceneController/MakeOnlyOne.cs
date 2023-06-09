@@ -8,7 +8,9 @@ public class MakeOnlyOne : MonoBehaviour
 
     private void Awake()
     {
-        if(FindObjectsOfType(scriptType.GetType()).Length > 1)
+        Object[] objs = FindObjectsOfType(scriptType.GetType());
+
+        if(objs == null || objs.Length > 1)
         {
             Destroy(gameObject);
         }
