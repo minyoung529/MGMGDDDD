@@ -6,6 +6,9 @@ using UnityEngine.Playables;
 public class CutScenePlayer : MonoBehaviour
 {
     [SerializeField]
+    private Chapter chapter;
+
+    [SerializeField]
     private LayerMask layerMask;
 
     [SerializeField]
@@ -23,6 +26,7 @@ public class CutScenePlayer : MonoBehaviour
     private bool isOnce = true;
     private bool hasPlayed = false;
 
+
     void Awake()
     {
         director = GetComponent<PlayableDirector>();
@@ -34,6 +38,7 @@ public class CutScenePlayer : MonoBehaviour
         {
             Play();
         }
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -59,5 +64,10 @@ public class CutScenePlayer : MonoBehaviour
     {
         yield return null;
         CutSceneManager.Instance.Play(director, speed);
+    }
+
+    public void SetHasplayed(bool played)
+    {
+        hasPlayed = played;
     }
 }
