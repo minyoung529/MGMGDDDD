@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class PuzzleController : MonoBehaviour
 {
@@ -17,14 +16,15 @@ public class PuzzleController : MonoBehaviour
     private void LoadPuzzle(EventParam eventParam = null)
     {
         if ((int)ChapterManager.Instance.CurChapter < (int)chapter) return;
+        onLoadEvent?.Invoke();
         if ((int)ChapterManager.Instance.CurChapter > (int)chapter)
         {
             for (int i = 0; i < cutscenes.Count; i++)
             {
+                Debug.Log(cutscenes[i].gameObject.name);
                 cutscenes[i].SetHasplayed(true);
             }
         }
-        onLoadEvent?.Invoke();
     }
 
     private void OnDestroy()
