@@ -74,6 +74,18 @@ public class ToggleRotation : MonoBehaviour
         onClose?.Invoke();
     }
 
+    public void ForceOpen()
+    {
+        if (isLocal)
+        {
+            transform.localRotation = Quaternion.Euler(targetAngles);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(targetAngles);
+        }
+    }
+
     private void Delay(Action action)
     {
         if (predelay > 0f)

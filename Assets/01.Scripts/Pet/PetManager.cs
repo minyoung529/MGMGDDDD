@@ -50,6 +50,26 @@ public class PetManager : MonoSingleton<PetManager>
 
         return pet;
     }
+    public Pet BindingPet(PetType type)
+    {
+        Pet pet = null;
+        switch(type)
+        {
+            case PetType.None:
+                break;
+                case PetType.OilPet:
+                pet = FindObjectOfType<OilPet>();
+                break;
+                case PetType.FirePet: 
+                pet = FindObjectOfType<FirePet>();
+                break;
+                case PetType.StickyPet:
+                pet = FindObjectOfType<StickyPet>();
+                break;
+        }
+
+        return pet;
+    }
 
     protected override void Awake()
     {
@@ -67,18 +87,29 @@ public class PetManager : MonoSingleton<PetManager>
         inputActions.Add(InputAction.Pet_Interaction, OnPetInteraction);
 
         StartAllListen();
+        ResetPetManager();
+        EventManager.StartListening(EventName.LoadChapter, LoadPet);
     }
 
     private void Start()
     {
-        ResetPetManager();
-
         CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance.AddStartCutscene(StopAllListen);
         CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
         CutSceneManager.Instance.AddEndCutscene(StartAllListen);
     }
 
+    private void LoadPet(EventParam eventParam = null)
+    {
+        if (!eventParam.Contain("pets")) return;
+        List<PetType> petList = (List<PetType>)eventParam["pets"];
+
+        for (int i = 0; i < petList.Count; i++)
+        {
+            BindingPet(petList[i]).GetPet(GameManager.Instance.PlayerController.transform);
+            pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position);
+        }
+    }
 
     private void Update()
     {
@@ -114,6 +145,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         CutSceneManager.Instance?.RemoveStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
+        EventManager.StopListening(EventName.LoadChapter, LoadPet);
         StopAllListen();
     }
 
@@ -169,7 +201,7 @@ public class PetManager : MonoSingleton<PetManager>
 
         pets[selectIndex].MovePoint();
     }
-    
+
     private void OnPetInteraction(InputAction input, float value)
     {
         if (selectIndex < 0) return;
@@ -331,13 +363,13 @@ public class PetManager : MonoSingleton<PetManager>
         switch (type)
         {
             case PetType.FirePet:
-              p = GetPetByKind<FirePet>();
+                p = GetPetByKind<FirePet>();
                 break;
             case PetType.StickyPet:
-              p = GetPetByKind<StickyPet>();
+                p = GetPetByKind<StickyPet>();
                 break;
             case PetType.OilPet:
-              p = GetPetByKind<OilPet>();
+                p = GetPetByKind<OilPet>();
                 break;
         }
         if (p == null) return;

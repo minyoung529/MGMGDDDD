@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,10 +13,13 @@ public class PlayerRespawn : PlayerMono
     [SerializeField] private UnityEvent startFadeIn;
 
     private Transform pointParent;
-    private Transform[] points;
-    public Vector3 CurRespawnPoint => points[curIndex].position;
+    private SavePoint[] points;
+    public Vector3 CurRespawnPoint => points[curIndex].transform.position;
     private int curIndex = 1;
     private int maxIndex = 1;
+    
+    private int curChapterIndex = 1;
+    private int maxChapterIndex = 1;
 
     private ParticleSystem dieParticle;
 
@@ -32,16 +36,26 @@ public class PlayerRespawn : PlayerMono
         if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
 
+        EventManager.StartListening(EventName.LoadChapter, InitPlayer);
         EventManager.StartListening(EventName.PlayerDie, OnDie);
 
         pointParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
-        points = pointParent.GetComponentsInChildren<Transform>();
+        points = pointParent.GetComponentsInChildren<SavePoint>();
     }
 
     private void Update()
     {
         CheckSpawnPoint();
         CheckFallDown();
+    }
+    private void InitPlayer(EventParam param = null)
+    {
+        if (param == null || !param.Contain("position")) return;
+        Vector3 pos = (Vector3)param["position"];
+        transform.position = pos;
+
+        PetManager.Instance.AllPetActions(x => x.transform.position = pos);
+        controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
 
     private void CheckSpawnPoint()
@@ -50,22 +64,32 @@ public class PlayerRespawn : PlayerMono
 
         for (int i = maxIndex + 1; i < points.Length; i++)
         {
-            Vector3 dir = transform.position - points[i].position;
-            if (dir.magnitude <= 20f && Vector3.Dot(points[i].forward, dir) > 0)
+            Vector3 dir = transform.position - points[i].transform.position;
+            if (dir.magnitude <= 20f && Vector3.Dot(points[i].transform.forward, dir) > 0)
             {
                 maxIndex = i;
+                if (points[i].IsCheckPoint)
+                {
+                    ChapterManager.Instance.SetMaxChapter(points[i].Chapter);
+                }
             }
         }
 
         float min = float.MaxValue;
         for (int i = 1; i <= maxIndex; i++)
         {
-            Vector3 dir = transform.position - points[i].position;
+            Vector3 dir = transform.position - points[i].transform.position;
             float distance = dir.magnitude;
             if (distance < min)
             {
                 min = distance;
                 curIndex = i;
+
+                if (points[i].IsCheckPoint)
+                {
+                    ChapterManager.Instance.SetCurChapter(points[i].Chapter);
+                    ChapterManager.Instance.SetSavePoint(points[i].transform.position);
+                }
             }
         }
     }
@@ -125,8 +149,10 @@ public class PlayerRespawn : PlayerMono
         });
     }
 
+
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.PlayerDie, OnDie);
+        EventManager.StopListening(EventName.LoadChapter, InitPlayer);
     }
 }

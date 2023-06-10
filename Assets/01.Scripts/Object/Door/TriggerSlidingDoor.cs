@@ -34,7 +34,21 @@ public class TriggerSlidingDoor : MonoBehaviour
             toggle.Trigger();
         }
     }
+    public void ForceOpen()
+    {
+        if (once && isTrigger) return;
 
+        isTrigger = true;
+        foreach (TogglePosition toggle in doors)
+        {
+            toggle.ForceOpenPosition();
+        }
+
+        foreach (ToggleScale toggle in doorScale)
+        {
+            toggle.ForceSize();
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & targetLayer) != 0)
