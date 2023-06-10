@@ -2,7 +2,6 @@ using System.IO;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using UnityEditor.iOS.Xcode;
 
 public enum Chapter
 {
