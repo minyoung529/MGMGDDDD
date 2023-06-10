@@ -50,6 +50,26 @@ public class PetManager : MonoSingleton<PetManager>
 
         return pet;
     }
+    public Pet BindingPet(PetType type)
+    {
+        Pet pet = null;
+        switch(type)
+        {
+            case PetType.None:
+                break;
+                case PetType.OilPet:
+                pet = FindObjectOfType<OilPet>();
+                break;
+                case PetType.FirePet: 
+                pet = FindObjectOfType<FirePet>();
+                break;
+                case PetType.StickyPet:
+                pet = FindObjectOfType<StickyPet>();
+                break;
+        }
+
+        return pet;
+    }
 
     protected override void Awake()
     {
@@ -73,7 +93,6 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void Start()
     {
-
         CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance.AddStartCutscene(StopAllListen);
         CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
@@ -83,12 +102,12 @@ public class PetManager : MonoSingleton<PetManager>
     private void LoadPet(EventParam eventParam = null)
     {
         if (!eventParam.Contain("pets")) return;
-        List<Pet> petList = (List<Pet>)eventParam["pets"];
+        List<PetType> petList = (List<PetType>)eventParam["pets"];
 
-        for (int i=0;i< petList.Count;i++)
+        for (int i = 0; i < petList.Count; i++)
         {
-            petList[i].SetForcePosition((Vector3)eventParam["position"]);
-            petList[i].GetPet(GameManager.Instance.PlayerController.transform);
+            BindingPet(petList[i]).GetPet(GameManager.Instance.PlayerController.transform);
+            pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position);
         }
     }
 
@@ -182,7 +201,7 @@ public class PetManager : MonoSingleton<PetManager>
 
         pets[selectIndex].MovePoint();
     }
-    
+
     private void OnPetInteraction(InputAction input, float value)
     {
         if (selectIndex < 0) return;
@@ -344,13 +363,13 @@ public class PetManager : MonoSingleton<PetManager>
         switch (type)
         {
             case PetType.FirePet:
-              p = GetPetByKind<FirePet>();
+                p = GetPetByKind<FirePet>();
                 break;
             case PetType.StickyPet:
-              p = GetPetByKind<StickyPet>();
+                p = GetPetByKind<StickyPet>();
                 break;
             case PetType.OilPet:
-              p = GetPetByKind<OilPet>();
+                p = GetPetByKind<OilPet>();
                 break;
         }
         if (p == null) return;

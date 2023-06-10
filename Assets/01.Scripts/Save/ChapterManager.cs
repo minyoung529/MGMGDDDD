@@ -2,10 +2,11 @@ using System.IO;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using UnityEditor.iOS.Xcode;
 
 public enum Chapter
 {
+    // 씬을 어케 구분할까 고민 중
+
     // First scene
     BasicTutorial = 0,
     FireTutorial = 1,
@@ -21,9 +22,9 @@ public enum Chapter
     GameLand = 9,
 
     // Second Scene
-    Maze = 11,
+    Maze = 10,
 
-    Count = 12
+    Count = 11
 }
 public class ChapterManager : MonoSingleton<ChapterManager>
 {
@@ -41,10 +42,24 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     public Chapter CurChapter { get { return curChapter; } }
     public Chapter CurMaxChapter { get { return curChapter; } }
 
-    private void Start()
+    public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
+
+    protected override void Awake()
     {
         InitChapter();
+    }
+    private void Start()
+    {
         LoadChapter();
+    }
+
+    public void ChangeChapter(Chapter change)
+    {
+        if (SceneController.CurrentScene != GetChapterSO(change).scene)
+        {
+            SceneController.ChangeScene(GetChapterSO(change).scene, true);
+        }
+        SetCurChapter(change);
     }
 
     // Chapter 갱신
@@ -63,7 +78,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     public void SetSavePoint(Vector3 _savePosition)
     {
-        chapters[(int)maxClearChapter].savePoint = _savePosition;
+       GetChapterSO(maxClearChapter).savePoint = _savePosition;
     }
 
     #region Save
@@ -73,26 +88,39 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         SaveData loadData = SaveSystem.Load();
         if (loadData != null)
         {
+            if(SceneController.CurrentScene != GetChapterSO(loadData.curChapter).scene)
+            {
+                SceneController.ChangeScene(GetChapterSO(loadData.curChapter).scene, false);
+            }
             save = loadData;
             curChapter = save.curChapter;
             maxClearChapter = save.maxChapter;
 
             EventParam eventParam = new();
-            eventParam["position"] = chapters[(int)curChapter].savePoint;
-            EventManager.TriggerEvent(EventName.PlayerRespawn, eventParam);
             eventParam["pets"] = save.pets;
+            eventParam["position"] = GetCurChapter.savePoint;
             EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
         }
         else
         {
-            save = new SaveData(Chapter.BasicTutorial, Chapter.BasicTutorial, PetManager.Instance.GetPetList);
+            save = new SaveData(Chapter.BasicTutorial, Chapter.BasicTutorial, null);
         }
     }
     // Data 챕터 저장하기
     private void SaveChapter()
     {
-        save = new SaveData(curChapter, maxClearChapter, PetManager.Instance.GetPetList);
+        save = new SaveData(curChapter, maxClearChapter, GetPetTypeList());
         SaveSystem.Save(save);
+    }
+    private List<PetType> GetPetTypeList()
+    {
+        List<PetType> typeList = new List<PetType>();
+        for (int i = 0; i < PetManager.Instance.GetPetList.Count; i++)
+        {
+            typeList.Add(PetManager.Instance.GetPetList[i].GetPetType);
+        }
+
+        return typeList;
     }
     #endregion
 

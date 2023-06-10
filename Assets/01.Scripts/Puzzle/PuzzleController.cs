@@ -21,7 +21,6 @@ public class PuzzleController : MonoBehaviour
         {
             for (int i = 0; i < cutscenes.Count; i++)
             {
-                Debug.Log(cutscenes[i].gameObject.name);
                 cutscenes[i].SetHasplayed(true);
             }
         }

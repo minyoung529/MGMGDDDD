@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 
 [System.Serializable]
 public class SaveData
 {
-    public SaveData(Chapter _chapter, Chapter _maxChapter, List<Pet> _pets)
+    public SaveData(Chapter _chapter, Chapter _maxChapter, List<PetType> _pets)
     {
         curChapter = _chapter;
         maxChapter = _maxChapter;
@@ -12,5 +13,5 @@ public class SaveData
     
     public Chapter curChapter;
     public Chapter maxChapter;
-    public List<Pet> pets;
+    public List<PetType> pets;
 }

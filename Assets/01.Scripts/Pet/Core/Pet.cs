@@ -213,6 +213,10 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     public void SetTargetPlayer()
     {
+        if(agent == null)
+        {
+            agent = GetComponent<NavMeshAgent>();
+        }
         target = player;
         agent.stoppingDistance = distanceToPlayer;
     }
@@ -281,6 +285,10 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
     public void SetForcePosition(Vector3 position)
     {
+        if(agent == null)
+        {
+            agent = GetComponent<NavMeshAgent>();
+        }
         agent.enabled = false;
         transform.position = position;
         agent.enabled = true;
