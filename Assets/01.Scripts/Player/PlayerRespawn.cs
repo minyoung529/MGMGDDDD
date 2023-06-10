@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -35,8 +36,8 @@ public class PlayerRespawn : PlayerMono
         if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
 
+        EventManager.StartListening(EventName.LoadChapter, InitPlayer);
         EventManager.StartListening(EventName.PlayerDie, OnDie);
-        EventManager.StartListening(EventName.PlayerRespawn, OnDie);
 
         pointParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
         points = pointParent.GetComponentsInChildren<SavePoint>();
@@ -46,6 +47,15 @@ public class PlayerRespawn : PlayerMono
     {
         CheckSpawnPoint();
         CheckFallDown();
+    }
+    private void InitPlayer(EventParam param = null)
+    {
+        if (param == null || !param.Contain("position")) return;
+        Vector3 pos = (Vector3)param["position"];
+        transform.position = pos;
+
+        PetManager.Instance.AllPetActions(x => x.transform.position = pos);
+        controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
 
     private void CheckSpawnPoint()
@@ -143,5 +153,6 @@ public class PlayerRespawn : PlayerMono
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.PlayerDie, OnDie);
+        EventManager.StopListening(EventName.LoadChapter, InitPlayer);
     }
 }
