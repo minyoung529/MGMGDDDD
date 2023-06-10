@@ -12,7 +12,8 @@ public enum TutorialType
     Recall,
     Hold,
     Skill,
-    OilPetSkill
+    OilPetSkill,
+    InteractObject
 }
 
 public class TutorialController : MonoBehaviour

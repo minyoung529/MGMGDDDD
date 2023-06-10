@@ -6,10 +6,18 @@ using UnityEngine;
 
 public class SelectedObject : MonoBehaviour
 {
-
+    private static TutorialTrigger mouseGuide;
     private static OutlineScript interactObj;
 
     public static OutlineScript CurInteractObject;
+
+    void Awake()
+    {
+        mouseGuide = gameObject.AddComponent<TutorialTrigger>();
+
+        mouseGuide.SetAutoEnd(false);
+        mouseGuide.SetTutorialType(TutorialType.InteractObject);
+    }
 
     private void Update()
     {
@@ -41,8 +49,20 @@ public class SelectedObject : MonoBehaviour
             }
 
             if (selected.IsInteract) return;
+            if (interactObj == selected) return;
 
             interactObj = selected;
+
+            if (interactObj.GuideName.Length == 0)
+            {
+                mouseGuide.SetTutorialName("작동");
+            }
+            else
+            {
+                mouseGuide.SetTutorialName(interactObj.GuideName);
+            }
+            
+            mouseGuide.StartTutorial();
             interactObj.SetColor(pet.petColor);
             interactObj.OnOutline();
         }
@@ -58,12 +78,14 @@ public class SelectedObject : MonoBehaviour
         {
             interactObj.OffOutline();
             interactObj = null;
+            mouseGuide.EndTutorial();
         }
     }
 
     public static void SetInteractionObject()
     {
         CurInteractObject = interactObj;
+        mouseGuide.EndTutorial();
     }
 
     public static OutlineScript GetInteract()

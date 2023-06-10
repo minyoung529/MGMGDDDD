@@ -17,6 +17,9 @@ public class AutoInputPanel : MonoBehaviour
     [SerializeField]
     private int intValue = 1;
 
+    [SerializeField]
+    private bool isInfinity = false;
+
     [Header("Input")]
     [SerializeField] private bool useInputAction = false;
     [SerializeField] InputAction action;
@@ -70,7 +73,7 @@ public class AutoInputPanel : MonoBehaviour
     {
         if ((string.IsNullOrEmpty(animatorBoolName) || animatorBoolName == ""))
         {
-            if (!useInputAction)
+            if (!useInputAction && !isInfinity)
             {
                 success = true;
                 return;

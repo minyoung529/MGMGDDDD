@@ -32,6 +32,7 @@ public class TutorialTrigger : MonoBehaviour
     private Action onExit;
 
     #region ACTION
+
     [Tooltip("이벤트를 구독하지 않으면 굳이 설정할 필요가 없음")]
     [SerializeField]
     private InputAction inputAction = InputAction.Interaction;
@@ -41,13 +42,17 @@ public class TutorialTrigger : MonoBehaviour
 
     protected Action<InputAction, float> keyDownAction;
 
-    private Collider col;
     #endregion
+    private Collider col;
 
     private void Awake()
     {
-        keyDownAction = (InputAction x, float y) => onKeyDownEvent?.Invoke();
         col = GetComponent<Collider>();
+    }
+
+    void Start()
+    {
+        keyDownAction = (InputAction x, float y) => onKeyDownEvent?.Invoke();
 
         onEnter += OnEnter;
         onEnter += ListeningEvent;
@@ -63,8 +68,7 @@ public class TutorialTrigger : MonoBehaviour
         {
             isEnter = true;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
-
-            tutorialController?.StartTutorial(tutorialType, onExit, tutorialName);
+            StartTutorial();
             onEnter?.Invoke();
         }
     }
@@ -84,9 +88,21 @@ public class TutorialTrigger : MonoBehaviour
 
             isEnter = false;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
-            tutorialController?.StopTutorial(tutorialType);
+            EndTutorial();
             onExit?.Invoke();
         }
+    }
+
+    public void StartTutorial()
+    {
+        tutorialController ??= FindObjectOfType<TutorialController>();
+        tutorialController?.StartTutorial(tutorialType, onExit, tutorialName);
+    }
+
+    public void EndTutorial()
+    {
+        tutorialController ??= FindObjectOfType<TutorialController>();
+        tutorialController?.StopTutorial(tutorialType);
     }
 
     public void Trigger()
@@ -167,4 +183,12 @@ public class TutorialTrigger : MonoBehaviour
         StopListeningEvent();
         col.enabled = false;
     }
+
+    #region  SET
+    public void SetAutoEnd(bool value) => autoEnd = value;
+
+    public void SetTutorialName(string name) => tutorialName = name;
+
+    public void SetTutorialType(TutorialType type) => tutorialType = type;
+    #endregion
 }

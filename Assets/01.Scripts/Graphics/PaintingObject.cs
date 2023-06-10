@@ -169,7 +169,7 @@ public class PaintingObject : MonoBehaviour
             yield return null;
         }
 
-        triggerRoots.OnDryOil.Invoke();
+        triggerRoots.OnDryOil?.Invoke();
     }
 
     private IEnumerator SpreadCoroutine(PaintStructure top)
