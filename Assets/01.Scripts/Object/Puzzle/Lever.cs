@@ -8,6 +8,7 @@ public class Lever : MonoBehaviour
     public UnityEvent OnLever;
     public UnityEvent OffLever;
     public bool disposable = true;
+    public bool active = true;
     public LayerMask playerLayer;
 
     private Transform handle;
@@ -83,11 +84,13 @@ public class Lever : MonoBehaviour
     protected virtual void EventStart()
     {
         OnRotateLever();
+        if (!active) return;
         OnLever.Invoke();
     }
     protected virtual void EventStop()
     {
         OffRotateLever();
+        if (!active) return;
         OffLever.Invoke();
     }
     #endregion
@@ -98,14 +101,20 @@ public class Lever : MonoBehaviour
         if (!isRotate) return;
 
         handle.DOKill();
-        handle.DOLocalRotate(new Vector3(0f, 0f, -45f), 1f);
+        if (active)
+            handle.DOLocalRotate(new Vector3(0f, 0f, -45f), 1f);
+        else
+            handle.DOLocalRotate(new Vector3(0f, 0f, -45f), 1f).OnComplete(() => handle.DOLocalRotate(new Vector3(0f, 0f, 45f), 1f));
     }
     private void OffRotateLever()
     {
         if (!isRotate) return;
 
         handle.DOKill();
-        handle.DOLocalRotate(new Vector3(0f, 0f, 45f), 1f);
+        if (active)
+            handle.DOLocalRotate(new Vector3(0f, 0f, 45f), 1f);
+        else
+            handle.DOLocalRotate(new Vector3(0f, 0f, 45f), 1f).OnComplete(() => handle.DOLocalRotate(new Vector3(0f, 0f, -45f), 1f));
     }
     #endregion
 
@@ -119,6 +128,10 @@ public class Lever : MonoBehaviour
         Debug.Log("Off Lever");
     }
     #endregion
+
+    public void SetActive(bool active) {
+        this.active = active;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
