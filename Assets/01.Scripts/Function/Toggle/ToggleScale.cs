@@ -76,4 +76,8 @@ public class ToggleScale : MonoBehaviour
         transform.DOKill();
         transform.localScale = originalScale;
     }
+
+    public void SetTargetScale(Vector3 targetScale) {
+        this.targetScale = targetScale;
+    }
 }

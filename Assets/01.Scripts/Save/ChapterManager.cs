@@ -50,6 +50,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     }
     private void Start()
     {
+        Debug.Log(saveFileName);
         LoadChapter();
     }
 
@@ -88,10 +89,10 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         SaveData loadData = SaveSystem.Load();
         if (loadData != null)
         {
-            if(SceneController.CurrentScene != GetChapterSO(loadData.curChapter).scene)
-            {
-                SceneController.ChangeScene(GetChapterSO(loadData.curChapter).scene, false);
-            }
+            //if(SceneController.CurrentScene != GetChapterSO(loadData.curChapter).scene)
+            //{
+            //    SceneController.ChangeScene(GetChapterSO(loadData.curChapter).scene, false);
+            //}
             save = loadData;
             curChapter = save.curChapter;
             maxClearChapter = save.maxChapter;
