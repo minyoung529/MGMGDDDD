@@ -48,16 +48,17 @@ public class TutorialTrigger : MonoBehaviour
     private void Awake()
     {
         col = GetComponent<Collider>();
-    }
 
-    void Start()
-    {
         keyDownAction = (InputAction x, float y) => onKeyDownEvent?.Invoke();
 
         onEnter += OnEnter;
         onEnter += ListeningEvent;
         onExit += OnExit;
         onExit += StopListeningEvent;
+    }
+
+    protected virtual void Start()
+    {
     }
 
     private void OnTriggerEnter(Collider other)

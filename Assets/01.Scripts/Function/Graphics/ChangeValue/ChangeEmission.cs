@@ -51,10 +51,21 @@ public class ChangeEmission : MonoBehaviour
         }
     }
 
+    public void ChangeForce()
+    {
+        Color emissionColor = color * intensity;
+        renderer.material.SetColor(EMISSION_COLOR, emissionColor);
+    }
+
     public void BackToOriginalColor()
     {
         renderer?.material.DOKill();
         renderer?.material.DOColor(originalColor, EMISSION_COLOR, onTime);
+    }
+
+    public void BackForce()
+    {
+        renderer?.material.SetColor(EMISSION_COLOR, originalColor);
     }
 
     private Color GetEmission()

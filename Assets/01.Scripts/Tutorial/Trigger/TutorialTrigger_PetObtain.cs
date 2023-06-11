@@ -8,8 +8,9 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
 
     private BoxCollider boxCollider;
 
-    private void Start()
+    protected void Start()
     {
+        base.Start();
         pet ??= transform.parent.GetComponentInChildren<Pet>();
 
         if (pet == null || PetManager.Instance.Contain(pet))
@@ -19,15 +20,7 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
         }
 
         boxCollider = GetComponent<BoxCollider>();
-
-        if (PetManager.Instance.Contain(pet))
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            keyDownAction += InactiveTrigger;
-        }
+        keyDownAction += InactiveTrigger;
     }
 
     protected override bool Condition(Transform player)

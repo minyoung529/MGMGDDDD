@@ -10,6 +10,7 @@ public class CubeObject : MonoBehaviour
     private Rigidbody rigid;
     new private Collider collider;
     private RespawnObject respawnObject;
+    private SlidingObject sliding;
 
     #region Property
     public bool IsInstalled => isInstalled;
