@@ -22,7 +22,7 @@ public class SlidingObject : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Define.OIL_BULLET_TAG))
+        if (other.CompareTag(Define.OIL_BULLET_TAG) && enabled)
         {
             enterCount++;
         }
@@ -30,7 +30,7 @@ public class SlidingObject : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag(Define.OIL_BULLET_TAG))
+        if (other.CompareTag(Define.OIL_BULLET_TAG) && enabled)
         {
             if (oilRoot == null)
             {

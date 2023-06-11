@@ -21,6 +21,7 @@ public class CubeObject : MonoBehaviour
         collider = GetComponent<Collider>();
         rigid = GetComponent<Rigidbody>();
         respawnObject = GetComponent<RespawnObject>();
+        sliding = GetComponent<SlidingObject>();
     }
 
     void Update()
@@ -34,11 +35,15 @@ public class CubeObject : MonoBehaviour
     public void Installed()
     {
         isInstalled = true;
+        Debug.Log("INSTALLED");
+        sliding.enabled = false;
     }
 
     public void UnInstalled()
     {
         isInstalled = false;
+        Debug.Log("UNINSTALLED");
+        sliding.enabled = true;
     }
 
     public void Respawn()
