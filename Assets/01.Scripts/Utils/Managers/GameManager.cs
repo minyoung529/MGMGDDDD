@@ -56,6 +56,7 @@ public class GameManager : MonoSingleton<GameManager>
         st = Time.time;
 
         base.Awake();
+        SaveSystem.Load();
     }
 
     private void Start()

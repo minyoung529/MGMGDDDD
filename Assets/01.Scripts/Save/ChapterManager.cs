@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public enum Chapter
 {
-    // ¾ÀÀ» ¾îÄÉ ±¸ºĞÇÒ±î °í¹Î Áß
+    // ì”¬ì„ ì–´ì¼€ êµ¬ë¶„í• ê¹Œ ê³ ë¯¼ ì¤‘
 
     // First scene
     BasicTutorial = 0,
@@ -66,7 +66,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         SceneController.ChangeScene(GetCurChapter.scene,  true);
     }
 
-    // Chapter °»½Å
+    // Chapter ê°±ì‹ 
     public void SetCurChapter(Chapter _saveCurChapter)
     {
         if (curChapter == _saveCurChapter) return;
@@ -87,10 +87,10 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     }
 
     #region Save
-    // Data Ã©ÅÍ °¡Á®¿À±â
+    // Data ì±•í„° ê°€ì ¸ì˜¤ê¸°
     public void LoadChapter()
     {
-        SaveData loadData = SaveSystem.Load();
+            SaveData loadData = SaveSystem.Load();
         if (loadData != null)
         {
             save = loadData;
@@ -103,7 +103,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         }
     }
 
-    // Data Ã©ÅÍ ÀúÀåÇÏ±â
+    // Data ì±•í„° ì €ì¥í•˜ê¸°
     private void SaveChapter()
     {
         if (save == null) return;

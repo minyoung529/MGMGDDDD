@@ -8,9 +8,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField] CinemachineFreeLook defaultCamera;
     [SerializeField] Canvas crosshairCanvas;
 
-    [SerializeField] private float rotCamXAxisSpeed = 5f;
-    [SerializeField] private float rotCamYAxisSpeed = 3f;
-
     [SerializeField] private Transform lookTarget;
     [SerializeField] private Transform followTarget;
     private Animator animator;
@@ -38,6 +35,11 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void Update()
     {
+        defaultCamera.m_XAxis.m_MaxSpeed = SaveSystem.CurSaveData.hSensitivity * 100f;
+        defaultCamera.m_YAxis.m_MaxSpeed = SaveSystem.CurSaveData.vSensitivity;
+
+        Debug.Log(SaveSystem.CurSaveData.hSensitivity * 100f + ", " + SaveSystem.CurSaveData.vSensitivity);
+        
         float distance = Vector3.Distance(transform.position, defaultCamera.transform.position);
         float normalized = Mathf.Clamp01(Utils.GetNormalizedRange(1.5f, 3f, distance));
         playerRenderer.material.SetFloat("_Opacity", normalized);
@@ -95,7 +97,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
             defaultCamera.m_YAxis.m_InputAxisName = "Mouse Y";
         });
     }
-
     #endregion
 
     private void OnAnimatorIK(int layerIndex)
