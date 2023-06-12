@@ -33,8 +33,6 @@ public class AirPlane : MonoBehaviour
 
     private void Awake()
     {
-        InputManager.StartListeningInput(InputAction.Interaction, Interaction);
-
         OnQuit.AddListener(ResetPlayer);
     }
 
@@ -58,6 +56,11 @@ public class AirPlane : MonoBehaviour
     }
 
     private void Interaction(InputAction action, float value)
+    {
+        BoardingOrNot();
+    }
+
+    public void BoardingOrNot()
     {
         if (!isPalyerArea || !playerTransform) return;
 
@@ -108,10 +111,5 @@ public class AirPlane : MonoBehaviour
     public void Arrive()
     {
         isArrive = true;
-    }
-
-    private void OnDestroy()
-    {
-        InputManager.StopListeningInput(InputAction.Interaction, Interaction);
     }
 }

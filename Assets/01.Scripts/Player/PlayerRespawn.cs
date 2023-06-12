@@ -60,7 +60,7 @@ public class PlayerRespawn : PlayerMono
 
     private void CheckSpawnPoint()
     {
-        if (points == null) return;
+        if (points.Length < 2) return;
 
         for (int i = maxIndex + 1; i < points.Length; i++)
         {

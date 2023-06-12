@@ -97,7 +97,8 @@ public class AirPlaneMove : MonoBehaviour
                 transform.DOPath(wayPoints, wayPointDuration, PathType.CatmullRom)
                 .OnComplete(() => OnArrive.Invoke(down))
                 .SetEase(Ease.InOutQuad);
-                // .SetLookAt())
+
+                transform.DOLookAt(wayPoints[wayPoints.Length - 1], wayPointDuration);
             }
             else
             {
