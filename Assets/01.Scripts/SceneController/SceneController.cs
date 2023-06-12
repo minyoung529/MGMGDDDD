@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 public enum SceneType
 {
- //   LivingRoom = 0,
-    Lobby_FirstFloor = 0,
-    Clock_Lobby = 1,
-    SecondScene = 2,
+    LivingRoom = 0,
+    Lobby_FirstFloor = 1,
+    Clock_Lobby = 2,
+    SecondScene = 3,
     Count
 }
 
@@ -50,7 +50,6 @@ public class SceneController : MonoBehaviour
     {
         OnEnterScene[curScene]?.Invoke();
     }
-
     public static void ChangeScene(SceneType sceneType, bool isLoading = true)
     {
         Check(curScene, OnExitScene);

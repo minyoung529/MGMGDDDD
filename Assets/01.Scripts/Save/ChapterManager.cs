@@ -28,93 +28,103 @@ public enum Chapter
 }
 public class ChapterManager : MonoSingleton<ChapterManager>
 {
-
     [SerializeField] List<ChapterSO> chapters;
+    private SaveData save = null;
 
     private Chapter curChapter;
     private Chapter maxClearChapter;
 
-    public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
-
-    private SaveData save;
-    private const string saveFileName = "Save";
-
     public Chapter CurChapter { get { return curChapter; } }
     public Chapter CurMaxChapter { get { return curChapter; } }
 
+    public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
 
     protected override void Awake()
     {
+        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, SetLoadGame);
+        SceneController.ListeningEnter(SceneType.Clock_Lobby, SetLoadGame);
         InitChapter();
     }
     private void Start()
     {
-        Debug.Log(saveFileName);
         LoadChapter();
     }
 
-    public void ChangeChapter(Chapter change)
+    [ContextMenu("Reset")]
+    public void ResetData()
     {
-        if (SceneController.CurrentScene != GetChapterSO(change).scene)
-        {
-            SceneController.ChangeScene(GetChapterSO(change).scene, true);
-        }
-        SetCurChapter(change);
+        save = null;
+        SaveSystem.ResetData();
+    }
+    public void GoChapterScene(Chapter change)
+    {
+        SceneController.ChangeScene(GetChapterSO(change).scene, true);
+    }
+    public void GoCurChapterScene()
+    {
+        SceneController.ChangeScene(GetCurChapter.scene,  true);
     }
 
     // Chapter 갱신
     public void SetCurChapter(Chapter _saveCurChapter)
     {
+        if (curChapter == _saveCurChapter) return;
         curChapter = _saveCurChapter;
+        Debug.Log(curChapter);
         SaveChapter();
     }
 
     public void SetMaxChapter(Chapter _saveMaxChapter)
     {
         maxClearChapter = _saveMaxChapter;
-
         SaveChapter();
     }
 
     public void SetSavePoint(Vector3 _savePosition)
     {
-       GetChapterSO(maxClearChapter).savePoint = _savePosition;
+        GetChapterSO(maxClearChapter).savePoint = _savePosition;
     }
 
     #region Save
     // Data 챕터 가져오기
-    private void LoadChapter()
+    public void LoadChapter()
     {
         SaveData loadData = SaveSystem.Load();
         if (loadData != null)
         {
-            //if(SceneController.CurrentScene != GetChapterSO(loadData.curChapter).scene)
-            //{
-            //    SceneController.ChangeScene(GetChapterSO(loadData.curChapter).scene, false);
-            //}
             save = loadData;
             curChapter = save.curChapter;
             maxClearChapter = save.maxChapter;
-
-            EventParam eventParam = new();
-            eventParam["pets"] = save.pets;
-            eventParam["position"] = GetCurChapter.savePoint;
-            EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
         }
         else
         {
             save = new SaveData(Chapter.BasicTutorial, Chapter.BasicTutorial, null);
         }
     }
+
     // Data 챕터 저장하기
     private void SaveChapter()
     {
+        if (save == null) return;
         save = new SaveData(curChapter, maxClearChapter, GetPetTypeList());
         SaveSystem.Save(save);
     }
+    private void SetLoadGame()
+    {
+        if (save == null) return;
+
+        EventParam eventParam = new();
+        if(save.pets != null) eventParam["pets"] = save.pets;
+        eventParam["position"] = GetCurChapter.savePoint;
+        EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
+    }
+    #endregion
+
+    #region Init Chapter
     private List<PetType> GetPetTypeList()
     {
+        if (PetManager.Instance == null) return null;
         List<PetType> typeList = new List<PetType>();
         for (int i = 0; i < PetManager.Instance.GetPetList.Count; i++)
         {
@@ -123,9 +133,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
         return typeList;
     }
-    #endregion
-
-    #region Init Chapter
     int compare(ChapterSO a, ChapterSO b)
     {
         return (int)a.chapterName < (int)b.chapterName ? -1 : 1;
@@ -136,11 +143,4 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     }
     #endregion
 
-    #region Quit
-    private void OnApplicationQuit()
-    {
-        SaveChapter();
-    }
-
-    #endregion
 }

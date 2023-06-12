@@ -2,7 +2,6 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -74,7 +73,6 @@ public class PetManager : MonoSingleton<PetManager>
     protected override void Awake()
     {
         base.Awake();
-
         inputActions.Add(InputAction.Up_Pet, SwitchPet);
         inputActions.Add(InputAction.Down_Pet, SwitchPet);
         inputActions.Add(InputAction.Select_First_Pet, SelectPet);
