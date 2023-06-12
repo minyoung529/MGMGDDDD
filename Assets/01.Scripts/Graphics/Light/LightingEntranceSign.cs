@@ -26,12 +26,12 @@ public class ChangeEmissionGroup
 
     public void Change()
     {
-        group.ForEach(x => x.Change());
+        group.ForEach(x => x.ChangeForce());
     }
 
     public void Back()
     {
-        group.ForEach(x => x.BackToOriginalColor());
+        group.ForEach(x => x.BackForce());
     }
 }
 
@@ -110,5 +110,40 @@ public class LightingEntranceSign : MonoBehaviour
 
         changeGroups[prev].Back();
         changeGroups[curIdx].Change();
+    }
+
+
+    [ContextMenu("Divide")]
+    public void DivideGroup()
+    {
+        List<Transform>[] transforms = new List<Transform>[groupCount];
+
+        int attachCounter = 0;
+        int indexCounter = 0;
+
+        for (int i = 0; i < groupCount; i++)
+            transforms[i] = new List<Transform>();
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+
+            transforms[indexCounter].Add(child);
+
+            if (++attachCounter >= attachedCount)
+            {
+                attachCounter = 0;
+                indexCounter = (indexCounter + 1) % groupCount;
+            }
+        }
+
+        for (int i = 0; i < groupCount; i++)
+        {
+            GameObject parent = new GameObject($"GROUP {i}");
+            parent.transform.SetParent(transform);
+
+            foreach (Transform child in transforms[i])
+                child.SetParent(parent.transform);
+        }
     }
 }

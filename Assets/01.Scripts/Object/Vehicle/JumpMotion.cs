@@ -32,8 +32,7 @@ public class JumpMotion
         {
             if (isSit)
             {
-                animator.SetTrigger("tStateChange");
-                animator.SetInteger("iStateNum", (int)PlayerStateName.Sit);
+                GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.Sit);
             }
             else
             {
@@ -75,14 +74,14 @@ public class JumpMotion
         animator ??= player.GetComponent<Animator>();
         if (animator == null) return;
 
-        animator?.SetTrigger("tStateChange");
-        animator?.SetInteger("iStateNum", (int)PlayerStateName.Jump);
+        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.Jump);
     }
 
     private void EndAnimation(Transform player)
     {
-        animator ??= player.GetComponent<Animator>();
-        animator?.SetTrigger("tLanding");
+        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
+        // animator ??= player.GetComponent<Animator>();
+        // animator?.SetTrigger("tLanding");
     }
 
     public void SetEase(Ease ease)

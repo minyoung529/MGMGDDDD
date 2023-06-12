@@ -13,6 +13,26 @@ public class OilRoot : MonoBehaviour
 
     public float BurnDuration => oilTriggerFires[0].BurningTime;
 
+    public bool Complete { get; set; }
+
+    public Action OnDryOil {get; set;}
+
+    public Vector3[] Points
+    {
+        get
+        {
+            List<Vector3> list = new List<Vector3>();
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                if (transform.GetChild(i).gameObject.activeSelf)
+                    list.Add(transform.GetChild(i).position);
+            }
+
+            return list.ToArray();
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         DetectFire(other.gameObject, other.transform.position);
@@ -28,8 +48,8 @@ public class OilRoot : MonoBehaviour
         if (obj.CompareTag(Define.FIRE_PET_TAG))
         {
             firePet ??= obj.GetComponent<Fire>();
-            if(firePet == null) return;
-            
+            if (firePet == null) return;
+
             if (firePet.gameObject == obj.gameObject && firePet.IsBurn)
             {
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);

@@ -158,6 +158,7 @@ public class PaintingObject : MonoBehaviour
     private IEnumerator DryCoroutine(PaintStructure p)
     {
         float timer = 0f;
+        triggerRoots.Complete = false;
 
         while (timer < OIL_PAINT_DURATION)
         {
@@ -167,6 +168,8 @@ public class PaintingObject : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
+        triggerRoots.OnDryOil?.Invoke();
     }
 
     private IEnumerator SpreadCoroutine(PaintStructure top)
@@ -181,6 +184,8 @@ public class PaintingObject : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
+        triggerRoots.Complete = true;
     }
 
     private bool IsNear(Vector3 pos)

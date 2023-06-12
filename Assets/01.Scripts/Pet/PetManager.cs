@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.U2D;
 
 public class PetManager : MonoSingleton<PetManager>
 {
@@ -21,6 +22,9 @@ public class PetManager : MonoSingleton<PetManager>
     private Vector3 scaleUp = new Vector3(1.25f, 1.25f, 1.25f);
     private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
 
+    [SerializeField]
+    private SpriteAtlas spriteAtlas;
+
     #region Get
     public int PetCount { get { return pets.Count; } }
     public Pet GetSelectPet { get { return pets[selectIndex]; } }
@@ -34,6 +38,16 @@ public class PetManager : MonoSingleton<PetManager>
 
     public Pet GetPetByKind<T>() where T : Pet
     {
+        Pet pet = GetMyPetByKind<T>();
+
+        if (pet == null)
+            pet = FindObjectOfType<T>();
+
+        return pet;
+    }
+
+    public Pet GetMyPetByKind<T>() where T : Pet
+    {
         Pet pet = null;
 
         foreach (Pet p in pets)
@@ -43,9 +57,6 @@ public class PetManager : MonoSingleton<PetManager>
                 pet ??= p.GetComponent<T>();
             }
         }
-
-        if (pet == null)
-            pet = FindObjectOfType<T>();
 
         return pet;
     }
@@ -425,7 +436,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void ActivePetUI(int index)
     {
-        petImages[index].sprite = pets[index].petSprite;
+        petImages[index].sprite = spriteAtlas.GetSprite(pets[index].petSprite.name);
         petInvens[index].gameObject.SetActive(true);
     }
     private void DisablePetUI(int index)

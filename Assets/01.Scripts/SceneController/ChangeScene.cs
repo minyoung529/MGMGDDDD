@@ -21,7 +21,9 @@ public class ChangeScene : MonoBehaviour
     [ContextMenu("Go To")]
     public void GoTo()
     {
-        if (go) return;
+        if (go)
+            return;
+            
         SceneController.ChangeScene(sceneType, loading);
         go = true;
     }

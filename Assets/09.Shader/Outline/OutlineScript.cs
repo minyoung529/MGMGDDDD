@@ -24,6 +24,9 @@ public class OutlineScript : MonoBehaviour
     [SerializeField] private UnityEvent onInteractPet;
     public PetFlag PetType => petType;
 
+    [SerializeField] private string guideName;
+    public string GuideName => guideName;
+
     private List<Renderer> outlineRenderer = new List<Renderer>();
 
     private int outlineLayer;

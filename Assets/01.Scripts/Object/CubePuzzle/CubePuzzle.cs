@@ -88,6 +88,8 @@ public class CubePuzzle : MonoBehaviour
         Vector3 center = bottomRenderer.transform.position;
         center.y = bottomRenderer.transform.position.y;
 
+        cube.DOKill();
+        
         cube.DOMove(center, 0.5f).OnComplete(() => onEnd.Invoke());
         cube.DOLocalRotate(Vector3.up * 90f, 0.5f);
     }
