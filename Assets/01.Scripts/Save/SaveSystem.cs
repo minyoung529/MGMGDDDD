@@ -5,6 +5,22 @@ public static class SaveSystem
 {
     private static string SavePath => Application.dataPath + "/saves/";
 
+    public static void ResetData(string saveFileName = "Save")
+    {
+        string saveFilePath = SavePath + saveFileName + ".json";
+
+        if (!File.Exists(saveFilePath))
+        {
+            //  Debug.LogError("No such saveFile exists");
+            return;
+        }
+        File.Delete(saveFilePath);
+
+#if UNITY_EDITOR
+        UnityEditor.AssetDatabase.Refresh();
+#endif
+    }
+
     public static void Save(SaveData saveData, string saveFileName = "Save")
     {
         if (!Directory.Exists(SavePath))
@@ -16,6 +32,11 @@ public static class SaveSystem
 
         string saveFilePath = SavePath + saveFileName + ".json";
         File.WriteAllText(saveFilePath, saveJson);
+
+
+#if UNITY_EDITOR
+        UnityEditor.AssetDatabase.Refresh();
+#endif
     }
 
     public static SaveData Load(string saveFileName = "Save")
