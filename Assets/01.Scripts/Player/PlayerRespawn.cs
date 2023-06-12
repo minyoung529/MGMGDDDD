@@ -68,15 +68,11 @@ public class PlayerRespawn : PlayerMono
             if (dir.magnitude <= 20f && Vector3.Dot(points[i].transform.forward, dir) > 0)
             {
                 maxIndex = i;
-                if (points[i].IsCheckPoint)
-                {
-                    ChapterManager.Instance?.SetMaxChapter(points[i].Chapter);
-                }
             }
         }
 
         float min = float.MaxValue;
-        for (int i = 1; i <= maxIndex; i++)
+        for (int i = 0; i <= maxIndex; i++)
         {
             Vector3 dir = transform.position - points[i].transform.position;
             float distance = dir.magnitude;
@@ -87,8 +83,7 @@ public class PlayerRespawn : PlayerMono
 
                 if (points[i].IsCheckPoint)
                 {
-                    ChapterManager.Instance?.SetCurChapter(points[i].Chapter);
-                    ChapterManager.Instance?.SetSavePoint(points[i].transform.position);
+                    ChapterManager.Instance?.SetSavePoint(points[i]);
                 }
             }
         }

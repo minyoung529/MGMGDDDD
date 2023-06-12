@@ -7,37 +7,44 @@ using UnityEngine.UI;
 
 public class LoadChapterList : MonoBehaviour
 {
-    [SerializeField] Image titleImage;
-    private GameObject buttonPrefab;
+    [SerializeField] private Image titleImage;
+    [SerializeField] private GameObject buttonPrefab;
+    [SerializeField] private Transform content;
     private Chapter selectChapter = Chapter.BasicTutorial;
 
-    private void Awake()
-    {
-        buttonPrefab = transform.GetChild(0).gameObject;
-        buttonPrefab?.gameObject.SetActive(false);
-    }
+  private List<Button> chapterButtons = new List<Button>();
 
     private void Start()
     {
         SettingChapterButton();
     }
 
-    private void SettingChapterButton()
+    private void GoChapterScene(Chapter change)
     {
-        if (buttonPrefab == null)
+        SceneController.ChangeScene(ChapterManager.Instance.GetChapterSO(change).scene, true);
+    }
+    private void GoCurChapterScene()
+    {
+        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapter.scene, true);
+    }
+
+    public void SettingChapterButton()
+    {
+        for(int i=0; i<content.childCount;i++)
         {
-            Debug.LogError("ButtonPrefab을 찾을 수 없습니다.");
-            return;
+            Destroy(content.GetChild(i).gameObject);
         }
+        chapterButtons.Clear();
 
         for (int i = 0; i < (int)ChapterManager.Instance.CurChapter; i++)
         {
             Chapter chapter = (Chapter)i;
-            Button button = Instantiate(buttonPrefab, transform).GetComponent<Button>();
+            Button button = Instantiate(buttonPrefab, content).GetComponent<Button>();
             button.onClick.AddListener(() =>
             {
                 LoadChapterData(button, chapter);
             });
+            chapterButtons.Add(button);
 
             TextMeshProUGUI chapterNameText = button.GetComponentInChildren<TextMeshProUGUI>();
             chapterNameText.SetText(chapter.ToString());
@@ -53,7 +60,21 @@ public class LoadChapterList : MonoBehaviour
 
     public void PlayChapter()
     {
+    //    SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SaveChapter);
+        SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
+     
         ChapterManager.Instance.SetCurChapter(selectChapter);
-        ChapterManager.Instance.GoChapterScene(selectChapter);
+        GoChapterScene(selectChapter);
+    }
+
+    public void LoadGame()
+    {
+        SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
+
+        GoCurChapterScene();
     }
 }
