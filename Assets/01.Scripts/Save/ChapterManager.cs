@@ -60,8 +60,13 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     #region Set
 
-    // Chapter ∞ªΩ≈
+<<<<<<< HEAD
+    // Chapter ÔøΩÔøΩÔøΩÔøΩ
     public void SetSavePoint(SavePoint point)
+=======
+    // Chapter Í∞±Ïã†
+    public void SetCurChapter(Chapter _saveCurChapter)
+>>>>>>> develop2
     {
         curChapter = point.Chapter;
         GetCurChapter.savePoint = point.transform.position;
@@ -75,6 +80,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     #endregion
 
     #region Save
+<<<<<<< HEAD
     public void SetLoadGame()
     {
         if (save == null) return;
@@ -87,10 +93,13 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         SceneController.StopListeningEnter(SetLoadGame);
     }
 
-    // Data √©≈Õ ∞°¡Æø¿±‚
+    // Data √©ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+=======
+    // Data Ï±ïÌÑ∞ Í∞ÄÏ†∏Ïò§Í∏∞
+>>>>>>> develop2
     public void LoadChapter()
     {
-        SaveData loadData = SaveSystem.Load();
+            SaveData loadData = SaveSystem.Load();
         if (loadData != null)
         {
             save = loadData;
@@ -103,8 +112,13 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         }
     }
 
-    // Data √©≈Õ ¿˙¿Â«œ±‚
+<<<<<<< HEAD
+    // Data √©ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩœ±ÔøΩ
     public void SaveChapter()
+=======
+    // Data Ï±ïÌÑ∞ Ï†ÄÏû•ÌïòÍ∏∞
+    private void SaveChapter()
+>>>>>>> develop2
     {
         if (save == null) return;
 

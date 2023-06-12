@@ -9,6 +9,7 @@ public enum SceneType
     Lobby_FirstFloor = 1,
     Clock_Lobby = 2,
     SecondScene = 3,
+    StartScene = 4,
     Count
 }
 
