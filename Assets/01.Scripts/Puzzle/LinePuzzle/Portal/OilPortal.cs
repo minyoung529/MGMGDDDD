@@ -7,6 +7,9 @@ public class OilPortal : ConnectionPortal
 {
     private NavMeshObstacle navMeshObstacle;
 
+    [SerializeField]
+    private Material material;
+
     private void Start()
     {
         navMeshObstacle = GetComponent<NavMeshObstacle>();
@@ -25,5 +28,11 @@ public class OilPortal : ConnectionPortal
     public void ObstacleOff()
     {
         navMeshObstacle.enabled = false;
+    }
+
+    protected override void SetColor(Color color)
+    {
+        material.SetColor("_EmissionColor", color);
+        pointLight.color = color;
     }
 }

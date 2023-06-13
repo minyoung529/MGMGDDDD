@@ -183,6 +183,7 @@ public class PlayerMove : PlayerMono
             Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
             return;
         }
+
         if (animIndex < 0)
             animIndex = (int)state;
         curState.OnStateEnd(() => {

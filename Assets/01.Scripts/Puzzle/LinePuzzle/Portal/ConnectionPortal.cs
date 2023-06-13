@@ -9,7 +9,7 @@ public class ConnectionPortal : MonoBehaviour
     [SerializeField]
     private ParticleSystem ringParticle;
     [SerializeField]
-    private Light pointLight;
+    protected Light pointLight;
 
     public int Identification { get; set; } = 0;
 
@@ -19,7 +19,7 @@ public class ConnectionPortal : MonoBehaviour
         SetColor(colors[index]);
     }
 
-    private void SetColor(Color color)
+    protected virtual void SetColor(Color color)
     {
         ParticleSystem.MainModule main = rootParticle.main;
         main.startColor = color;

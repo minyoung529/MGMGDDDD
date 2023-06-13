@@ -17,6 +17,9 @@ public class ActiveResetUI : MonoBehaviour
     private UnityEvent onInactive;
 
     [SerializeField]
+    private UnityEvent onChangePet;
+
+    [SerializeField]
     private Sprite firePet;
     [SerializeField]
     private Sprite oilPet;
@@ -79,5 +82,7 @@ public class ActiveResetUI : MonoBehaviour
                 petIcon.sprite = null;
                 break;
         }
+
+        onChangePet?.Invoke();
     }
 }

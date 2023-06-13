@@ -21,7 +21,7 @@ public class InputManager : MonoSingleton<InputManager>
     #region 이벤트
     private static Dictionary<InputAction, Action<InputAction, float>> eventDictionary
         = new Dictionary<InputAction, Action<InputAction, float>>();
-    #endregion
+    #endregion  
 
     protected override void Awake() {
         SAVE_PATH = string.Concat(Application.persistentDataPath, "/Control");
@@ -29,6 +29,7 @@ public class InputManager : MonoSingleton<InputManager>
         if (Instance == this) {
             LoadKeyMapping();
         }
+
         base.Awake();
     }
 
@@ -47,6 +48,8 @@ public class InputManager : MonoSingleton<InputManager>
             keyBinding.Clear();
         }
         foreach (InputSave save in inputSave) {
+            if (keyBinding.ContainsKey(save.Action))
+                keyBinding.Remove(save.Action);
             keyBinding.Add(save.Action, save.Code);
         }
     }
@@ -74,6 +77,10 @@ public class InputManager : MonoSingleton<InputManager>
 
         for (int i = 0; i < keys.Count; i++) {
             InputAction action = keys[i];
+            if (!keyBinding.ContainsKey(action))
+            {
+                Debug.LogError("Key가 없음");
+            }
             InputInfo[] infos = keyBinding[action];
             if (infos == null) continue;
             bool result = true;

@@ -147,7 +147,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
         SetTargetPlayer();
         PetManager.Instance.AddPet(this);
-        Debug.Log("ADD PET");
     }
     #endregion
 

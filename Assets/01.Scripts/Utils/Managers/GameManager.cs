@@ -51,6 +51,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     protected override void Awake()
     {
+        SaveSystem.Load();
         FindPlayer();
         FindFindableObject();
         st = Time.time;
@@ -155,5 +156,10 @@ public class GameManager : MonoSingleton<GameManager>
     private void OnDestroy()
     {
         SceneController.StopListeningEnter(SetMainCamera);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveSystem.Save(SaveSystem.CurSaveData);
     }
 }

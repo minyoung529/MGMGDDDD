@@ -14,6 +14,8 @@ public class JumpMotion
 
     private Ease jumpEase = Ease.InOutSine;
 
+    public bool IsEndAnimation { get; set; } = true;
+
     private Vector3[] GetWayPoints(Transform player)
     {
         Vector3[] points = { player.position, Vector3.zero, TargetPos };
@@ -79,7 +81,8 @@ public class JumpMotion
 
     private void EndAnimation(Transform player)
     {
-        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
+        if (IsEndAnimation)
+            GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
         // animator ??= player.GetComponent<Animator>();
         // animator?.SetTrigger("tLanding");
     }
