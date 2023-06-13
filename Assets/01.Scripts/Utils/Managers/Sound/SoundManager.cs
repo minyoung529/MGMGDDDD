@@ -19,6 +19,8 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     [SerializeField] private const float defaultRandomPitch = 0.05f;
 
+    public AudioMixer AudioMixer => audioMixer;
+
     protected override void Awake()
     {
         base.Awake();
@@ -36,6 +38,14 @@ public class SoundManager : MonoSingleton<SoundManager>
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.playOnAwake = false;
         musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];
+    }
+
+    private void Start()
+    {
+        SaveData data = SaveSystem.CurSaveData;
+        SetVolume("BGM", data.bgmVolume);
+        SetVolume("SFX", data.sfxVolume);
+        SetVolume("Master", data.masterVolume);
     }
 
     #region EFFECT SOUND
@@ -82,6 +92,7 @@ public class SoundManager : MonoSingleton<SoundManager>
         audio.volume = volumeScale;
         audio.loop = loop;
         audio.Play();
+        audio.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
 
         if (!loop) obj.SetClipDuration(clip.length);
         return obj;
@@ -154,6 +165,7 @@ public class SoundManager : MonoSingleton<SoundManager>
         float randomPitch = Random.Range(-pitchRange, pitchRange);
         effectSource.pitch = 1 + randomPitch;
         effectSource.PlayOneShot(clips[randomIndex], volume);
+        effectSource.PlayOneShot(clips[randomIndex], volume);
     }
     #endregion
 
@@ -166,6 +178,7 @@ public class SoundManager : MonoSingleton<SoundManager>
     {
         musicSource.clip = clip;
         musicSource.Play();
+        musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];
     }
 
     /// <summary>
@@ -205,7 +218,8 @@ public class SoundManager : MonoSingleton<SoundManager>
         AudioMixerGroup group = audioMixer.FindMatchingGroups(groupName)[0];
         if (group != null)
         {
-            audioMixer.SetFloat(groupName, volume);
+            float calculatedVolume = Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20;
+            audioMixer.SetFloat($"{groupName}Volume", calculatedVolume);
         }
         else
         {

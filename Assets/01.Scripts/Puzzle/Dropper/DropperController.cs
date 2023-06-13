@@ -156,7 +156,7 @@ public class DropperController : MonoBehaviour
         particleSystems.ForEach(x => x.Stop());
         patterns.ForEach(x => x.ResetPattern());
 
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSeconds(1f);
         walls.ForEach(x => x.Active());
 
         if (pets)
@@ -164,7 +164,7 @@ public class DropperController : MonoBehaviour
             changePetPos.ForceClosePos();
         }
 
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSeconds(1.5f);
 
         StartDropper();
     }

@@ -31,6 +31,9 @@ public class Setting : MonoSingleton<Setting>
 
     private SaveData saveData;
 
+    private bool cachedMouseVisible = false;
+    private CursorLockMode cachedcursorLockMode;
+
     private void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
@@ -49,11 +52,17 @@ public class Setting : MonoSingleton<Setting>
     {
         LoadValue();
         gameObject.SetActive(true);
-        canvasGroup.DOKill();
         Time.timeScale = 0f;
+        canvasGroup.DOKill();
         canvasGroup.alpha = 0f;
         canvasGroup.DOFade(1f, 0.3f);
         isActive = true;
+
+        cachedMouseVisible = Cursor.visible;
+        cachedcursorLockMode = Cursor.lockState;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void Inactive()
@@ -63,6 +72,9 @@ public class Setting : MonoSingleton<Setting>
         canvasGroup.DOKill();
         canvasGroup.DOFade(0f, 0.3f).OnComplete(() => gameObject.SetActive(false));
         isActive = false;
+
+        Cursor.visible = cachedMouseVisible;
+        Cursor.lockState = cachedcursorLockMode;
     }
 
     public void ToggleActive(InputAction action = InputAction.Escape, float value = 0f)
