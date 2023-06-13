@@ -12,8 +12,8 @@ public enum Chapter
     // First scene
     BasicTutorial = 1,
     FireTutorial = 2,
-    OilTutorial = 3,
-    StickyTutorial = 4,
+    StickyTutorial = 3,
+    OilTutorial = 4,
 
     // Clock_Lobby Scene
     TicketBox = 5,
