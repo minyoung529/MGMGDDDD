@@ -32,6 +32,14 @@ public class CannonScript : MonoBehaviour
         colls = GetComponentsInChildren<Collider>();
     }
 
+    private void Update() {
+        //Recall기능 등으로 대포에서 멀어지면 빼주기
+        if (!pet) return;
+        if (Vector3.Distance(barrel.position, pet.transform.position) <= radius) return;
+        StartCoroutine(SetIgnore(0.5f, false));
+        pet = null;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (pet || (collision.gameObject.layer != Define.PET_LAYER)) return;
