@@ -42,7 +42,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
 
-    protected override void Awake()
+    private void Start()
     {
         InitChapter();
     }
@@ -78,10 +78,10 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         EventParam eventParam = new();
         if (SaveSystem.CurSaveData.pets != null)
         {
-            if(SaveSystem.CurSaveData.curChapter != Chapter.LivingRoom)
-            eventParam["pets"] = SaveSystem.CurSaveData.pets;
+            if (SaveSystem.CurSaveData.curChapter != Chapter.LivingRoom)
+                eventParam["pets"] = SaveSystem.CurSaveData.pets;
         }
-            eventParam["position"] = GetCurChapter.savePoint;
+        eventParam["position"] = GetCurChapter.savePoint;
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
 
         SceneController.StopListeningEnter(SetLoadGame);
@@ -97,22 +97,17 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     // Data 챕터 가져오기
     public void LoadChapter()
     {
-        SaveData loadData = SaveSystem.Load();
-        if (loadData != null)
-        {
-            SaveSystem.CurSaveData = loadData;
-            curChapter = SaveSystem.CurSaveData.curChapter;
-            maxClearChapter = SaveSystem.CurSaveData.maxChapter;
-        }
+        curChapter = SaveSystem.CurSaveData.curChapter;
+        maxClearChapter = SaveSystem.CurSaveData.maxChapter;
     }
- 
+
     #endregion
 
     #region Get
     private List<PetType> GetPetTypeList()
     {
         List<PetType> typeList = new List<PetType>();
-        if(PetManager.Instance == null)
+        if (PetManager.Instance == null)
         {
             return SaveSystem.CurSaveData.pets;
         }
