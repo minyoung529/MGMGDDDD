@@ -36,7 +36,7 @@ public class LoadChapterList : MonoBehaviour
         }
         chapterButtons.Clear();
 
-        for (int i = 0; i < (int)ChapterManager.Instance.CurChapter; i++)
+        for (int i = 0; i <= (int)ChapterManager.Instance.CurChapter; i++)
         {
             Chapter chapter = (Chapter)i;
             Button button = Instantiate(buttonPrefab, content).GetComponent<Button>();
