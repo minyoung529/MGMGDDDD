@@ -1,3 +1,4 @@
+using Bitgem.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,26 @@ public class LoadChapterList : MonoBehaviour
     private List<GameObject> chapters = new List<GameObject>();
 
     private ChapterButton curSelectButton;
+
+    private List<PetType> EnumToListPetType(PetType flag)
+    {
+        List<PetType> petList = new List<PetType>();
+
+        if ((flag & PetType.FirePet) != 0)
+        {
+            petList.Add(PetType.FirePet);
+        }
+        if ((flag & PetType.OilPet) != 0)
+        {
+            petList.Add(PetType.OilPet);
+        }
+        if ((flag & PetType.StickyPet) != 0)
+        {
+            petList.Add(PetType.StickyPet);
+        }
+
+        return petList;
+    }
 
     private void Awake()
     {
@@ -58,11 +79,11 @@ public class LoadChapterList : MonoBehaviour
     {
         for (int i = 0; i < (int)Chapter.Count; i++)
         {
-            if((int)ChapterManager.Instance.MaxChapter < i) // lock
+            if ((int)ChapterManager.Instance.MaxChapter < i) // lock
             {
                 chapterButtons[i].ChangeState(ChapterProgressType.Lock);
             }
-            else if((int)ChapterManager.Instance.MaxChapter > i) // clear
+            else if ((int)ChapterManager.Instance.MaxChapter > i) // clear
             {
                 chapterButtons[i].ChangeState(ChapterProgressType.Clear);
             }
@@ -88,12 +109,14 @@ public class LoadChapterList : MonoBehaviour
 
     public void PlayChapter()
     {
+        SaveSystem.CurSaveData.pets = EnumToListPetType(ChapterManager.Instance.GetChapterSO(selectChapter).pets);
+        ChapterManager.Instance.SetCurChapter(selectChapter);
+        SaveSystem.Save(SaveSystem.CurSaveData);
+
         SceneController.ListeningEnter(SceneType.StartScene, ChapterManager.Instance.SaveChapter);
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
-
-        ChapterManager.Instance.SetCurChapter(selectChapter);
         GoChapterScene(selectChapter);
     }
 
@@ -104,5 +127,6 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
 
         GoCurChapterScene();
+        ChapterManager.Instance.SaveChapter();
     }
 }

@@ -84,7 +84,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         EventParam eventParam = new();
         if (SaveSystem.CurSaveData.pets != null)
         {
-            if (SaveSystem.CurSaveData.curChapter != Chapter.LivingRoom)
                 eventParam["pets"] = SaveSystem.CurSaveData.pets;
         }
         eventParam["position"] = GetCurChapter.savePoint;
@@ -95,16 +94,26 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     public void SaveChapter()
     {
+        SaveData saveData = SaveSystem.CurSaveData;
+        saveData.maxChapter = maxClearChapter;
+        saveData.curChapter = curChapter;
+        SaveSystem.CurSaveData = saveData;
+    }
+    public void SavePets()
+    {
+        Debug.Log(SaveSystem.CurSaveData.pets.Count);
+
         SaveSystem.CurSaveData.pets = GetPetTypeList();
-        SaveSystem.CurSaveData.maxChapter = maxClearChapter;
-        SaveSystem.CurSaveData.curChapter = curChapter;
     }
 
     // Data 챕터 가져오기
     public void LoadChapter()
     {
-        curChapter = SaveSystem.CurSaveData.curChapter;
-        maxClearChapter = SaveSystem.CurSaveData.maxChapter;
+        if (SaveSystem.CurSaveData == null) SaveSystem.Load();
+        SaveData saveData = SaveSystem.CurSaveData;
+        curChapter = saveData.curChapter;
+        maxClearChapter = saveData.maxChapter;
+        SaveSystem.CurSaveData = saveData;
     }
 
     #endregion
@@ -117,7 +126,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         {
             return SaveSystem.CurSaveData.pets;
         }
-
         for (int i = 0; i < PetManager.Instance.GetPetList.Count; i++)
         {
             typeList.Add(PetManager.Instance.GetPetList[i].GetPetType);

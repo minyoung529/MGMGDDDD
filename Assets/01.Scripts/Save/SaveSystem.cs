@@ -49,7 +49,6 @@ public static class SaveSystem
             SaveData newData = new (0, 0, new List<PetType>());
             CurSaveData = newData;
             Save(newData);
-        Debug.Log(newData);
             return newData;
         }
 
