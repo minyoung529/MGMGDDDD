@@ -81,7 +81,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         if (SaveSystem.CurSaveData == null) return;
 
-        Debug.Log(SaveSystem.CurSaveData.pets.Count);
         EventParam eventParam = new();
         if (SaveSystem.CurSaveData.pets != null)
         {

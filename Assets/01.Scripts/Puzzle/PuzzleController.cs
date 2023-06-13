@@ -9,12 +9,13 @@ public class PuzzleController : MonoBehaviour
     [SerializeField] private List<CutScenePlayer> cutscenes;
     [SerializeField] private UnityEvent onLoadEvent;
 
-    private void Awake()
+    private void Start()
     {
         EventManager.StartListening(EventName.LoadChapter, LoadPuzzle);
     }
     private void LoadPuzzle(EventParam eventParam = null)
     {
+        if (ChapterManager.Instance == null) return;
         ChapterManager.Instance.LoadChapter();
         if ((int)ChapterManager.Instance.CurChapter < (int)chapter) return;
 
