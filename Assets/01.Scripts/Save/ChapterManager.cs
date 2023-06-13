@@ -37,6 +37,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     private Chapter maxClearChapter;
 
     public Chapter CurChapter { get { return curChapter; } }
+    public Chapter MaxChapter { get { return maxClearChapter; } }
 
     public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }

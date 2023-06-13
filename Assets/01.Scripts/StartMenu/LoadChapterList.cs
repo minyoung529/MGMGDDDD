@@ -36,7 +36,7 @@ public class LoadChapterList : MonoBehaviour
         }
         chapterButtons.Clear();
 
-        for (int i = 0; i <= (int)ChapterManager.Instance.CurChapter; i++)
+        for (int i = 0; i <= (int)ChapterManager.Instance.MaxChapter; i++)
         {
             Chapter chapter = (Chapter)i;
             Button button = Instantiate(buttonPrefab, content).GetComponent<Button>();
@@ -59,6 +59,7 @@ public class LoadChapterList : MonoBehaviour
     private void LoadChapterData(Button button, Chapter chapter)
     {
         selectChapter = chapter;
+       // titleImage.preserveAspect = true;
         titleImage.sprite = ChapterManager.Instance.GetChapterSO(chapter).chapterTitleImage;
     }
 
