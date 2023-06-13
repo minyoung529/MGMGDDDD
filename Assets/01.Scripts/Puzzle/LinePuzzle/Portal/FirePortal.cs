@@ -14,6 +14,9 @@ public class FirePortal : ConnectionPortal
 
     private int index;
 
+    [SerializeField]
+    private MeshRenderer renderer;
+
     private void OnTriggerStay(Collider other)
     {
         if (key == fireKey) return;
@@ -62,5 +65,10 @@ public class FirePortal : ConnectionPortal
     public void SetIndex(int index)
     {
         this.index = index;
+    }
+
+    protected override void SetColor(Color color)
+    {
+        renderer.material.color = color;
     }
 }
