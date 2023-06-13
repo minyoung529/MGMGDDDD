@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Events;
 
 public class CutScenePlayer : MonoBehaviour
 {
@@ -15,9 +16,6 @@ public class CutScenePlayer : MonoBehaviour
     private bool isCollide = true;
 
     [SerializeField]
-    private float speed = 1f;
-
-    [SerializeField]
     private bool playOnAwake = false;
 
     private PlayableDirector director;
@@ -25,6 +23,9 @@ public class CutScenePlayer : MonoBehaviour
     [SerializeField]
     private bool isOnce = true;
     private bool hasPlayed = false;
+
+    [SerializeField]
+    private UnityEvent onCutsceneComplete;
 
 
     void Awake()
@@ -54,16 +55,16 @@ public class CutScenePlayer : MonoBehaviour
     public void Play()
     {
         if (hasPlayed && isOnce) return;
-        
+
         hasPlayed = true;
         CameraSwitcher.ChangeSwitchBlend(2f);
-        StartCoroutine(DelayOneFrame());
+        StartCoroutine(PlayCoroutine());
     }
 
-    private IEnumerator DelayOneFrame()
+    private IEnumerator PlayCoroutine()
     {
         yield return null;
-        CutSceneManager.Instance.Play(director, speed);
+        CutSceneManager.Instance.Play(director, onCutsceneComplete.Invoke);
     }
 
     public void SetHasplayed(bool played)

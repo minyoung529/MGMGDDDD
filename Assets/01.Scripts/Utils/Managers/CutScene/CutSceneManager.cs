@@ -17,24 +17,25 @@ public class CutSceneManager : MonoSingleton<CutSceneManager>
     [SerializeField]
     protected Image bottomBar;
 
-    public void Play(PlayableDirector director, float speed = 1f)
+    public void Play(PlayableDirector director, Action callback)
     {
         if(director == null) return;
 
         director.gameObject.SetActive(true);
         director.Play();
-        director.playableGraph.GetRootPlayable(0).SetSpeed(speed);
+        director.playableGraph.GetRootPlayable(0).SetSpeed(1f);
         OnCutsceneStart?.Invoke();
 
-        StartCoroutine(WaitForDuration(director, (float)director.duration * speed));
+        StartCoroutine(WaitForDuration(director, (float)director.duration * 1f, callback));
     }
 
-    private IEnumerator WaitForDuration(PlayableDirector playableDirector, float duration)
+    private IEnumerator WaitForDuration(PlayableDirector playableDirector, float duration, Action callback)
     {
         ActiveBlackBar();
 
         yield return new WaitForSeconds(duration);
         OnCutsceneEnd?.Invoke();
+        callback?.Invoke();
         InactiveBlackBar();
     }
 

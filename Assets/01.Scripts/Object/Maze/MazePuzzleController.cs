@@ -177,6 +177,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     public void ChangeCam()
     {
         Pet p = PetManager.Instance.GetSelectPet;
+        
         if (p.GetPetType == PetType.FirePet)
         {
             CameraSwitcher.SwitchCamera(fireCam);
