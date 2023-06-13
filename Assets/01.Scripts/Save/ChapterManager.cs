@@ -42,9 +42,15 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        InitChapter();
+    }
+    
     private void Start()
     {
-        InitChapter();
+        LoadChapter();
     }
 
     [ContextMenu("Reset")]
@@ -127,7 +133,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         chapters.Sort(compare);
 
-        LoadChapter();
     }
     #endregion
 }

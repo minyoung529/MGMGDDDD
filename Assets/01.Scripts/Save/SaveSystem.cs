@@ -47,16 +47,15 @@ public static class SaveSystem
         if (!File.Exists(saveFilePath))
         {
             SaveData newData = new (0, 0, new List<PetType>());
-            Save(newData);
             CurSaveData = newData;
-        Debug.Log("SET");
+            Save(newData);
+        Debug.Log(newData);
             return newData;
         }
 
         string saveFile = File.ReadAllText(saveFilePath);
         SaveData saveData = JsonUtility.FromJson<SaveData>(saveFile);
         CurSaveData = saveData;
-        Debug.Log("SET");
         return saveData;
     }
 }
