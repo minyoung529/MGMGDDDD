@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Pool;
+using DG.Tweening;
 using Random = UnityEngine.Random;
 
 public class SoundManager : MonoSingleton<SoundManager>
@@ -19,6 +20,8 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     [SerializeField] private const float defaultRandomPitch = 0.05f;
 
+    public AudioMixer AudioMixer => audioMixer;
+
     protected override void Awake()
     {
         base.Awake();
@@ -26,6 +29,8 @@ public class SoundManager : MonoSingleton<SoundManager>
 
         pool = new ObjectPool<AudioSourceObject>(CreateAudio, OnGetAudio, OnRelease, OnDestroyed, maxSize: 5);
 
+        CutSceneManager.Instance.AddStartCutscene(MuteBGM);
+        CutSceneManager.Instance.AddEndCutscene(LoadBGMVolume);
     }
 
     private void SetAudioSource()
@@ -36,6 +41,13 @@ public class SoundManager : MonoSingleton<SoundManager>
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.playOnAwake = false;
         musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];
+    }
+
+    private void Start()
+    {
+        LoadBGMVolume();
+
+
     }
 
     #region EFFECT SOUND
@@ -82,6 +94,7 @@ public class SoundManager : MonoSingleton<SoundManager>
         audio.volume = volumeScale;
         audio.loop = loop;
         audio.Play();
+        audio.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
 
         if (!loop) obj.SetClipDuration(clip.length);
         return obj;
@@ -154,6 +167,7 @@ public class SoundManager : MonoSingleton<SoundManager>
         float randomPitch = Random.Range(-pitchRange, pitchRange);
         effectSource.pitch = 1 + randomPitch;
         effectSource.PlayOneShot(clips[randomIndex], volume);
+        effectSource.PlayOneShot(clips[randomIndex], volume);
     }
     #endregion
 
@@ -166,6 +180,7 @@ public class SoundManager : MonoSingleton<SoundManager>
     {
         musicSource.clip = clip;
         musicSource.Play();
+        musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];
     }
 
     /// <summary>
@@ -200,17 +215,41 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// Change volume by audio mixer's group name
     /// </summary>
     /// <param name="groupName">Master, SFX, BGM</param>
-    public void SetVolume(string groupName, float volume)
+    public void SetVolume(string groupName, float volume, float duration = 0f)
     {
         AudioMixerGroup group = audioMixer.FindMatchingGroups(groupName)[0];
         if (group != null)
         {
-            audioMixer.SetFloat(groupName, volume);
+            float calculatedVolume = Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20;
+            audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration);
         }
         else
         {
             Debug.LogError($"{groupName}�̶� �̸��� �׷��� �ͼ����� ã�� �� �����ϴ�!");
         }
     }
+
+    private void MuteBGM()
+    {
+        SetVolume("BGM", 0f, 1f);
+    }
+
+    private void LoadBGMVolume()
+    {
+        SaveData data = SaveSystem.CurSaveData;
+        SetVolume("BGM", 0f, 0f);
+        SetVolume("SFX", 0f, 0f);
+        SetVolume("Master", 0f, 0f);
+
+        SetVolume("BGM", data.bgmVolume, 1f);
+        SetVolume("SFX", data.sfxVolume, 1f);
+        SetVolume("Master", data.masterVolume, 1f);
+    }
     #endregion
+
+    private void OnDestroy()
+    {
+        CutSceneManager.Instance.RemoveStartCutscene(MuteBGM);
+        CutSceneManager.Instance.RemoveEndCutscene(LoadBGMVolume);
+    }
 }

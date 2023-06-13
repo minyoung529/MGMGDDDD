@@ -31,10 +31,14 @@ public class Setting : MonoSingleton<Setting>
 
     private SaveData saveData;
 
+    private bool cachedMouseVisible = false;
+    private CursorLockMode cachedcursorLockMode;
+
     private void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-
+        canvasGroup.alpha = 1f;
+        
         InputManager.StartListeningInput(InputAction.Escape, ToggleActive);
         Setting.Instance.gameObject.SetActive(false);   // To set instance
 
@@ -49,20 +53,25 @@ public class Setting : MonoSingleton<Setting>
     {
         LoadValue();
         gameObject.SetActive(true);
-        canvasGroup.DOKill();
         Time.timeScale = 0f;
-        canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, 0.3f);
         isActive = true;
+
+        cachedMouseVisible = Cursor.visible;
+        cachedcursorLockMode = Cursor.lockState;
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void Inactive()
     {
         SaveData();
         Time.timeScale = 1f;
-        canvasGroup.DOKill();
-        canvasGroup.DOFade(0f, 0.3f).OnComplete(() => gameObject.SetActive(false));
+        gameObject.SetActive(false);
         isActive = false;
+
+        Cursor.visible = cachedMouseVisible;
+        Cursor.lockState = cachedcursorLockMode;
     }
 
     public void ToggleActive(InputAction action = InputAction.Escape, float value = 0f)
