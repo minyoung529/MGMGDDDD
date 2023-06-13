@@ -7,13 +7,21 @@ using UnityEngine.UI;
 
 public class LoadChapterList : MonoBehaviour
 {
-    [SerializeField] private Image titleImage;
+    [SerializeField] private Transform titleParent;
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private Transform content;
     private Chapter selectChapter = 0;
 
-  private List<Button> chapterButtons = new List<Button>();
+    private TextMeshProUGUI titleName;
+    private Image titleImage;
 
+    private List<Button> chapterButtons = new List<Button>();
+
+    private void Awake()
+    {
+        titleName = titleParent.FindChild("TitleNameText").GetComponent<TextMeshProUGUI>();
+        titleImage = titleParent.FindChild("TitleImage").GetComponent<Image>();
+    }
     private void Start()
     {
         SettingChapterButton();
@@ -30,7 +38,7 @@ public class LoadChapterList : MonoBehaviour
 
     public void SettingChapterButton()
     {
-        for(int i=0; i<content.childCount;i++)
+        for (int i = 0; i < content.childCount; i++)
         {
             Destroy(content.GetChild(i).gameObject);
         }
@@ -50,16 +58,17 @@ public class LoadChapterList : MonoBehaviour
             chapterNameText.SetText(chapter.ToString());
             button.gameObject.SetActive(true);
         }
-        if(chapterButtons.Count > 0)
+        if (chapterButtons.Count > 0)
         {
-        LoadChapterData(chapterButtons[0], Chapter.LivingRoom);
+            LoadChapterData(chapterButtons[0], Chapter.LivingRoom);
         }
     }
 
     private void LoadChapterData(Button button, Chapter chapter)
     {
         selectChapter = chapter;
-       // titleImage.preserveAspect = true;
+        // titleImage.preserveAspect = true;
+        titleName.SetText(chapter.ToString());
         titleImage.sprite = ChapterManager.Instance.GetChapterSO(chapter).chapterTitleImage;
     }
 
@@ -69,7 +78,7 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
-     
+
         ChapterManager.Instance.SetCurChapter(selectChapter);
         GoChapterScene(selectChapter);
     }
