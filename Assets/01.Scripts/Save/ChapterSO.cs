@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ChapterSO : ScriptableObject
 {
     public string chapterNumber;
+    public PetType pets;
     public SceneType scene;
     public Chapter chapterName;
     public Sprite chapterTitleImage;

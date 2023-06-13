@@ -118,6 +118,6 @@ public class Setting : MonoSingleton<Setting>
 
     private void OnDestroy()
     {
-        SaveSystem.Save(SaveSystem.CurSaveData);
+        InputManager.StopListeningInput(InputAction.Escape, ToggleActive);
     }
 }

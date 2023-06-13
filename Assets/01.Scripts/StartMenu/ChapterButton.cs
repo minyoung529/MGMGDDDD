@@ -38,8 +38,8 @@ public class ChapterButton : MonoBehaviour
     {
         button.onClick.AddListener(onSelected.Invoke);
 
-        TextMeshProUGUI chapterNameText = button.transform.FindChild("ChapterNameText").GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI chapterNumberText = button.transform.FindChild("ChapterNumberText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI chapterNameText = button.transform.Find("ChapterNameText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI chapterNumberText = button.transform.Find("ChapterNumberText").GetComponent<TextMeshProUGUI>();
         chapterNameText.SetText(chapter.ToString());
         chapterNumberText.SetText(ChapterManager.Instance.GetChapterSO(chapter).chapterNumber);
         button.gameObject.SetActive(true);
