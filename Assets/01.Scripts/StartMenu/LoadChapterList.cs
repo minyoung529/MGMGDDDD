@@ -19,8 +19,8 @@ public class LoadChapterList : MonoBehaviour
 
     private void Awake()
     {
-        titleName = titleParent.FindChild("TitleNameText").GetComponent<TextMeshProUGUI>();
-        titleImage = titleParent.FindChild("TitleImage").GetComponent<Image>();
+        titleName = titleParent.Find("TitleNameText").GetComponent<TextMeshProUGUI>();
+        titleImage = titleParent.Find("TitleImage").GetComponent<Image>();
     }
     private void Start()
     {
