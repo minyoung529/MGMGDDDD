@@ -22,7 +22,7 @@ public class CannonScript : MonoBehaviour
     public Pet InPet { get { return pet; } }
 
     #region 인 게임 변수
-    private Pet pet;
+    private Pet pet = null;
     private bool isPlay = false;
     private Sequence seq;
     #endregion
@@ -32,9 +32,17 @@ public class CannonScript : MonoBehaviour
         colls = GetComponentsInChildren<Collider>();
     }
 
+    private void Update() {
+        //Recall기능 등으로 대포에서 멀어지면 빼주기
+        if (!pet) return;
+        if (Vector3.Distance(barrel.position, pet.transform.position) <= radius) return;
+        StartCoroutine(SetIgnore(0.5f, false));
+        pet = null;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (!pet && collision.gameObject.layer != Define.PET_LAYER) return;
+        if (pet || (collision.gameObject.layer != Define.PET_LAYER)) return;
 
         petColl = collision.collider;
         StartCoroutine(SetIgnore(0f, true));
