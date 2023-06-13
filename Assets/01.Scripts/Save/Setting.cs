@@ -50,6 +50,7 @@ public class Setting : MonoSingleton<Setting>
         LoadValue();
         gameObject.SetActive(true);
         canvasGroup.DOKill();
+        Time.timeScale = 0f;
         canvasGroup.alpha = 0f;
         canvasGroup.DOFade(1f, 0.3f);
         isActive = true;
@@ -58,6 +59,7 @@ public class Setting : MonoSingleton<Setting>
     public void Inactive()
     {
         SaveData();
+        Time.timeScale = 1f;
         canvasGroup.DOKill();
         canvasGroup.DOFade(0f, 0.3f).OnComplete(() => gameObject.SetActive(false));
         isActive = false;

@@ -72,6 +72,11 @@ public class SoundManager : MonoSingleton<SoundManager>
         if (pos != Vector3.zero)
         {
             obj.transform.position = pos;
+            audio.spatialBlend = 1f;
+        }
+        else
+        {
+            audio.spatialBlend = 0f;
         }
         audio.clip = clip;
         audio.volume = volumeScale;
