@@ -2,137 +2,127 @@ using System.IO;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 public enum Chapter
 {
-    // 씬을 어케 구분할까 고민 중
+    // Living Room Scene
+    LivingRoom = 0,
 
     // First scene
-    BasicTutorial = 0,
-    FireTutorial = 1,
-    OilTutorial = 2,
-    StickyTutorial = 3,
+    BasicTutorial = 1,
+    FireTutorial = 2,
+    OilTutorial = 3,
+    StickyTutorial = 4,
 
     // Clock_Lobby Scene
-    TicketBox = 4,
-    Cube = 5,
-    Cinema = 6,
-    Cannon = 7,
-    Balance = 8,
-    GameLand = 9,
+    TicketBox = 5,
+    Cube = 6,
+    Cinema = 7,
+    Cannon = 8,
+    Balance = 9,
+    GameLand = 10,
 
     // Second Scene
-    Maze = 10,
+    Maze = 11,
 
-    Count = 11
+    Count = 12
 }
 public class ChapterManager : MonoSingleton<ChapterManager>
 {
     [SerializeField] List<ChapterSO> chapters;
-    private SaveData save = null;
+    private SaveData saveData;
 
     private Chapter curChapter;
     private Chapter maxClearChapter;
 
     public Chapter CurChapter { get { return curChapter; } }
-    public Chapter CurMaxChapter { get { return curChapter; } }
 
     public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
 
     protected override void Awake()
     {
-        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, SetLoadGame);
-        SceneController.ListeningEnter(SceneType.Clock_Lobby, SetLoadGame);
         InitChapter();
-    }
-    private void Start()
-    {
-        LoadChapter();
     }
 
     [ContextMenu("Reset")]
     public void ResetData()
     {
-        save = null;
         SaveSystem.ResetData();
     }
-    public void GoChapterScene(Chapter change)
-    {
-        SceneController.ChangeScene(GetChapterSO(change).scene, true);
-    }
-    public void GoCurChapterScene()
-    {
-        SceneController.ChangeScene(GetCurChapter.scene,  true);
-    }
+
+    #region Set
 
     // Chapter 갱신
-    public void SetCurChapter(Chapter _saveCurChapter)
+    public void SetCurChapter(Chapter chapter)
     {
-        if (curChapter == _saveCurChapter) return;
-        curChapter = _saveCurChapter;
-        Debug.Log(curChapter);
+        curChapter = chapter;
+        if (maxClearChapter < curChapter) maxClearChapter = curChapter;
         SaveChapter();
     }
-
-    public void SetMaxChapter(Chapter _saveMaxChapter)
+    public void SetSavePoint(SavePoint point)
     {
-        maxClearChapter = _saveMaxChapter;
-        SaveChapter();
-    }
-
-    public void SetSavePoint(Vector3 _savePosition)
-    {
-        GetChapterSO(maxClearChapter).savePoint = _savePosition;
-    }
-
-    #region Save
-    // Data 챕터 가져오기
-    public void LoadChapter()
-    {
-            SaveData loadData = SaveSystem.Load();
-        if (loadData != null)
-        {
-            save = loadData;
-            curChapter = save.curChapter;
-            maxClearChapter = save.maxChapter;
-        }
-        else
-        {
-            save = new SaveData(Chapter.BasicTutorial, Chapter.BasicTutorial, null);
-        }
-    }
-
-    // Data 챕터 저장하기
-    private void SaveChapter()
-    {
-        if (save == null) return;
-        save = new SaveData(curChapter, maxClearChapter, GetPetTypeList());
-        SaveSystem.Save(save);
-    }
-    private void SetLoadGame()
-    {
-        if (save == null) return;
-
-        EventParam eventParam = new();
-        if(save.pets != null) eventParam["pets"] = save.pets;
-        eventParam["position"] = GetCurChapter.savePoint;
-        EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
+        GetChapterSO(point.Chapter).savePoint = point.transform.position;
+        SetCurChapter(point.Chapter);
     }
     #endregion
 
-    #region Init Chapter
+
+    #region Save
+    public void SetLoadGame()
+    {
+        if (SaveSystem.CurSaveData == null) return;
+
+        EventParam eventParam = new();
+        if (SaveSystem.CurSaveData.pets != null)
+        {
+            if(SaveSystem.CurSaveData.curChapter != Chapter.LivingRoom)
+            eventParam["pets"] = SaveSystem.CurSaveData.pets;
+        }
+            eventParam["position"] = GetCurChapter.savePoint;
+        EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
+
+        SceneController.StopListeningEnter(SetLoadGame);
+    }
+
+    public void SaveChapter()
+    {
+        SaveSystem.CurSaveData.pets = GetPetTypeList();
+        SaveSystem.CurSaveData.maxChapter = maxClearChapter;
+        SaveSystem.CurSaveData.curChapter = curChapter;
+    }
+
+    // Data 챕터 가져오기
+    public void LoadChapter()
+    {
+        SaveData loadData = SaveSystem.Load();
+        if (loadData != null)
+        {
+            SaveSystem.CurSaveData = loadData;
+            curChapter = SaveSystem.CurSaveData.curChapter;
+            maxClearChapter = SaveSystem.CurSaveData.maxChapter;
+        }
+    }
+ 
+    #endregion
+
+    #region Get
     private List<PetType> GetPetTypeList()
     {
-        if (PetManager.Instance == null) return null;
         List<PetType> typeList = new List<PetType>();
+        if(PetManager.Instance == null)
+        {
+            return SaveSystem.CurSaveData.pets;
+        }
+
         for (int i = 0; i < PetManager.Instance.GetPetList.Count; i++)
         {
             typeList.Add(PetManager.Instance.GetPetList[i].GetPetType);
         }
-
         return typeList;
     }
+
     int compare(ChapterSO a, ChapterSO b)
     {
         return (int)a.chapterName < (int)b.chapterName ? -1 : 1;
@@ -140,7 +130,8 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     private void InitChapter()
     {
         chapters.Sort(compare);
+
+        LoadChapter();
     }
     #endregion
-
 }

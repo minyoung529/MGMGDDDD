@@ -47,7 +47,7 @@ public static class SaveSystem
         if (!File.Exists(saveFilePath))
         {
             SaveData newData = new SaveData(0, 0, new List<PetType>());
-            SaveSystem.Save(newData);
+            Save(newData);
             CurSaveData = newData;
             return newData;
         }

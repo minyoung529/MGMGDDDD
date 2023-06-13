@@ -15,9 +15,10 @@ public class PuzzleController : MonoBehaviour
     }
     private void LoadPuzzle(EventParam eventParam = null)
     {
+        ChapterManager.Instance.LoadChapter();
         if ((int)ChapterManager.Instance.CurChapter < (int)chapter) return;
+
         onLoadEvent?.Invoke();
-        Debug.Log("OnLoad");
         if ((int)ChapterManager.Instance.CurChapter > (int)chapter)
         {
             for (int i = 0; i < cutscenes.Count; i++)
