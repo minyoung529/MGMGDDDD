@@ -157,4 +157,9 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SceneController.StopListeningEnter(SetMainCamera);
     }
+
+    private void OnApplicationQuit()
+    {
+        SaveSystem.Save(SaveSystem.CurSaveData);
+    }
 }

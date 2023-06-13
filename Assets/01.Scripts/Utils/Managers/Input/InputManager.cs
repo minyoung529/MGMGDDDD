@@ -77,6 +77,10 @@ public class InputManager : MonoSingleton<InputManager>
 
         for (int i = 0; i < keys.Count; i++) {
             InputAction action = keys[i];
+            if (!keyBinding.ContainsKey(action))
+            {
+                Debug.LogError("Key°¡ ¾øÀ½");
+            }
             InputInfo[] infos = keyBinding[action];
             if (infos == null) continue;
             bool result = true;

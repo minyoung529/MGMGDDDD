@@ -31,13 +31,12 @@ public enum Chapter
 public class ChapterManager : MonoSingleton<ChapterManager>
 {
     [SerializeField] List<ChapterSO> chapters;
-    private SaveData save = null;
+    private SaveData saveData;
 
     private Chapter curChapter;
     private Chapter maxClearChapter;
 
     public Chapter CurChapter { get { return curChapter; } }
-    public Chapter CurMaxChapter { get { return curChapter; } }
 
     public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
@@ -46,85 +45,60 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         InitChapter();
     }
-    private void Start()
-    {
-        LoadChapter();
-    }
 
     [ContextMenu("Reset")]
     public void ResetData()
     {
-        save = null;
         SaveSystem.ResetData();
     }
 
     #region Set
 
-<<<<<<< HEAD
-    // Chapter ����
-    public void SetSavePoint(SavePoint point)
-=======
     // Chapter 갱신
-    public void SetCurChapter(Chapter _saveCurChapter)
->>>>>>> develop2
-    {
-        curChapter = point.Chapter;
-        GetCurChapter.savePoint = point.transform.position;
-        if(maxClearChapter < curChapter) maxClearChapter = curChapter;
-    }
     public void SetCurChapter(Chapter chapter)
     {
         curChapter = chapter;
         if (maxClearChapter < curChapter) maxClearChapter = curChapter;
+        SaveChapter();
+    }
+    public void SetSavePoint(SavePoint point)
+    {
+        SetCurChapter(point.Chapter);
+        GetCurChapter.savePoint = point.transform.position;
+        SaveChapter();
     }
     #endregion
 
     #region Save
-<<<<<<< HEAD
     public void SetLoadGame()
     {
-        if (save == null) return;
+        if (SaveSystem.CurSaveData == null) return;
 
         EventParam eventParam = new();
-        if (save.pets != null) eventParam["pets"] = save.pets;
+        if (SaveSystem.CurSaveData.pets != null) eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapter.savePoint;
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
 
         SceneController.StopListeningEnter(SetLoadGame);
     }
 
-    // Data é�� ��������
-=======
-    // Data 챕터 가져오기
->>>>>>> develop2
-    public void LoadChapter()
+    public void SaveChapter()
     {
-            SaveData loadData = SaveSystem.Load();
-        if (loadData != null)
-        {
-            save = loadData;
-            curChapter = save.curChapter;
-            maxClearChapter = save.maxChapter;
-        }
-        else
-        {
-            save = new SaveData(0, 0, new List<PetType>());
-        }
+        SaveSystem.CurSaveData.pets = GetPetTypeList();
+        SaveSystem.CurSaveData.maxChapter = maxClearChapter;
+        SaveSystem.CurSaveData.curChapter = curChapter;
     }
 
-<<<<<<< HEAD
-    // Data é�� �����ϱ�
-    public void SaveChapter()
-=======
-    // Data 챕터 저장하기
-    private void SaveChapter()
->>>>>>> develop2
+    // Data 챕터 가져오기
+    public void LoadChapter()
     {
-        if (save == null) return;
-
-        SaveSystem.Load();
-        save = new SaveData(curChapter, maxClearChapter, GetPetTypeList());
-        SaveSystem.Save(save);
+        SaveData loadData = SaveSystem.Load();
+        if (loadData != null)
+        {
+            SaveSystem.CurSaveData = loadData;
+            curChapter = SaveSystem.CurSaveData.curChapter;
+            maxClearChapter = SaveSystem.CurSaveData.maxChapter;
+        }
     }
  
     #endregion
@@ -135,7 +109,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         List<PetType> typeList = new List<PetType>();
         if(PetManager.Instance == null)
         {
-            return save.pets;
+            return SaveSystem.CurSaveData.pets;
         }
 
         for (int i = 0; i < PetManager.Instance.GetPetList.Count; i++)
@@ -154,9 +128,4 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         chapters.Sort(compare);
     }
     #endregion
-
-    private void OnApplicationQuit()
-    {
-        SaveChapter();
-    }
 }
