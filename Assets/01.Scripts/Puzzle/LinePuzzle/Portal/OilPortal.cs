@@ -10,9 +10,24 @@ public class OilPortal : ConnectionPortal
     [SerializeField]
     private Material material;
 
+    [SerializeField]
+    private Renderer starRenderer;
+
+    [SerializeField]
+    private List<ParticleSystem> particles;
+
+    [SerializeField]
+    private float distance = 2f;
+
+    private Transform targetTransform;
+
+    [SerializeField]
+    private GameObject portal;
+
     private void Start()
     {
         navMeshObstacle = GetComponent<NavMeshObstacle>();
+        targetTransform = PetManager.Instance.GetMyPetByKind<OilPet>().transform;
     }
 
     protected override void OnContactPet(Pet pet)
@@ -34,5 +49,13 @@ public class OilPortal : ConnectionPortal
     {
         material.SetColor("_EmissionColor", color);
         pointLight.color = color;
+
+        starRenderer.material.color = color;
+
+        particles.ForEach(x =>
+        {
+            ParticleSystem.MainModule main = x.main;
+            main.startColor = color;
+        });
     }
 }
