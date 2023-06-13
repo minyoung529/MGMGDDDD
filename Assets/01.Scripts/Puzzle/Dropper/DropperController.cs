@@ -56,6 +56,7 @@ public class DropperController : MonoBehaviour
     {
         cameraController = GameManager.Instance.PlayerController.GetComponent<ThirdPersonCameraControll>();
         jumpMotion.TargetPos = playerSpawnPosition.position;
+        jumpMotion.IsEndAnimation = false;
 
         if (pets)
         {
@@ -164,7 +165,7 @@ public class DropperController : MonoBehaviour
             changePetPos.ForceClosePos();
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
 
         StartDropper();
     }
