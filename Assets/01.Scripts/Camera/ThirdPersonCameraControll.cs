@@ -38,7 +38,7 @@ public class ThirdPersonCameraControll : MonoBehaviour
         defaultCamera.m_XAxis.m_MaxSpeed = SaveSystem.CurSaveData.hSensitivity * 100f;
         defaultCamera.m_YAxis.m_MaxSpeed = SaveSystem.CurSaveData.vSensitivity;
 
-        Debug.Log(SaveSystem.CurSaveData.hSensitivity * 100f + ", " + SaveSystem.CurSaveData.vSensitivity);
+    //    Debug.Log(SaveSystem.CurSaveData.hSensitivity * 100f + ", " + SaveSystem.CurSaveData.vSensitivity);
         
         float distance = Vector3.Distance(transform.position, defaultCamera.transform.position);
         float normalized = Mathf.Clamp01(Utils.GetNormalizedRange(1.5f, 3f, distance));

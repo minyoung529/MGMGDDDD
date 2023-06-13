@@ -10,7 +10,7 @@ public class LoadChapterList : MonoBehaviour
     [SerializeField] private Image titleImage;
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private Transform content;
-    private Chapter selectChapter = Chapter.BasicTutorial;
+    private Chapter selectChapter = 0;
 
   private List<Button> chapterButtons = new List<Button>();
 
@@ -50,6 +50,10 @@ public class LoadChapterList : MonoBehaviour
             chapterNameText.SetText(chapter.ToString());
             button.gameObject.SetActive(true);
         }
+        if(chapterButtons.Count > 0)
+        {
+        LoadChapterData(chapterButtons[0], Chapter.LivingRoom);
+        }
     }
 
     private void LoadChapterData(Button button, Chapter chapter)
@@ -60,7 +64,7 @@ public class LoadChapterList : MonoBehaviour
 
     public void PlayChapter()
     {
-    //    SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SaveChapter);
+        SceneController.ListeningEnter(SceneType.StartScene, ChapterManager.Instance.SaveChapter);
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);

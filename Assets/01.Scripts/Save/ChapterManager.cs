@@ -63,11 +63,11 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     }
     public void SetSavePoint(SavePoint point)
     {
+        GetChapterSO(point.Chapter).savePoint = point.transform.position;
         SetCurChapter(point.Chapter);
-        GetCurChapter.savePoint = point.transform.position;
-        SaveChapter();
     }
     #endregion
+
 
     #region Save
     public void SetLoadGame()
@@ -75,8 +75,12 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         if (SaveSystem.CurSaveData == null) return;
 
         EventParam eventParam = new();
-        if (SaveSystem.CurSaveData.pets != null) eventParam["pets"] = SaveSystem.CurSaveData.pets;
-        eventParam["position"] = GetCurChapter.savePoint;
+        if (SaveSystem.CurSaveData.pets != null)
+        {
+            if(SaveSystem.CurSaveData.curChapter != Chapter.LivingRoom)
+            eventParam["pets"] = SaveSystem.CurSaveData.pets;
+        }
+            eventParam["position"] = GetCurChapter.savePoint;
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
 
         SceneController.StopListeningEnter(SetLoadGame);
@@ -126,6 +130,8 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     private void InitChapter()
     {
         chapters.Sort(compare);
+
+        LoadChapter();
     }
     #endregion
 }

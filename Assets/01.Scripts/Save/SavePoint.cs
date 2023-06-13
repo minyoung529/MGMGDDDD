@@ -6,7 +6,7 @@ public class SavePoint : MonoBehaviour
 {
     [SerializeField] bool isCheckPoint;
 
-    public bool IsCheckPoint { get { return isCheckPoint; } }
+    public bool IsChapterPoint { get { return isCheckPoint; } }
 
     [SerializeField] private Chapter chapter;
     public Chapter Chapter { get { return chapter; } }

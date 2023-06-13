@@ -17,9 +17,6 @@ public class PlayerRespawn : PlayerMono
     public Vector3 CurRespawnPoint => points[curIndex].transform.position;
     private int curIndex = 1;
     private int maxIndex = 1;
-    
-    private int curChapterIndex = 1;
-    private int maxChapterIndex = 1;
 
     private ParticleSystem dieParticle;
 
@@ -60,7 +57,7 @@ public class PlayerRespawn : PlayerMono
 
     private void CheckSpawnPoint()
     {
-        if (points.Length < 2) return;
+        if (points.Length < 1) return;
 
         for (int i = maxIndex + 1; i < points.Length; i++)
         {
@@ -80,12 +77,12 @@ public class PlayerRespawn : PlayerMono
             {
                 min = distance;
                 curIndex = i;
-
-                if (points[i].IsCheckPoint)
-                {
-                    ChapterManager.Instance?.SetSavePoint(points[i]);
-                }
             }
+        }
+
+        if (points[curIndex].IsChapterPoint)
+        {
+            ChapterManager.Instance?.SetSavePoint(points[curIndex]);
         }
     }
 
