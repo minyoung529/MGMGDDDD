@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8189029839571726196}
   - component: {fileID: 8516304960471925908}
+  - component: {fileID: 1288777974}
+  - component: {fileID: 1288777976}
+  - component: {fileID: 1288777975}
   m_Layer: 0
   m_Name: Clock
   m_TagString: Untagged
@@ -26,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 8858184560845747662}
   m_LocalRotation: {x: 0.5, y: -0.5, z: -0.5, w: -0.5}
   m_LocalPosition: {x: -98.9, y: 18.5, z: 88.1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.22415128, y: 0.2241513, z: 0.2241513}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8895839922992987556}
@@ -53,6 +56,71 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!65 &1288777974
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858184560845747662}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 13.06, y: 15.62, z: 2.69}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1288777976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858184560845747662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d254a573562bfaf4196855bfa09ee8d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ChapterManager, Assembly-CSharp
+        m_MethodName: SetCurChapter
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+  isOnce: 1
+--- !u!114 &1288777975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858184560845747662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d1e5d65284dad4e826a5dc2ec7ef31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneType: 1
+  changeType: 1
+  collideLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  loading: 1
 --- !u!1001 &9006889443214318159
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65,12 +133,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.89
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -103,6 +183,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b9e6b0c70ed1f2f4890e3c8bbaf41ec2, type: 3}
       propertyPath: m_Name

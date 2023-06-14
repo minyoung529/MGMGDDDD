@@ -72,6 +72,15 @@ public class LoadChapterList : MonoBehaviour
             chapters.Add(chapterButton.transform.parent.gameObject);
         }
 
+        SceneController.ListeningEnter(SceneType.StartScene, ()=>SaveSystem.Load());
+
+        SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListningExit(SceneType.LivingRoom, () => SaveSystem.Save(SaveSystem.CurSaveData));
+        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListningExit(SceneType.Lobby_FirstFloor, () => SaveSystem.Save(SaveSystem.CurSaveData));
+        SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
+        SceneController.ListningExit(SceneType.Clock_Lobby, () => SaveSystem.Save(SaveSystem.CurSaveData));
+
         SettingChapterButton();
     }
 
@@ -113,19 +122,11 @@ public class LoadChapterList : MonoBehaviour
         ChapterManager.Instance.SetCurChapter(selectChapter);
         SaveSystem.Save(SaveSystem.CurSaveData);
 
-        SceneController.ListeningEnter(SceneType.StartScene, ChapterManager.Instance.SaveChapter);
-        SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
-        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
-        SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
         GoChapterScene(selectChapter);
     }
 
     public void LoadGame()
     {
-        SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
-        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
-        SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
-
         GoCurChapterScene();
         ChapterManager.Instance.SaveChapter();
     }

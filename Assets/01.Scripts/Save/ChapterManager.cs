@@ -66,6 +66,13 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         curChapter = chapter;
         if (maxClearChapter < curChapter) maxClearChapter = curChapter;
+        Debug.Log(curChapter);
+        SaveChapter();
+    }
+    public void SetCurChapter(int chapter)
+    {
+        curChapter = (Chapter)chapter;
+        if (maxClearChapter < curChapter) maxClearChapter = curChapter;
         SaveChapter();
     }
     public void SetSavePoint(SavePoint point)
@@ -87,23 +94,23 @@ public class ChapterManager : MonoSingleton<ChapterManager>
                 eventParam["pets"] = SaveSystem.CurSaveData.pets;
         }
         eventParam["position"] = GetCurChapter.savePoint;
+        Debug.Log(GetCurChapter);
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
-
-        SceneController.StopListeningEnter(SetLoadGame);
     }
 
     public void SaveChapter()
     {
         SaveData saveData = SaveSystem.CurSaveData;
+        Debug.Log(saveData.curChapter);
         saveData.maxChapter = maxClearChapter;
         saveData.curChapter = curChapter;
         SaveSystem.CurSaveData = saveData;
     }
     public void SavePets()
     {
-        Debug.Log(SaveSystem.CurSaveData.pets.Count);
-
-        SaveSystem.CurSaveData.pets = GetPetTypeList();
+        SaveData saveData = SaveSystem.CurSaveData;
+        saveData.pets = GetPetTypeList();
+        SaveSystem.CurSaveData = saveData;
     }
 
     // Data 챕터 가져오기
