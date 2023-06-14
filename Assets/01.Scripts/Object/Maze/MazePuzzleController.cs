@@ -53,11 +53,18 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     private void SwitchPet(InputAction input, float action)
     {
-        if(PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet)
+        StartCoroutine(DelayOneFrame());
+    }
+
+    private IEnumerator DelayOneFrame()
+    {
+        yield return null;
+
+        if (PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet)
         {
             CameraSwitcher.SwitchCamera(fireCam);
         }
-        else if(PetManager.Instance.GetSelectPet.GetPetType == PetType.OilPet)
+        else if (PetManager.Instance.GetSelectPet.GetPetType == PetType.OilPet)
         {
             CameraSwitcher.SwitchCamera(oilCam);
         }
@@ -87,6 +94,8 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
         OnCrossHairMove(true);
 
         GameManager.Instance.SetCursorVisible(true);
+        Cursor.visible = false;
+
         PetManager.Instance.AllPetActions(x => x.AgentAcceleration = 80);
     }
 
@@ -170,14 +179,14 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
     #endregion
 
-   
+
 
     #region Camera
 
     public void ChangeCam()
     {
         Pet p = PetManager.Instance.GetSelectPet;
-        
+
         if (p.GetPetType == PetType.FirePet)
         {
             CameraSwitcher.SwitchCamera(fireCam);
