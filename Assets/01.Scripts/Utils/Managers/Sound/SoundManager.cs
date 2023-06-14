@@ -41,6 +41,7 @@ public class SoundManager : MonoSingleton<SoundManager>
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.playOnAwake = false;
         musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];
+        musicSource.loop = true;
     }
 
     private void Start()
