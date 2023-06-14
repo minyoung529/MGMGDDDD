@@ -45,12 +45,6 @@ public class SceneController : MonoBehaviour
                 OnEnterScene.Add((SceneType)i, null);
             }
         }
-
-        ListeningEnter(SceneType.StartScene, () =>
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        });
     }
 
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 public class ChangeScene : MonoBehaviour
 {
@@ -17,13 +18,14 @@ public class ChangeScene : MonoBehaviour
     [SerializeField] private ChangeType changeType;
     [SerializeField] private LayerMask collideLayer;
     [SerializeField] private bool loading = true;
+    [SerializeField] private UnityEvent OnChanged;
 
     [ContextMenu("Go To")]
     public void GoTo()
     {
         if (go)
             return;
-            
+        OnChanged?.Invoke();
         SceneController.ChangeScene(sceneType, loading);
         go = true;
     }

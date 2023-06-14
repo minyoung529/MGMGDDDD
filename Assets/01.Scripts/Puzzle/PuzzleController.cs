@@ -16,7 +16,6 @@ public class PuzzleController : MonoBehaviour
     private void LoadPuzzle(EventParam eventParam = null)
     {
         if (ChapterManager.Instance == null) return;
-        ChapterManager.Instance.LoadChapter();
         if ((int)ChapterManager.Instance.CurChapter < (int)chapter) return;
 
         onLoadEvent?.Invoke();

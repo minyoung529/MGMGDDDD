@@ -52,7 +52,6 @@ public class PlayerRespawn : PlayerMono
         transform.position = pos;
         PetManager.Instance.AllPetActions(x => x.transform.position = pos);
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
-        Debug.Log(pos);
     }
 
     private void CheckSpawnPoint()
