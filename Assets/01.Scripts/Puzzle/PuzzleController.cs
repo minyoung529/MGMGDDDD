@@ -18,7 +18,6 @@ public class PuzzleController : MonoBehaviour
         if (ChapterManager.Instance == null) return;
         if ((int)ChapterManager.Instance.CurChapter < (int)chapter) return;
 
-        Debug.Log(chapter);
         onLoadEvent?.Invoke();
         if ((int)ChapterManager.Instance.CurChapter > (int)chapter)
         {

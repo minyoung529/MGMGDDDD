@@ -32,10 +32,6 @@ public class LoadChapterList : MonoBehaviour
         InitChapterButton();
     }
 
-    private void GoChapterScene(Chapter change)
-    {
-        SceneController.ChangeScene(ChapterManager.Instance.GetChapterSO(change).scene, true);
-    }
     private void GoCurChapterScene()
     {
         SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
@@ -47,7 +43,7 @@ public class LoadChapterList : MonoBehaviour
         {
             ChapterButton chapterButton = Instantiate(buttonPrefab, content);
             Chapter chapter = (Chapter)i;
-            chapterButton.Init(chapter, () => LoadChapterData(chapterButton, chapter));
+            chapterButton.Init(chapter, this);
 
             chapterButtons.Add(chapterButton);
             chapters.Add(chapterButton.transform.parent.gameObject);
@@ -62,7 +58,7 @@ public class LoadChapterList : MonoBehaviour
 
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.LivingRoom, () => SaveSystem.Save(SaveSystem.CurSaveData));
-        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.LoadGame);
+        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, () => { ChapterManager.Instance.LoadGame(); });
         SceneController.ListningExit(SceneType.Lobby_FirstFloor, () => SaveSystem.Save(SaveSystem.CurSaveData));
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.Clock_Lobby, () => SaveSystem.Save(SaveSystem.CurSaveData));
@@ -91,22 +87,25 @@ public class LoadChapterList : MonoBehaviour
         LoadChapterData(chapterButtons[0], 0);
     }
 
-    private void LoadChapterData(ChapterButton button, Chapter chapter)
+    public void LoadChapterData(ChapterButton button, Chapter chapter)
     {
         selectChapter = chapter;
         curSelectButton?.Tween.UnSelect();
         curSelectButton = button;
         curSelectButton?.Tween.Select();
-        // titleImage.preserveAspect = true;
+
         titleName.SetText(chapter.ToString());
         titleImage.sprite = ChapterManager.Instance.GetChapterSO(chapter).chapterTitleImage;
     }
 
     public void PlayChapter()
     {
-        ChapterManager.Instance.SaveChapter(selectChapter);
+        ChapterManager.Instance.CurChapter = selectChapter;
         ChapterManager.Instance.SaveEnumToListPet(selectChapter);
-        GoChapterScene(selectChapter);
+
+        SaveSystem.Save(SaveSystem.CurSaveData);
+        GoCurChapterScene();
+        selectChapter = Chapter.LivingRoom;
     }
 
     public void LoadGame()

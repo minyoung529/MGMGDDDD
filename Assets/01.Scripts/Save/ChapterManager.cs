@@ -40,17 +40,13 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         set
         {
             SaveSystem.CurSaveData.curChapter = value;
-            if (CurChapter > MaxChapter) MaxChapter = CurChapter;
+            if (CurChapter > MaxChapter) SaveSystem.CurSaveData.maxChapter = CurChapter;
         } 
     }
     public Chapter MaxChapter { 
         get 
         {
             return SaveSystem.CurSaveData.maxChapter;
-        }
-        set
-        {
-            SaveSystem.CurSaveData.maxChapter = value;
         }
     }
     public ChapterSO GetCurChapterSO { get { return chapters[(int)CurChapter]; } }
@@ -103,9 +99,8 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     public void SetSavePoint(SavePoint point)
     {
-        SaveChapter(point.Chapter);
+        CurChapter = point.Chapter;
     }
-
 
     public void LoadGame()
     {
@@ -115,13 +110,10 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
 
+        Debug.Log(eventParam["position"]);
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
     }
 
-    public void SaveChapter(Chapter chapter)
-    {
-        CurChapter = chapter;
-    }
     public void SaveChapter(int chapter)
     {
         CurChapter = (Chapter)chapter;

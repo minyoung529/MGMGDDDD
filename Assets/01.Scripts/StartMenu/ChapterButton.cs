@@ -25,6 +25,9 @@ public class ChapterButton : MonoBehaviour
     private ChapterUITween tween;
     public ChapterUITween Tween => tween;
 
+    private LoadChapterList loadChapterList;
+    private Chapter chapter;
+
     public void ChangeState(ChapterProgressType type)
     {
         for (int i = 0; i < (int)ChapterProgressType.Count; i++)
@@ -34,9 +37,11 @@ public class ChapterButton : MonoBehaviour
         }
     }
 
-    public ChapterButton Init(Chapter chapter, Action onSelected)
+    public ChapterButton Init(Chapter chapter, LoadChapterList loadChapterList)
     {
-        button.onClick.AddListener(onSelected.Invoke);
+        this.loadChapterList = loadChapterList;
+        this.chapter = chapter;
+        button.onClick.AddListener(OnClick);
 
         TextMeshProUGUI chapterNameText = button.transform.Find("ChapterNameText").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI chapterNumberText = button.transform.Find("ChapterNumberText").GetComponent<TextMeshProUGUI>();
@@ -47,4 +52,8 @@ public class ChapterButton : MonoBehaviour
         return this;
     }
 
+    private void OnClick()
+    {
+        loadChapterList.LoadChapterData(this, chapter);
+    }
 }
