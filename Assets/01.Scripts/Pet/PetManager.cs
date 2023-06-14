@@ -63,17 +63,17 @@ public class PetManager : MonoSingleton<PetManager>
     public Pet BindingPet(PetType type)
     {
         Pet pet = null;
-        switch(type)
+        switch (type)
         {
             case PetType.None:
                 break;
-                case PetType.OilPet:
+            case PetType.OilPet:
                 pet = FindObjectOfType<OilPet>();
                 break;
-                case PetType.FirePet: 
+            case PetType.FirePet:
                 pet = FindObjectOfType<FirePet>();
                 break;
-                case PetType.StickyPet:
+            case PetType.StickyPet:
                 pet = FindObjectOfType<StickyPet>();
                 break;
         }
@@ -142,7 +142,9 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i]?.OnUpdate();
         }
 
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         Debug_CreateAndGetPet();
+#endif
     }
 
     public bool IsGet(Pet p)

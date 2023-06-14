@@ -72,10 +72,12 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (!isPlaying) return;
 
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.G))
         {
             GetNextPuzzle();
         }
+#endif
 
         trigger.transform.position = GameManager.Instance.GetMousePos();
         CheckBurning();
