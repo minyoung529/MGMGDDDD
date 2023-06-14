@@ -12,8 +12,8 @@ public enum Chapter
     // First scene
     BasicTutorial = 1,
     FireTutorial = 2,
-    StickyTutorial = 3,
-    OilTutorial = 4,
+    OilTutorial = 3,
+    StickyTutorial = 4,
 
     // Clock_Lobby Scene
     TicketBox = 5,
@@ -31,94 +31,31 @@ public enum Chapter
 public class ChapterManager : MonoSingleton<ChapterManager>
 {
     [SerializeField] List<ChapterSO> chapters;
-    private SaveData saveData;
-
-    private Chapter curChapter;
-    private Chapter maxClearChapter;
-
-    public Chapter CurChapter { get { return curChapter; } }
-    public Chapter MaxChapter { get { return maxClearChapter; } }
-
-    public ChapterSO GetCurChapter { get { return chapters[(int)curChapter]; } }
-    public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        InitChapter();
-    }
-    
-    private void Start()
-    {
-        LoadChapter();
-    }
-
-    [ContextMenu("Reset")]
-    public void ResetData()
-    {
-        SaveSystem.ResetData();
-    }
-
-    #region Set
-
-    // Chapter 갱신
-    public void SetCurChapter(Chapter chapter)
-    {
-        curChapter = chapter;
-        if (maxClearChapter < curChapter) maxClearChapter = curChapter;
-        SaveChapter();
-    }
-    public void SetSavePoint(SavePoint point)
-    {
-        GetChapterSO(point.Chapter).savePoint = point.transform.position;
-        SetCurChapter(point.Chapter);
-    }
-    #endregion
-
-
-    #region Save
-    public void SetLoadGame()
-    {
-        if (SaveSystem.CurSaveData == null) return;
-
-        EventParam eventParam = new();
-        if (SaveSystem.CurSaveData.pets != null)
+   
+    public Chapter CurChapter {
+        get 
         {
-                eventParam["pets"] = SaveSystem.CurSaveData.pets;
+            return SaveSystem.CurSaveData.curChapter;
+        } 
+        set
+        {
+            SaveSystem.CurSaveData.curChapter = value;
+            if (CurChapter > MaxChapter) MaxChapter = CurChapter;
+        } 
+    }
+    public Chapter MaxChapter { 
+        get 
+        {
+            return SaveSystem.CurSaveData.maxChapter;
         }
-        eventParam["position"] = GetCurChapter.savePoint;
-        EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
-
-        SceneController.StopListeningEnter(SetLoadGame);
+        set
+        {
+            SaveSystem.CurSaveData.maxChapter = value;
+        }
     }
-
-    public void SaveChapter()
-    {
-        SaveData saveData = SaveSystem.CurSaveData;
-        saveData.maxChapter = maxClearChapter;
-        saveData.curChapter = curChapter;
-        SaveSystem.CurSaveData = saveData;
-    }
-    public void SavePets()
-    {
-        Debug.Log(SaveSystem.CurSaveData.pets.Count);
-
-        SaveSystem.CurSaveData.pets = GetPetTypeList();
-    }
-
-    // Data 챕터 가져오기
-    public void LoadChapter()
-    {
-        if (SaveSystem.CurSaveData == null) SaveSystem.Load();
-        SaveData saveData = SaveSystem.CurSaveData;
-        curChapter = saveData.curChapter;
-        maxClearChapter = saveData.maxChapter;
-        SaveSystem.CurSaveData = saveData;
-    }
-
-    #endregion
-
-    #region Get
+    public ChapterSO GetCurChapterSO { get { return chapters[(int)CurChapter]; } }
+    public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
+    int compare(ChapterSO a, ChapterSO b) { return (int)a.chapterName < (int)b.chapterName ? -1 : 1; }
     private List<PetType> GetPetTypeList()
     {
         List<PetType> typeList = new List<PetType>();
@@ -132,15 +69,75 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         }
         return typeList;
     }
+    private List<PetType> EnumToListPetType(PetType flag)
+    {
+        List<PetType> petList = new List<PetType>();
 
-    int compare(ChapterSO a, ChapterSO b)
-    {
-        return (int)a.chapterName < (int)b.chapterName ? -1 : 1;
+        if ((flag & PetType.FirePet) != 0)
+        {
+            petList.Add(PetType.FirePet);
+        }
+        if ((flag & PetType.OilPet) != 0)
+        {
+            petList.Add(PetType.OilPet);
+        }
+        if ((flag & PetType.StickyPet) != 0)
+        {
+            petList.Add(PetType.StickyPet);
+        }
+
+        return petList;
     }
-    private void InitChapter()
+
+    protected override void Awake()
     {
+        base.Awake();
         chapters.Sort(compare);
-
     }
-    #endregion
+
+    [ContextMenu("Reset")]
+    public void ResetData()
+    {
+        SaveSystem.ResetData();
+    }
+
+    public void SetSavePoint(SavePoint point)
+    {
+        SaveChapter(point.Chapter);
+    }
+
+
+    public void LoadGame()
+    {
+        if (SaveSystem.CurSaveData == null) return;
+
+        EventParam eventParam = new();
+        
+        eventParam["pets"] = SaveSystem.CurSaveData.pets;
+        eventParam["position"] = GetCurChapterSO.savePoint;
+
+        EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
+    }
+
+    public void SaveChapter(Chapter chapter)
+    {
+        CurChapter = chapter;
+    }
+    public void SaveChapter(int chapter)
+    {
+        CurChapter = (Chapter)chapter;
+    }
+
+    public void SavePets()
+    {
+        SaveData saveData = SaveSystem.CurSaveData;
+        saveData.pets = GetPetTypeList();
+        SaveSystem.CurSaveData = saveData;
+    }
+
+    public void SaveEnumToListPet(Chapter chapter)
+    {
+        SaveSystem.CurSaveData.pets = EnumToListPetType(GetChapterSO(chapter).pets);
+    }
+
 }

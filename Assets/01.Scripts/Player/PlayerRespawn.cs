@@ -50,7 +50,6 @@ public class PlayerRespawn : PlayerMono
         if (param == null || !param.Contain("position")) return;
         Vector3 pos = (Vector3)param["position"];
         transform.position = pos;
-
         PetManager.Instance.AllPetActions(x => x.transform.position = pos);
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }

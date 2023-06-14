@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public void LoadGame()
     {
-        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapter.scene, true);
+        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
     }
 
     public void QuitGame()

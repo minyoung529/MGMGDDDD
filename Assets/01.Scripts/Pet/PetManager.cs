@@ -365,6 +365,9 @@ public class PetManager : MonoSingleton<PetManager>
 
         ActivePetUI(selectIndex);
         SelectPet(selectIndex);
+
+        Debug.Log("SavePet");
+        ChapterManager.Instance.SavePets();
     }
     public void DeletePet(PetType type)
     {
