@@ -44,7 +44,13 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     protected override void Awake()
     {
+        base.Awake();
         InitChapter();
+    }
+    
+    private void Start()
+    {
+        LoadChapter();
     }
 
     [ContextMenu("Reset")]
@@ -78,10 +84,9 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         EventParam eventParam = new();
         if (SaveSystem.CurSaveData.pets != null)
         {
-            if(SaveSystem.CurSaveData.curChapter != Chapter.LivingRoom)
-            eventParam["pets"] = SaveSystem.CurSaveData.pets;
+                eventParam["pets"] = SaveSystem.CurSaveData.pets;
         }
-            eventParam["position"] = GetCurChapter.savePoint;
+        eventParam["position"] = GetCurChapter.savePoint;
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
 
         SceneController.StopListeningEnter(SetLoadGame);
@@ -89,34 +94,38 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     public void SaveChapter()
     {
+        SaveData saveData = SaveSystem.CurSaveData;
+        saveData.maxChapter = maxClearChapter;
+        saveData.curChapter = curChapter;
+        SaveSystem.CurSaveData = saveData;
+    }
+    public void SavePets()
+    {
+        Debug.Log(SaveSystem.CurSaveData.pets.Count);
+
         SaveSystem.CurSaveData.pets = GetPetTypeList();
-        SaveSystem.CurSaveData.maxChapter = maxClearChapter;
-        SaveSystem.CurSaveData.curChapter = curChapter;
     }
 
     // Data 챕터 가져오기
     public void LoadChapter()
     {
-        SaveData loadData = SaveSystem.Load();
-        if (loadData != null)
-        {
-            SaveSystem.CurSaveData = loadData;
-            curChapter = SaveSystem.CurSaveData.curChapter;
-            maxClearChapter = SaveSystem.CurSaveData.maxChapter;
-        }
+        if (SaveSystem.CurSaveData == null) SaveSystem.Load();
+        SaveData saveData = SaveSystem.CurSaveData;
+        curChapter = saveData.curChapter;
+        maxClearChapter = saveData.maxChapter;
+        SaveSystem.CurSaveData = saveData;
     }
- 
+
     #endregion
 
     #region Get
     private List<PetType> GetPetTypeList()
     {
         List<PetType> typeList = new List<PetType>();
-        if(PetManager.Instance == null)
+        if (PetManager.Instance == null)
         {
             return SaveSystem.CurSaveData.pets;
         }
-
         for (int i = 0; i < PetManager.Instance.GetPetList.Count; i++)
         {
             typeList.Add(PetManager.Instance.GetPetList[i].GetPetType);
@@ -132,7 +141,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         chapters.Sort(compare);
 
-        LoadChapter();
     }
     #endregion
 }

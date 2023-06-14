@@ -310,6 +310,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         if (!GetIsOnNavMesh()) return false; //네브메쉬 위인지
         NavMeshPath path = new NavMeshPath();
         NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //경로가 그려지는지
+        if (path.corners.Length < 1) return false;
         if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //경로의 도착지가 플레이어 근처인지
         return true;
     }

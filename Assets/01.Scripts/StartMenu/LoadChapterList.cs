@@ -1,3 +1,4 @@
+using Bitgem.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,37 @@ using UnityEngine.UI;
 public class LoadChapterList : MonoBehaviour
 {
     [SerializeField] private Transform titleParent;
-    [SerializeField] private GameObject buttonPrefab;
+    [SerializeField] private ChapterButton buttonPrefab;
     [SerializeField] private Transform content;
     private Chapter selectChapter = 0;
 
     private TextMeshProUGUI titleName;
     private Image titleImage;
 
-    private List<Button> chapterButtons = new List<Button>();
+    private List<ChapterButton> chapterButtons = new List<ChapterButton>();
+    private List<GameObject> chapters = new List<GameObject>();
+
+    private ChapterButton curSelectButton;
+
+    private List<PetType> EnumToListPetType(PetType flag)
+    {
+        List<PetType> petList = new List<PetType>();
+
+        if ((flag & PetType.FirePet) != 0)
+        {
+            petList.Add(PetType.FirePet);
+        }
+        if ((flag & PetType.OilPet) != 0)
+        {
+            petList.Add(PetType.OilPet);
+        }
+        if ((flag & PetType.StickyPet) != 0)
+        {
+            petList.Add(PetType.StickyPet);
+        }
+
+        return petList;
+    }
 
     private void Awake()
     {
@@ -24,7 +48,7 @@ public class LoadChapterList : MonoBehaviour
     }
     private void Start()
     {
-        SettingChapterButton();
+        InitChapterButton();
     }
 
     private void GoChapterScene(Chapter change)
@@ -36,37 +60,48 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ChangeScene(ChapterManager.Instance.GetCurChapter.scene, true);
     }
 
-    public void SettingChapterButton()
+    private void InitChapterButton()
     {
-        for (int i = 0; i < content.childCount; i++)
+        for (int i = 0; i < (int)Chapter.Count; i++)
         {
-            Destroy(content.GetChild(i).gameObject);
-        }
-        chapterButtons.Clear();
-
-        for (int i = 0; i <= (int)ChapterManager.Instance.MaxChapter; i++)
-        {
+            ChapterButton chapterButton = Instantiate(buttonPrefab, content);
             Chapter chapter = (Chapter)i;
-            Button button = Instantiate(buttonPrefab, content).GetComponent<Button>();
-            button.onClick.AddListener(() =>
-            {
-                LoadChapterData(button, chapter);
-            });
-            chapterButtons.Add(button);
+            chapterButton.Init(chapter, () => LoadChapterData(chapterButton, chapter));
 
-            TextMeshProUGUI chapterNameText = button.GetComponentInChildren<TextMeshProUGUI>();
-            chapterNameText.SetText(chapter.ToString());
-            button.gameObject.SetActive(true);
+            chapterButtons.Add(chapterButton);
+            chapters.Add(chapterButton.transform.parent.gameObject);
         }
-        if (chapterButtons.Count > 0)
-        {
-            LoadChapterData(chapterButtons[0], Chapter.LivingRoom);
-        }
+
+        SettingChapterButton();
     }
 
-    private void LoadChapterData(Button button, Chapter chapter)
+    public void SettingChapterButton()
+    {
+        for (int i = 0; i < (int)Chapter.Count; i++)
+        {
+            if ((int)ChapterManager.Instance.MaxChapter < i) // lock
+            {
+                chapterButtons[i].ChangeState(ChapterProgressType.Lock);
+            }
+            else if ((int)ChapterManager.Instance.MaxChapter > i) // clear
+            {
+                chapterButtons[i].ChangeState(ChapterProgressType.Clear);
+            }
+            else // progress
+            {
+                chapterButtons[i].ChangeState(ChapterProgressType.Progress);
+            }
+        }
+
+        LoadChapterData(chapterButtons[0], 0);
+    }
+
+    private void LoadChapterData(ChapterButton button, Chapter chapter)
     {
         selectChapter = chapter;
+        curSelectButton?.Tween.UnSelect();
+        curSelectButton = button;
+        curSelectButton?.Tween.Select();
         // titleImage.preserveAspect = true;
         titleName.SetText(chapter.ToString());
         titleImage.sprite = ChapterManager.Instance.GetChapterSO(chapter).chapterTitleImage;
@@ -74,12 +109,14 @@ public class LoadChapterList : MonoBehaviour
 
     public void PlayChapter()
     {
+        SaveSystem.CurSaveData.pets = EnumToListPetType(ChapterManager.Instance.GetChapterSO(selectChapter).pets);
+        ChapterManager.Instance.SetCurChapter(selectChapter);
+        SaveSystem.Save(SaveSystem.CurSaveData);
+
         SceneController.ListeningEnter(SceneType.StartScene, ChapterManager.Instance.SaveChapter);
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.SetLoadGame);
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
-
-        ChapterManager.Instance.SetCurChapter(selectChapter);
         GoChapterScene(selectChapter);
     }
 
@@ -90,5 +127,6 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.SetLoadGame);
 
         GoCurChapterScene();
+        ChapterManager.Instance.SaveChapter();
     }
 }

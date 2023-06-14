@@ -30,6 +30,7 @@ public class CameraSwitcher
         }
     }
 
+    private const float DEFAULT_BLEND_TIME = 2f;
 
     public static bool IsActiveCamera(CinemachineVirtualCameraBase cam) { return cam == activeCamera; }
 
@@ -51,7 +52,7 @@ public class CameraSwitcher
 
     public static void Start()
     {
-     //   SceneController.ListeningEnter(SceneType.LivingRoom, ResetCameras);
+        //   SceneController.ListeningEnter(SceneType.LivingRoom, ResetCameras);
     }
 
     private static void ResetCameras()
@@ -86,5 +87,10 @@ public class CameraSwitcher
     public static void ChangeSwitchBlend(float value)
     {
         CinemachineBrain.m_DefaultBlend.m_Time = value;
+    }
+
+    public static void BackOriginalBlendTime()
+    {
+        CinemachineBrain.m_DefaultBlend.m_Time = DEFAULT_BLEND_TIME;
     }
 }

@@ -32,6 +32,15 @@ public class CannonScript : MonoBehaviour
         colls = GetComponentsInChildren<Collider>();
     }
 
+    private void Update() {
+        //Recall기능 등으로 대포에서 멀어지면 빼주기
+        if (!pet) return;
+        if (isPlay) return;
+        if (Vector3.Distance(barrel.position, pet.transform.position) <= radius) return;
+        StartCoroutine(SetIgnore(0.5f, false));
+        pet = null;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (pet || (collision.gameObject.layer != Define.PET_LAYER)) return;
@@ -43,14 +52,19 @@ public class CannonScript : MonoBehaviour
 
     public void GetInCannon(Pet pet)
     {
-        if (this.pet != null) return;
+        if (isPlay) return;
+        isPlay = true;
 
+        if (this.pet != null) return;
         this.pet = pet;
+
         pet.Event.TriggerEvent((int)PetEventName.OnHold);
+
         seq = DOTween.Sequence();
         seq.Append(barrel.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f));
         seq.Join(pet.transform.DOMove(barrel.position, 0.1f));
         seq.Append(barrel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.1f));
+        seq.AppendCallback(() => isPlay = false);
     }
 
     [ContextMenu("Trigger")]

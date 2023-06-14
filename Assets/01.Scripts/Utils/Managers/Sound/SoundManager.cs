@@ -46,8 +46,6 @@ public class SoundManager : MonoSingleton<SoundManager>
     private void Start()
     {
         LoadBGMVolume();
-
-
     }
 
     #region EFFECT SOUND
@@ -236,6 +234,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     private void LoadBGMVolume()
     {
+        if(SaveSystem.CurSaveData == null) SaveSystem.Load();
         SaveData data = SaveSystem.CurSaveData;
         SetVolume("BGM", 0f, 0f);
         SetVolume("SFX", 0f, 0f);
