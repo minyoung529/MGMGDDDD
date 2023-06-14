@@ -359,6 +359,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     public void AddPet(Pet p)
     {
+        if (pets.Contains(p)) return;
         pets.Add(p);
         petTypes.Add(p.GetType());
         selectIndex = pets.Count - 1;
@@ -366,7 +367,6 @@ public class PetManager : MonoSingleton<PetManager>
         ActivePetUI(selectIndex);
         SelectPet(selectIndex);
 
-        Debug.Log("SavePet");
         ChapterManager.Instance.SavePets();
     }
     public void DeletePet(PetType type)

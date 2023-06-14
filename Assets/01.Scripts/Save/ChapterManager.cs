@@ -110,7 +110,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     public void LoadGame()
     {
         if (SaveSystem.CurSaveData == null) return;
-
         EventParam eventParam = new();
         
         eventParam["pets"] = SaveSystem.CurSaveData.pets;
