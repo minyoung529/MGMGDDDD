@@ -104,6 +104,10 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     public void LoadGame()
     {
+        if (InputManager.Instance != null)
+        {
+            InputManager.Instance.gameObject.SetActive(true);
+        }
         if (SaveSystem.CurSaveData == null) return;
         EventParam eventParam = new();
         

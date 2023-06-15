@@ -30,6 +30,7 @@ public class LoadChapterList : MonoBehaviour
     private void Start()
     {
         InitChapterButton();
+
     }
 
     private void GoCurChapterScene()
@@ -54,6 +55,7 @@ public class LoadChapterList : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             SaveSystem.Load();
+            SaveSystem.CurSaveData.pets = new List<PetType>();
         });
 
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.LoadGame);
@@ -62,12 +64,6 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListningExit(SceneType.Lobby_FirstFloor, () => SaveSystem.Save(SaveSystem.CurSaveData));
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.Clock_Lobby, () => SaveSystem.Save(SaveSystem.CurSaveData));
-
-        SceneController.ListeningEnter(SceneType.StartScene, () => InputManager.Instance.gameObject.SetActive(false));
-        SceneController.ListeningExit(() =>
-        {
-            if (InputManager.Instance.gameObject != null) InputManager.Instance.gameObject.SetActive(true);
-        });
 
         SettingChapterButton();
     }
