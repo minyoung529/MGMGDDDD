@@ -72,12 +72,12 @@ public class LinePuzzleController : MonoBehaviour
     {
         if (!isPlaying) return;
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            GetNextPuzzle();
-        }
-#endif
+// #if DEVELOPMENT_BUILD || UNITY_EDITOR
+//         if (Input.GetKeyDown(KeyCode.G))
+//         {
+//             GetNextPuzzle();
+//         }
+// #endif
 
         trigger.transform.position = GameManager.Instance.GetMousePos();
         CheckBurning();
@@ -268,7 +268,7 @@ public class LinePuzzleController : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(2f);
         seq.AppendCallback(() =>
-        {
+        {   
             if (idx - 1 >= 0)
                 linePuzzles[idx - 1].gameObject.SetActive(false);
         });

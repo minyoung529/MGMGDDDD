@@ -142,9 +142,9 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i]?.OnUpdate();
         }
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-        Debug_CreateAndGetPet();
-#endif
+// #if DEVELOPMENT_BUILD || UNITY_EDITOR
+//         // Debug_CreateAndGetPet();
+// #endif
     }
 
     public bool IsGet(Pet p)
