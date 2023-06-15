@@ -115,7 +115,10 @@ public class PetManager : MonoSingleton<PetManager>
 
         for (int i = 0; i < petList.Count; i++)
         {
-            BindingPet(petList[i]).GetPet(GameManager.Instance.PlayerController.transform);
+            Pet bindingPet = BindingPet(petList[i]);
+            if (bindingPet == null)
+                continue;
+            bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
             pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position);
         }
     }
@@ -142,9 +145,9 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i]?.OnUpdate();
         }
 
-// #if DEVELOPMENT_BUILD || UNITY_EDITOR
-//         // Debug_CreateAndGetPet();
-// #endif
+        // #if DEVELOPMENT_BUILD || UNITY_EDITOR
+        //         // Debug_CreateAndGetPet();
+        // #endif
     }
 
     public bool IsGet(Pet p)
