@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ThrewState : PetState {
     [SerializeField] private LayerMask landingLayer;
-    private float bodyRadius = 0.7f;
+    private float bodyRadius = 0.5f;
     [SerializeField] private float timeToWake = 1f;
     public override PetStateName StateName => PetStateName.Threw;
     private float landingTime = 0f;
