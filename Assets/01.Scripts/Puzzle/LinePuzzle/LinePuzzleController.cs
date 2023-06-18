@@ -256,7 +256,8 @@ public class LinePuzzleController : MonoBehaviour
         isOilMove = false;
     }
 
-    private void GetNextPuzzle()
+    [ContextMenu("GET NEXT PUZZLE")]
+    public void GetNextPuzzle()
     {
         if (++idx >= linePuzzles.Length)
         {

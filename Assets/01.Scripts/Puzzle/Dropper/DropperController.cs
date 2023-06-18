@@ -201,5 +201,7 @@ public class DropperController : MonoBehaviour
         }
 
         Clear();
+
+        Debug.Log("CLEAR dropper");
     }
 }
