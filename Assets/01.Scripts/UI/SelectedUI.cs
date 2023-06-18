@@ -18,7 +18,6 @@ public class SelectedUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     [SerializeField]
     private UnityEvent onEnter;
 
-
     void Awake()
     {
         rectTransform = transform as RectTransform;

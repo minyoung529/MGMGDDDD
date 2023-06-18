@@ -31,20 +31,22 @@ public enum Chapter
 public class ChapterManager : MonoSingleton<ChapterManager>
 {
     [SerializeField] List<ChapterSO> chapters;
-   
-    public Chapter CurChapter {
-        get 
+
+    public Chapter CurChapter
+    {
+        get
         {
             return SaveSystem.CurSaveData.curChapter;
-        } 
+        }
         set
         {
             SaveSystem.CurSaveData.curChapter = value;
             if (CurChapter > MaxChapter) SaveSystem.CurSaveData.maxChapter = CurChapter;
-        } 
+        }
     }
-    public Chapter MaxChapter { 
-        get 
+    public Chapter MaxChapter
+    {
+        get
         {
             return SaveSystem.CurSaveData.maxChapter;
         }
@@ -110,7 +112,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         }
         if (SaveSystem.CurSaveData == null) return;
         EventParam eventParam = new();
-        
+
         eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
 
@@ -134,5 +136,4 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         SaveSystem.CurSaveData.pets = EnumToListPetType(GetChapterSO(chapter).pets);
     }
-
 }

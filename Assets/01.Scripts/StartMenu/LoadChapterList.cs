@@ -21,16 +21,15 @@ public class LoadChapterList : MonoBehaviour
 
     private ChapterButton curSelectButton;
 
-
     private void Awake()
     {
         titleName = titleParent.Find("TitleNameText").GetComponent<TextMeshProUGUI>();
         titleImage = titleParent.Find("TitleImage").GetComponent<Image>();
     }
+
     private void Start()
     {
         InitChapterButton();
-
     }
 
     private void GoCurChapterScene()
@@ -96,8 +95,10 @@ public class LoadChapterList : MonoBehaviour
         curSelectButton = button;
         curSelectButton?.Tween.Select();
 
-        titleName.SetText(chapter.ToString());
-        titleImage.sprite = ChapterManager.Instance.GetChapterSO(chapter).chapterTitleImage;
+        ChapterSO chapterSO = ChapterManager.Instance.GetChapterSO(chapter);
+
+        titleName.SetText(chapterSO.chapterKoreanName);
+        titleImage.sprite = chapterSO.chapterTitleImage;
     }
 
     public void PlayChapter()

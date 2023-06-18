@@ -45,8 +45,10 @@ public class ChapterButton : MonoBehaviour
 
         TextMeshProUGUI chapterNameText = button.transform.Find("ChapterNameText").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI chapterNumberText = button.transform.Find("ChapterNumberText").GetComponent<TextMeshProUGUI>();
-        chapterNameText.SetText(chapter.ToString());
-        chapterNumberText.SetText(ChapterManager.Instance.GetChapterSO(chapter).chapterNumber);
+        ChapterSO chapterSO = ChapterManager.Instance.GetChapterSO(chapter);
+
+        chapterNameText.SetText(chapterSO.chapterKoreanName);
+        chapterNumberText.SetText(chapterSO.chapterNumber);
         button.gameObject.SetActive(true);
 
         return this;
