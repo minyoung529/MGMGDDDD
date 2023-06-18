@@ -24,7 +24,7 @@ public class ElectricityEffect : MonoBehaviour
 
     public void Success()
     {
-        failParticle.Play();
+        failParticle.Stop();
         electricityParticle.Stop();
     }
 }
