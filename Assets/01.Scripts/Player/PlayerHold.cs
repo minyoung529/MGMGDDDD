@@ -232,21 +232,27 @@ public class PlayerHold : PlayerMono
 
     private void OnHold()
     {
+        PlayerController playerController = GameManager.Instance.PlayerController;
+
         for (int i = 0; i < 3; i++)
         {
-            GameManager.Instance.PlayerController.Camera.SetScreenX(i, 0.65f);
+            playerController.Camera.SetScreenX(i, 0.65f);
         }
 
-        GameManager.Instance.PlayerController.Move.IsBlockRotate = true;
+        playerController.Move.IsBlockRotate = true;
+        playerController.Camera.InactiveCrossHair();
     }
 
     private void OnExitHold()
     {
+        PlayerController playerController = GameManager.Instance.PlayerController;
+
         for (int i = 0; i < 3; i++)
         {
-            GameManager.Instance.PlayerController.Camera.SetScreenX(i, 0.5f, 1f);
+            playerController.Camera.SetScreenX(i, 0.5f, 1f);
         }
 
-        GameManager.Instance.PlayerController.Move.IsBlockRotate = false;
+        playerController.Move.IsBlockRotate = false;
+        playerController.Camera.ActiveCrossHair();
     }
 }
