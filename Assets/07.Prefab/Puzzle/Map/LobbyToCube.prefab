@@ -6055,6 +6055,8 @@ GameObject:
   - component: {fileID: 7767499633180663743}
   - component: {fileID: 1543912788}
   - component: {fileID: 1543912789}
+  - component: {fileID: 2993350874275425699}
+  - component: {fileID: 685680757144770881}
   m_Layer: 0
   m_Name: AmusementparkViewCutscene
   m_TagString: Untagged
@@ -6109,7 +6111,7 @@ PlayableDirector:
   - key: {fileID: 2720643621057905754, guid: 8a9c20e2d6ced0046a680e2a66b90a24, type: 2}
     value: {fileID: 1668961183519145076}
   - key: {fileID: 8974351223692402325, guid: 8a9c20e2d6ced0046a680e2a66b90a24, type: 2}
-    value: {fileID: 1543912788}
+    value: {fileID: 2993350874275425699}
   m_ExposedReferences:
     m_References:
     - 2b1a019cd30cd134cbd41630c181b0bc: {fileID: 6117410680841017781}
@@ -6196,6 +6198,55 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &1543912789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8436699802633400493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 51ade0f76a63055448b543ecc623bd57, type: 3}
+  soundType: 0
+  playOnAwake: 0
+  loop: 1
+  isPositioning: 0
+  isChildToTransform: 0
+  volume: 1
+--- !u!114 &2993350874275425699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8436699802633400493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 98bdc66892e1a9a478b2bb56853cf457, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8436699802633400493}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &685680757144770881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6381,8 +6432,16 @@ PrefabInstance:
       value: LobbyToCubeRoad
       objectReference: {fileID: 0}
     - target: {fileID: 6340758694316328385, guid: 257adf9ce245f854496e1090ba0f0257, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340758694316328385, guid: 257adf9ce245f854496e1090ba0f0257, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340758694316328385, guid: 257adf9ce245f854496e1090ba0f0257, type: 3}
+      propertyPath: m_TagString
+      value: Disrollable
       objectReference: {fileID: 0}
     - target: {fileID: 6340758694316328385, guid: 257adf9ce245f854496e1090ba0f0257, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6450,7 +6509,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 3181945431582109686, guid: c67b03d27258a254dae1982f1b876e9e, type: 3}
 --- !u!114 &1785045580
@@ -6467,6 +6526,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   extendsIslandOffset: 1
   scale: 1
+--- !u!54 &413779792
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6340758694320439271}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!4 &6680305943340655965 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6680305943336558459, guid: 257adf9ce245f854496e1090ba0f0257, type: 3}
