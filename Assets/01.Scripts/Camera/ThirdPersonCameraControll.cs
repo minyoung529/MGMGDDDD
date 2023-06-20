@@ -1,3 +1,4 @@
+using System;
 using Cinemachine;
 using DG.Tweening;
 using System.Collections;
@@ -23,12 +24,19 @@ public class ThirdPersonCameraControll : MonoBehaviour
     [SerializeField]
     private Renderer playerRenderer;
 
+    CinemachineComposer[] composers = new CinemachineComposer[3];
+
     private void Start()
     {
         animator = GetComponent<Animator>();
 
         CutSceneManager.Instance.AddStartCutscene(InactiveCrossHair);
         CutSceneManager.Instance.AddEndCutscene(ActiveCrossHair);
+
+        for (int i = 0; i < 3; i++)
+        {
+            composers[i] = defaultCamera.GetRig(i).GetCinemachineComponent<CinemachineComposer>();
+        }
     }
 
     private void Update()
@@ -104,6 +112,29 @@ public class ThirdPersonCameraControll : MonoBehaviour
         crosshairCanvas.gameObject.SetActive(false);
     }
     #endregion
+
+    public void SetScreenX(int idx, float value, float delay = 0f)
+    {
+        Action action = () => DOTween.To(() => GetScreenX(idx), (float x) => SetScreenXDirect(idx, x), value, 1f);
+
+        if(delay == 0f)
+        {
+            action.Invoke();
+        }
+        else
+        {
+            StartCoroutine(DelayCoroutine(delay, action));
+        }
+    }
+
+    private float GetScreenX(int idx) => composers[idx].m_ScreenX;
+    private void SetScreenXDirect(int idx, float value) => composers[idx].m_ScreenX = value;
+
+    private IEnumerator DelayCoroutine(float delay, System.Action callback)
+    {
+        yield return new WaitForSeconds(delay);
+        callback?.Invoke();
+    }
 
     private void OnDestroy()
     {

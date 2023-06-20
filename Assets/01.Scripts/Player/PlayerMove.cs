@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMove : PlayerMono
-{   
+{
     #region 속력, 방향 관련 변수s
     [SerializeField] private float distanceToGround = 0;
     [SerializeField] private float rotateTime = 1f;
@@ -13,8 +13,10 @@ public class PlayerMove : PlayerMono
     public float CurSpeed => curSpeed;
     private Vector3 inputDir;
     private Vector3 forward;
-    public Vector3 Forward {
-        get {
+    public Vector3 Forward
+    {
+        get
+        {
             forward = MainCam.transform.forward;
             forward.y = 0;
             forward = forward.normalized;
@@ -22,8 +24,10 @@ public class PlayerMove : PlayerMono
         }
     }
     private Vector3 right;
-    public Vector3 Right {
-        get {
+    public Vector3 Right
+    {
+        get
+        {
             right = MainCam.transform.right;
             right.y = 0;
             right = right.normalized;
@@ -38,10 +42,13 @@ public class PlayerMove : PlayerMono
     private Dictionary<PlayerStateName, MoveState> stateDictionary = new Dictionary<PlayerStateName, MoveState>();
 
     private int isInputLock = 0;
-    public bool IsInputLock { get { return isInputLock > 0; }}
+    public bool IsInputLock { get { return isInputLock > 0; } }
 
     private bool isBlockJump = false;
     public bool IsBlockJump { get { return isBlockJump; } set { isBlockJump = value; } }
+
+    private bool isBlockRotate = false;
+    public bool IsBlockRotate { get { return isBlockRotate; } set { isBlockRotate = value; } }
 
     [SerializeField] private LayerMask groundLayer;
     #endregion
@@ -58,8 +65,10 @@ public class PlayerMove : PlayerMono
     #endregion
 
     private Camera mainCam;
-    public Camera MainCam {
-        get {
+    public Camera MainCam
+    {
+        get
+        {
             if (mainCam == null)
                 mainCam = Camera.main;
             return mainCam;
@@ -73,43 +82,52 @@ public class PlayerMove : PlayerMono
     private LayerMask ikLayer;
 
     #region SetUp
-    private void Awake() {
+    private void Awake()
+    {
         StartListen();
         SetUpStateDictionary();
     }
 
-    private void OnDestroy() {
-        foreach (var keyValue in actions) {
+    private void OnDestroy()
+    {
+        foreach (var keyValue in actions)
+        {
             InputManager.StopListeningInput(keyValue.Key, keyValue.Value);
         }
         CutSceneManager.Instance?.RemoveStartCutscene(LockInput);
         CutSceneManager.Instance?.RemoveEndCutscene(UnLockInput);
     }
 
-    private void SetUpStateDictionary() {
+    private void SetUpStateDictionary()
+    {
         MoveState[] stateList = stateParent.GetComponentsInChildren<MoveState>();
-        foreach (MoveState item in stateList) {
+        foreach (MoveState item in stateList)
+        {
             stateDictionary.Add(item.StateName, item);
             item.Player = this;
         }
     }
 
-    private void StartListen() {
+    private void StartListen()
+    {
         actions.Add(InputAction.Move_Forward, (action, value) => GetInput(action, Forward));
         actions.Add(InputAction.Back, (action, value) => GetInput(action, -Forward));
         actions.Add(InputAction.Move_Right, (action, value) => GetInput(action, Right));
         actions.Add(InputAction.Move_Left, (action, value) => GetInput(action, -Right));
-        actions.Add(InputAction.Jump, (action, value) => {
+        actions.Add(InputAction.Jump, (action, value) =>
+        {
             if (IsInputLock) return;
             if (IsBlockJump) return;
             if (CheckOnGround() && curState.GetType() != typeof(JumpState))
                 ChangeState(PlayerStateName.Jump);
         });
-        actions.Add(InputAction.Pet_Follow, (action, value) => {
+        actions.Add(InputAction.Pet_Follow, (action, value) =>
+        {
             if (IsInputLock) return;
             PlayAction(PlayerAction.ReCall);
         });
-        foreach (var keyValue in actions) {
+        foreach (var keyValue in actions)
+        {
             InputManager.StartListeningInput(keyValue.Key, keyValue.Value);
         }
         CutSceneManager.Instance.AddStartCutscene(LockInput);
@@ -118,7 +136,8 @@ public class PlayerMove : PlayerMono
     #endregion
 
     #region Input
-    private void GetInput(InputAction action, Vector3 input) {
+    private void GetInput(InputAction action, Vector3 input)
+    {
         inputDir += input;
         inputDir = inputDir.normalized;
     }
@@ -126,26 +145,31 @@ public class PlayerMove : PlayerMono
     /// <summary>
     /// 애니메이션에 사용될 fHorizontal과 fVertical을 설정
     /// </summary>
-    public void SetAnimInput(Vector3 dir) {
+    public void SetAnimInput(Vector3 dir)
+    {
         controller.Anim.SetFloat(hash_fVertical, Vector3.Dot(Forward, dir));
         controller.Anim.SetFloat(hash_fHorizontal, Vector3.Dot(Right, dir));
     }
 
-    private void Update() {
+    private void Update()
+    {
         SendInput();
     }
 
-    private void SendInput() {
+    private void SendInput()
+    {
         if (IsInputLock) inputDir = Vector3.zero;
         curState.OnInput(inputDir);
         inputDir = Vector3.zero;
     }
     #endregion
 
-    private void OnAnimatorIK(int layerIndex) {
-        if (controller.Anim) {
+    private void OnAnimatorIK(int layerIndex)
+    {
+        if (controller.Anim)
+        {
             //발 IK 위치 연산
-            controller.Anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f); 
+            controller.Anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
             controller.Anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
 
             float rayDist = distanceToGround /*+ 1f*/;
@@ -154,7 +178,8 @@ public class PlayerMove : PlayerMono
 
             Debug.DrawRay(ray.origin, Vector3.down * 0.1f, Color.magenta);
 
-            if (Physics.Raycast(ray, out hit, rayDist, ikLayer)) {
+            if (Physics.Raycast(ray, out hit, rayDist, ikLayer))
+            {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
                 controller.Anim.SetIKPosition(AvatarIKGoal.LeftFoot, footposition);
@@ -167,7 +192,8 @@ public class PlayerMove : PlayerMono
             ray = new Ray(controller.Anim.GetIKPosition(AvatarIKGoal.RightFoot) /*+ Vector3.up*/, Vector3.down);
             Debug.DrawRay(ray.origin, ray.direction * rayDist, Color.magenta);
 
-            if (Physics.Raycast(ray, out hit, rayDist, ikLayer)) {
+            if (Physics.Raycast(ray, out hit, rayDist, ikLayer))
+            {
                 Vector3 footposition = hit.point;
                 footposition.y += distanceToGround;
 
@@ -177,16 +203,19 @@ public class PlayerMove : PlayerMono
         }
     }
 
-    public void ChangeState(PlayerStateName state, int animIndex = -1) {
+    public void ChangeState(PlayerStateName state, int animIndex = -1)
+    {
         MoveState targetState;
-        if (!stateDictionary.TryGetValue(state, out targetState)) {
+        if (!stateDictionary.TryGetValue(state, out targetState))
+        {
             Debug.LogError($"{state}에 해당하는 스테이트가 존재하지 않습니다");
             return;
         }
 
         if (animIndex < 0)
             animIndex = (int)state;
-        curState.OnStateEnd(() => {
+        curState.OnStateEnd(() =>
+        {
             curState = targetState;
             StopAction();
             controller.Anim.SetInteger(hash_iStateNum, animIndex);
@@ -198,23 +227,28 @@ public class PlayerMove : PlayerMono
     /// <summary>
     /// state와는 다르게 실제로 플레이어 코드의 변화는 없지만 간단하고 짧은 애니메이션을 보여줄때 사용
     /// </summary>
-    public void PlayAction(PlayerAction action) {
+    public void PlayAction(PlayerAction action)
+    {
         controller.Anim.SetInteger(hash_iActionNum, (int)action);
         controller.Anim.SetBool(hash_bActionActive, true);
     }
 
-    public void StopAction() {
+    public void StopAction()
+    {
         controller.Anim.SetBool(hash_bActionActive, false);
     }
 
     #region 편의성 함수 (State에서 주로 사용)
-    public void Accelerate(Vector3 inputDir, float accel = 5f, float brake = 5f, float maxSpeed = 2f) {
-        if (curSpeed < maxSpeed) {
+    public void Accelerate(Vector3 inputDir, float accel = 5f, float brake = 5f, float maxSpeed = 2f)
+    {
+        if (curSpeed < maxSpeed)
+        {
             curSpeed += accel * Time.deltaTime;
             if (curSpeed > maxSpeed)
                 curSpeed = maxSpeed;
         }
-        else if (curSpeed > maxSpeed) {
+        else if (curSpeed > maxSpeed)
+        {
             curSpeed -= brake * Time.deltaTime;
             if (curSpeed < maxSpeed)
                 curSpeed = maxSpeed;
@@ -227,9 +261,11 @@ public class PlayerMove : PlayerMono
         controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
-    public void Decelerate(float brake = 5f) {
+    public void Decelerate(float brake = 5f)
+    {
         curSpeed -= brake * Time.deltaTime;
-        if (curSpeed < 0) {
+        if (curSpeed < 0)
+        {
             curSpeed = 0;
         }
 
@@ -242,17 +278,24 @@ public class PlayerMove : PlayerMono
         controller.Anim.SetFloat(hash_fCurSpeed, curSpeed);
     }
 
-    public void SetRotate(Vector3 dir) {
+    public void SetRotate(Vector3 dir)
+    {
         if (inputDir.sqrMagnitude <= 0) return;
+        if (isBlockRotate) return;
+
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
     }
 
-    public void SetRotate(Vector3 dir, float rotateTime) {
+    public void SetRotate(Vector3 dir, float rotateTime)
+    {
         if (inputDir.sqrMagnitude <= 0) return;
+        if (isBlockRotate) return;
+        
         transform.forward = Vector3.RotateTowards(transform.forward, dir, Vector3.Angle(transform.forward, dir) / rotateTime * Time.deltaTime, 0);
     }
 
-    public bool CheckOnGround() {
+    public bool CheckOnGround()
+    {
         RaycastHit hit;
         if (!Physics.BoxCast(
             transform.position + Vector3.up * 0.5f,
@@ -267,19 +310,23 @@ public class PlayerMove : PlayerMono
             return false;
         return true;
     }
-    public void LockInput() {
+    public void LockInput()
+    {
         isInputLock++;
     }
 
-    public void UnLockInput() {
+    public void UnLockInput()
+    {
         isInputLock--;
     }
 
-    public void LockInput(float time) {
+    public void LockInput(float time)
+    {
         StartCoroutine(LockTimer(time));
     }
 
-    private IEnumerator LockTimer(float time) {
+    private IEnumerator LockTimer(float time)
+    {
         isInputLock++;
         yield return new WaitForSeconds(time);
         isInputLock--;
@@ -287,14 +334,17 @@ public class PlayerMove : PlayerMono
     #endregion
 
     #region 애니메이션 이벤트
-    public void JumpEvent() {
-        if (curState is JumpState) {
+    public void JumpEvent()
+    {
+        if (curState is JumpState)
+        {
             JumpState jump = (JumpState)curState;
             jump?.Jump();
         }
     }
 
-    public void LandingEvent() {
+    public void LandingEvent()
+    {
         ChangeState(PlayerStateName.DefaultMove);
     }
     #endregion

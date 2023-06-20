@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour {
     private PlayerHP hp;
     private PlayerRespawn respawn;
     private PlayerHold hold;
+    private ThirdPersonCameraControll cameraController;
 
     public Rigidbody Rigid => rigid;
     public Animator Anim => anim;
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour {
     public PlayerHP HP => hp;
     public PlayerRespawn Respawn => respawn;
     public PlayerHold Hold => hold;
+    public ThirdPersonCameraControll Camera => cameraController;
     #endregion
 
     private Dictionary<string, PlayerMono> playerMonoDictionary = new Dictionary<string, PlayerMono>();
@@ -36,6 +38,7 @@ public class PlayerController : MonoBehaviour {
         hp = GetComponent<PlayerHP>();
         respawn = GetComponent<PlayerRespawn>();
         hold = GetComponent<PlayerHold>();
+        cameraController = GetComponent<ThirdPersonCameraControll>();
     }
 
     private void SetUpCompo() {
