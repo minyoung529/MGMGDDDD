@@ -27,6 +27,9 @@ public class ChangeScene : MonoBehaviour
             return;
         OnChanged?.Invoke();
         SceneController.ChangeScene(sceneType, loading);
+
+        GameManager.Instance.SetCursorVisible(false);
+        
         go = true;
     }
 
