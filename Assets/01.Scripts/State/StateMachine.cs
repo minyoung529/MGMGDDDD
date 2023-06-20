@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-//바꾸지마세요
+// ! Do Not Edit
+[System.Serializable]
 public class StateMachine<T> {
     private T parent = default;
     public T Parent => parent;

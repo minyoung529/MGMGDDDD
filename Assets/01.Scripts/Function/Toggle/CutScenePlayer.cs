@@ -39,7 +39,6 @@ public class CutScenePlayer : MonoBehaviour
         {
             Play();
         }
-
     }
 
     private void OnTriggerEnter(Collider other)

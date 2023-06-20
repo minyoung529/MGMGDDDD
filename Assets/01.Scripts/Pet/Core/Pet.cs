@@ -99,7 +99,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         }
         stateMachine = new StateMachine<Pet>(this, states);
 
-        CutSceneManager.Instance.AddStartCutscene(Pause);
+        CutSceneManager.Instance?.AddStartCutscene(Pause);
     }
 
     void OnDestroy()
@@ -124,8 +124,14 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     }
 
-    public void Pause() {
+    public void Pause()
+    {
         State.ChangeState((int)PetStateName.Pause);
+    }
+
+    public void StopPause()
+    {
+        State.ChangeState(State.BeforeStateIndex);
     }
 
     #region Set
@@ -193,7 +199,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
             return;
         }
     }
-    
+
     public void SetTargetNull()
     {
         if (agent == null) return;
@@ -213,7 +219,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     public void SetTargetPlayer()
     {
-        if(agent == null)
+        if (agent == null)
         {
             agent = GetComponent<NavMeshAgent>();
         }
@@ -246,7 +252,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
     private void Chase()
     {
         if (!target || !GetIsOnNavMesh()) return;
-        if (!IsTargetOnRoute(target)) {
+        if (!IsTargetOnRoute(target))
+        {
             SetTargetNull();
             return;
         }
@@ -285,7 +292,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
     public void SetForcePosition(Vector3 position)
     {
-        if(agent == null)
+        if (agent == null)
         {
             agent = GetComponent<NavMeshAgent>();
         }
@@ -306,7 +313,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
         }
     }
 
-    public bool IsTargetOnRoute(Transform target) {
+    public bool IsTargetOnRoute(Transform target)
+    {
         if (!GetIsOnNavMesh()) return false; //네브메쉬 위인지
         NavMeshPath path = new NavMeshPath();
         NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //경로가 그려지는지
@@ -353,7 +361,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     private void CheckInteract()
     {
         Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
-        
+
         SelectedObject.CurInteractObject.OnInteract();
         Event.TriggerEvent((int)PetEventName.OnInteractArrive);
     }
@@ -371,34 +379,39 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
 
     #region IThrowable
-    public void OnHold() {
+    public void OnHold()
+    {
         Rigid.velocity = Vector3.zero;
         Rigid.isKinematic = true;
         Coll.enabled = false;
         SetNavEnabled(false);
     }
 
-    public void OnDrop() {
+    public void OnDrop()
+    {
         Coll.enabled = true;
         Rigid.isKinematic = false;
         Rigid.velocity = Vector3.zero;
         SetNavEnabled(true);
     }
 
-    public void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse) {
+    public void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse)
+    {
         Rigid.velocity = Vector3.zero;
         Rigid.isKinematic = false;
         Rigid.AddForce(force, forceMode);
         Event.TriggerEvent((int)PetEventName.OnThrew);
     }
 
-    public void OnThrow() {
+    public void OnThrow()
+    {
         Coll.enabled = true;
         Rigid.constraints = RigidbodyConstraints.None;
     }
 
-    public void OnLanding() {
-        Rigid.constraints = RigidbodyConstraints.FreezeAll &~ RigidbodyConstraints.FreezePositionY;
+    public void OnLanding()
+    {
+        Rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         Rigid.velocity = Vector3.zero;
     }
     #endregion

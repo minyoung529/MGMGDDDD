@@ -1186,7 +1186,7 @@ PlayableDirector:
   - key: {fileID: 4573949663300216538, guid: 32fca3c566695604b89b5abb9816926e, type: 2}
     value: {fileID: 2046783821}
   - key: {fileID: -5432176416467712087, guid: 32fca3c566695604b89b5abb9816926e, type: 2}
-    value: {fileID: 1988989228}
+    value: {fileID: 8792207033033620723}
   - key: {fileID: -9054676840559141833, guid: 32fca3c566695604b89b5abb9816926e, type: 2}
     value: {fileID: 0}
   - key: {fileID: 2016101092351770794, guid: 32fca3c566695604b89b5abb9816926e, type: 2}
@@ -32660,7 +32660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d83042948f118840ba01f9147afc5a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapter: 0
+  chapter: 11
   layerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -44764,6 +44764,7 @@ GameObject:
   - component: {fileID: 3436654759790620771}
   - component: {fileID: 3436654759790620770}
   - component: {fileID: 1988989228}
+  - component: {fileID: 8792207033033620723}
   m_Layer: 2
   m_Name: Camera Trigger
   m_TagString: Untagged
@@ -44828,6 +44829,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   changedCamera: {fileID: 3436654760594186432}
 --- !u!114 &1988989228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654759790620780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 98bdc66892e1a9a478b2bb56853cf457, type: 2}
+    - {fileID: 11400000, guid: b3138138849375241b5b4b4b51b24fb9, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3436654759790620770}
+          m_TargetAssemblyTypeName: ChangeSoloCamera, Assembly-CSharp
+          m_MethodName: Change
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3436654759790620770}
+          m_TargetAssemblyTypeName: ChangeSoloCamera, Assembly-CSharp
+          m_MethodName: Change
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &8792207033033620723
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91627,6 +91673,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3436654760520156621}
   - component: {fileID: 1368754307}
+  - component: {fileID: 1919309494}
   m_Layer: 0
   m_Name: MazePuzzle
   m_TagString: Untagged
@@ -91743,6 +91790,25 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1919309494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654760520156618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbef1aaa6f68d3844a67aea68bc08d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chapter: 11
+  cutscenes:
+  - {fileID: 1762467207}
+  - {fileID: 1346358867}
+  onLoadEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3436654760520196266
 GameObject:
   m_ObjectHideFlags: 0
@@ -95432,6 +95498,7 @@ GameObject:
   - component: {fileID: 3436654760594186435}
   - component: {fileID: 3436654760594186432}
   - component: {fileID: 1287132093}
+  - component: {fileID: 7987622211902580815}
   m_Layer: 0
   m_Name: PassageCam
   m_TagString: Untagged
@@ -95494,6 +95561,18 @@ MonoBehaviour:
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 3436654759329782194}
 --- !u!114 &1287132093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654760594186433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58e3d8737c975f7489030b9393e0fd8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7987622211902580815
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
