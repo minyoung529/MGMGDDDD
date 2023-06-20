@@ -68,11 +68,16 @@ public class PlayerHold : PlayerMono
         switch (action)
         {
             case InputAction.PickUp_And_Drop:
-                if (!holdingPet)
-                    PickUp();
-                else
-                    Drop();
-                break;
+                {
+                    Pet holdablePet = GetHodlablePet();
+
+                    // ??? ?????? ????????
+                    if (holdingPet)
+                        Drop();
+                    else if (holdablePet) // 잡을 수 있는 펫이 있으면 잡기
+                        PickUp(holdablePet);
+                    break;
+                }
 
             case InputAction.Throw:
                 Throw();
@@ -86,15 +91,31 @@ public class PlayerHold : PlayerMono
         curInput = action;
     }
 
-    private void PickUp()
+    private void PickUp(Pet pet)
     {
         OnHold();
 
+        holdingPet = pet;
+
+        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
+        Vector3 petPos = holdingPet.transform.position;
+        petPos.y = transform.position.y;
+        transform.DOLookAt(petPos, 0.5f);
+        controller.Rigid.velocity = Vector3.zero;
+        controller.Move.ChangeState(PlayerStateName.PickUp);
+    }
+
+    private Pet GetHodlablePet()
+    {
+        Pet holdingPet = null;
+
         Dictionary<float, Pet> inDistance = new Dictionary<float, Pet>();
         foreach (Pet item in GameManager.Instance.Pets)
-        { //각과 거리에 해당되는 펫만 거르기
+        {
+            // 각과 거리에 해당되는 펫만 거르기
             Vector3 dir = item.transform.position - transform.position;
             float dot = Vector3.Dot(transform.forward, dir.normalized);
+
             if (dir.magnitude <= distance2Pet && dot >= 0.5f)
             {
                 inDistance.Add(dot, item);
@@ -106,7 +127,8 @@ public class PlayerHold : PlayerMono
                    select item.Value;
 
         foreach (Pet item in pets)
-        { //각도 순으로 집어지는지 확인
+        {
+            //각도 순으로 집어지는지 확인
             item.Event.TriggerEvent((int)PetEventName.OnHold);
             if (item.State.CurStateIndex == (int)PetStateName.Held)
             {
@@ -115,17 +137,7 @@ public class PlayerHold : PlayerMono
             }
         }
 
-        if (!holdingPet)
-        {
-            controller.Move.UnLockInput();
-            return;
-        }
-        Physics.IgnoreCollision(controller.Coll, holdingPet.Coll, true);
-        Vector3 petPos = holdingPet.transform.position;
-        petPos.y = transform.position.y;
-        transform.DOLookAt(petPos, 0.5f);
-        controller.Rigid.velocity = Vector3.zero;
-        controller.Move.ChangeState(PlayerStateName.PickUp);
+        return holdingPet;
     }
 
     private void Drop()
@@ -137,12 +149,13 @@ public class PlayerHold : PlayerMono
 
     private void Throw()
     {
-        OnExitHold();
-        if (!holdingPet)
+        if (holdingPet == null)
         {
             controller.Move.UnLockInput();
             return;
         }
+
+        OnExitHold();
         controller.Move.ChangeState(PlayerStateName.Throw);
     }
 
