@@ -121,11 +121,11 @@ public class Lever : MonoBehaviour
     #region Debug
     public void DebugOnLever()
     {
-        Debug.Log("On Lever");
+        // Debug.Log("On Lever");
     }
     public void DebugOffLever()
     {
-        Debug.Log("Off Lever");
+        // Debug.Log("Off Lever");
     }
     #endregion
 

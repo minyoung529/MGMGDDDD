@@ -1,65 +1,77 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum HintEnum
 {
-    None
+    None = -1
 
-    , OilRoom = 1 << 0
-    , FireRoom = 1 << 1
-    , StickyRoom = 1 << 2
-    , Bridge = 1 << 3
+    , OilRoom = 0
+    , FireRoom = 1
+    , StickyRoom = 2
+    , Bridge = 3
 }
 public class HintLightController : MonoBehaviour
 {
-    private static Dictionary<HintEnum, ChangeEmission[]> lightsDictionary = new Dictionary<HintEnum, ChangeEmission[]>();
-    static HintEnum curState = HintEnum.None;
+    private Dictionary<HintEnum, HintLight> lightsDictionary = new Dictionary<HintEnum, HintLight>();
+    private HintEnum curState = HintEnum.None;
 
-    private void Awake()
+    void Awake()
     {
-        ResetHintLight();
+        HintLight[] lights = FindObjectsOfType<HintLight>();
+
+        foreach (HintLight hintLight in lights)
+        {
+            try
+            {
+                lightsDictionary.Add(hintLight.State, hintLight);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        }
     }
 
-    public static void Hint(HintEnum hint)
+    public void Hint(HintEnum hint)
     {
-        if(curState != HintEnum.None) OffHint(curState);
+        OffHint(curState);
         curState = hint;
         OnHint(curState);
     }
+
+    public void Hint(int idx)
+    {
+        OffHint(curState);
+        curState = (HintEnum)idx;
+        OnHint(curState);
+    }
+
 
     #region Set
 
     private void ResetHintLight()
     {
-        lightsDictionary.Clear();
-
-        // 전부 다 꺼놓기
         AllOffLight();
-    }
-
-    public static void AddLights(HintEnum state, ChangeEmission[] emissions)
-    {
-        lightsDictionary.Add(state, emissions);
     }
 
     #endregion
 
     #region On/Off
 
-    private static void OnHint(HintEnum hint)
+    public void OnHint(HintEnum hint)
     {
-        foreach (ChangeEmission light in lightsDictionary[hint])
-        {
-            light.Change();
-        }
+        if (hint == HintEnum.None) return;
+
+        lightsDictionary[hint].HintOn();
     }
-    private static void OffHint(HintEnum hint)
+
+    public void OffHint(HintEnum hint)
     {
-        foreach (ChangeEmission light in lightsDictionary[hint])
-        {
-            light.BackToOriginalColor();
-        }
+        if (hint == HintEnum.None) return;
+
+        lightsDictionary[hint].HintOff();
     }
     #endregion
 
@@ -78,8 +90,5 @@ public class HintLightController : MonoBehaviour
             OnHint((HintEnum)i);
         }
     }
-
     #endregion
-
-
 }

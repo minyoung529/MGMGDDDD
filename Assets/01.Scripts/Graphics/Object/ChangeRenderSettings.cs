@@ -42,7 +42,7 @@ public class ChangeRenderSettings : MonoBehaviour
     [SerializeField]
     private UnityEvent onChange;
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {

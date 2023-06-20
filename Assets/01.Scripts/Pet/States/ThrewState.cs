@@ -44,7 +44,6 @@ public class ThrewState : PetState
         landingTime += Time.deltaTime;
         if (landingTime >= timeToWake)
         {
-            Debug.Log(landingTime);
             pet.Event.TriggerEvent((int)PetEventName.OnLanding);
         }
     }

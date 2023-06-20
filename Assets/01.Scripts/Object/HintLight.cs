@@ -8,29 +8,31 @@ public class HintLight : MonoBehaviour
 {
     [SerializeField] HintEnum state;
     [SerializeField] Color changeColor;
+    [SerializeField] List<ChangeEmission> lights;
 
-    private ChangeEmission[] lights;
-
-    private void Awake()
-    {
-        lights = transform.GetComponentsInChildren<ChangeEmission>();
-    }
-
-    private void Start()
-    {
-        SettingColor();
-        HintLightController.AddLights(state, lights);
-    }
+    public HintEnum State => state;
 
     [ContextMenu("Hint")]
-    public void OnHint()
+    public void HintOn()
     {
-        HintLightController.Hint(state);
+        SettingColor();
+        foreach (ChangeEmission changeEmission in lights)
+        {
+            changeEmission.Change();
+        }
+    }
+
+    public void HintOff()
+    {
+        foreach (ChangeEmission changeEmission in lights)
+        {
+            changeEmission.BackToOriginalColor();
+        }
     }
 
     private void SettingColor()
     {
-        foreach(ChangeEmission changeEmission in lights)
+        foreach (ChangeEmission changeEmission in lights)
         {
             changeEmission.SetColor(changeColor);
         }
