@@ -93,12 +93,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         chapters.Sort(compare);
     }
 
-    [ContextMenu("Reset")]
-    public void ResetData()
-    {
-        SaveSystem.ResetData();
-    }
-
     public void SetSavePoint(SavePoint point)
     {
         CurChapter = point.Chapter;

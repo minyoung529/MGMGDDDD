@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 public static class SaveSystem
 {
@@ -11,12 +12,18 @@ public static class SaveSystem
     {
         string saveFilePath = SavePath + saveFileName + ".json";
 
-        if (!File.Exists(saveFilePath))
+        if (Directory.Exists(saveFilePath)||File.Exists(saveFilePath))
         {
-            //  Debug.LogError("No such saveFile exists");
+            File.Delete(saveFilePath);
+            SaveData newData = new(0, 0, new List<PetType>());
+            CurSaveData = newData;
+            Save(newData);
+        }
+        else
+        {
+            Debug.LogError("No such saveFile exists");
             return;
         }
-        File.Delete(saveFilePath);
 
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
@@ -31,7 +38,6 @@ public static class SaveSystem
         }
 
         string saveJson = JsonUtility.ToJson(saveData);
-
         string saveFilePath = SavePath + saveFileName + ".json";
         File.WriteAllText(saveFilePath, saveJson);
 

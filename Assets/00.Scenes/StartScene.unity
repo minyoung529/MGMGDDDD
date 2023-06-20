@@ -3649,7 +3649,6 @@ GameObject:
   - component: {fileID: 302980426}
   - component: {fileID: 302980425}
   - component: {fileID: 302980424}
-  - component: {fileID: 302980427}
   - component: {fileID: 302980428}
   m_Layer: 5
   m_Name: StartButton
@@ -3723,21 +3722,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 479424071}
-        m_TargetAssemblyTypeName: ChapterManager, Assembly-CSharp
-        m_MethodName: ResetData
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 302980427}
-        m_TargetAssemblyTypeName: ChangeScene, Assembly-CSharp
-        m_MethodName: GoTo
+      - m_Target: {fileID: 682125434}
+        m_TargetAssemblyTypeName: LoadChapterList, Assembly-CSharp
+        m_MethodName: ResetPlay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3785,27 +3772,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 302980422}
   m_CullTransparentMesh: 1
---- !u!114 &302980427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302980422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41d1e5d65284dad4e826a5dc2ec7ef31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneType: 0
-  changeType: 0
-  collideLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  loading: 1
-  OnChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &302980428
 MonoBehaviour:
   m_ObjectHideFlags: 0

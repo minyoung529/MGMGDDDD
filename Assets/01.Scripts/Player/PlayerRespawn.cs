@@ -34,6 +34,7 @@ public class PlayerRespawn : PlayerMono
             dieParticle = Instantiate(dieParticlePref);
 
         EventManager.StartListening(EventName.LoadChapter, InitPlayer);
+        EventManager.StartListening(EventName.ResetGame, ResetCheckPoint);
         EventManager.StartListening(EventName.PlayerDie, OnDie);
 
         pointParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
@@ -53,6 +54,13 @@ public class PlayerRespawn : PlayerMono
         PetManager.Instance.AllPetActions(x => x.transform.position = pos);
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
+
+    private void ResetCheckPoint(EventParam param = null)
+    {
+        curIndex = 1;
+        maxIndex = 1;
+    }
+
 
     private void CheckSpawnPoint()
     {
@@ -145,5 +153,6 @@ public class PlayerRespawn : PlayerMono
     {
         EventManager.StopListening(EventName.PlayerDie, OnDie);
         EventManager.StopListening(EventName.LoadChapter, InitPlayer);
+        EventManager.StopListening(EventName.ResetGame, ResetCheckPoint);
     }
 }
