@@ -16,6 +16,7 @@ public class ChangeSoloCamera : MonoBehaviour
     [ContextMenu("Back Camera")]
     public void Back()
     {
+        Debug.Log("Def");
         CameraSwitcher.SwitchCamera(GameManager.Instance.PlayerController.GetComponentInChildren<CinemachineVirtualCameraBase>());
     }
 }

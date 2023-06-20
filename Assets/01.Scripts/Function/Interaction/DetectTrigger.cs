@@ -33,6 +33,7 @@ public class DetectTrigger : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
+            Debug.Log("Exit");
             OnExit?.Invoke();
         }
     }

@@ -25,8 +25,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
 
     private void Start()
     {
-        ResetCamera();
-
         animator = GetComponent<Animator>();
 
         CutSceneManager.Instance.AddStartCutscene(InactiveCrossHair);
@@ -44,14 +42,6 @@ public class ThirdPersonCameraControll : MonoBehaviour
     }
 
     #region Camera Set
-    private void ResetCamera()
-    {
-        CameraSwitcher.UnRegister(defaultCamera);
-        CameraSwitcher.Register(defaultCamera);
-        CameraSwitcher.SetDefaultCamera(defaultCamera);
-
-        SetDefault();
-    }
     public void SetDefault()
     {
         MouseCursor.MouseCursorEdit(false, CursorLockMode.Locked);

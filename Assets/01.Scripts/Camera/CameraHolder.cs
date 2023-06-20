@@ -14,6 +14,14 @@ public class CameraHolder : MonoBehaviour
             CameraSwitcher.Register(camBase);
     }
 
+    public void ChangeThisCam()
+    {
+        Debug.Log(camBase.name);
+        if (camBase)
+            CameraSwitcher.SwitchCamera(camBase);
+    }
+
+
     void OnDestroy()
     {
         if (camBase)
