@@ -63,7 +63,6 @@ public class PlayerHold : PlayerMono
     private void GetInput(InputAction action, float value)
     {
         if (controller.Move.IsInputLock) return;
-        controller.Move.LockInput();
 
         switch (action)
         {
@@ -73,14 +72,21 @@ public class PlayerHold : PlayerMono
 
                     // ??? ?????? ????????
                     if (holdingPet)
+                    {
                         Drop();
+                        controller.Move.LockInput();
+                    }
                     else if (holdablePet) // 잡을 수 있는 펫이 있으면 잡기
+                    {
                         PickUp(holdablePet);
+                        controller.Move.LockInput();
+                    }
                     break;
                 }
 
             case InputAction.Throw:
                 Throw();
+                controller.Move.LockInput();
                 break;
 
             default:
