@@ -67,6 +67,18 @@ public class GameManager : MonoSingleton<GameManager>
         SceneController.ListeningEnter(FindFindableObject);
         RenderSettingController.Start();
         CameraSwitcher.Start();
+
+        for (int i = 0; i < (int)SceneType.Count; i++)
+        {
+            if (i == (int)SceneType.StartScene)
+            {
+                SceneController.ListeningEnter((SceneType)i, CursorEnabled);
+            }
+            else
+            {
+                SceneController.ListeningEnter((SceneType)i, CursorDisabled);
+            }
+        }
     }
 
     private void FindPlayer()
@@ -130,6 +142,9 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
+    public void CursorEnabled() => SetCursorVisible(true);
+    public void CursorDisabled() => SetCursorVisible(false);
+
     public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable
     {
         T target = default;
@@ -156,6 +171,7 @@ public class GameManager : MonoSingleton<GameManager>
     private void OnDestroy()
     {
         SceneController.StopListeningEnter(SetMainCamera);
+        SceneController.StopListeningEnter(SceneType.StartScene, CursorEnabled);
     }
 
     private void OnApplicationQuit()

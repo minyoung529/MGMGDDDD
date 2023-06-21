@@ -26,10 +26,9 @@ public class ChangeScene : MonoBehaviour
         if (go)
             return;
         OnChanged?.Invoke();
+
         SceneController.ChangeScene(sceneType, loading);
 
-        GameManager.Instance.SetCursorVisible(false);
-        
         go = true;
     }
 

@@ -125,13 +125,13 @@ public class SceneController : MonoBehaviour
         OnExitScene[sceneType] += onExit;
     }
 
-    public static void StopListningEnter(SceneType sceneType, Action onEnter)
+    public static void StopListeningEnter(SceneType sceneType, Action onEnter)
     {
         Check(sceneType, OnEnterScene);
         OnEnterScene[sceneType] -= onEnter;
     }
 
-    public static void StopListningExit(SceneType sceneType, Action onExit)
+    public static void StopListeningExit(SceneType sceneType, Action onExit)
     {
         Check(sceneType, OnExitScene);
         OnExitScene[sceneType] -= onExit;

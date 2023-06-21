@@ -30,7 +30,7 @@ public class EventManager
     {
         if (eventDictionary.ContainsKey(eventName))
         {
-            eventDictionary[eventName].Invoke(message);
+            eventDictionary[eventName]?.Invoke(message);
         }
     }
 }
