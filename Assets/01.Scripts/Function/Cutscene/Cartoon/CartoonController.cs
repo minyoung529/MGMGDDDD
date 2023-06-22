@@ -36,8 +36,10 @@ public class CartoonController : MonoBehaviour
         }
     }
 
-    void Start()
+    IEnumerator Start()
     {
+        yield return null;
+        
         if (playOnAwake)
         {
             if (skipPlay)
@@ -61,7 +63,9 @@ public class CartoonController : MonoBehaviour
 
     private IEnumerator PlayCoroutine()
     {
+        CutSceneManager.Instance.RemoveStartCutscene(SoundManager.Instance.MuteSound);
         CutSceneManager.Instance.EnterCutscene();
+        CutSceneManager.Instance.AddStartCutscene(SoundManager.Instance.MuteSound);
 
         for (int i = 0; i < cartoonPlayers.Length; i++)
         {
