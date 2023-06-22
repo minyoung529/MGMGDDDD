@@ -68,13 +68,11 @@ public class GameManager : MonoSingleton<GameManager>
         RenderSettingController.Start();
         CameraSwitcher.Start();
 
+        SceneController.ListeningEnter(SceneType.StartScene, CursorEnabled);
+
         for (int i = 0; i < (int)SceneType.Count; i++)
         {
-            if (i == (int)SceneType.StartScene)
-            {
-                SceneController.ListeningEnter((SceneType)i, CursorEnabled);
-            }
-            else
+            if (i != (int)SceneType.StartScene)
             {
                 SceneController.ListeningEnter((SceneType)i, CursorDisabled);
             }
@@ -172,6 +170,14 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SceneController.StopListeningEnter(SetMainCamera);
         SceneController.StopListeningEnter(SceneType.StartScene, CursorEnabled);
+
+        for (int i = 0; i < (int)SceneType.Count; i++)
+        {
+            if (i != (int)SceneType.StartScene)
+            {
+                SceneController.StopListeningEnter((SceneType)i, CursorDisabled);
+            }
+        }
     }
 
     private void OnApplicationQuit()

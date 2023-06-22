@@ -18,7 +18,7 @@ public class TutorialTrigger_HasSpecificPet : TutorialTrigger
             case PetType.StickyPet:
                 return PetManager.Instance.GetMyPetByKind<StickyPet>();
         }
-
+        
         return false;
     }
 }

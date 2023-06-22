@@ -10,10 +10,10 @@ public class TutorialTrigger : MonoBehaviour
     [SerializeField]
     private bool isCollide = true;
 
-    [SerializeField, Tooltip("½Ã°£ÀÌ Áö³ª¸é ÀÚµ¿À¸·Î ¾ø¾îÁö´ÂÁö")]
+    [SerializeField, Tooltip("ì‹œê°„ì´ ì§€ë‚˜ë©´ ìë™ìœ¼ë¡œ ì—†ì–´ì§€ëŠ”ì§€")]
     private bool autoEnd = true;
 
-    [SerializeField, Tooltip("Äİ¶óÀÌ´õ°¡ ³ª°¡¸é ÀÚµ¿À¸·Î ¾ø¾îÁö´ÂÁö")]
+    [SerializeField, Tooltip("ì½œë¼ì´ë”ê°€ ë‚˜ê°€ë©´ ìë™ìœ¼ë¡œ ì—†ì–´ì§€ëŠ”ì§€")]
     private bool exitEqualsUnShow = true;
 
     [SerializeField]
@@ -27,13 +27,13 @@ public class TutorialTrigger : MonoBehaviour
 
     private TutorialController tutorialController = null;
     private bool isEnter = false;
-
+    
     private Action onEnter;
     private Action onExit;
 
     #region ACTION
 
-    [Tooltip("ÀÌº¥Æ®¸¦ ±¸µ¶ÇÏÁö ¾ÊÀ¸¸é ±»ÀÌ ¼³Á¤ÇÒ ÇÊ¿ä°¡ ¾øÀ½")]
+    [Tooltip("ì´ë²¤íŠ¸ë¥¼ êµ¬ë…í•˜ì§€ ì•Šìœ¼ë©´ êµ³ì´ ì„¤ì •í•  í•„ìš”ê°€ ì—†ìŒ")]
     [SerializeField]
     private InputAction inputAction = InputAction.Interaction;
 

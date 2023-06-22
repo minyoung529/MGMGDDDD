@@ -238,8 +238,6 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     public void MuteSound()
     {
-        SetVolume("BGM", 0f, 1f);
-        SetVolume("SFX", 0f, 1f);
         SetVolume("Master", 0f, 1f);
     }
 
