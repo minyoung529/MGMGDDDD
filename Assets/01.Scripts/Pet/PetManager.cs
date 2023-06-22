@@ -116,8 +116,7 @@ public class PetManager : MonoSingleton<PetManager>
         for (int i = 0; i < petList.Count; i++)
         {
             Pet bindingPet = BindingPet(petList[i]);
-            if (bindingPet == null)
-                continue;
+            if (bindingPet == null) continue;
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
             pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position);
         }

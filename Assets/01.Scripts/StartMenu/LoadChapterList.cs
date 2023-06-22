@@ -63,6 +63,8 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListningExit(SceneType.Lobby_FirstFloor, () => SaveSystem.Save(SaveSystem.CurSaveData));
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.Clock_Lobby, () => SaveSystem.Save(SaveSystem.CurSaveData));
+        SceneController.ListeningEnter(SceneType.SecondScene, ChapterManager.Instance.LoadGame);
+        SceneController.ListningExit(SceneType.SecondScene, () => SaveSystem.Save(SaveSystem.CurSaveData));
 
         SettingChapterButton();
     }
