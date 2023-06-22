@@ -29,8 +29,8 @@ public class SoundManager : MonoSingleton<SoundManager>
 
         pool = new ObjectPool<AudioSourceObject>(CreateAudio, OnGetAudio, OnRelease, OnDestroyed, maxSize: 5);
 
-        CutSceneManager.Instance.AddStartCutscene(MuteBGM);
-        CutSceneManager.Instance.AddEndCutscene(LoadBGMVolume);
+        CutSceneManager.Instance.AddStartCutscene(MuteSound);
+        CutSceneManager.Instance.AddEndCutscene(LoadVolumeSmooth);
     }
 
     private void SetAudioSource()
@@ -46,7 +46,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     private void Start()
     {
-        LoadBGMVolume();
+        LoadVolume();
     }
 
     #region EFFECT SOUND
@@ -220,7 +220,15 @@ public class SoundManager : MonoSingleton<SoundManager>
         if (group != null)
         {
             float calculatedVolume = Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20;
-            audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration);
+
+            if (duration == 0f)
+            {
+                audioMixer.SetFloat($"{groupName}Volume", calculatedVolume);
+            }
+            else
+            {
+                audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration);
+            }
         }
         else
         {
@@ -228,28 +236,33 @@ public class SoundManager : MonoSingleton<SoundManager>
         }
     }
 
-    private void MuteBGM()
+    public void MuteSound()
     {
         SetVolume("BGM", 0f, 1f);
+        SetVolume("SFX", 0f, 1f);
+        SetVolume("Master", 0f, 1f);
     }
 
-    private void LoadBGMVolume()
+    public void LoadVolume(float duration = 0f)
     {
-        if(SaveSystem.CurSaveData == null) SaveSystem.Load();
+        if (SaveSystem.CurSaveData == null) SaveSystem.Load();
         SaveData data = SaveSystem.CurSaveData;
-        SetVolume("BGM", 0f, 0f);
-        SetVolume("SFX", 0f, 0f);
-        SetVolume("Master", 0f, 0f);
 
-        SetVolume("BGM", data.bgmVolume, 1f);
-        SetVolume("SFX", data.sfxVolume, 1f);
-        SetVolume("Master", data.masterVolume, 1f);
+        SetVolume("BGM", data.bgmVolume, duration);
+        SetVolume("SFX", data.sfxVolume, duration);
+        SetVolume("Master", data.masterVolume, duration);
     }
+
+    public void LoadVolumeSmooth()
+    {
+        LoadVolume(1f);
+    }
+
     #endregion
 
     private void OnDestroy()
     {
-        CutSceneManager.Instance.RemoveStartCutscene(MuteBGM);
-        CutSceneManager.Instance.RemoveEndCutscene(LoadBGMVolume);
+        CutSceneManager.Instance.RemoveStartCutscene(MuteSound);
+        CutSceneManager.Instance.RemoveEndCutscene(LoadVolumeSmooth);
     }
 }

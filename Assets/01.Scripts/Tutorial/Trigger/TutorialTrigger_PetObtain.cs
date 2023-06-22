@@ -8,7 +8,7 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
 
     private BoxCollider boxCollider;
 
-    protected void Start()
+    protected override void Start()
     {
         base.Start();
         pet ??= transform.parent.GetComponentInChildren<Pet>();
