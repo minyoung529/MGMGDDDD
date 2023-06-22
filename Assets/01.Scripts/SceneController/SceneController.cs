@@ -50,6 +50,7 @@ public class SceneController : MonoBehaviour
     private void EnterCurrentScene(Scene prev, Scene cur)
     {
         OnEnterScene[curScene]?.Invoke();
+        Debug.Log("On enter Scene");
     }
     public static void ChangeScene(SceneType sceneType, bool isLoading = true)
     {

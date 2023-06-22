@@ -6,6 +6,7 @@ public class DontDestroyOnLoad : MonoBehaviour
 {
     void Awake()
     {
-        DontDestroyOnLoad(this);
+        transform.SetParent(null);
+        DontDestroyOnLoad(this.gameObject);
     }
 }

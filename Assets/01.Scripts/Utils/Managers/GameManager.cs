@@ -49,6 +49,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     private Vector3 mouseHit;
 
+    private bool isStart = false;
+
     protected override void Awake()
     {
         SaveSystem.Load();
@@ -62,6 +64,8 @@ public class GameManager : MonoSingleton<GameManager>
     private void Start()
     {
         // LATER FIX
+        isStart = true;
+
         SceneController.ListeningEnter(SetMainCamera);
         SceneController.ListeningEnter(FindPlayer);
         SceneController.ListeningEnter(FindFindableObject);
@@ -140,8 +144,14 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-    public void CursorEnabled() => SetCursorVisible(true);
-    public void CursorDisabled() => SetCursorVisible(false);
+    public void CursorEnabled()
+    {
+        SetCursorVisible(true);
+    }
+    public void CursorDisabled()
+    {
+        SetCursorVisible(false);
+    }
 
     public T GetNearest<T>(Transform one, T[] targets, float range = float.MaxValue) where T : MonoBehaviour, IFindable
     {
@@ -168,14 +178,17 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void OnDestroy()
     {
-        SceneController.StopListeningEnter(SetMainCamera);
-        SceneController.StopListeningEnter(SceneType.StartScene, CursorEnabled);
-
-        for (int i = 0; i < (int)SceneType.Count; i++)
+        if (isStart)
         {
-            if (i != (int)SceneType.StartScene)
+            SceneController.StopListeningEnter(SetMainCamera);
+            SceneController.StopListeningEnter(SceneType.StartScene, CursorEnabled);
+
+            for (int i = 0; i < (int)SceneType.Count; i++)
             {
-                SceneController.StopListeningEnter((SceneType)i, CursorDisabled);
+                if (i != (int)SceneType.StartScene)
+                {
+                    SceneController.StopListeningEnter((SceneType)i, CursorDisabled);
+                }
             }
         }
     }

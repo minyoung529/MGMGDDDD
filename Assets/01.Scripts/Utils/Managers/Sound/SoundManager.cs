@@ -260,7 +260,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     private void OnDestroy()
     {
-        CutSceneManager.Instance.RemoveStartCutscene(MuteSound);
-        CutSceneManager.Instance.RemoveEndCutscene(LoadVolumeSmooth);
+        CutSceneManager.Instance?.RemoveStartCutscene(MuteSound);
+        CutSceneManager.Instance?.RemoveEndCutscene(LoadVolumeSmooth);
     }
 }

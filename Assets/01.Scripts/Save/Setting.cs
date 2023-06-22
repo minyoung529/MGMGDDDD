@@ -37,24 +37,26 @@ public class Setting : MonoSingleton<Setting>
     private void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-        canvasGroup.alpha = 1f;
 
         InputManager.StartListeningInput(InputAction.Escape, ToggleActive);
-        Setting.Instance.gameObject.SetActive(false);   // To set instance
 
         hSensitivity.onValueChanged.AddListener(OnUpdatevalue);
         vSensitivity.onValueChanged.AddListener(OnUpdatevalue);
         masterVolume.onValueChanged.AddListener(OnUpdatevalue);
         bgmVolume.onValueChanged.AddListener(OnUpdatevalue);
         sfxVolume.onValueChanged.AddListener(OnUpdatevalue);
+
+        canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void Active()
     {
         LoadValue();
-        gameObject.SetActive(true);
         Time.timeScale = 0f;
         isActive = true;
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
 
         cachedMouseVisible = Cursor.visible;
         cachedcursorLockMode = Cursor.lockState;
@@ -67,8 +69,10 @@ public class Setting : MonoSingleton<Setting>
     {
         SaveData();
         Time.timeScale = 1f;
-        gameObject.SetActive(false);
         isActive = false;
+
+        canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
 
         Cursor.visible = cachedMouseVisible;
         Cursor.lockState = cachedcursorLockMode;
