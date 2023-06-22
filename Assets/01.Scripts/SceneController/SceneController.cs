@@ -47,7 +47,6 @@ public class SceneController : MonoBehaviour
         }
     }
 
-
     private void EnterCurrentScene(Scene prev, Scene cur)
     {
         OnEnterScene[curScene]?.Invoke();
@@ -65,8 +64,9 @@ public class SceneController : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(sceneType.ToString());
+            AsyncOperation op = SceneManager.LoadSceneAsync(sceneType.ToString());
             Check(curScene, OnEnterScene);
+            op.completed += ChangeScene;
         }
     }
 

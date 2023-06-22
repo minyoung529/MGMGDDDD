@@ -36,6 +36,8 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         get
         {
+            if (SaveSystem.CurSaveData == null)
+                SaveSystem.Load();
             return SaveSystem.CurSaveData.curChapter;
         }
         set
@@ -48,10 +50,19 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     {
         get
         {
+            if (SaveSystem.CurSaveData == null)
+                SaveSystem.Load();
+
             return SaveSystem.CurSaveData.maxChapter;
         }
     }
-    public ChapterSO GetCurChapterSO { get { return chapters[(int)CurChapter]; } }
+    public ChapterSO GetCurChapterSO 
+    {
+        get 
+        {
+            return chapters[(int)CurChapter];
+        }
+    }
     public ChapterSO GetChapterSO(Chapter chapter) { return chapters[(int)chapter]; }
     int compare(ChapterSO a, ChapterSO b) { return (int)a.chapterName < (int)b.chapterName ? -1 : 1; }
     private List<PetType> GetPetTypeList()
@@ -107,10 +118,10 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         if (SaveSystem.CurSaveData == null) return;
         EventParam eventParam = new();
 
+
         eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
 
-        Debug.Log(eventParam["position"]);
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
     }
 

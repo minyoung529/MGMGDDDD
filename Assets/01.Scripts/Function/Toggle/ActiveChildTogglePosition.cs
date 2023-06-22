@@ -40,7 +40,6 @@ public class ActiveChildTogglePosition : MonoBehaviour
 
     public void ForceClosePos()
     {
-        Debug.Log("Open");
         foreach (var position in togglePositions)
         {
             position.ForceClosePosition();

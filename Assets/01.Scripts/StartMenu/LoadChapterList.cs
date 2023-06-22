@@ -59,7 +59,7 @@ public class LoadChapterList : MonoBehaviour
 
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.LivingRoom, () => SaveSystem.Save(SaveSystem.CurSaveData));
-        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, () => { ChapterManager.Instance.LoadGame(); });
+        SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.Lobby_FirstFloor, () => SaveSystem.Save(SaveSystem.CurSaveData));
         SceneController.ListeningEnter(SceneType.Clock_Lobby, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.Clock_Lobby, () => SaveSystem.Save(SaveSystem.CurSaveData));
