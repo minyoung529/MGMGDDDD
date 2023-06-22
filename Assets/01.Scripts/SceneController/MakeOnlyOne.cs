@@ -10,6 +10,7 @@ public class MakeOnlyOne : MonoBehaviour
     {
         Object[] objs = FindObjectsOfType(scriptType.GetType());
 
+        // 이미 있을 때 지우기
         if(objs == null || objs.Length > 1)
         {
             Destroy(gameObject);

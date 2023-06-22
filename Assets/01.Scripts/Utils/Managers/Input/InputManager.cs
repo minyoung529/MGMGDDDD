@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
 
-public class InputManager : MonoSingleton<InputManager> 
+public class InputManager : MonoSingleton<InputManager>
 {
     [SerializeField] private bool isLoadData = false;
 
@@ -23,97 +23,120 @@ public class InputManager : MonoSingleton<InputManager>
         = new Dictionary<InputAction, Action<InputAction, float>>();
     #endregion  
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
         SAVE_PATH = string.Concat(Application.persistentDataPath, "/Control");
 
-        if (Instance == this) {
+        if (Instance == this)
+        {
             LoadKeyMapping();
         }
 
         base.Awake();
     }
 
-    private void Update() {
-        CheckInput();
+    private void Update()
+    {
+        if (Instance == this)
+            CheckInput();
     }
 
-    private void OnApplicationQuit() {
+    private void OnApplicationQuit()
+    {
         SaveKeyMapping(keyBinding);
     }
 
-    private void LoadKeyMapping() {
-        if (File.Exists(string.Concat(SAVE_PATH, SAVE_FILE)) && isLoadData) {
+    private void LoadKeyMapping()
+    {
+        if (File.Exists(string.Concat(SAVE_PATH, SAVE_FILE)) && isLoadData)
+        {
             string jsonSave = File.ReadAllText(string.Concat(SAVE_PATH, SAVE_FILE));
             inputSave = JsonConvert.DeserializeObject<List<InputSave>>(jsonSave);
             keyBinding.Clear();
         }
-        foreach (InputSave save in inputSave) {
+        foreach (InputSave save in inputSave)
+        {
             if (keyBinding.ContainsKey(save.Action))
                 keyBinding.Remove(save.Action);
             keyBinding.Add(save.Action, save.Code);
         }
     }
 
-    private void SaveKeyMapping(Dictionary<InputAction, InputInfo[]> keyDictionary) {
-        if (!Directory.Exists(SAVE_PATH)) {
+    private void SaveKeyMapping(Dictionary<InputAction, InputInfo[]> keyDictionary)
+    {
+        if (!Directory.Exists(SAVE_PATH))
+        {
             Directory.CreateDirectory(SAVE_PATH);
         }
         List<InputSave> save = new List<InputSave>();
-        foreach (KeyValuePair<InputAction, InputInfo[]> pair in keyDictionary) {
+        foreach (KeyValuePair<InputAction, InputInfo[]> pair in keyDictionary)
+        {
             save.Add(new InputSave(pair.Key, pair.Value));
         }
         string jsonSave = JsonConvert.SerializeObject(save.ToArray(), Formatting.Indented);
         File.WriteAllText(string.Concat(SAVE_PATH, SAVE_FILE), jsonSave);
     }
 
-    public void ChangeKeyMapping(InputAction action, InputInfo[] inputInfo) {
+    public void ChangeKeyMapping(InputAction action, InputInfo[] inputInfo)
+    {
+        Debug.Log(action.ToString());
         keyBinding[action] = inputInfo;
         SaveKeyMapping(keyBinding);
     }
 
-    private void CheckInput() {
-
+    private void CheckInput()
+    {
         List<InputAction> keys = eventDictionary.Keys.ToList();
 
-        for (int i = 0; i < keys.Count; i++) {
+        for (int i = 0; i < keys.Count; i++)
+        {
             InputAction action = keys[i];
             if (!keyBinding.ContainsKey(action))
             {
-                Debug.LogError("Key가 없음");
+                Debug.LogError($"Key가 없음 : {action.ToString()}");
             }
             InputInfo[] infos = keyBinding[action];
             if (infos == null) continue;
             bool result = true;
             float param = 0;
-            for (int keyIndex = 0; keyIndex < infos.Length; keyIndex++) {
+            for (int keyIndex = 0; keyIndex < infos.Length; keyIndex++)
+            {
                 object value = CheckInputType(infos[keyIndex]);
-                if (infos[keyIndex].inputType <= InputType.GetKeyUp) {
-                    if (!(bool)value) {
+                if (infos[keyIndex].inputType <= InputType.GetKeyUp)
+                {
+                    if (!(bool)value)
+                    {
                         result = false;
                         break;
                     }
                 }
-                else if (infos[keyIndex].inputType <= InputType.ScrollDown) {
-                    if ((float)value == 0f) {
+                else if (infos[keyIndex].inputType <= InputType.ScrollDown)
+                {
+                    if ((float)value == 0f)
+                    {
                         result = false;
                         break;
                     }
                     param = (float)value;
                 }
-                else {
+                else
+                {
                     Debug.LogError("입력의 방식이 특정되지 않았습니다");
                     result = false;
                     break;
                 }
             }
-            if (result) {
+            if (result)
+            {
                 eventDictionary[action].Invoke(action, param);
             }
         }
     }
 
-    private object CheckInputType(InputInfo inputInfo) {
-        switch (inputInfo.inputType) {
+    private object CheckInputType(InputInfo inputInfo)
+    {
+        switch (inputInfo.inputType)
+        {
             case InputType.GetKeyDown:
                 return Input.GetKeyDown(inputInfo.keyCode);
             case InputType.GetKey:
@@ -133,21 +156,26 @@ public class InputManager : MonoSingleton<InputManager>
         }
     }
 
-    static public void StartListeningInput(InputAction action, Action<InputAction, float> listener) {
-        if (eventDictionary.ContainsKey(action)) {
+    static public void StartListeningInput(InputAction action, Action<InputAction, float> listener)
+    {
+        if (eventDictionary.ContainsKey(action))
+        {
             eventDictionary[action] += listener;
         }
-        else {
+        else
+        {
             eventDictionary.Add(action, listener);
         }
     }
 
-    static public void StopListeningInput(InputAction action, Action<InputAction, float> listener) {
-        if (eventDictionary.ContainsKey(action)) {
-
+    static public void StopListeningInput(InputAction action, Action<InputAction, float> listener)
+    {
+        if (eventDictionary.ContainsKey(action))
+        {
             eventDictionary[action] -= listener;
-            
-            if (eventDictionary[action] == null) {
+
+            if (eventDictionary[action] == null)
+            {
                 eventDictionary.Remove(action);
             }
         }
