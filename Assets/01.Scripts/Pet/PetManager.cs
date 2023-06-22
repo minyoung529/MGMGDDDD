@@ -113,16 +113,14 @@ public class PetManager : MonoSingleton<PetManager>
         if (!eventParam.Contain("pets")) return;
         List<PetType> petList = (List<PetType>)eventParam["pets"];
 
-        Vector3 offset = Vector3.zero;
-
         for (int i = 0; i < petList.Count; i++)
         {
             Pet bindingPet = BindingPet(petList[i]);
             if (bindingPet == null) continue;
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
-            pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position + offset);
 
-            offset += new Vector3(1f,0f,0f) * 3f;
+            Vector3 offset = Vector3.right * 3f * i;
+            pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position + offset);
         }
     }
 
