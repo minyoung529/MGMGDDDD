@@ -146,9 +146,9 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i]?.OnUpdate();
         }
 
-        // #if DEVELOPMENT_BUILD || UNITY_EDITOR
-        //         // Debug_CreateAndGetPet();
-        // #endif
+        #if DEVELOPMENT_BUILD || UNITY_EDITOR
+               Debug_CreateAndGetPet();
+        #endif
     }
 
     public bool IsGet(Pet p)
@@ -219,6 +219,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnPetInteraction(InputAction input, float value)
     {
+        Debug.Log("Interact");
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 

@@ -581,23 +581,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1288777975, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
       propertyPath: OnChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1288777975, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
       propertyPath: OnChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1770020129}
+      objectReference: {fileID: 1288777974}
     - target: {fileID: 1288777975, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
       propertyPath: OnChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1288777975, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
       propertyPath: OnChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SaveChapter
+      value: Change
       objectReference: {fileID: 0}
     - target: {fileID: 1288777975, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
       propertyPath: OnChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ChapterManager, Assembly-CSharp
+      value: ChangeChapter, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1288777975, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
       propertyPath: OnChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -8810,6 +8810,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8858184560845747662, guid: 5e234df2fcf31c84580f0ca9730ede38, type: 3}
   m_PrefabInstance: {fileID: 72853821}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1288777974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288777973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea8d9e00af0c4243a2eca514da06be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chapter: 1
 --- !u!1 &1321450957
 GameObject:
   m_ObjectHideFlags: 0
@@ -14436,17 +14449,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bea1847bba6969e46b4a4c8d2b68cd38, type: 3}
---- !u!114 &1770020129 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2015541117, guid: bea1847bba6969e46b4a4c8d2b68cd38, type: 3}
-  m_PrefabInstance: {fileID: 1770020128}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b0c6529472039749a6c9c3836a1a8cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &1818575951
 MeshCollider:
   m_ObjectHideFlags: 0

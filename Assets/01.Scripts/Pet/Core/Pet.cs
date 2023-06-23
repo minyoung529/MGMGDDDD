@@ -362,6 +362,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     private void CheckInteract()
     {
+        Debug.Log("Check");
         Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
 
         SelectedObject.CurInteractObject.OnInteract();
