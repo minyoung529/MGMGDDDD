@@ -113,6 +113,7 @@ public class PetManager : MonoSingleton<PetManager>
         if (!eventParam.Contain("pets")) return;
         List<PetType> petList = (List<PetType>)eventParam["pets"];
 
+            pets.Clear();
         for (int i = 0; i < petList.Count; i++)
         {
             Pet bindingPet = BindingPet(petList[i]);
@@ -120,7 +121,7 @@ public class PetManager : MonoSingleton<PetManager>
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
 
             Vector3 offset = Vector3.right * 3f * i;
-            pets[i].SetForcePosition(GameManager.Instance.PlayerController.transform.position + offset);
+            bindingPet.SetForcePosition(GameManager.Instance.PlayerController.transform.position + offset);
         }
     }
 
@@ -219,7 +220,6 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnPetInteraction(InputAction input, float value)
     {
-        Debug.Log("Interact");
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -350,6 +350,7 @@ public class PetManager : MonoSingleton<PetManager>
         for (int i = 0; i < transform.GetChild(0).childCount; i++)
         {
             GameObject inven = transform.GetChild(0).GetChild(i).gameObject;
+            if (!inven.activeSelf) continue;
             petInvens.Add(inven.GetComponent<Image>());
             petImages.Add(inven.transform.GetChild(0).gameObject.GetComponent<Image>());
         }
@@ -371,8 +372,8 @@ public class PetManager : MonoSingleton<PetManager>
         petTypes.Add(p.GetType());
         selectIndex = pets.Count - 1;
 
-        ActivePetUI(selectIndex);
         SelectPet(selectIndex);
+        ActivePetUI(selectIndex);
 
         ChapterManager.Instance.SavePets();
     }
@@ -398,25 +399,39 @@ public class PetManager : MonoSingleton<PetManager>
 
         DisablePetUI(index);
 
-        petInvens.Remove(petInvens[index]);
-        petImages.Remove(petImages[index]);
-        pets.Remove(p);
+        petInvens[index].gameObject.SetActive(false);
+        petImages[index].gameObject.SetActive(false);
+        pets.Remove(p); petTypes.Remove(p.GetType());
 
         SelectPet(0);
         p.gameObject.SetActive(false);
+        ChapterManager.Instance.SavePets();
+
     }
 
     public void DeletePet(int index)
     {
-        petTypes.RemoveAt(index);
-
         DisablePetUI(index);
 
+        petInvens.Add(petInvens[index]);
         petInvens.Remove(petInvens[index]);
+        petInvens[petInvens.Count-1].gameObject.SetActive(false);
+
+        petImages.Add(petImages[index]);
         petImages.Remove(petImages[index]);
+        petImages[petImages.Count-1].gameObject.SetActive(false);
+
+        petTypes.RemoveAt(index);
         pets.RemoveAt(index);
 
         SelectPet(0);
+        ChapterManager.Instance.SavePets();
+
+        for(int i=0;i<petInvens.Count;i++)
+        {
+            Debug.Log(petInvens[i].name);
+        }
+
     }
 
 

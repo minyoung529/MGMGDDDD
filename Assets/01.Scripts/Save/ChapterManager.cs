@@ -97,17 +97,12 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
         return petList;
     }
-
     protected override void Awake()
     {
         base.Awake();
         chapters.Sort(compare);
     }
 
-    private void Update()
-    {
-        Debug.Log(CurChapter);
-    }
 
     public void SetSavePoint(SavePoint point)
     {
@@ -127,6 +122,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
 
+        Debug.Log(GetCurChapterSO.savePoint);
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
     }
 
