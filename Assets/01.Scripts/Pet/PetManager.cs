@@ -113,16 +113,19 @@ public class PetManager : MonoSingleton<PetManager>
         if (!eventParam.Contain("pets")) return;
         List<PetType> petList = (List<PetType>)eventParam["pets"];
 
-            pets.Clear();
+        ResetPetManager();
+
         for (int i = 0; i < petList.Count; i++)
         {
-            Pet bindingPet = BindingPet(petList[i]);
-            if (bindingPet == null) continue;
+                Pet bindingPet = BindingPet(petList[i]);
+                if (bindingPet == null) return;
+
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
 
             Vector3 offset = Vector3.right * 3f * i;
             bindingPet.SetForcePosition(GameManager.Instance.PlayerController.transform.position + offset);
         }
+
     }
 
     private void Update()
@@ -147,9 +150,9 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i]?.OnUpdate();
         }
 
-        #if DEVELOPMENT_BUILD || UNITY_EDITOR
-               Debug_CreateAndGetPet();
-        #endif
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+        Debug_CreateAndGetPet();
+#endif
     }
 
     public bool IsGet(Pet p)
@@ -343,9 +346,10 @@ public class PetManager : MonoSingleton<PetManager>
     #endregion
 
     #region Set
-    private void ResetPetManager()
+    public void ResetPetManager()
     {
         pets.Clear();
+        petTypes.Clear();
 
         for (int i = 0; i < transform.GetChild(0).childCount; i++)
         {
@@ -395,13 +399,11 @@ public class PetManager : MonoSingleton<PetManager>
         if (p == null) return;
 
         int index = pets.IndexOf(p);
-        petTypes.RemoveAt(index);
 
         DisablePetUI(index);
 
-        petInvens[index].gameObject.SetActive(false);
-        petImages[index].gameObject.SetActive(false);
-        pets.Remove(p); petTypes.Remove(p.GetType());
+        petTypes.RemoveAt(index);
+        pets.Remove(p);
 
         SelectPet(0);
         p.gameObject.SetActive(false);
@@ -413,25 +415,11 @@ public class PetManager : MonoSingleton<PetManager>
     {
         DisablePetUI(index);
 
-        petInvens.Add(petInvens[index]);
-        petInvens.Remove(petInvens[index]);
-        petInvens[petInvens.Count-1].gameObject.SetActive(false);
-
-        petImages.Add(petImages[index]);
-        petImages.Remove(petImages[index]);
-        petImages[petImages.Count-1].gameObject.SetActive(false);
-
         petTypes.RemoveAt(index);
         pets.RemoveAt(index);
 
         SelectPet(0);
         ChapterManager.Instance.SavePets();
-
-        for(int i=0;i<petInvens.Count;i++)
-        {
-            Debug.Log(petInvens[i].name);
-        }
-
     }
 
 
@@ -461,8 +449,8 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void ActivePetUI(int index)
     {
-        petImages[index].sprite = spriteAtlas.GetSprite(pets[index].petSprite.name);
         petInvens[index].gameObject.SetActive(true);
+        petImages[index].sprite = spriteAtlas.GetSprite(pets[index].petSprite.name);
     }
     private void DisablePetUI(int index)
     {
