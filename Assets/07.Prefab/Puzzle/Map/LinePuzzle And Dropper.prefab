@@ -6507,7 +6507,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1876
+  m_VersionIndex: 1882
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6614,6 +6614,7 @@ GameObject:
   - component: {fileID: 3225804592407965246}
   - component: {fileID: 3225804592407965244}
   - component: {fileID: 3225804592407965247}
+  - component: {fileID: 8312224602634114253}
   m_Layer: 0
   m_Name: Dropper Controller
   m_TagString: Untagged
@@ -6757,6 +6758,18 @@ MonoBehaviour:
   onDropperClear:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 8312224602634114253}
+        m_TargetAssemblyTypeName: ChangeChapter, Assembly-CSharp
+        m_MethodName: Change
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 11
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 340835491552017034}
         m_TargetAssemblyTypeName: CutScenePlayer, Assembly-CSharp
         m_MethodName: Play
@@ -6796,6 +6809,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changedCamera: {fileID: 3225804593058417088}
+--- !u!114 &8312224602634114253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3225804592407964097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea8d9e00af0c4243a2eca514da06be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chapter: 11
 --- !u!1 &3225804592433157126
 GameObject:
   m_ObjectHideFlags: 0
@@ -7395,7 +7421,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1548
+  m_VersionIndex: 1551
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13761,7 +13787,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1670
+  m_VersionIndex: 1673
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -14108,7 +14134,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1554
+  m_VersionIndex: 1557
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -14438,7 +14464,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1563
+  m_VersionIndex: 1566
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -15009,7 +15035,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1931
+  m_VersionIndex: 1937
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -17537,7 +17563,19 @@ MonoBehaviour:
   loading: 0
   OnChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ChapterManager, Assembly-CSharp
+        m_MethodName: SaveChapter
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 11
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8398801030618223059
 GameObject:
   m_ObjectHideFlags: 0

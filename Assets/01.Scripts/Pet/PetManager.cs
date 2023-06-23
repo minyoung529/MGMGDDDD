@@ -219,6 +219,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnPetInteraction(InputAction input, float value)
     {
+        Debug.Log("Interact");
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 

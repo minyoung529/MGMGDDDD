@@ -224,7 +224,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
             agent = GetComponent<NavMeshAgent>();
         }
         target = player;
-        Debug.Log(target);
         agent.stoppingDistance = distanceToPlayer;
     }
 
@@ -363,6 +362,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     private void CheckInteract()
     {
+        Debug.Log("Check");
         Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
 
         SelectedObject.CurInteractObject.OnInteract();

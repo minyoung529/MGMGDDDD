@@ -104,6 +104,11 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         chapters.Sort(compare);
     }
 
+    private void Update()
+    {
+        Debug.Log(CurChapter);
+    }
+
     public void SetSavePoint(SavePoint point)
     {
         CurChapter = point.Chapter;
