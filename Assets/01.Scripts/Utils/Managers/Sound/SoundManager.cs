@@ -31,6 +31,8 @@ public class SoundManager : MonoSingleton<SoundManager>
 
         CutSceneManager.Instance.AddStartCutscene(MuteSound);
         CutSceneManager.Instance.AddEndCutscene(LoadVolumeSmooth);
+
+        SceneController.ListeningEnter(StopBGM);
     }
 
     private void SetAudioSource()
@@ -181,32 +183,6 @@ public class SoundManager : MonoSingleton<SoundManager>
         musicSource.Play();
         musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];
     }
-
-    /// <summary>
-    /// Fade out and stop music (BGM)
-    /// </summary>
-    /// <param name="time">fade out duration</param>
-    /// <param name="onEndMusic">end callback function</param>
-    public void StopMusic(float time, Action onEndMusic = null)
-    {
-        StartCoroutine(StopMusicCoroutine(time, onEndMusic));
-    }
-
-    private IEnumerator StopMusicCoroutine(float time, Action onEndMusic = null)
-    {
-        float defaultVolume = musicSource.volume;
-        float timer = time;
-        while (timer >= 0)
-        {
-            musicSource.volume = timer / time * defaultVolume;
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        musicSource.Stop();
-        musicSource.volume = defaultVolume;
-
-        onEndMusic?.Invoke();
-    }
     #endregion
 
     #region SETTING
@@ -214,7 +190,7 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// Change volume by audio mixer's group name
     /// </summary>
     /// <param name="groupName">Master, SFX, BGM</param>
-    public void SetVolume(string groupName, float volume, float duration = 0f)
+    public void SetVolume(string groupName, float volume, float duration = 0f, Action onComplete = null)
     {
         AudioMixerGroup group = audioMixer.FindMatchingGroups(groupName)[0];
         if (group != null)
@@ -227,13 +203,27 @@ public class SoundManager : MonoSingleton<SoundManager>
             }
             else
             {
-                audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration);
+                audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration).OnComplete(() => onComplete?.Invoke());
             }
         }
         else
         {
             Debug.LogError($"{groupName}�̶� �̸��� �׷��� �ͼ����� ã�� �� �����ϴ�!");
         }
+    }
+
+    public void StopBGM()
+    {
+        if (SoundManager.Instance.musicSource.clip != null)
+        {
+            SetVolume("BGM", 0f, 2f, ResetBGM);
+        }
+    }
+
+    private void ResetBGM()
+    {
+        musicSource.clip = null;
+        LoadVolume();
     }
 
     public void MuteSound()
@@ -262,5 +252,7 @@ public class SoundManager : MonoSingleton<SoundManager>
     {
         CutSceneManager.Instance?.RemoveStartCutscene(MuteSound);
         CutSceneManager.Instance?.RemoveEndCutscene(LoadVolumeSmooth);
+
+        SceneController.StopListeningEnter(StopBGM);
     }
 }

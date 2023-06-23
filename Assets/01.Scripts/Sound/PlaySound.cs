@@ -79,7 +79,7 @@ public class PlaySound : MonoBehaviour
         switch (soundType)
         {
             case SoundType.BGM:
-                SoundManager.Instance.StopMusic(2f);
+                SoundManager.Instance.StopBGM();
                 break;
 
             case SoundType.SFX:
