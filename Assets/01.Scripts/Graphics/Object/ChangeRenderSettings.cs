@@ -76,6 +76,8 @@ public class ChangeRenderSettings : MonoBehaviour
 
     public void Change()
     {
+        Debug.Log("CHANGE");
+
         if (changeVariable[0])
             oAmbientLight = RenderSettingController.SetAmbientLight(ambientLight, duration);
         if (changeVariable[1])

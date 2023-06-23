@@ -47,4 +47,9 @@ public class DirectionalLightController : MonoBehaviour
             light.DOColor(color, 1f);
         }
     }
+
+    public static void SetIntensity(float intensity, float duration)
+    {
+        light.DOIntensity(intensity, duration);
+    }
 }

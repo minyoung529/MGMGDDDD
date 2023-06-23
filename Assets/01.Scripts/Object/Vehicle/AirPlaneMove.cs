@@ -45,6 +45,9 @@ public class AirPlaneMove : MonoBehaviour
     [SerializeField]
     private float wayPointDuration = 10f;
 
+    [SerializeField]
+    private GameObject tutorialTrigger;
+
     private void Awake()
     {
         if (!isDown && isStartIdle)
@@ -85,6 +88,8 @@ public class AirPlaneMove : MonoBehaviour
 
         if (targetPath.Length > 0)
         {
+            transform.DOKill();
+
             Vector3[] wayPoints = new Vector3[targetPath.Length];
 
             for (int i = 0; i < wayPoints.Length; i++)
@@ -95,20 +100,31 @@ public class AirPlaneMove : MonoBehaviour
             if (tempDown)
             {
                 transform.DOPath(wayPoints, wayPointDuration, PathType.CatmullRom)
-                .OnComplete(() => OnArrive.Invoke(down))
-                .SetEase(Ease.InOutQuad);
+                .OnComplete(() => Arrive(down))
+                .SetEase(Ease.InOutQuad)
+                .OnKill(() => Arrive(down));
 
                 transform.DOLookAt(wayPoints[wayPoints.Length - 1], wayPointDuration);
             }
             else
             {
-                transform.DOMove(originalPosition, wayPointDuration).OnComplete(() => OnArrive.Invoke(down));
+                transform.DOMove(originalPosition, wayPointDuration)
+                .OnComplete(() => Arrive(down))
+                .OnKill(() => Arrive(down));
             }
         }
         else
         {
-            transform.DOMoveY(transform.position.y + moveDistance, 5f).OnComplete(() => OnArrive.Invoke(down));
+            transform.DOMoveY(transform.position.y + moveDistance, 5f)
+            .OnComplete(() => Arrive(down))
+            .OnKill(() => Arrive(down));
         }
+    }
+
+    private void Arrive(bool down)
+    {
+        OnArrive.Invoke(down);
+        tutorialTrigger.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
