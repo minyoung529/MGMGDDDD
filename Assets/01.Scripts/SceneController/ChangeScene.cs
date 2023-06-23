@@ -20,21 +20,31 @@ public class ChangeScene : MonoBehaviour
     [SerializeField] private bool loading = true;
     [SerializeField] private UnityEvent OnChanged;
 
+    void Start()
+    {
+        SceneController.ListeningEnter(sceneType, OnChagneScene);
+    }
+
+    private void OnChagneScene()
+    {
+        isChanging = false;
+    }
+
     [ContextMenu("Go To")]
     public void GoTo()
     {
-        if (go)
+        if (isChanging)
             return;
+
+        isChanging = true;
         OnChanged?.Invoke();
 
         SceneController.ChangeScene(sceneType, loading);
-
-        go = true;
     }
 
     public bool IsRight(ChangeType type) => (changeType & type) != 0;
 
-    private bool go = false;
+    private bool isChanging = false;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -50,6 +60,11 @@ public class ChangeScene : MonoBehaviour
         {
             GoTo();
         }
+    }
+
+    void OnDestroy()
+    {
+        SceneController.StopListeningEnter(sceneType, OnChagneScene);
     }
 }
 
