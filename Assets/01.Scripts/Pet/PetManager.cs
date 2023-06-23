@@ -98,6 +98,19 @@ public class PetManager : MonoSingleton<PetManager>
         StartAllListen();
         ResetPetManager();
         EventManager.StartListening(EventName.LoadChapter, LoadPet);
+
+        for (int i = 0; i < (int)SceneType.Count; i++)
+        {
+            if (i == (int)SceneType.StartScene)
+            {
+                SceneController.ListeningEnter(SceneType.StartScene, InactivePetCanvas);
+            }
+            else
+            {
+
+                SceneController.ListeningEnter((SceneType)i, ActivePetCanvas);
+            }
+        }
     }
 
     private void Start()
@@ -117,8 +130,8 @@ public class PetManager : MonoSingleton<PetManager>
 
         for (int i = 0; i < petList.Count; i++)
         {
-                Pet bindingPet = BindingPet(petList[i]);
-                if (bindingPet == null) return;
+            Pet bindingPet = BindingPet(petList[i]);
+            if (bindingPet == null) return;
 
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
 
@@ -166,6 +179,19 @@ public class PetManager : MonoSingleton<PetManager>
         CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
         EventManager.StopListening(EventName.LoadChapter, LoadPet);
         StopAllListen();
+
+        for (int i = 0; i < (int)SceneType.Count; i++)
+        {
+            if (i == (int)SceneType.StartScene)
+            {
+                SceneController.StopListeningEnter(SceneType.StartScene, InactivePetCanvas);
+            }
+            else
+            {
+
+                SceneController.StopListeningEnter((SceneType)i, ActivePetCanvas);
+            }
+        }
     }
 
     #region Listen

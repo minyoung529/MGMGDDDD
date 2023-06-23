@@ -222,7 +222,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     private void ResetBGM()
     {
-        musicSource.clip = null;
+        SoundManager.Instance.musicSource.clip = null;
         LoadVolume();
     }
 

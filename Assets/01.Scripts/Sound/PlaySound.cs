@@ -36,8 +36,10 @@ public class PlaySound : MonoBehaviour
 
     private AudioSourceObject audioSourceObject;
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitForFixedUpdate();
+        
         if (playOnAwake)
         {
             Play();
