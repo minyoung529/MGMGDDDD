@@ -96,6 +96,7 @@ public class DropperController : MonoBehaviour
         particleSystems.ForEach(x => x.Play());
         cameraController.InactiveCrossHair();
         DirectionalLightController.ChangeRotation(Quaternion.Euler(new Vector3(90f, 0f, 0f)), 1f);
+        DirectionalLightController.SetIntensity(1f, 1f);
 
         if (pets)
         {
@@ -130,6 +131,7 @@ public class DropperController : MonoBehaviour
         PetManager.Instance.ActivePetCanvas();
 
         onDropperClear?.Invoke();
+        renderSettings.Back();
 
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
         isClear = true;
@@ -201,7 +203,5 @@ public class DropperController : MonoBehaviour
         }
 
         Clear();
-
-        Debug.Log("CLEAR dropper");
     }
 }
