@@ -128,13 +128,13 @@ public class DropperController : MonoBehaviour
 
     public void Clear()
     {
+        isClear = true;
         PetManager.Instance.ActivePetCanvas();
 
         onDropperClear?.Invoke();
         renderSettings.Back();
 
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
-        isClear = true;
         GameManager.Instance.PlayerController.Move.IsBlockJump = false;
         PetManager.Instance.StartListen(InputAction.Pet_Follow);
     }
