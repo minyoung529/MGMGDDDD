@@ -1,6 +1,3 @@
-using System.Linq.Expressions;
-using System.Reflection.PortableExecutable;
-using System.Diagnostics;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -71,7 +68,6 @@ public class OilSkillState : PetState
     private void OnSkill()
     {
         if (isSkillDragging) return;
-        Debug.Log("OnSkill")
 
         prevTransform = pet.Target;
         OnStartSkill?.Invoke();

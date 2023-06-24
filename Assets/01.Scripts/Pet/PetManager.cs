@@ -123,14 +123,15 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void LoadPet(EventParam eventParam = null)
     {
-        if (!eventParam.Contain("pets")) return;
-        List<PetType> petList = (List<PetType>)eventParam["pets"];
-
         ResetPetManager();
+        if (!eventParam.Contain("pets")) return;
+        List<PetType> petList = SaveSystem.CurSaveData.pets;
+
 
         for (int i = 0; i < petList.Count; i++)
         {
             Pet bindingPet = BindingPet(petList[i]);
+            Debug.Log(bindingPet.GetPetType);
             if (bindingPet == null) return;
 
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
