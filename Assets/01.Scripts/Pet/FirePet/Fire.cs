@@ -15,14 +15,14 @@ public class Fire : MonoBehaviour
     [SerializeField] bool isDestroyType = false;
     [SerializeField] float burnDelay = 0f;
     [SerializeField] float burningTime = 2f;
-   // [SerializeField] bool isTriggerBurn = false;
+    // [SerializeField] bool isTriggerBurn = false;
 
     bool isReadyBurn = false;
     bool isBurn = false;
     float burningReadyTime = 2f;
 
     public bool IsBurn { get { return isBurn; } }
-   // public bool IsTriggerBurn { get { return isTriggerBurn; } }
+    // public bool IsTriggerBurn { get { return isTriggerBurn; } }
 
     Sequence seq;
 
@@ -35,7 +35,11 @@ public class Fire : MonoBehaviour
     [SerializeField]
     private bool onlyScriptBurn = false;
 
-    public float BurningTime => burningTime;
+    public float BurningTime
+    {
+        get => burningTime;
+        set => burningTime = value;
+    }
 
     public UnityEvent OnBurn => fireEvent;
     public bool IsClingTo => isClingTo;

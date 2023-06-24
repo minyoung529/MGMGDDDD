@@ -53,6 +53,7 @@ public class OilRoot : MonoBehaviour
             if (firePet.gameObject == obj.gameObject && firePet.IsBurn)
             {
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);
+                Debug.Log("DETECT FIRE (PET)");
             }
         }
         else
@@ -62,6 +63,7 @@ public class OilRoot : MonoBehaviour
             if (fire != null && fire.IsBurn && fire.IsClingTo)
             {
                 OnContactFirePet?.Invoke(GetNearestFire(contactPoint), EventArgs.Empty);
+                Debug.Log("DETECT FIRE (NOT PET)");
             }
         }
     }
