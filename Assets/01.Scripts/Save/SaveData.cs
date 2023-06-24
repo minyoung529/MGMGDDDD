@@ -4,11 +4,10 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SaveData
 {
-    public SaveData(Chapter _chapter, Chapter _maxChapter, List<PetType> _pets)
+    public SaveData(Chapter _chapter, Chapter _maxChapter)
     {
         curChapter = _chapter;
         maxChapter = _maxChapter;
-        pets = _pets;
 
         masterVolume = 1f;
         bgmVolume = 1f;

@@ -32,11 +32,6 @@ public class LoadChapterList : MonoBehaviour
         InitChapterButton();
     }
 
-    private void GoCurChapterScene()
-    {
-        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
-    }
-
     private void InitChapterButton()
     {
         for (int i = 0; i < (int)Chapter.Count; i++)
@@ -56,6 +51,9 @@ public class LoadChapterList : MonoBehaviour
             SaveSystem.Load();
             SaveSystem.CurSaveData.pets = new List<PetType>();
         });
+
+        SceneController.ListeningEnter(SceneType.StartScene, ()=> { InputManager.Instance.gameObject.SetActive(false); });
+        SceneController.ListningExit(SceneType.StartScene, ()=> { InputManager.Instance.gameObject.SetActive(true); });
 
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.LivingRoom, () => SaveSystem.Save(SaveSystem.CurSaveData));
@@ -109,8 +107,8 @@ public class LoadChapterList : MonoBehaviour
         ChapterManager.Instance.SaveEnumToListPet(selectChapter);
 
         SaveSystem.Save(SaveSystem.CurSaveData);
-        GoCurChapterScene();
-        selectChapter = Chapter.LivingRoom;
+        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
+        selectChapter = 0;
     }
 
     public void ResetPlay()
@@ -122,6 +120,6 @@ public class LoadChapterList : MonoBehaviour
 
     public void LoadGame()
     {
-        GoCurChapterScene();
+        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
     }
 }

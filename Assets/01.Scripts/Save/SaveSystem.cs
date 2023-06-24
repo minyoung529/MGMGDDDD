@@ -15,7 +15,7 @@ public static class SaveSystem
         if (Directory.Exists(saveFilePath)||File.Exists(saveFilePath))
         {
             File.Delete(saveFilePath);
-            SaveData newData = new(0, 0, new List<PetType>());
+            SaveData newData = new(0, 0);
             CurSaveData = newData;
             Save(newData);
         }
@@ -52,7 +52,7 @@ public static class SaveSystem
 
         if (!File.Exists(saveFilePath))
         {
-            SaveData newData = new (0, 0, new List<PetType>());
+            SaveData newData = new(0, 0);
             CurSaveData = newData;
             Save(newData);
             return newData;

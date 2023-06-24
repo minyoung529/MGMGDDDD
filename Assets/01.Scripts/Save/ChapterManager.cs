@@ -43,6 +43,7 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         set
         {
             SaveSystem.CurSaveData.curChapter = value;
+            SaveSystem.CurSaveData.pets = EnumToListPetType(GetChapterSO(SaveSystem.CurSaveData.curChapter).pets);
             if (CurChapter > MaxChapter) SaveSystem.CurSaveData.maxChapter = CurChapter;
         }
     }
@@ -111,13 +112,8 @@ public class ChapterManager : MonoSingleton<ChapterManager>
 
     public void LoadGame()
     {
-        if (InputManager.Instance != null)
-        {
-            InputManager.Instance.gameObject.SetActive(true);
-        }
         if (SaveSystem.CurSaveData == null) return;
         EventParam eventParam = new();
-
 
         eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
@@ -128,13 +124,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     public void SaveChapter(int chapter)
     {
         CurChapter = (Chapter)chapter;
-    }
-
-    public void SavePets()
-    {
-        SaveData saveData = SaveSystem.CurSaveData;
-        saveData.pets = GetPetTypeList();
-        SaveSystem.CurSaveData = saveData;
     }
 
     public void SaveEnumToListPet(Chapter chapter)

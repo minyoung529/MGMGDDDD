@@ -404,8 +404,6 @@ public class PetManager : MonoSingleton<PetManager>
 
         SelectPet(selectIndex);
         ActivePetUI(selectIndex);
-
-        ChapterManager.Instance.SavePets();
     }
     public void DeletePet(PetType type)
     {
@@ -433,7 +431,6 @@ public class PetManager : MonoSingleton<PetManager>
 
         SelectPet(0);
         p.gameObject.SetActive(false);
-        ChapterManager.Instance.SavePets();
 
     }
 
@@ -445,7 +442,6 @@ public class PetManager : MonoSingleton<PetManager>
         pets.RemoveAt(index);
 
         SelectPet(0);
-        ChapterManager.Instance.SavePets();
     }
 
 
