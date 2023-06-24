@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PetMoveState : PetState {
     public override PetStateName StateName => PetStateName.Move;
 
     public override void OnEnter() {
         pet.SetNavEnabled(true);
-        pet.Agent.SetDestination(pet.destination);
         pet.Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestination);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
         pet.Event.StartListening((int)PetEventName.OnInputInteractAction, OnInteraction);
+
+        NavMeshPath path = new NavMeshPath();
+        pet.Agent.CalculatePath(pet.destination, path);
+        pet.Agent.SetPath(path);
     }
 
     public override void OnExit() {

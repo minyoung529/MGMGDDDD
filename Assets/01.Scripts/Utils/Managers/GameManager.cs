@@ -107,7 +107,6 @@ public class GameManager : MonoSingleton<GameManager>
         {
             Debug.DrawRay(MainCam.transform.position, ray.direction * hit.distance, Color.cyan);
             Vector3 mouse = hit.point;
-            Debug.Log(MainCam.name);
             //mouse.y = 0;
 
             mouseHit = hit.point;
