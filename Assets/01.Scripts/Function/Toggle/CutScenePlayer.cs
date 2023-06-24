@@ -33,14 +33,14 @@ public class CutScenePlayer : MonoBehaviour
         director = GetComponent<PlayableDirector>();
     }
 
-    private void Start()
+    void Start()
     {
-        if (playOnAwake)
+        if(playOnAwake)
         {
-            Play();
+           Play();
         }
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (isCollide)
@@ -57,12 +57,6 @@ public class CutScenePlayer : MonoBehaviour
 
         hasPlayed = true;
         CameraSwitcher.ChangeSwitchBlend(2f);
-        StartCoroutine(PlayCoroutine());
-    }
-
-    private IEnumerator PlayCoroutine()
-    {
-        yield return null;
         CutSceneManager.Instance.Play(director, onCutsceneComplete.Invoke);
     }
 

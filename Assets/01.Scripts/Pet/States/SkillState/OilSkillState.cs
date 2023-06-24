@@ -1,3 +1,6 @@
+using System.Linq.Expressions;
+using System.Reflection.PortableExecutable;
+using System.Diagnostics;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -5,6 +8,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+
+using Debug = UnityEngine.Debug;
 
 public class OilSkillState : PetState
 {
@@ -50,7 +55,6 @@ public class OilSkillState : PetState
 
     public override void OnExit()
     {
-        pet.Event.StopListening((int)PetEventName.OnSkillKeyUp, SkillUp);
         pet.Event.StopListening((int)PetEventName.OnSkillCancel, KillSkill);
     }
 
@@ -66,7 +70,8 @@ public class OilSkillState : PetState
     // Active skill
     private void OnSkill()
     {
-        if (isSkillDragging || pauseSkilling) return;
+        if (isSkillDragging) return;
+        Debug.Log("OnSkill")
 
         prevTransform = pet.Target;
         OnStartSkill?.Invoke();
@@ -78,12 +83,13 @@ public class OilSkillState : PetState
 
     public void SpreadOil()
     {
-        if (pet.Skilling)
+        if (pet.Skilling || pauseSkilling)
         {
             oilPetSkill.StartSpreadOil(() => pet.SetNavIsStopped(true), OnEndPath);
             pet.Event.TriggerEvent((int)PetEventName.OnDrawStart);
             onOilSkill?.Invoke();
             StopListeningEvents();
+            pet.Event.StopListening((int)PetEventName.OnSkillKeyUp, SkillUp);
         }
     }
 
@@ -97,7 +103,7 @@ public class OilSkillState : PetState
 
     private void SkillUp()
     {
-        if (!pet.Skilling || !isSkillDragging) return;
+        if (!isSkillDragging) return;
 
         pet.Agent.isStopped = false;
         isSkillDragging = false;
