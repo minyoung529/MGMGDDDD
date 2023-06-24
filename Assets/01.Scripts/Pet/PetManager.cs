@@ -265,10 +265,12 @@ public class PetManager : MonoSingleton<PetManager>
 
         if (pets[selectIndex].Skilling)
         {
+            Debug.Log("Skill Cancel");
             pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
         }
         else
         {
+            Debug.Log("Skill");
             pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
         }
     }
