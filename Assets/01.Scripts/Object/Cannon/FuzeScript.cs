@@ -9,13 +9,15 @@ public class FuzeScript : MonoBehaviour
     [SerializeField] private UnityEvent onRecycle;
     [SerializeField] private Transform startPos;
     [SerializeField] private Transform endPos;
-    [SerializeField] private Transform fire;
 
     private Material material;
     private float amount = 0;
     private float distance = 0;
     private float fireSpeed = 3f;
     private bool canFire = true;
+
+    [SerializeField]
+    private Fire fire;
 
     private readonly int Fill = Shader.PropertyToID("_Fill");
 
@@ -63,14 +65,18 @@ public class FuzeScript : MonoBehaviour
 
     private IEnumerator Burn()
     {
+        fire.BurningTime = fireSpeed * distance + 0.2f;
+
         while (amount < 1)
         {
+            fire.Burn();
             amount += fireSpeed * Time.deltaTime / distance;
             if (amount > 1) amount = 1;
-            fire.position = Vector3.Lerp(startPos.position, endPos.position, amount);
+            fire.transform.position = Vector3.Lerp(startPos.position, endPos.position, amount);
             material.SetFloat(Fill, amount);
             yield return null;
         }
+
         onComplete?.Invoke();
         fire.gameObject.SetActive(false);
     }
@@ -87,7 +93,7 @@ public class FuzeScript : MonoBehaviour
         {
             amount -= fireSpeed * Time.deltaTime / distance;
             if (amount < 0) amount = 0;
-            fire.position = Vector3.Lerp(startPos.position, endPos.position, amount);
+            fire.transform.position = Vector3.Lerp(startPos.position, endPos.position, amount);
             material.SetFloat(Fill, amount);
             yield return null;
         }
