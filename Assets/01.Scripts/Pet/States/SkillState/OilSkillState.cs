@@ -1,6 +1,5 @@
-using System.Linq.Expressions;
-using System.Reflection.PortableExecutable;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -55,7 +54,6 @@ public class OilSkillState : PetState
 
     public override void OnExit()
     {
-        pet.Event.StopListening((int)PetEventName.OnSkillCancel, KillSkill);
     }
 
     public override void OnUpdate()
@@ -71,7 +69,6 @@ public class OilSkillState : PetState
     private void OnSkill()
     {
         if (isSkillDragging) return;
-        Debug.Log("OnSkill")
 
         prevTransform = pet.Target;
         OnStartSkill?.Invoke();
@@ -139,8 +136,11 @@ public class OilSkillState : PetState
 
         pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, KillSkill);
         pet.Event.StopListening((int)PetEventName.OnHold, KillSkill);
+        pet.Event.StopListening((int)PetEventName.OnSkillCancel, KillSkill);
 
         pet.State.ChangeState((int)PetStateName.Idle);
+        pet.Rigid.DOKill();
+        transform.DOKill();
     }
 
     private void ResetSkill()
