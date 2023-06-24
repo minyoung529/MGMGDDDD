@@ -101,30 +101,26 @@ public class AirPlaneMove : MonoBehaviour
             {
                 transform.DOPath(wayPoints, wayPointDuration, PathType.CatmullRom)
                 .OnComplete(() => Arrive(down))
-                .SetEase(Ease.InOutQuad)
-                .OnKill(() => Arrive(down));
+                .SetEase(Ease.InOutQuad);
 
                 transform.DOLookAt(wayPoints[wayPoints.Length - 1], wayPointDuration);
             }
             else
             {
                 transform.DOMove(originalPosition, wayPointDuration)
-                .OnComplete(() => Arrive(down))
-                .OnKill(() => Arrive(down));
+                .OnComplete(() => Arrive(down));
             }
         }
         else
         {
             transform.DOMoveY(transform.position.y + moveDistance, 5f)
-            .OnComplete(() => Arrive(down))
-            .OnKill(() => Arrive(down));
+            .OnComplete(() => Arrive(down));
         }
     }
 
     private void Arrive(bool down)
     {
         OnArrive.Invoke(down);
-        tutorialTrigger.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
