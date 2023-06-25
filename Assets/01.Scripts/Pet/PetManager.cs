@@ -24,7 +24,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     [SerializeField]
     private SpriteAtlas spriteAtlas;
-
+    
     #region Get
     public int PetCount { get { return pets.Count; } }
     public Pet GetSelectPet { get { return pets[selectIndex]; } }
@@ -127,11 +127,9 @@ public class PetManager : MonoSingleton<PetManager>
         if (!eventParam.Contain("pets")) return;
         List<PetType> petList = SaveSystem.CurSaveData.pets;
 
-
         for (int i = 0; i < petList.Count; i++)
         {
             Pet bindingPet = BindingPet(petList[i]);
-            Debug.Log(bindingPet.GetPetType);
             if (bindingPet == null) return;
 
             bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
@@ -281,6 +279,7 @@ public class PetManager : MonoSingleton<PetManager>
 
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }
+
     #endregion
 
     #region SwitchPet

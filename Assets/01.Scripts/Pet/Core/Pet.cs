@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,12 +10,15 @@ using UnityEngine.AI;
 public abstract class Pet : MonoBehaviour, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
+    [SerializeField] private GameObject pingPrefab;
+
     private Vector3 originScale;
     private float originalAgentSpeed;
     private float interactRadius = 4.5f;
 
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
+
 
     #region Property
 
@@ -75,6 +79,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public StateMachine<Pet> State => stateMachine;
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
+    private Ping ping;
 
 
     protected virtual void Awake()
@@ -83,6 +88,9 @@ public abstract class Pet : MonoBehaviour, IThrowable
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         emission = GetComponentInChildren<ChangePetEmission>();
+        ping = Instantiate(pingPrefab, null).GetComponent<Ping>();
+        ping.InitPing(GetPetType);
+        ping.gameObject.SetActive(false);
 
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
@@ -316,12 +324,12 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     public bool IsTargetOnRoute(Transform target)
     {
-        if (!GetIsOnNavMesh()) return false; //³×ºê¸Þ½¬ À§ÀÎÁö
+        if (!GetIsOnNavMesh()) return false; //ï¿½×ºï¿½Þ½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         NavMeshPath path = new NavMeshPath();
-        NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //°æ·Î°¡ ±×·ÁÁö´ÂÁö
+        NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //ï¿½ï¿½Î°ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (path.corners.Length < 1) return false;
-      //  if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //°æ·ÎÀÇ µµÂøÁö°¡ ÇÃ·¹ÀÌ¾î ±ÙÃ³ÀÎÁö
-        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 8f) return false; //°æ·ÎÀÇ µµÂøÁö°¡ ÇÃ·¹ÀÌ¾î ±ÙÃ³ÀÎÁö
+      //  if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½
+        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 8f) return false; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½
         return true;
     }
     #endregion
@@ -340,8 +348,25 @@ public abstract class Pet : MonoBehaviour, IThrowable
             destination = GameManager.Instance.GetMousePos();
         }
 
+            SetPing(destination);
         SetTarget(null);
         SetDestination(destination);
+    }
+
+    #endregion
+
+    #region Ping
+
+    public void SetPing(Vector3 destination)
+    {
+        ping.SetPoint(destination);
+        Event.StartListening((int)PetEventName.OnArrive, OffPing);
+    }
+
+    public void OffPing()
+    {
+        ping.OffPoint();
+        Event.StopListening((int)PetEventName.OnArrive, OffPing);
     }
 
     #endregion
