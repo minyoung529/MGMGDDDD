@@ -57,7 +57,7 @@ public class Ping : MonoBehaviour
     {
         anim.SetTrigger("End");
         anim.SetBool("Positioning", false);
-        yield return new WaitForSeconds(2.2f);
+        yield return new WaitForSeconds(2f);
         anim.transform.localScale = new Vector3(1f, 1f, 1f);
         gameObject.SetActive(false);
     }
