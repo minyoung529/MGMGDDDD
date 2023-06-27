@@ -100,6 +100,8 @@ public class PetManager : MonoSingleton<PetManager>
         StartAllListen();
         ResetPetManager();
         EventManager.StartListening(EventName.LoadChapter, LoadPet);
+        EventManager.StartListening(EventName.StopPetAllListen, StopPetAllListen);
+        EventManager.StartListening(EventName.StartPetAllListen, StartPetAllListen);
 
         for (int i = 0; i < (int)SceneType.Count; i++)
         {
@@ -180,6 +182,7 @@ public class PetManager : MonoSingleton<PetManager>
         CutSceneManager.Instance?.RemoveStartCutscene(InactivePetCanvas);
         CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
         EventManager.StopListening(EventName.LoadChapter, LoadPet);
+        EventManager.StopListening(EventName.StopPetAllListen, StopPetAllListen);
         StopAllListen();
 
         for (int i = 0; i < (int)SceneType.Count; i++)
@@ -197,6 +200,16 @@ public class PetManager : MonoSingleton<PetManager>
     }
 
     #region Listen
+
+    private void StopPetAllListen(EventParam eventParam = null)
+    {
+        StopAllListen();
+    }
+    private void StartPetAllListen(EventParam eventParam = null)
+    {
+        StartAllListen();
+    }
+
     private void StartAllListen()
     {
         foreach (var pair in inputActions)

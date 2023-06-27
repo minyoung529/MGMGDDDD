@@ -4,5 +4,7 @@ public enum EventName
     PlayerDie,
     LoadChapter,
     ResetGame,
+    StartPetAllListen,
+    StopPetAllListen,
     Count
 }

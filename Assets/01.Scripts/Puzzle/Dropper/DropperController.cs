@@ -97,6 +97,7 @@ public class DropperController : MonoBehaviour
         cameraController.InactiveCrossHair();
         DirectionalLightController.ChangeRotation(Quaternion.Euler(new Vector3(90f, 0f, 0f)), 1f);
         DirectionalLightController.SetIntensity(1f, 1f);
+        EventManager.TriggerEvent(EventName.StopPetAllListen);
 
         if (pets)
         {
@@ -137,6 +138,7 @@ public class DropperController : MonoBehaviour
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
         GameManager.Instance.PlayerController.Move.IsBlockJump = false;
         PetManager.Instance.StartListen(InputAction.Pet_Follow);
+        EventManager.TriggerEvent(EventName.StartPetAllListen);
     }
 
     private void ResetDropperData()
