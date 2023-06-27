@@ -395,7 +395,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
     {
         if(curPing == null)
         {
-            Debug.Log("Get");
             curPing = pingPool.Get();
         }
         curPing.SetPoint(destination);
