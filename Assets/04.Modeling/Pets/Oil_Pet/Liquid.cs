@@ -205,7 +205,6 @@ public class Liquid : MonoBehaviour
         float lowestY = float.MaxValue;
         Vector3 lowestVert = Vector3.zero;
         Vector3[] vertices = mesh.vertices;
-        Debug.Log(gameObject.name);
 
         for (int i = 0; i < vertices.Length; i++)
         {
