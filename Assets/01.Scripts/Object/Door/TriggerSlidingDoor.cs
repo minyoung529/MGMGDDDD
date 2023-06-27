@@ -2,15 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TriggerSlidingDoor : MonoBehaviour
 {
+    [SerializeField] UnityEvent triggerEvent;
     [SerializeField] LayerMask targetLayer;
     [SerializeField] bool once = false;
 
     private bool isTrigger = false;
     private TogglePosition[] doors;
     private ToggleScale[] doorScale;
+
+
 
     private void Awake()
     {
@@ -23,6 +27,7 @@ public class TriggerSlidingDoor : MonoBehaviour
     {
         if (once && isTrigger) return;
 
+        triggerEvent?.Invoke();
         isTrigger = true;
         foreach (TogglePosition toggle in doors)
         {

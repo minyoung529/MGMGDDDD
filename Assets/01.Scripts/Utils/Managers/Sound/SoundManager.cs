@@ -29,7 +29,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
         pool = new ObjectPool<AudioSourceObject>(CreateAudio, OnGetAudio, OnRelease, OnDestroyed, maxSize: 5);
 
-        CutSceneManager.Instance.AddStartCutscene(MuteSound);
+        CutSceneManager.Instance.AddStartCutscene(MuteBGM);
         CutSceneManager.Instance.AddEndCutscene(LoadVolumeSmooth);
 
         SceneController.ListeningEnter(StopBGM);
@@ -229,6 +229,11 @@ public class SoundManager : MonoSingleton<SoundManager>
     public void MuteSound()
     {
         SetVolume("Master", 0f, 1f);
+    }
+
+    public void MuteBGM()
+    {
+        SetVolume("BGM", 0f, 1f);
     }
 
     public void LoadVolume(float duration = 0f)
