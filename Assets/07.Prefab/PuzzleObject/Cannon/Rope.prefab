@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7863232146622440866}
   - component: {fileID: 8853613252391631141}
   - component: {fileID: 8853613252391631162}
+  - component: {fileID: 3119441328926869477}
   m_Layer: 0
   m_Name: Rope
   m_TagString: Untagged
@@ -121,6 +122,25 @@ MonoBehaviour:
   startPos: {fileID: 8853613252638214414}
   endPos: {fileID: 9031092902075506381}
   fire: {fileID: 2792028401674651887}
+--- !u!114 &3119441328926869477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8511578487804609655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 2e4097d9277b39146a062e3459a5b345, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 1
+  isPositioning: 1
+  isChildToTransform: 0
+  volume: 0.5
 --- !u!1 &8853613252638214409
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,6 +238,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8524916053982096103, guid: 273ed1ee0f3b6e14ebe2abe5e962a88e, type: 3}
   m_PrefabInstance: {fileID: 5829895166521654678}
   m_PrefabAsset: {fileID: 0}
+--- !u!135 &5003809382759311485
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2785871369079527281}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &9031446727625405998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,19 +277,6 @@ MonoBehaviour:
   isCool: 0
   isClingTo: 1
   onlyScriptBurn: 0
---- !u!135 &5003809382759311485
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2785871369079527281}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &2792028401674651887 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8527765790036112761, guid: 273ed1ee0f3b6e14ebe2abe5e962a88e, type: 3}
