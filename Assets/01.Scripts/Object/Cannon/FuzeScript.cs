@@ -20,11 +20,15 @@ public class FuzeScript : MonoBehaviour
     private Fire fire;
 
     private readonly int Fill = Shader.PropertyToID("_Fill");
+    private PlaySound fuzeSound;
 
     private void Awake()
     {
+        fuzeSound = GetComponent<PlaySound>(); 
         material = GetComponent<Renderer>().material;
         distance = Vector3.Distance(startPos.position, endPos.position);
+
+        onComplete.AddListener(() => fuzeSound.Stop());
     }
 
     private void OnCollisionStay(Collision collision)
@@ -60,6 +64,7 @@ public class FuzeScript : MonoBehaviour
         if (!canFire) return;
         canFire = false;
         fire.gameObject.SetActive(true);
+        fuzeSound.Play();
         StartCoroutine(Burn());
     }
 

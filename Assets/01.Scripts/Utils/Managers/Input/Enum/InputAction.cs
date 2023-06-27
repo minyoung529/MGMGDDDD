@@ -24,4 +24,5 @@ public enum InputAction
     Throw = 21,
     Pet_Interaction = 22,
     Escape = 23,
+    Pet_Move_Up = 24,
 }

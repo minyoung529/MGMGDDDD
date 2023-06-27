@@ -11,6 +11,7 @@ public class IdleState : PetState {
         pet.Event.StartListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
         pet.Event.StartListening((int)PetEventName.OnInputInteractAction, OnInteraction);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
     }
 
     public override void OnExit() {
@@ -19,6 +20,7 @@ public class IdleState : PetState {
         pet.Event.StopListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StopListening((int)PetEventName.OnHold, OnHold);
         pet.Event.StopListening((int)PetEventName.OnInputInteractAction, OnInteraction);
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
     }
 
     public override void OnUpdate() {
@@ -37,6 +39,10 @@ public class IdleState : PetState {
         pet.State.ChangeState((int)PetStateName.Recall);
     }
 
+    private void PingUp()
+    {
+        pet.StopPing();
+    }
 
     private void OnSKill() {
         pet.State.ChangeState((int)PetStateName.Skill);

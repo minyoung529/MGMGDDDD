@@ -2,19 +2,24 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.NetworkInformation;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 public abstract class Pet : MonoBehaviour, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
+
     private Vector3 originScale;
     private float originalAgentSpeed;
     private float interactRadius = 4.5f;
 
     private ChangePetEmission emission;
     public ChangePetEmission Emission => emission;
+
 
     #region Property
 
@@ -50,6 +55,14 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
     #endregion
 
+    #region Ping
+
+    [SerializeField] private GameObject pingPrefab;
+    private IObjectPool<Ping> pingPool;
+    public bool PosDown { get; set; }
+
+    #endregion
+
     #region Get
 
     public Vector3 MouseUpDestination { get; private set; }
@@ -75,6 +88,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public StateMachine<Pet> State => stateMachine;
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
+    private Ping curPing;
 
 
     protected virtual void Awake()
@@ -83,6 +97,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         emission = GetComponentInChildren<ChangePetEmission>();
+        pingPool = new ObjectPool<Ping>(CreatePing, OnGetPing, OnReleasePing, OnDestroyedPing, maxSize: 20);
 
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
@@ -316,12 +331,12 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     public bool IsTargetOnRoute(Transform target)
     {
-        if (!GetIsOnNavMesh()) return false; //³×ºê¸Þ½¬ À§ÀÎÁö
+        if (!GetIsOnNavMesh()) return false; //ï¿½×ºï¿½Þ½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         NavMeshPath path = new NavMeshPath();
-        NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //°æ·Î°¡ ±×·ÁÁö´ÂÁö
+        NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //ï¿½ï¿½Î°ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (path.corners.Length < 1) return false;
-      //  if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //°æ·ÎÀÇ µµÂøÁö°¡ ÇÃ·¹ÀÌ¾î ±ÙÃ³ÀÎÁö
-        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 8f) return false; //°æ·ÎÀÇ µµÂøÁö°¡ ÇÃ·¹ÀÌ¾î ±ÙÃ³ÀÎÁö
+      //  if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½
+        if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 8f) return false; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½
         return true;
     }
     #endregion
@@ -339,11 +354,61 @@ public abstract class Pet : MonoBehaviour, IThrowable
         {
             destination = GameManager.Instance.GetMousePos();
         }
-
+        SetPing(destination);
         SetTarget(null);
         SetDestination(destination);
     }
 
+    #endregion
+
+    #region Ping
+    #region POOL
+    int index = 0;
+    private Ping CreatePing()
+    {
+        Ping obj = Instantiate(pingPrefab).transform.GetComponent<Ping>();
+        obj.name = pingPrefab.name + "_"+index;
+        obj.transform.position = transform.position;
+        index++;
+        return obj;
+    }
+
+    public void OnGetPing(Ping obj)
+    {
+        obj.InitPing(this);
+        obj.gameObject.SetActive(true);
+        obj.PingEffect();
+    }
+
+    public void OnReleasePing(Ping obj)
+    {
+        obj.gameObject.SetActive(false);
+    }
+
+    public void OnDestroyedPing(Ping obj)
+    {
+        Destroy(obj.gameObject);
+    }
+    #endregion
+
+    public void SetPing(Vector3 destination)
+    {
+        if(curPing == null)
+        {
+            curPing = pingPool.Get();
+        }
+        curPing.SetPoint(destination);
+    }
+    public void StopPing()
+    {
+        if (curPing == null) return;
+        curPing.OffPoint();
+        curPing = null;
+    }
+    public void ReleasePing(Ping ping)
+    {
+        if(ping.gameObject.activeSelf) pingPool.Release(ping);
+    }
     #endregion
 
     public void ResetAgentValue()
@@ -362,7 +427,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     private void CheckInteract()
     {
-        Debug.Log("Check");
         Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
 
         SelectedObject.CurInteractObject.OnInteract();

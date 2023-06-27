@@ -26,7 +26,13 @@ public class ChapterButton : MonoBehaviour
     public ChapterUITween Tween => tween;
 
     private LoadChapterList loadChapterList;
+    private PlaySound clickSound;
     private Chapter chapter;
+
+    private void Awake()
+    {
+        clickSound = GetComponent<PlaySound>();
+    }
 
     public void ChangeState(ChapterProgressType type)
     {
@@ -56,6 +62,7 @@ public class ChapterButton : MonoBehaviour
 
     private void OnClick()
     {
+        clickSound.Play();
         loadChapterList.LoadChapterData(this, chapter);
     }
 }
