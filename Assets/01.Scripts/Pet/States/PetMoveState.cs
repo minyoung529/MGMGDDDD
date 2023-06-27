@@ -9,6 +9,7 @@ public class PetMoveState : PetState {
     public override void OnEnter() {
         pet.SetNavEnabled(true);
         pet.Event.StartListening((int)PetEventName.OnSetDestination, OnSetDestination);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
@@ -25,6 +26,7 @@ public class PetMoveState : PetState {
         pet.Event.StopListening((int)PetEventName.OnSkillKeyPress, OnSKill);
         pet.Event.StopListening((int)PetEventName.OnHold, OnHold);
         pet.Event.StopListening((int)PetEventName.OnInputInteractAction, OnInteraction);
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
     }
 
     public override void OnUpdate() {
@@ -50,6 +52,10 @@ public class PetMoveState : PetState {
     }
     private void OnRecall() {
         pet.State.ChangeState((int)PetStateName.Recall);
+    }
+    private void PingUp()
+    {
+        pet.StopPing();
     }
 
     private void OnSKill() {

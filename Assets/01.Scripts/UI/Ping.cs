@@ -1,3 +1,5 @@
+using Autodesk.Fbx;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -7,24 +9,32 @@ public class Ping : MonoBehaviour
 {
     private Material pointMat;
     private Transform mainCam;
-    private Animator anim;
+    private Transform modelTransform;
     private Color pointColor = Color.white;
+    private ParticleSystem spawnParticle;
+
+    float duration = 0.2f;
+    bool playingAnim = false;
+    Pet pet;
+    Coroutine delayC;
 
     private void Awake()
     {
-        anim = transform.GetChild(0).GetComponent<Animator>();
+        modelTransform = transform.GetChild(0);
         pointMat = transform.GetChild(0).Find("point").GetComponent<MeshRenderer>().material;
+        spawnParticle = transform.Find("SpawnParticle").GetComponent<ParticleSystem>();
         mainCam = Camera.main.transform;
     }
 
     void Update()
     {
-        transform.LookAt(transform.position + mainCam.rotation * Vector3.forward, mainCam.rotation * Vector3.up);
+        modelTransform.transform.LookAt(transform.position + mainCam.rotation * Vector3.forward, mainCam.rotation * Vector3.up);
     }
 
-    public void InitPing(PetType petType)
+    public void InitPing(Pet _pet)
     {
-        switch (petType)
+        if (delayC != null) StopCoroutine(delayC);
+        switch (_pet.GetPetType)
         {
             case PetType.OilPet:
                 pointColor = Color.yellow;
@@ -37,29 +47,65 @@ public class Ping : MonoBehaviour
                 break;
         }
         pointMat.color = pointColor;
-        gameObject.SetActive(false);
+        spawnParticle.startColor = pointColor;
+
+        pet = _pet;
+    }
+
+    public void PingEffect()
+    {
+        playingAnim = true;
+        spawnParticle.gameObject.SetActive(true);
+
+        modelTransform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        modelTransform.DOScale(modelTransform.localScale * 10, 0.3f).OnComplete(() =>
+        {
+            if (gameObject.activeSelf)
+                StartCoroutine(PosAnim());
+        });
+    }
+
+    private IEnumerator PosAnim()
+    {
+        while (playingAnim)
+        {
+            modelTransform.transform.DOLocalMoveY(0.5f, duration);
+            yield return new WaitForSeconds(duration);
+            modelTransform.transform.DOLocalMoveY(0.0f, duration);
+            yield return new WaitForSeconds(duration);
+        }
     }
 
     public void SetPoint(Vector3 setPos)
     {
-        StopAllCoroutines();
-        gameObject.SetActive(true);
-        anim.SetBool("Positioning", true);
-        transform.position = setPos;
+        if (delayC != null)
+        {
+            StopCoroutine(delayC);
+            delayC = null;
+        }
+        transform.position = Vector3.Lerp(transform.position, setPos, Time.deltaTime*100);
     }
 
     public void OffPoint()
     {
-        StartCoroutine(Off());
+        if (!gameObject.activeSelf) return;
+       delayC = StartCoroutine(DelayDie());
     }
 
-    private IEnumerator Off()
+    private IEnumerator DelayDie()
     {
-        anim.SetTrigger("End");
-        anim.SetBool("Positioning", false);
-        yield return new WaitForSeconds(2f);
-        anim.transform.localScale = new Vector3(1f, 1f, 1f);
-        gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.4f);
+        Off();
+        pet.ReleasePing(this);
+    }
+
+    public void Off()
+    {
+        transform.DOKill();
+        playingAnim = false;
+        modelTransform.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        spawnParticle.gameObject.SetActive(false);
+        pet.ReleasePing(this);
     }
 
 }

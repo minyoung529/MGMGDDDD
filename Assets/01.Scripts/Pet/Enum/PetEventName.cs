@@ -23,6 +23,7 @@ public enum PetEventName
     OnExplosionSmall,
     OnExplosionEnd,
     OnDrawStart, // OilPet (OnSkillStart)
+    OnOffPing, // OilPet (OnSkillStart)
 
     // Animation Event
     OnAfraid,

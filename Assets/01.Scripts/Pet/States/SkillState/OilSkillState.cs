@@ -44,6 +44,7 @@ public class OilSkillState : PetState
     public override void OnEnter()
     {
         pet.Event.StartListening((int)PetEventName.OnSkillKeyUp, SkillUp);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, KillSkill);
 
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, KillSkill);
@@ -77,6 +78,11 @@ public class OilSkillState : PetState
         oilPetSkill.OnClickSkill();
     }
     #endregion
+
+    private void PingUp()
+    {
+        pet.StopPing();
+    }
 
     public void SpreadOil()
     {
@@ -164,5 +170,6 @@ public class OilSkillState : PetState
     {
         pet.Event.StopListening((int)PetEventName.OnArrive, SpreadOil);
         pet.Event.StopListening((int)PetEventName.OnStop, KillSkill);
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
     }
 }

@@ -2,15 +2,16 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.NetworkInformation;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 public abstract class Pet : MonoBehaviour, IThrowable
 {
     [SerializeField] public PetTypeSO petInform;
-    [SerializeField] private GameObject pingPrefab;
 
     private Vector3 originScale;
     private float originalAgentSpeed;
@@ -54,6 +55,14 @@ public abstract class Pet : MonoBehaviour, IThrowable
     }
     #endregion
 
+    #region Ping
+
+    [SerializeField] private GameObject pingPrefab;
+    private IObjectPool<Ping> pingPool;
+    public bool PosDown { get; set; }
+
+    #endregion
+
     #region Get
 
     public Vector3 MouseUpDestination { get; private set; }
@@ -79,7 +88,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public StateMachine<Pet> State => stateMachine;
     private LocalEvent petEvent = new LocalEvent();
     public LocalEvent Event => petEvent;
-    private Ping ping;
+    private Ping curPing;
 
 
     protected virtual void Awake()
@@ -88,9 +97,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
         emission = GetComponentInChildren<ChangePetEmission>();
-        ping = Instantiate(pingPrefab, null).GetComponent<Ping>();
-        ping.InitPing(GetPetType);
-        ping.gameObject.SetActive(false);
+        pingPool = new ObjectPool<Ping>(CreatePing, OnGetPing, OnReleasePing, OnDestroyedPing, maxSize: 20);
 
         AxisController = new AxisController(transform);
         beginAcceleration = agent.acceleration;
@@ -347,8 +354,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         {
             destination = GameManager.Instance.GetMousePos();
         }
-
-            SetPing(destination);
+        SetPing(destination);
         SetTarget(null);
         SetDestination(destination);
     }
@@ -356,19 +362,54 @@ public abstract class Pet : MonoBehaviour, IThrowable
     #endregion
 
     #region Ping
+    #region POOL
+    int index = 0;
+    private Ping CreatePing()
+    {
+        Ping obj = Instantiate(pingPrefab).transform.GetComponent<Ping>();
+        obj.name = pingPrefab.name + "_"+index;
+        obj.transform.position = transform.position;
+        index++;
+        return obj;
+    }
+
+    public void OnGetPing(Ping obj)
+    {
+        obj.InitPing(this);
+        obj.gameObject.SetActive(true);
+        obj.PingEffect();
+    }
+
+    public void OnReleasePing(Ping obj)
+    {
+        obj.gameObject.SetActive(false);
+    }
+
+    public void OnDestroyedPing(Ping obj)
+    {
+        Destroy(obj.gameObject);
+    }
+    #endregion
 
     public void SetPing(Vector3 destination)
     {
-        ping.SetPoint(destination);
-        Event.StartListening((int)PetEventName.OnArrive, OffPing);
+        if(curPing == null)
+        {
+            Debug.Log("Get");
+            curPing = pingPool.Get();
+        }
+        curPing.SetPoint(destination);
     }
-
-    public void OffPing()
+    public void StopPing()
     {
-        ping.OffPoint();
-        Event.StopListening((int)PetEventName.OnArrive, OffPing);
+        if (curPing == null) return;
+        curPing.OffPoint();
+        curPing = null;
     }
-
+    public void ReleasePing(Ping ping)
+    {
+        if(ping.gameObject.activeSelf) pingPool.Release(ping);
+    }
     #endregion
 
     public void ResetAgentValue()
@@ -387,7 +428,6 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     private void CheckInteract()
     {
-        Debug.Log("Check");
         Event.StopListening((int)PetEventName.OnArrive, CheckInteract);
 
         SelectedObject.CurInteractObject.OnInteract();
