@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using static ChangeScene;
+
 public class ChangeScene : MonoBehaviour
 {
     [Flags]
@@ -20,6 +22,11 @@ public class ChangeScene : MonoBehaviour
     [SerializeField] private bool loading = true;
     [SerializeField] private UnityEvent OnChanged;
 
+    [SerializeField]
+    private bool isOnce = false;
+
+    private int changeTime = 0;
+
     void Start()
     {
         SceneController.ListeningEnter(sceneType, OnChagneScene);
@@ -33,11 +40,15 @@ public class ChangeScene : MonoBehaviour
     [ContextMenu("Go To")]
     public void GoTo()
     {
+        if (isOnce && changeTime != 0)
+            return;
+
         if (isChanging)
             return;
 
         isChanging = true;
         OnChanged?.Invoke();
+        changeTime++;
 
         SceneController.ChangeScene(sceneType, loading);
     }
