@@ -88,6 +88,12 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         if (PetManager.Instance.PetCount < 2) return;
 
+        for (int i = 0; i < PetManager.Instance.PetCount; i++)
+        {
+            PetManager.Instance.GetPetList[i].State.ChangeState((int)PetStateName.Idle);
+        }
+        PetManager.Instance.AllPetActions(x => x.AgentAcceleration = 80);
+
         enterEvent?.Invoke();
         StartListen();
         ChangeCam();
@@ -95,8 +101,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
 
         GameManager.Instance.SetCursorVisible(true);
         Cursor.visible = false;
-
-        PetManager.Instance.AllPetActions(x => x.AgentAcceleration = 80);
     }
 
     public void StopPetAction()
