@@ -345,19 +345,23 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public void MovePoint()
     {
         if (IsMovePointLock) return;
-
+        GameObject hitObject = null;
+        
         if (IsCameraAimPoint)
         {
+            hitObject = GameManager.Instance.GetCameraHitObject();
             destination = GameManager.Instance.GetCameraHit();
         }
         else
         {
+            hitObject = GameManager.Instance.GetMouseObject();
             destination = GameManager.Instance.GetMousePos();
         }
+        if (hitObject == null) return;
 
         SetTarget(null);
-        SetPing(destination);
         SetDestination(destination);
+        SetPing(destination);
     }
 
     #endregion
@@ -398,7 +402,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
         {
             curPing = pingPool.Get();
         }
-        curPing.SetPoint(destination);
+        Vector3 des = AxisController.CalculateDestination(destination);
+        curPing.SetPoint(des);
     }
     public void StopPing()
     {

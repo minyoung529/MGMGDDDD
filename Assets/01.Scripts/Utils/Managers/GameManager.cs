@@ -114,6 +114,17 @@ public class GameManager : MonoSingleton<GameManager>
         }
         return Vector3.zero;
     }
+    public GameObject GetMouseObject()
+    {
+        Ray ray = MainCam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, MainCam.farClipPlane, cameraHitLayerMask))
+        {
+            Debug.DrawRay(MainCam.transform.position, ray.direction * hit.distance, Color.cyan);
+            return hit.collider.gameObject;
+        }
+        return null;
+    }
 
     public Vector3 GetCameraHit()
     {
@@ -127,6 +138,18 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         return Vector3.zero;
+    }
+    public GameObject GetCameraHitObject()
+    {
+        Ray ray = MainCam.ViewportPointToRay(Vector2.one * 0.5f);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, MainCam.farClipPlane, cameraHitLayerMask))
+        {
+            Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
+            if (hit.collider.gameObject.layer == Define.BOTTOM_LAYER)  return hit.collider.gameObject;
+        }
+        return null;
     }
 
     public void SetCursorVisible(bool visible)

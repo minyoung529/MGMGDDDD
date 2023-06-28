@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 75907114467515013}
   - component: {fileID: 9076497666768425736}
   - component: {fileID: 8925441846689408495}
+  - component: {fileID: 5796432544902601385}
   m_Layer: 0
   m_Name: Cylinder001
   m_TagString: Untagged
@@ -83,6 +84,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5796432544902601385
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3717023156437490290}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -951608786083511892, guid: 28ac409a595d7b64f98c898840ab6402, type: 3}
 --- !u!1 &5376338148587429328
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,7 +107,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4744339498809100138}
-  m_Layer: 0
+  - component: {fileID: 2045885002}
+  - component: {fileID: 5235391828016364961}
+  m_Layer: 2
   m_Name: TriSign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,6 +133,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2045885002
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376338148587429328}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 5, z: 13}
+  m_Center: {x: 0, y: 2.5, z: 3.73}
+--- !u!114 &5235391828016364961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376338148587429328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9339845462783439673160be007ce5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tearsParticle: {fileID: 19800000, guid: 8cb6c5a9f5b20f044a65dc816c929fbd, type: 3}
 --- !u!1 &7327755238659592671
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,6 +170,7 @@ GameObject:
   - component: {fileID: 2432446865395090389}
   - component: {fileID: 8244849506750051654}
   - component: {fileID: 674876174194430004}
+  - component: {fileID: 6884223133652554629}
   m_Layer: 0
   m_Name: Rectangle001
   m_TagString: Untagged
@@ -142,9 +186,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7327755238659592671}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.0000030517576, y: 6.4680433, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.0000030517576, y: 5.07, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4744339498809100138}
   m_RootOrder: 1
@@ -199,3 +243,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6884223133652554629
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7327755238659592671}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3009663438640755768, guid: 28ac409a595d7b64f98c898840ab6402, type: 3}

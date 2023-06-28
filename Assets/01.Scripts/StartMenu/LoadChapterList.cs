@@ -120,6 +120,7 @@ public class LoadChapterList : MonoBehaviour
 
     public void LoadGame()
     {
+        Debug.Log(ChapterManager.Instance.CurChapter);
         SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
     }
 }
