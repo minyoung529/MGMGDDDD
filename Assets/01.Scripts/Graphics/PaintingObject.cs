@@ -73,7 +73,7 @@ public class PaintingObject : MonoBehaviour
     private bool isBurning = false;
     private int curIdx = 0;
 
-    private WaitForSeconds fireDelay = new WaitForSeconds(0.08f);
+    private WaitForSeconds fireDelay = new WaitForSeconds(0.03f);
 
     new private SphereCollider collider;
 
@@ -128,8 +128,6 @@ public class PaintingObject : MonoBehaviour
 
         if (distanceChecker > eraseDistance)
         {
-            if (IsNear(contact)) return;
-
             CreateOilPaint(contact, p);
 
             PaintStructure paint = new();

@@ -142,6 +142,8 @@ public class LinePuzzleController : MonoBehaviour
         PetManager.Instance.StopListen(InputAction.Pet_Follow);
         PetManager.Instance.InactivePetCanvas();
 
+        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
+
         PetSetting();
         StartGame();
     }

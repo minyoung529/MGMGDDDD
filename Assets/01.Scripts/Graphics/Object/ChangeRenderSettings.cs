@@ -42,6 +42,14 @@ public class ChangeRenderSettings : MonoBehaviour
     [SerializeField]
     private UnityEvent onChange;
 
+    [SerializeField]
+    private bool changeDirLight;
+
+    [SerializeField]
+    private Color dirColor;
+    [SerializeField]
+    private float intensity = 1f;
+
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & layerMask) != 0)
@@ -87,6 +95,7 @@ public class ChangeRenderSettings : MonoBehaviour
         if (changeVariable[4])
             oFogDensity = RenderSettingController.SetFogDensity(fogDensity, duration);
 
+        ChangeDirLight();
         onChange?.Invoke();
     }
 
@@ -102,5 +111,14 @@ public class ChangeRenderSettings : MonoBehaviour
             RenderSettingController.SetFogColor(oFogColor, duration);
         if (changeVariable[4])
             RenderSettingController.SetFogDensity(oFogDensity, duration);
+    }
+
+    private void ChangeDirLight()
+    {
+        if (changeDirLight)
+        {
+            DirectionalLightController.SetIntensity(intensity, duration);
+            DirectionalLightController.ChangeColor(dirColor, duration);
+        }
     }
 }
