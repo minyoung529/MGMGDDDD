@@ -6471,7 +6471,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2822
+  m_VersionIndex: 2825
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13733,6 +13733,7 @@ GameObject:
   - component: {fileID: 28202013072159550}
   - component: {fileID: 1908085176}
   - component: {fileID: 6518312134943383940}
+  - component: {fileID: 6490397215394974224}
   m_Layer: 0
   m_Name: Bridge (Cutscene)
   m_TagString: Untagged
@@ -13938,7 +13939,32 @@ MonoBehaviour:
   isOnce: 1
   onCutsceneComplete:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6490397215394974224}
+        m_TargetAssemblyTypeName: ChangeChapter, Assembly-CSharp
+        m_MethodName: Change
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6490397215394974224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8754215103753887018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea8d9e00af0c4243a2eca514da06be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chapter: 7
 --- !u!1 &8849451104813141359
 GameObject:
   m_ObjectHideFlags: 0
@@ -17531,7 +17557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 2213
+      value: 2216
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456530, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_Materials.Array.size
@@ -21149,7 +21175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456529, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_VersionIndex
-      value: 2216
+      value: 2219
       objectReference: {fileID: 0}
     - target: {fileID: 4799125767608456530, guid: 59785471338618a4482aba317f5fa49c, type: 3}
       propertyPath: m_Materials.Array.size
