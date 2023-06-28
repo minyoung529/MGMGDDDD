@@ -77,6 +77,7 @@ public class Ping : MonoBehaviour
 
     public void SetPoint(Vector3 setPos)
     {
+        if (!pet.Agent.isOnNavMesh) return;
         if (delayC != null)
         {
             StopCoroutine(delayC);

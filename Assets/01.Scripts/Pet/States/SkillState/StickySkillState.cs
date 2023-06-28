@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
+using System.Net.NetworkInformation;
 
 public class StickySkillState : PetState
 {
@@ -31,8 +32,14 @@ public class StickySkillState : PetState
 
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, OffBillow);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
 
         OnBillow();
+    }
+
+    private void PingUp()
+    {
+        pet.StopPing();
     }
 
     public override void OnExit()
@@ -45,6 +52,7 @@ public class StickySkillState : PetState
         explosion.gameObject.SetActive(false);
         onExitBillow?.Invoke();
 
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
         pet.Event.StopListening((int)PetEventName.OnSkillCancel, OffBillow);
         pet.Event.StopListening((int)PetEventName.OnRecallKeyPress, OnRecall);
     }

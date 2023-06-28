@@ -58,11 +58,19 @@ public class LoadingScene : MonoBehaviour
     private void OnSceneChange(AsyncOperation op)
     {
         SceneController.ChangeScene(op);
+        SoundManager.Instance.MuteSound();
         //SceneManager.UnloadSceneAsync(SceneController.prevScene.ToString());
     }
 
     public void InactiveScene()
     {
-        canvasGroup.DOFade(0f, 0.5f).OnComplete(() => gameObject.SetActive(false));
+        canvasGroup.DOFade(0f, 0.5f).OnComplete(ResetValue);
+    }
+
+    private void ResetValue()
+    {
+        SoundManager.Instance.LoadVolumeSmooth();
+        fillBar.fillAmount = 0f;
+        gameObject.SetActive(false);
     }
 }

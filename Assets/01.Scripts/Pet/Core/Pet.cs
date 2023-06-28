@@ -354,8 +354,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
         {
             destination = GameManager.Instance.GetMousePos();
         }
-        SetPing(destination);
         SetTarget(null);
+        SetPing(destination);
         SetDestination(destination);
     }
 

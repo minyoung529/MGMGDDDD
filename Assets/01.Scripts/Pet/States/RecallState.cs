@@ -5,6 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using System.Net.NetworkInformation;
 
 public class RecallState : PetState
 {
@@ -25,11 +26,18 @@ public class RecallState : PetState
     {
         CheckDistanceToPlayer();
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
     }
 
     public override void OnExit()
     {
         pet.Event.StopListening((int)PetEventName.OnThrew, OnThrew);
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
+    }
+
+    private void PingUp()
+    {
+        pet.StopPing();
     }
 
     public override void OnUpdate()

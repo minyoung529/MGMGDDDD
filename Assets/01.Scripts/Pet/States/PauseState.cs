@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class PauseState : PetState {
@@ -6,6 +7,7 @@ public class PauseState : PetState {
 
     public override void OnEnter() {
         CutSceneManager.Instance.AddEndCutscene(OnEndCutScene);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
         pet.SetTargetNull();
         pet.SetNavIsStopped(true);
         pet.Rigid.isKinematic = true;
@@ -16,6 +18,7 @@ public class PauseState : PetState {
 
     public override void OnExit() {
         CutSceneManager.Instance.RemoveEndCutscene(OnEndCutScene);
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
         pet.SetNavIsStopped(false);
         pet.Rigid.isKinematic = false;
         pet.Rigid.useGravity = true;
@@ -25,6 +28,11 @@ public class PauseState : PetState {
     private void OnDestroy()
     {
         CutSceneManager.Instance?.RemoveEndCutscene(OnEndCutScene);
+    }
+
+    private void PingUp()
+    {
+        pet.StopPing();
     }
 
     public override void OnUpdate() {

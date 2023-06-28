@@ -16,6 +16,7 @@ public class ThrewState : PetState
         pet.Event.StartListening((int)PetEventName.OnLanding, OnLanding);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
+        pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
     }
 
     public override void OnExit()
@@ -23,6 +24,12 @@ public class ThrewState : PetState
         pet.Event.StopListening((int)PetEventName.OnLanding, OnLanding);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
+        pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
+    }
+
+    private void PingUp()
+    {
+        pet.StopPing();
     }
 
     public override void OnUpdate()
