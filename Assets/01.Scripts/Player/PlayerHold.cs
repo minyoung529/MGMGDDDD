@@ -33,6 +33,7 @@ public class PlayerHold : PlayerMono
     {
         InputManager.StartListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StartListeningInput(InputAction.Throw, GetInput);
+        EventManager.StartListening(EventName.PlayerDrop, DropEvent);
 
         defaultAngle = throwAngle;
         defaultPower = throwPow;
@@ -152,6 +153,13 @@ public class PlayerHold : PlayerMono
         controller.Rigid.velocity = Vector3.zero;
         controller.Move.ChangeState(PlayerStateName.Drop);
     }
+    private void DropEvent(EventParam eventParam = null)
+    {
+        if (holdingPet == null) return;
+        OnExitHold();
+        controller.Rigid.velocity = Vector3.zero;
+        controller.Move.ChangeState(PlayerStateName.Drop);
+    }
 
     private void Throw()
     {
@@ -236,6 +244,7 @@ public class PlayerHold : PlayerMono
     {
         InputManager.StopListeningInput(InputAction.PickUp_And_Drop, GetInput);
         InputManager.StopListeningInput(InputAction.Throw, GetInput);
+        EventManager.StopListening(EventName.PlayerDrop, DropEvent);
     }
 
     private void PlayRotation()

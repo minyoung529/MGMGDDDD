@@ -56,6 +56,7 @@ public class CutScenePlayer : MonoBehaviour
         if (hasPlayed && isOnce) return;
 
         hasPlayed = true;
+        EventManager.TriggerEvent(EventName.PlayerDrop);
         CameraSwitcher.ChangeSwitchBlend(2f);
         CutSceneManager.Instance.Play(director, onCutsceneComplete.Invoke);
     }
