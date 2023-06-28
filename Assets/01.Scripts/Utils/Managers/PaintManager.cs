@@ -56,6 +56,9 @@ public class PaintManager : MonoSingleton<PaintManager>
 
     public void Paint(Paintable paintable, Vector3 pos, float radius = 1f, float hardness = .5f, float strength = .5f, UnityEngine.Color? color = null)
     {
+        // TEMP
+        return;
+
         RenderTexture mask = paintable.GetMask();
         RenderTexture uvIslands = paintable.GetUVIslands();
         RenderTexture extend = paintable.GetExtend();
