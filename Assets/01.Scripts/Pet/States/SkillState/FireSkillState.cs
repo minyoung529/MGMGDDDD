@@ -19,12 +19,15 @@ public class FireSkillState : PetState
 
     public override void OnEnter()
     {
+    pet.Event.StartListening((int) PetEventName.OnOffPing, PingUp);
         StartCoroutine(FireBurn());
         onFire?.Invoke();
     }
 
+
     public override void OnExit()
     {
+    pet.Event.StopListening((int) PetEventName.OnOffPing, PingUp);
 
     }
 
@@ -36,6 +39,11 @@ public class FireSkillState : PetState
     public void OnSkill()
     {
         fire.Burn();
+    }
+
+    private void PingUp()
+    {
+        pet.StopPing();
     }
 
     public void OffSkill()
