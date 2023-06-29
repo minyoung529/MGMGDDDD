@@ -34,12 +34,15 @@ public class PlaySound : MonoBehaviour
     [SerializeField]
     private float volume = 1f;
 
+    [SerializeField]
+    private bool forceLoadVolume = false;
+
     private AudioSourceObject audioSourceObject;
 
     private IEnumerator Start()
     {
         yield return new WaitForFixedUpdate();
-        
+
         if (playOnAwake)
         {
             Play();
@@ -54,6 +57,10 @@ public class PlaySound : MonoBehaviour
         switch (soundType)
         {
             case SoundType.BGM:
+                if (forceLoadVolume)
+                {
+                    SoundManager.Instance.LoadVolumeSmooth();
+                }
                 SoundManager.Instance.PlayMusic(audioClip);
                 break;
 

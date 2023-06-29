@@ -97,7 +97,10 @@ public class PaintingObject : MonoBehaviour
             triggerRoots.AddFire(fire);
 
             fire.gameObject.SetActive(false);
-            fire.transform.localScale = Vector3.one * radius * 1.5f;
+
+            float perlinNoise = Mathf.PerlinNoise(0, i * 20f / (float)OIL_MAX_SIZE);
+            perlinNoise = Mathf.Lerp(0.5f, 1f, perlinNoise);
+            fire.transform.localScale = Vector3.one * radius * 1.5f * perlinNoise;
         }
     }
 

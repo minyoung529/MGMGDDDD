@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +24,7 @@ public class HotAirBalloon : MonoBehaviour
         gameObject?.SetActive(false);
     }
 
-    public void MoveCubeToThis(int index)
+    public void MoveCubeToThis(int index, bool isFinal)
     {
         if (gameObject.activeSelf) return;
 
@@ -40,5 +41,10 @@ public class HotAirBalloon : MonoBehaviour
         particle?.Play();
         gameObject?.SetActive(false);
         onReset?.Invoke();
+    }
+
+    public void OffParticle()
+    {
+        particle.gameObject.SetActive(false);
     }
 }
