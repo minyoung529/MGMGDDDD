@@ -38,6 +38,18 @@ public class ThrewState : PetState
         {
             pet.Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
         }
+
+        Collider[] cols = Physics.OverlapSphere(transform.position, bodyRadius);
+
+        for (int i = 0; i < cols.Length; i++)
+        {
+            if (cols[i].CompareTag("Disrollable"))
+            {
+                pet.Event.TriggerEvent((int)PetEventName.OnLanding);
+                return;
+            }
+        }
+
         UpdateLandingTime();
     }
 
