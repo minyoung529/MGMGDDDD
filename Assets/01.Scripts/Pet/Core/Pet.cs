@@ -398,6 +398,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
 
     public void SetPing(Vector3 destination)
     {
+        if (State.CurStateIndex != (int)PetStateName.Move) return;
         if(curPing == null)
         {
             curPing = pingPool.Get();
