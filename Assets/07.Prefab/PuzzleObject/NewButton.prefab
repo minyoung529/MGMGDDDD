@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 2419765341589548973}
   - component: {fileID: 3548641440213182042}
   - component: {fileID: 362742763961630786}
-  m_Layer: 0
+  - component: {fileID: 1917748460}
+  - component: {fileID: 3436654760066845633}
+  m_Layer: 7
   m_Name: NewButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,11 +29,13 @@ Transform:
   m_GameObject: {fileID: 2419765341589548972}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -67.05, y: 1.3605771, z: -61.75}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1498514729694835584}
   - {fileID: 2800836744433558786}
+  - {fileID: 3436654760451477331}
+  - {fileID: 3436654759583559733}
   - {fileID: 6978265870363844432}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,14 +54,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 264
+    m_Bits: 256
   cap: {fileID: 1498514729694835584}
   onPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8497037550822179884}
-        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
-        m_MethodName: Play
+      - m_Target: {fileID: 3436654760066845633}
+        m_TargetAssemblyTypeName: MazeButton, Assembly-CSharp
+        m_MethodName: DoButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -67,10 +71,34 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 3436654759583559730}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   onRise:
     m_PersistentCalls:
       m_Calls: []
-  isRerise: 0
+  isRerise: 1
 --- !u!65 &362742763961630786
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -82,8 +110,44 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.3, y: 0.4, z: 2.3}
+  m_Size: {x: 1.1, y: 0.4, z: 1.1}
   m_Center: {x: 0, y: 0.24, z: 0}
+--- !u!114 &1917748460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419765341589548972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 09a27f9aca9276648ba95347ed12351e, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 1
+  isChildToTransform: 0
+  volume: 1
+--- !u!114 &3436654760066845633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419765341589548972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e751b3e0790463c4bb39bbfc1a71719c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallToggle:
+  - {fileID: 0}
+  - {fileID: 0}
+  undoPosition: {fileID: 3436654760451477331}
+  buttonLight: {fileID: 3436654759583559735}
 --- !u!1 &3144541545053656288
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +159,7 @@ GameObject:
   - component: {fileID: 2800836744433558786}
   - component: {fileID: 5726670764864533283}
   - component: {fileID: 9205572453572858704}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,6 +231,167 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3436654759583559730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3436654759583559733}
+  - component: {fileID: 3436654759583559735}
+  - component: {fileID: 3436654759583559732}
+  m_Layer: 7
+  m_Name: ButtonLight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3436654759583559733
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654759583559730}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2419765341589548973}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &3436654759583559735
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654759583559730}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 2
+  m_Shape: 0
+  m_Color: {r: 1, g: 0.5773787, b: 0, a: 1}
+  m_Intensity: 0
+  m_Range: 3.18
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!114 &3436654759583559732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654759583559730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1 &3436654760451477328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3436654760451477331}
+  - component: {fileID: 3436654760451477330}
+  m_Layer: 7
+  m_Name: undoPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3436654760451477331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654760451477328}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.33, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2419765341589548973}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3436654760451477330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436654760451477328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e9e05eac88fec479500e88004155c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 0.04429531, g: 1, b: 0, a: 1}
+  radius: 0.5
 --- !u!1 &5532514734939811348
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +403,7 @@ GameObject:
   - component: {fileID: 1498514729694835584}
   - component: {fileID: 9047788631142228346}
   - component: {fileID: 7517638545659461716}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +453,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f2ae9162e2bff224dae4603263efd1d1, type: 2}
+  - {fileID: 2100000, guid: eb5b137793d9ee34fbcb3d07b19cd2ca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -260,7 +485,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6978265870363844432}
   - component: {fileID: 8497037550822179884}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlaySound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +505,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2419765341589548973}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8497037550822179884
 MonoBehaviour:
@@ -296,5 +521,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: fbd6254ec99fcc94d959a2631f956a80, type: 3}
   soundType: 1
+  playOnAwake: 0
+  loop: 0
   isPositioning: 1
+  isChildToTransform: 0
   volume: 1
