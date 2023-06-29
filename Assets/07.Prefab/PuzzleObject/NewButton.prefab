@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3548641440213182042}
   - component: {fileID: 362742763961630786}
   - component: {fileID: 1917748460}
-  - component: {fileID: 3436654760066845633}
   m_Layer: 7
   m_Name: NewButton
   m_TagString: Untagged
@@ -29,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2419765341589548972}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -67.05, y: 1.3605771, z: -61.75}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1498514729694835584}
@@ -59,21 +58,9 @@ MonoBehaviour:
   onPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3436654760066845633}
-        m_TargetAssemblyTypeName: MazeButton, Assembly-CSharp
-        m_MethodName: DoButton
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
-        m_MethodName: Play
+        m_TargetAssemblyTypeName: ToggleRotation, Assembly-CSharp
+        m_MethodName: Open
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -83,10 +70,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 3436654759583559730}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ToggleRotation, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -110,7 +97,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.1, y: 0.4, z: 1.1}
+  m_Size: {x: 1, y: 0.4, z: 1}
   m_Center: {x: 0, y: 0.24, z: 0}
 --- !u!114 &1917748460
 MonoBehaviour:
@@ -131,23 +118,6 @@ MonoBehaviour:
   isPositioning: 1
   isChildToTransform: 0
   volume: 1
---- !u!114 &3436654760066845633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419765341589548972}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e751b3e0790463c4bb39bbfc1a71719c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallToggle:
-  - {fileID: 0}
-  - {fileID: 0}
-  undoPosition: {fileID: 3436654760451477331}
-  buttonLight: {fileID: 3436654759583559735}
 --- !u!1 &3144541545053656288
 GameObject:
   m_ObjectHideFlags: 0
