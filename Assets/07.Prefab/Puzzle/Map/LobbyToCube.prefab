@@ -5378,6 +5378,7 @@ MonoBehaviour:
   isPositioning: 1
   isChildToTransform: 0
   volume: 1
+  forceLoadVolume: 0
 --- !u!1 &2672285694926163614
 GameObject:
   m_ObjectHideFlags: 0
@@ -5545,7 +5546,8 @@ MonoBehaviour:
   loop: 1
   isPositioning: 0
   isChildToTransform: 0
-  volume: 0.001
+  volume: 1
+  forceLoadVolume: 1
 --- !u!1 &5571277368553989905
 GameObject:
   m_ObjectHideFlags: 0
@@ -25388,7 +25390,6 @@ GameObject:
   - component: {fileID: 5088185538830453420}
   - component: {fileID: 7767499633180663743}
   - component: {fileID: 1543912788}
-  - component: {fileID: 1543912789}
   - component: {fileID: 7410599554453935494}
   m_Layer: 0
   m_Name: AmusementparkViewCutscene
@@ -25503,18 +25504,6 @@ MonoBehaviour:
   onCutsceneComplete:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1044271043878182733}
-        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 7410599554453935494}
         m_TargetAssemblyTypeName: ChangeChapter, Assembly-CSharp
         m_MethodName: Change
@@ -25545,7 +25534,7 @@ MonoBehaviour:
     m_Events:
     - m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1543912789}
+        - m_Target: {fileID: 1044271043878182733}
           m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
           m_MethodName: Play
           m_Mode: 1
@@ -25557,25 +25546,54 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!114 &1543912789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8436699802633400493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: 51ade0f76a63055448b543ecc623bd57, type: 3}
-  soundType: 0
-  playOnAwake: 0
-  loop: 1
-  isPositioning: 0
-  isChildToTransform: 0
-  volume: 0.2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: DelayEvent, Assembly-CSharp
+          m_MethodName: Trigger
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: DelayEvent, Assembly-CSharp
+          m_MethodName: Trigger
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: DelayEvent, Assembly-CSharp
+          m_MethodName: Trigger
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: DelayEvent, Assembly-CSharp
+          m_MethodName: Trigger
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &7410599554453935494
 MonoBehaviour:
   m_ObjectHideFlags: 0
