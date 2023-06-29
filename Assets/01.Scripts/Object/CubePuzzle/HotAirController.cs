@@ -24,7 +24,7 @@ public class HotAirController : MonoBehaviour
 
     public void SetIndex(int cubeIdx, int puzzleIdx)
     {
-        balloons[cubeIdx].MoveCubeToThis(puzzleIdx);
+        balloons[cubeIdx].MoveCubeToThis(puzzleIdx, false);
 
         if (cubeIdx == puzzleIdx)
         {
@@ -32,6 +32,7 @@ public class HotAirController : MonoBehaviour
 
             if (CheckClear())
             {
+                balloons[cubeIdx].OffParticle();
                 Clear();
             }
         }
