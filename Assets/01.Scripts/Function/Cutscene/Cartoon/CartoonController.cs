@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using DG.Tweening;
+using System.Threading;
 
 public class CartoonController : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class CartoonController : MonoBehaviour
 
     IEnumerator Start()
     {
+        InputManager.StartListeningInput(InputAction.Interaction, Clear);
         yield return null;
         
         if (playOnAwake)
@@ -63,9 +65,8 @@ public class CartoonController : MonoBehaviour
 
     private IEnumerator PlayCoroutine()
     {
-        CutSceneManager.Instance.RemoveStartCutscene(SoundManager.Instance.MuteSound);
         CutSceneManager.Instance.EnterCutscene();
-        CutSceneManager.Instance.AddStartCutscene(SoundManager.Instance.MuteSound);
+        SoundManager.Instance.LoadVolumeSmooth();
 
         for (int i = 0; i < cartoonPlayers.Length; i++)
         {
@@ -83,6 +84,11 @@ public class CartoonController : MonoBehaviour
             cartoons[i].gameObject.SetActive(false);
         }
 
+        Clear();
+    }
+
+    public void Clear(InputAction action = InputAction.Interaction, float value = 0f)
+    {
         CutSceneManager.Instance.ExitCutscene();
 
         canvasGroup?.DOFade(0f, 1f).OnComplete(() =>
@@ -90,5 +96,7 @@ public class CartoonController : MonoBehaviour
             onClear?.Invoke();
             gameObject.SetActive(false);
         });
+
+        InputManager.StopListeningInput(InputAction.Interaction, Clear);
     }
 }
