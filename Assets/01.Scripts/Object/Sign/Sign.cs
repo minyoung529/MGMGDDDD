@@ -32,7 +32,6 @@ public class Sign : MonoBehaviour
             afraidAnim.ChangeAnimation(AnimType.Afraid);
         }
 
-        Debug.Log("Afraid");
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {
@@ -55,7 +54,6 @@ public class Sign : MonoBehaviour
 
     private void NotAfraid(Pet pet)
     {
-        Debug.Log("NotAfraid");
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {

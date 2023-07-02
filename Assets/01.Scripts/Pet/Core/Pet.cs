@@ -174,7 +174,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         if(!bind)
         {
             if (!anim) anim = GetComponent<PlayPetAnimation>();
-            anim.ChangeAnimation(AnimType.Follow, 0.5f);
+            anim.ChangeAnimation(AnimType.Follow, 1f);
         }
     }
 
