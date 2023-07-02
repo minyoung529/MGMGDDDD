@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public enum AnimType
 {
     Idle = 0,
     Afraid = 1,
+    Follow = 2,
 }
 public class PlayPetAnimation : MonoBehaviour
 {
@@ -18,11 +20,13 @@ public class PlayPetAnimation : MonoBehaviour
 
     private AnimType curType = AnimType.Idle;
     public AnimType CurAnim { get { return curType; } }
-
-    private void Start()
+    private void Awake()
     {
         pet = GetComponent<Pet>();
         anim = GetComponentInChildren<Animator>();
+    }
+    private void Start()
+    {
 
         foreach (AnimationByPetEvent animEvent in animByPetEvents)
         {
@@ -42,10 +46,24 @@ public class PlayPetAnimation : MonoBehaviour
         }
     }
 
+    public void ChangeAnimation(AnimType type, float delayTime)
+    {
+        if(curType == type) return;
+        curType = type;
+        anim.Play(type.ToString());
+        StartCoroutine(CheckExitTime(delayTime));
+    }
+
     public void ChangeAnimation(AnimType type)
     {
         curType = type;
         anim.Play(type.ToString());
+    }
+
+    private IEnumerator CheckExitTime(float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime+0.1f);
+        ChangeAnimation(AnimType.Idle);
     }
 }
 

@@ -136,7 +136,7 @@ public class PetManager : MonoSingleton<PetManager>
             Pet bindingPet = BindingPet(petList[i]);
             if (bindingPet == null) return;
 
-            bindingPet.GetPet(GameManager.Instance.PlayerController.transform);
+            bindingPet.GetPet(GameManager.Instance.PlayerController.transform, true);
 
             Vector3 offset = Vector3.right * 3f * i;
             offset.x -= 2f;

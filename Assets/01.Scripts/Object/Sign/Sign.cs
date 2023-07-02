@@ -63,7 +63,7 @@ public class Sign : MonoBehaviour
             emotion.ChangeEmotion(EmotionType.None);
         }
 
-            PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
+        PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
         if (afraidAnim) afraidAnim.ChangeAnimation(AnimType.Idle);
 
         Action act = () => NotAfraid(pet);

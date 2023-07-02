@@ -90,12 +90,14 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public LocalEvent Event => petEvent;
     private Ping curPing;
 
+    PlayPetAnimation anim;
 
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         coll = GetComponent<Collider>();
+        anim = GetComponent<PlayPetAnimation>();
         emission = GetComponentInChildren<ChangePetEmission>();
         pingPool = new ObjectPool<Ping>(CreatePing, OnGetPing, OnReleasePing, OnDestroyedPing, maxSize: 20);
 
@@ -162,12 +164,23 @@ public abstract class Pet : MonoBehaviour, IThrowable
         SetTargetPlayer();
     }
 
-    public void GetPet(Transform player)
+    public void GetPet(Transform player, bool bind = false)
     {
         this.player = player;
 
         SetTargetPlayer();
         PetManager.Instance.AddPet(this);
+
+        if(!bind)
+        {
+            if (!anim) anim = GetComponent<PlayPetAnimation>();
+            anim.ChangeAnimation(AnimType.Follow, 0.5f);
+        }
+    }
+
+    private void GetAnimDelay()
+    {
+
     }
     #endregion
 
