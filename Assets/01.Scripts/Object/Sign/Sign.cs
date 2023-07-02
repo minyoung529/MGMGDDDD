@@ -32,8 +32,13 @@ public class Sign : MonoBehaviour
             afraidAnim.ChangeAnimation(AnimType.Afraid);
         }
 
+        Debug.Log("Afraid");
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
-        if (emotion) emotion.ChangeEmotion(changeEmotionType);
+        if (emotion)
+        {
+            emotion.ChangeEmotion(changeEmotionType);
+            emotion.RemoveAllListener();
+        }
 
         ParticleSystem tears = pool.Get();
         if (tears)
@@ -50,10 +55,15 @@ public class Sign : MonoBehaviour
 
     private void NotAfraid(Pet pet)
     {
+        Debug.Log("NotAfraid");
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
-        if(emotion) emotion.ChangeEmotion(EmotionType.None);
+        if (emotion)
+        {
+            emotion.AddAllListener();
+            emotion.ChangeEmotion(EmotionType.None);
+        }
 
-        PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
+            PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
         if (afraidAnim) afraidAnim.ChangeAnimation(AnimType.Idle);
 
         Action act = () => NotAfraid(pet);
