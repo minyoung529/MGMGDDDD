@@ -20,6 +20,8 @@ public class ButtonObject : MonoBehaviour, IFindable
     public bool IsButtonOn => isButtonOn;
     public GameObject EnterObject => obj;
 
+    private Pet pet = null;
+
     private void OnTriggerEnter(Collider other)
     {
         if (isButtonOn) return;
@@ -28,6 +30,13 @@ public class ButtonObject : MonoBehaviour, IFindable
         {
             obj = other.gameObject;
             Press(true);
+
+            pet = other.gameObject.GetComponent<Pet>();
+
+            if (pet)
+            {
+                pet.Event.StartListening((int)PetEventName.OnFly, PetFlyRelease);
+            }
         }
     }
 
@@ -38,6 +47,12 @@ public class ButtonObject : MonoBehaviour, IFindable
             if (!isButtonOn || !isRerise || obj != other.gameObject) return;
             obj = null;
             Press(false);
+
+            if (pet)
+            {
+                pet.Event.StartListening((int)PetEventName.OnFly, PetFlyRelease);
+                pet = null;
+            }
         }
     }
 
@@ -46,6 +61,19 @@ public class ButtonObject : MonoBehaviour, IFindable
         DoButtonAnimation(value);
         (value ? onPress : onRise)?.Invoke();
         isButtonOn = value;
+    }
+
+    private void PetFlyRelease()
+    {
+        if (IsButtonOn && pet)
+        {
+            Press(false);
+            pet.Event.StartListening((int)PetEventName.OnFly, PetFlyRelease);
+            obj = null;
+
+            Debug.Log("RELEASE");
+            pet = null;
+        }
     }
 
     private void DoButtonAnimation(bool enable)
