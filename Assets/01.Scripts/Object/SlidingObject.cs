@@ -67,7 +67,7 @@ public class SlidingObject : MonoBehaviour
         }
 
         canSliding = false;
-        transform.DOPath(wayPoints, wayPoints.Length * 0.3f, PathType.CatmullRom, PathMode.Full3D, 10, Color.red).SetEase(Ease.OutCirc);
+        rigid.DOPath(wayPoints, wayPoints.Length * 0.3f, PathType.CatmullRom, PathMode.Full3D, 10, Color.red).SetEase(Ease.OutCirc);
 
         slidingCount = enterCount;
     }

@@ -75,6 +75,6 @@ public class IsolatedCubePuzzle : MonoBehaviour
         isStartFollow = false;
             cubeTransform.GetComponent<Rigidbody>().freezeRotation = true;
 
-        cubeTransform.DOLocalRotate(Vector3.up * 90f, 0.5f, RotateMode.Fast);
+        cubeTransform.localEulerAngles = Vector3.up * 90f; 
     }
 }
