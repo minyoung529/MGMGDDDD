@@ -57,8 +57,6 @@ public class OilSkillState : PetState
     {
     }
 
-
-
     public override void OnUpdate()
     {
         if (!pauseSkilling)

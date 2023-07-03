@@ -45,7 +45,6 @@ public class ThrewState : PetState
         {
             if (cols[i].CompareTag("Disrollable"))
             {
-                Debug.Log(cols[i].gameObject.name);
                 pet.Event.TriggerEvent((int)PetEventName.OnLanding);
                 return;
             }

@@ -82,6 +82,8 @@ public class PaintingObject : MonoBehaviour
     [field: SerializeField]
     public UnityEvent OnResetOil { get; set; }
 
+    bool caculating = false;
+
     private void Start()
     {
         prevPosition = transform.position;
@@ -110,7 +112,7 @@ public class PaintingObject : MonoBehaviour
         UpdateSkill(transform.position);
     }
 
-    private void UpdateSkill( Vector3 contact)
+    private void UpdateSkill(Vector3 contact)
     {
         if (distanceChecker > eraseDistance)
         {
@@ -129,6 +131,21 @@ public class PaintingObject : MonoBehaviour
         Transform oilTransform = oilList[curIdx].transform;
         oilTransform.position = point;
         oilTransform.gameObject.SetActive(true);
+
+        if (!caculating)
+        {
+            StartCoroutine(Complete());
+        }
+    }
+
+    private IEnumerator Complete()
+    {
+        caculating = true;
+
+        yield return new WaitForSeconds(0.5f);
+
+        triggerRoots.Complete = true;
+        caculating = false;
     }
 
     public void ResetData()
@@ -138,6 +155,7 @@ public class PaintingObject : MonoBehaviour
         OnResetOil?.Invoke();
         curIdx = 0;
         triggerRoots.ResetAllOil();
+        triggerRoots.Complete = false;
         isBurning = false;
     }
 
