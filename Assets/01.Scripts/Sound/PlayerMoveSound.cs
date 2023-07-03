@@ -22,9 +22,18 @@ public class PlayerMoveSound : MonoBehaviour
     [SerializeField]
     private AudioClip recallClip;
 
+    [SerializeField]
+    private AudioClip pickupClip;
+
     public void WalkSound()
     {
         SoundManager.Instance.PlayRandomPitch(walkClip, transform.position, 0.08f, 10f);
+    }
+
+    public void PickupSound()
+    {
+        AudioSourceObject obj = SoundManager.Instance.PlayEffect(pickupClip, transform.position);
+        obj?.transform.SetParent(transform);
     }
 
     public void RunSound()
