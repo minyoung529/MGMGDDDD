@@ -58,7 +58,6 @@ public class PlayerRespawn : PlayerMono
     private void ResetCheckPoint(EventParam param = null)
     {
         curIndex = 1;
-        maxIndex = 1;
     }
 
 
