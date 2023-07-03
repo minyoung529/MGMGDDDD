@@ -203,6 +203,7 @@ public class SoundManager : MonoSingleton<SoundManager>
             }
             else
             {
+                audioMixer.DOKill();
                 audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration).OnComplete(() => onComplete?.Invoke());
             }
         }
