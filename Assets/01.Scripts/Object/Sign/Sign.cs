@@ -35,8 +35,8 @@ public class Sign : MonoBehaviour
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {
-            emotion.ChangeEmotion(changeEmotionType);
             emotion.RemoveAllListener();
+            emotion.ChangeEmotion(EmotionType.Afraid);
         }
 
         ParticleSystem tears = pool.Get();
@@ -54,29 +54,30 @@ public class Sign : MonoBehaviour
 
     private void NotAfraid(Pet pet)
     {
-        ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
-        if (emotion)
-        {
-            emotion.AddAllListener();
-            emotion.ChangeEmotion(EmotionType.None);
-        }
-
         PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
         if (afraidAnim) afraidAnim.ChangeAnimation(AnimType.Idle);
 
-        Action act = () => NotAfraid(pet);
-        pet.Event.StopListening((int)PetEventName.OnFly, act);
+        //Action act = () => NotAfraid(pet);
+        //pet.Event.StopListening((int)PetEventName.OnFly, act);
 
         if (petParticles.ContainsKey(pet))
         {
             pool.Release(petParticles[pet]);
             petParticles.Remove(pet);
         }
+
+
+        ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
+        if (emotion)
+        {
+            emotion.AddAllListener();
+            emotion.ChangeEmotion(EmotionType.None);
+        }
     }
 
     #region Trigger
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         Pet pet = other.GetComponent<Pet>();
         if (pet)
