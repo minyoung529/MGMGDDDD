@@ -44,7 +44,7 @@ public class PlayerMoveSound : MonoBehaviour
 
     public void JumpSound()
     {
-        AudioSourceObject obj = SoundManager.Instance.PlayEffect(jumpClip, transform.position);
+        AudioSourceObject obj = SoundManager.Instance.PlayEffect(jumpClip, transform.position, 0.7f);
         obj?.transform.SetParent(transform);
     }
 
