@@ -82,6 +82,8 @@ public class PaintingObject : MonoBehaviour
     [field: SerializeField]
     public UnityEvent OnResetOil { get; set; }
 
+    bool caculating = false;
+
     private void Start()
     {
         prevPosition = transform.position;
@@ -104,39 +106,18 @@ public class PaintingObject : MonoBehaviour
         }
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void Update()
     {
         if (!isPainting) return;
-        if (((1 << collision.gameObject.layer) & layerMask) == 0) return;
-        if (curIdx >= OIL_MAX_SIZE) return;
-
-        UpdateSkill(collision.gameObject, collision.contacts[0].point);
+        UpdateSkill(transform.position);
     }
 
-    private void OnTriggerStay(Collider other)
+    private void UpdateSkill(Vector3 contact)
     {
-        if (!isPainting) return;
-        if (((1 << other.gameObject.layer) & layerMask) == 0) return;
-        if (curIdx >= OIL_MAX_SIZE) return;
-
-
-        UpdateSkill(other.gameObject, other.ClosestPoint(transform.position + collider.center));
-    }
-
-    private void UpdateSkill(GameObject obj, Vector3 contact)
-    {
-        Paintable p = obj.GetComponent<Paintable>();
-
-        if (!p) return;
-
         if (distanceChecker > eraseDistance)
         {
-            CreateOilPaint(contact, p);
-
-            PaintStructure paint = new();
-            paint.DataSet(p, contact, radius, 0.2f, 1f, color);
-
-            paintLogs[curIdx++] = paint;
+            CreateOilPaint(contact);
+            curIdx++;
             distanceChecker = 0f;
         }
 
@@ -144,76 +125,37 @@ public class PaintingObject : MonoBehaviour
         prevPosition = transform.position;
     }
 
-    void CreateOilPaint(Vector3 point, Paintable p)
+    void CreateOilPaint(Vector3 point)
     {
+        if (curIdx == oilList.Count) return;
         Transform oilTransform = oilList[curIdx].transform;
         oilTransform.position = point;
         oilTransform.gameObject.SetActive(true);
 
-        PaintStructure paintData = new PaintStructure();
-        paintData.DataSet(p, point, radius, 0.2f, 1f, color);
-
-        StartCoroutine(SpreadCoroutine(paintData));
+        if (!caculating)
+        {
+            StartCoroutine(Complete());
+        }
     }
 
-    private IEnumerator DryCoroutine(PaintStructure p)
+    private IEnumerator Complete()
     {
-        float timer = 0f;
-        triggerRoots.Complete = false;
+        caculating = true;
 
-        while (timer < OIL_PAINT_DURATION)
-        {
-            Color blend = Color.Lerp(p.color.Value, Color.clear, timer / OIL_PAINT_DURATION);
-            PaintManager.Instance.Paint(p.paint, p.point, p.radius * 0.75f, p.hardness, p.strength, blend);
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        triggerRoots.OnDryOil?.Invoke();
-    }
-
-    private IEnumerator SpreadCoroutine(PaintStructure top)
-    {
-        float timer = 0f;
-
-        while (timer < OIL_PAINT_DURATION)
-        {
-            Color blend = Color.Lerp(Color.clear, top.color.Value, timer / OIL_PAINT_DURATION);
-            PaintManager.Instance.Paint(top.paint, top.point, top.radius * 0.75f, top.hardness, top.strength, blend);
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
+        yield return new WaitForSeconds(0.5f);
 
         triggerRoots.Complete = true;
-    }
-
-    private bool IsNear(Vector3 pos)
-    {
-        var cols =
-        oilList.FindAll(x => x.gameObject.activeSelf).
-        OrderBy(x => Vector3.Distance(x.transform.position, pos));
-
-        if (cols.ToList().Count < 2)
-            return false;
-
-        return (Vector3.Distance(pos, cols.ToList()[1].transform.position) < radius * 0.5f);
+        caculating = false;
     }
 
     public void ResetData()
     {
-        for (int i = 0; i < oilList.Count; i++)
-        {
-            if (oilList[i].gameObject.activeSelf)
-            {
-                StartCoroutine(DryCoroutine(paintLogs[i]));
-            }
-        }
+        triggerRoots.OnDryOil?.Invoke();
 
         OnResetOil?.Invoke();
         curIdx = 0;
         triggerRoots.ResetAllOil();
+        triggerRoots.Complete = false;
         isBurning = false;
     }
 

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using PathCreation;
 
 public class SlidingObject : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class SlidingObject : MonoBehaviour
             if (oilRoot.Complete)
             {
                 Sliding();
+                oilRoot.Complete = false;
             }
         }
     }
@@ -67,7 +69,17 @@ public class SlidingObject : MonoBehaviour
         }
 
         canSliding = false;
-        rigid.DOPath(wayPoints, wayPoints.Length * 0.3f, PathType.CatmullRom, PathMode.Full3D, 10, Color.red).SetEase(Ease.OutCirc);
+
+        float y = transform.position.y;
+        transform.DOPath(wayPoints, wayPoints.Length * 0.05f, PathType.Linear, PathMode.Full3D, 10, Color.red)
+            .SetEase(Ease.Unset)
+            .OnUpdate(() =>
+            {
+                Vector3 pos = transform.position;
+                pos.y = y;
+
+                transform.position = pos;
+            });
 
         slidingCount = enterCount;
     }
