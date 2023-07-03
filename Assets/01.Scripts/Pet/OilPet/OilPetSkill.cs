@@ -55,8 +55,8 @@ public class OilPetSkill
     {
         ClearOil();
         Vector3 dest = (IsCrosshair) ? GameManager.Instance.GetCameraHit() : GameManager.Instance.GetMousePos();
-        pathAgent.transform.position = dest;
         pathAgent.gameObject.SetActive(true);
+        pathAgent.transform.position = dest;
         pathAgent.enabled = true;
 
         // Nav 계산 기다리기

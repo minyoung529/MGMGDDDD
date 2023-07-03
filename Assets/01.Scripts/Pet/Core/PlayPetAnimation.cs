@@ -27,7 +27,6 @@ public class PlayPetAnimation : MonoBehaviour
     }
     private void Start()
     {
-
         foreach (AnimationByPetEvent animEvent in animByPetEvents)
         {
             animEvent.StartListening(() => ChangeAnimation(animEvent.animType));

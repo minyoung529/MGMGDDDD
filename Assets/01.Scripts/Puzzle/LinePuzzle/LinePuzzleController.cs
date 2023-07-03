@@ -227,11 +227,14 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.State.ChangeState((int)PetStateName.Move);
 
         oilPet.Event.StartListening((int)PetEventName.OnArrive, ForceMoveBoard);
+
+        StopListenOnOilSpread();
     }
 
     private void ForceMoveBoard()
     {
         isOilMove = true;
+
         oilPet.SetForcePosition(oilPet.SkillState.SkillStartPoint);
         oilTeleportParticle.transform.position = oilPet.SkillState.SkillStartPoint;
         oilTeleportParticle.Play();
@@ -254,6 +257,8 @@ public class LinePuzzleController : MonoBehaviour
         oilTeleportParticle.transform.position = oilSpawnPosition.position;
         oilTeleportParticle.Play();
         SelectedPieces.Clear();
+
+        StartListenOnSpreadEnd();
 
         isOilMove = false;
     }
@@ -355,5 +360,27 @@ public class LinePuzzleController : MonoBehaviour
                 }
             });
         }
+    }
+
+    private void StopListenOnOilSpread()
+    {
+        PetManager.Instance.StopListen(InputAction.Up_Pet);
+        PetManager.Instance.StopListen(InputAction.Down_Pet);
+        PetManager.Instance.StopListen(InputAction.Select_First_Pet);
+        PetManager.Instance.StopListen(InputAction.Select_Second_Pet);
+        PetManager.Instance.StopListen(InputAction.Select_Third_Pet);
+        PetManager.Instance.StopListen(InputAction.Pet_Skill);
+        PetManager.Instance.StopListen(InputAction.Pet_Skill_Up);
+    }
+
+    private void StartListenOnSpreadEnd()
+    {
+        PetManager.Instance.StartListen(InputAction.Up_Pet);
+        PetManager.Instance.StartListen(InputAction.Down_Pet);
+        PetManager.Instance.StartListen(InputAction.Select_First_Pet);
+        PetManager.Instance.StartListen(InputAction.Select_Second_Pet);
+        PetManager.Instance.StartListen(InputAction.Select_Third_Pet);
+        PetManager.Instance.StartListen(InputAction.Pet_Skill);
+        PetManager.Instance.StartListen(InputAction.Pet_Skill_Up);
     }
 }
