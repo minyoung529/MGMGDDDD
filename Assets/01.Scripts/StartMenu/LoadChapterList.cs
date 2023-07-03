@@ -113,7 +113,6 @@ public class LoadChapterList : MonoBehaviour
 
     public void ResetPlay()
     {
-        SaveSystem.ResetData();
         EventManager.TriggerEvent(EventName.ResetGame);
         SceneController.ChangeScene(SceneType.LivingRoom);
     }
