@@ -113,7 +113,8 @@ public class LoadChapterList : MonoBehaviour
 
     public void ResetPlay()
     {
-        EventManager.TriggerEvent(EventName.ResetGame);
+        ChapterManager.Instance.CurChapter = Chapter.LivingRoom;
+        SaveSystem.Save(SaveSystem.CurSaveData);
         SceneController.ChangeScene(SceneType.LivingRoom);
     }
 
