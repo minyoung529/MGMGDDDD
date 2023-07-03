@@ -261,6 +261,9 @@ public class LinePuzzleController : MonoBehaviour
     [ContextMenu("GET NEXT PUZZLE")]
     public void GetNextPuzzle()
     {
+        oilSkillState.KillSkill();
+        oilSkillState.SkillData.ClearOil();
+
         if (++idx >= linePuzzles.Length)
         {
             EndPuzzle();
