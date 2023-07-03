@@ -27,6 +27,7 @@ public enum PetEventName
 
     // Animation Event
     OnAfraid,
+    OnNotAfraid,
     OnFollow,
 
     Count

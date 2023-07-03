@@ -60,6 +60,7 @@ public class PetEmotion : MonoBehaviour
     public void SetEmotion(EmotionType type)
     {
         emotionType = type;
+
         material.SetFloat(tileHash, (int)type);
 
         if (material == null)

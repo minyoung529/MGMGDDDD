@@ -15,6 +15,7 @@ public class Sign : MonoBehaviour
 
     private IObjectPool<ParticleSystem> pool;
     private Dictionary<Pet, ParticleSystem> petParticles = new Dictionary<Pet, ParticleSystem>();
+    Action notAfraid;
 
     private void Awake()
     {
@@ -35,8 +36,8 @@ public class Sign : MonoBehaviour
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {
+            pet.Event.TriggerEvent((int)PetEventName.OnAfraid);
             emotion.RemoveAllListener();
-            emotion.ChangeEmotion(EmotionType.Afraid);
         }
 
         ParticleSystem tears = pool.Get();
@@ -48,17 +49,16 @@ public class Sign : MonoBehaviour
 
         if (pet && tears) petParticles.Add(pet, tears);
 
-        Action act = () => NotAfraid(pet);
-        pet.Event.StartListening((int)PetEventName.OnFly, act);
+        notAfraid = () => NotAfraid(pet);
+        pet.Event.StartListening((int)PetEventName.OnFly, notAfraid);
     }
 
     private void NotAfraid(Pet pet)
     {
+        pet.Event.StopListening((int)PetEventName.OnFly, notAfraid);
+
         PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
         if (afraidAnim) afraidAnim.ChangeAnimation(AnimType.Idle);
-
-        //Action act = () => NotAfraid(pet);
-        //pet.Event.StopListening((int)PetEventName.OnFly, act);
 
         if (petParticles.ContainsKey(pet))
         {
@@ -66,12 +66,11 @@ public class Sign : MonoBehaviour
             petParticles.Remove(pet);
         }
 
-
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {
             emotion.AddAllListener();
-            emotion.ChangeEmotion(EmotionType.None);
+            pet.Event.TriggerEvent((int)PetEventName.OnNotAfraid);
         }
     }
 
@@ -122,4 +121,5 @@ public class Sign : MonoBehaviour
     }
 
     #endregion
+
 }
