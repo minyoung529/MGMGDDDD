@@ -9,7 +9,7 @@ using UnityEngine.Pool;
 public class Sign : MonoBehaviour
 {
     [SerializeField] ParticleSystem tearsParticle;
-    
+
     [Header("Change Emotion Type")]
     private EmotionType changeEmotionType = EmotionType.Afraid;
 
@@ -18,7 +18,7 @@ public class Sign : MonoBehaviour
 
     private void Awake()
     {
-        pool = new ObjectPool<ParticleSystem>(CreateTears, GetTears, ReleaseTears, DestroyTears, maxSize:6);
+        pool = new ObjectPool<ParticleSystem>(CreateTears, GetTears, ReleaseTears, DestroyTears, maxSize: 6);
 
         petParticles.Clear();
     }
@@ -35,8 +35,8 @@ public class Sign : MonoBehaviour
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {
+            emotion.ChangeEmotion(changeEmotionType);
             emotion.RemoveAllListener();
-            emotion.ChangeEmotion(EmotionType.Afraid);
         }
 
         ParticleSystem tears = pool.Get();
@@ -45,8 +45,8 @@ public class Sign : MonoBehaviour
             tears.transform.SetParent(pet.transform);
             tears.transform.localPosition = new Vector3(0, 0, 0);
         }
-        
-        if(pet && tears) petParticles.Add(pet, tears);
+
+        if (pet && tears) petParticles.Add(pet, tears);
 
         Action act = () => NotAfraid(pet);
         pet.Event.StartListening((int)PetEventName.OnFly, act);
@@ -54,30 +54,29 @@ public class Sign : MonoBehaviour
 
     private void NotAfraid(Pet pet)
     {
-        PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
-        if (afraidAnim) afraidAnim.ChangeAnimation(AnimType.Idle);
-
-        //Action act = () => NotAfraid(pet);
-        //pet.Event.StopListening((int)PetEventName.OnFly, act);
-
-        if(petParticles.ContainsKey(pet))
-        {
-            pool.Release(petParticles[pet]);
-            petParticles.Remove(pet);
-        }
-
-
         ChangePetEmotion emotion = pet.GetComponent<ChangePetEmotion>();
         if (emotion)
         {
             emotion.AddAllListener();
             emotion.ChangeEmotion(EmotionType.None);
         }
+
+        PlayPetAnimation afraidAnim = pet.GetComponent<PlayPetAnimation>();
+        if (afraidAnim) afraidAnim.ChangeAnimation(AnimType.Idle);
+
+        Action act = () => NotAfraid(pet);
+        pet.Event.StopListening((int)PetEventName.OnFly, act);
+
+        if (petParticles.ContainsKey(pet))
+        {
+            pool.Release(petParticles[pet]);
+            petParticles.Remove(pet);
+        }
     }
 
     #region Trigger
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         Pet pet = other.GetComponent<Pet>();
         if (pet)
@@ -122,5 +121,4 @@ public class Sign : MonoBehaviour
     }
 
     #endregion
-
 }

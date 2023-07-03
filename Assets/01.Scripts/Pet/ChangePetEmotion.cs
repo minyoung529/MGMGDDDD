@@ -16,6 +16,11 @@ public class ChangePetEmotion : MonoBehaviour
         pet = GetComponent<Pet>();
         petEmotion = pet.GetComponentInChildren<PetEmotion>();
 
+        foreach (EmotionByPetEvent emotionEvent in emotionByPetEvents)
+        {
+            emotionEvent.StartListening(() => petEmotion.SetEmotion(emotionEvent.emotionType));
+        }
+
         AddAllListener();
     }
 
@@ -33,7 +38,6 @@ public class ChangePetEmotion : MonoBehaviour
         {
             pet.Event.StartListening((int)emotionEvent.eventName, emotionEvent.Action);
         }
-
     }
 
     public void RemoveAllListener()
