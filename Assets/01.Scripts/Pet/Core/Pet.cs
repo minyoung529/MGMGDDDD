@@ -117,6 +117,14 @@ public abstract class Pet : MonoBehaviour, IThrowable
         stateMachine = new StateMachine<Pet>(this, states);
 
         CutSceneManager.Instance?.AddStartCutscene(Pause);
+        StartCoroutine(MassOneFrame());
+    }
+
+    private IEnumerator MassOneFrame()
+    {
+        rigid.mass = 1f;
+        yield return null;
+        rigid.mass = 30f;
     }
 
     void OnDestroy()
