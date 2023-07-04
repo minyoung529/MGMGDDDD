@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class Lever : MonoBehaviour
 {
     [SerializeField] private bool isRotate = true;
+    [SerializeField] private bool once = true;
     public UnityEvent OnLever;
     public UnityEvent OffLever;
     public bool disposable = true;
@@ -15,6 +16,7 @@ public class Lever : MonoBehaviour
 
     private bool isNear = false;
     private bool toggle = false;
+
 
     private void Start()
     {
@@ -67,6 +69,7 @@ public class Lever : MonoBehaviour
     public void ToggleEvent()
     {
         if (!CheckLever()) return;
+        if (once && toggle == true) return;
 
         toggle = !toggle;
         if (disposable) toggle = true;
