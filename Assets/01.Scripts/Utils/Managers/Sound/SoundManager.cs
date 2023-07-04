@@ -200,17 +200,27 @@ public class SoundManager : MonoSingleton<SoundManager>
             if (duration == 0f)
             {
                 audioMixer.SetFloat($"{groupName}Volume", calculatedVolume);
+                onComplete?.Invoke();
             }
             else
             {
                 audioMixer.DOKill();
-                audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration).OnComplete(() => onComplete?.Invoke());
+                StartCoroutine(Delay(groupName, duration, onComplete, calculatedVolume));
             }
         }
         else
         {
             Debug.LogError($"{groupName}�̶� �̸��� �׷��� �ͼ����� ã�� �� �����ϴ�!");
         }
+    }
+
+    private IEnumerator Delay(string groupName, float duration, Action onComplete, float calculatedVolume)
+    {
+        yield return null;
+
+        audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration)
+            .OnComplete(() => onComplete?.Invoke())
+            .OnKill(() => { onComplete?.Invoke(); if (groupName == "BGM") Debug.Log("KILLED"); });
     }
 
     public void StopBGM()
@@ -258,7 +268,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     private void OnDestroy()
     {
-        CutSceneManager.Instance?.RemoveStartCutscene(MuteSound);
+        CutSceneManager.Instance?.RemoveStartCutscene(DecreaseBGM);
         CutSceneManager.Instance?.RemoveEndCutscene(LoadVolumeSmooth);
 
         SceneController.StopListeningEnter(StopBGM);
