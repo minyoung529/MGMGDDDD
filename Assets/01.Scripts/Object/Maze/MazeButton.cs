@@ -49,7 +49,7 @@ public class MazeButton : MonoBehaviour
     {
         if (buttonLight.intensity == 0f)
         {
-            buttonLight.DOIntensity(7f, 0.3f);
+            buttonLight.DOIntensity(3f, 0.3f);
         }
         else
         {
