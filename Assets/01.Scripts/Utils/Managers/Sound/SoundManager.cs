@@ -31,8 +31,6 @@ public class SoundManager : MonoSingleton<SoundManager>
 
         CutSceneManager.Instance.AddStartCutscene(DecreaseBGM);
         CutSceneManager.Instance.AddEndCutscene(LoadVolumeSmooth);
-
-        SceneController.ListeningEnter(StopBGM);
     }
 
     private void SetAudioSource()
@@ -220,12 +218,12 @@ public class SoundManager : MonoSingleton<SoundManager>
 
         audioMixer.DOSetFloat($"{groupName}Volume", calculatedVolume, duration)
             .OnComplete(() => onComplete?.Invoke())
-            .OnKill(() => { onComplete?.Invoke(); if (groupName == "BGM") Debug.Log("KILLED"); });
+            .OnKill(() => { onComplete?.Invoke(); });
     }
 
     public void StopBGM()
     {
-        if (SoundManager.Instance.musicSource.clip != null)
+        if (Instance.musicSource.clip != null)
         {
             SetVolume("BGM", 0f, 2f, ResetBGM);
         }
@@ -233,7 +231,7 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     private void ResetBGM()
     {
-        SoundManager.Instance.musicSource.clip = null;
+        Instance.musicSource.clip = null;
         LoadVolume();
     }
 

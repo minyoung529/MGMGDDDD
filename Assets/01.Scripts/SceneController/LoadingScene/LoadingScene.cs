@@ -22,7 +22,9 @@ public class LoadingScene : MonoBehaviour
     {
         gameObject.SetActive(true);
         canvasGroup.DOFade(1f, 0.5f).OnComplete(LoadSceneAsync);
+
         SoundManager.Instance.MuteSound();
+        SoundManager.Instance.StopBGM();
     }
 
     private void LoadSceneAsync()
