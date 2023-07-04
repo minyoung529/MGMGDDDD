@@ -171,7 +171,7 @@ public class TutorialTrigger : MonoBehaviour
         }
     }
 
-    private void StopListeningEvent()
+    public void StopListeningEvent()
     {
         if (keyDownAction != null)
         {
