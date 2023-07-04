@@ -106,7 +106,7 @@ public class PaintingObject : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!isPainting) return;
         UpdateSkill(transform.position);
