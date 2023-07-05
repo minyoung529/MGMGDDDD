@@ -27,6 +27,8 @@ public class SceneController : MonoBehaviour
     private static SceneType curScene;
     public static SceneType CurrentScene => curScene;
 
+    public static bool IsChanging { get; private set; }
+
     private void Start()
     {
         loadingScene = Instantiate(loadingScenePrefab);
@@ -50,10 +52,13 @@ public class SceneController : MonoBehaviour
     private void EnterCurrentScene(Scene prev, Scene cur)
     {
         OnEnterScene[curScene]?.Invoke();
-        Debug.Log("On enter Scene");
+        IsChanging = false;
     }
     public static void ChangeScene(SceneType sceneType, bool isLoading = true)
     {
+        if (IsChanging) return;
+
+        IsChanging = true;
         Check(curScene, OnExitScene);
         OnExitScene[curScene]?.Invoke();
         prevScene = curScene;
@@ -76,6 +81,7 @@ public class SceneController : MonoBehaviour
         loadingScene.InactiveScene();
         Check(curScene, OnEnterScene);
         OnEnterScene[curScene]?.Invoke();
+        IsChanging = false;
     }
 
     public static void ListeningEnter(SceneType sceneType, Action onEnter)
