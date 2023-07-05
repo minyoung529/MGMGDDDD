@@ -81,12 +81,6 @@ public class TutorialTrigger : MonoBehaviour
 
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
-            int len = Physics.OverlapBox(transform.position, transform.localScale * 0.5f, transform.rotation, layerMask).Length;
-            if (len != 0)
-            {
-                return;
-            }
-
             isEnter = false;
             tutorialController ??= other.gameObject.GetComponent<TutorialController>();
             EndTutorial();
