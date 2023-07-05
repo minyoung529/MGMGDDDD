@@ -7,5 +7,6 @@ public enum EventName
     PlayerDrop,
     StartPetAllListen,
     StopPetAllListen,
+    SavePoint,
     Count
 }

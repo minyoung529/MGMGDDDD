@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class PlayerRespawn : PlayerMono
 
     private bool isDie = false;
 
+    private Dictionary<SavePoint, int> pointDic;
+
     private void Awake()
     {
         CanvasGroup canvasPrefab = Resources.Load<CanvasGroup>("DieCanvas");
@@ -33,12 +36,21 @@ public class PlayerRespawn : PlayerMono
         if (dieParticlePref != null)
             dieParticle = Instantiate(dieParticlePref);
 
+        EventManager.StartListening(EventName.SavePoint, Save);
         EventManager.StartListening(EventName.LoadChapter, InitPlayer);
         EventManager.StartListening(EventName.ResetGame, ResetCheckPoint);
         EventManager.StartListening(EventName.PlayerDie, OnDie);
 
         pointParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+        pointDic = new Dictionary<SavePoint, int>();
         points = pointParent.GetComponentsInChildren<SavePoint>();
+        int i = 0;
+        if (points.Length == 0) return;
+        foreach(SavePoint p in points)
+        {
+            i++;
+            pointDic.Add(p, i);
+        }
     }
 
     private void Update()
@@ -54,7 +66,16 @@ public class PlayerRespawn : PlayerMono
         PetManager.Instance.AllPetActions(x => x.transform.position = pos);
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
     }
-
+    private void Save(EventParam param = null)
+    {
+        if (points.Length < 1) return;
+        if (!param.Contain("SavePoint")) return;
+        curIndex = pointDic[(SavePoint)param["SavePoint"]];
+        if(maxIndex < curIndex)
+        {
+            maxIndex = curIndex;
+        }
+    }
     private void ResetCheckPoint(EventParam param = null)
     {
         curIndex = 1;
@@ -65,31 +86,31 @@ public class PlayerRespawn : PlayerMono
     {
         if (points.Length < 1) return;
 
-        for (int i = maxIndex + 1; i < points.Length; i++)
-        {
-            Vector3 dir = transform.position - points[i].transform.position;
-            if (dir.magnitude <= 20f && Vector3.Dot(points[i].transform.forward, dir) > 0)
-            {
-                maxIndex = i;
-            }
-        }
+        //for (int i = maxIndex + 1; i < points.Length; i++)
+        //{
+        //    Vector3 dir = transform.position - points[i].transform.position;
+        //    if (dir.magnitude <= 20f && Vector3.Dot(points[i].transform.forward, dir) > 0)
+        //    {
+        //        maxIndex = i;
+        //    }
+        //}
 
-        float min = float.MaxValue;
-        for (int i = 0; i <= maxIndex; i++)
-        {
-            Vector3 dir = transform.position - points[i].transform.position;
-            float distance = dir.magnitude;
-            if (distance < min)
-            {
-                min = distance;
-                curIndex = i;
-            }
-        }
+        //float min = float.MaxValue;
+        //for (int i = 0; i <= maxIndex; i++)
+        //{
+        //    Vector3 dir = transform.position - points[i].transform.position;
+        //    float distance = dir.magnitude;
+        //    if (distance < min)
+        //    {
+        //        min = distance;
+        //        curIndex = i;
+        //    }
+        //}
 
-        if (points[curIndex].IsChapterPoint)
-        {
-            ChapterManager.Instance?.SetSavePoint(points[curIndex]);
-        }
+        //if (points[curIndex].IsChapterPoint)
+        //{
+        //    ChapterManager.Instance?.SetSavePoint(points[curIndex]);
+        //}
     }
 
     private void CheckFallDown()
@@ -111,7 +132,6 @@ public class PlayerRespawn : PlayerMono
     private void Respawn(Vector3 point)
     {
         //gameObject.SetActive(false);
-
         if (isDie) return;
         isDie = true;
 
@@ -153,5 +173,6 @@ public class PlayerRespawn : PlayerMono
         EventManager.StopListening(EventName.PlayerDie, OnDie);
         EventManager.StopListening(EventName.LoadChapter, InitPlayer);
         EventManager.StopListening(EventName.ResetGame, ResetCheckPoint);
+        EventManager.StopListening(EventName.SavePoint, Save);
     }
 }
