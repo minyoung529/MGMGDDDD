@@ -1,7 +1,6 @@
 using Bitgem.Core;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +29,7 @@ public class LoadChapterList : MonoBehaviour
     private void Start()
     {
         InitChapterButton();
+        SceneStartListen();
     }
 
     private void InitChapterButton()
@@ -55,6 +55,11 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListeningEnter(SceneType.StartScene, ()=> { InputManager.Instance.gameObject.SetActive(false); });
         SceneController.ListningExit(SceneType.StartScene, ()=> { InputManager.Instance.gameObject.SetActive(true); });
 
+        SettingChapterButton();
+    }
+
+    private void SceneStartListen()
+    {
         SceneController.ListeningEnter(SceneType.LivingRoom, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.LivingRoom, () => SaveSystem.Save(SaveSystem.CurSaveData));
         SceneController.ListeningEnter(SceneType.Lobby_FirstFloor, ChapterManager.Instance.LoadGame);
@@ -63,8 +68,6 @@ public class LoadChapterList : MonoBehaviour
         SceneController.ListningExit(SceneType.Clock_Lobby, () => SaveSystem.Save(SaveSystem.CurSaveData));
         SceneController.ListeningEnter(SceneType.SecondScene, ChapterManager.Instance.LoadGame);
         SceneController.ListningExit(SceneType.SecondScene, () => SaveSystem.Save(SaveSystem.CurSaveData));
-
-        SettingChapterButton();
     }
 
     public void SettingChapterButton()
@@ -103,24 +106,26 @@ public class LoadChapterList : MonoBehaviour
 
     public void PlayChapter()
     {
-        ChapterManager.Instance.CurChapter = selectChapter;
-        ChapterManager.Instance.SaveEnumToListPet(selectChapter);
-
-        SaveSystem.Save(SaveSystem.CurSaveData);
-        SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
-        selectChapter = 0;
+        Play(selectChapter);
     }
 
     public void ResetPlay()
     {
-        ChapterManager.Instance.CurChapter = Chapter.LivingRoom;
-        SaveSystem.Save(SaveSystem.CurSaveData);
-        SceneController.ChangeScene(SceneType.LivingRoom);
+        Play(Chapter.LivingRoom);
     }
 
     public void LoadGame()
     {
-        Debug.Log(ChapterManager.Instance.CurChapter);
+        Play(ChapterManager.Instance.CurChapter);
+    }
+
+    private void Play(Chapter chapter)
+    {
+        ChapterManager.Instance.CurChapter = chapter;
+        ChapterManager.Instance.SaveEnumToListPet(chapter);
+
+        SaveSystem.Save(SaveSystem.CurSaveData);
         SceneController.ChangeScene(ChapterManager.Instance.GetCurChapterSO.scene, true);
+        selectChapter = 0;
     }
 }
