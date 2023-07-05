@@ -14,6 +14,7 @@ public class MazeClearTrigger : MonoBehaviour
     {
         if (clearPet.ContainsKey(clear.GetPetType)) return;
         clearPet.Add(clear.GetPetType, clear);
+        clear.IsMovePointLock= true;
         if (clearPet.Count >= 2) ExitGame();
     }
     private void ExitGameOver(Pet exitPet)
