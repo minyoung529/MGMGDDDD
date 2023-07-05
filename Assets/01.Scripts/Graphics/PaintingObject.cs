@@ -44,7 +44,7 @@ public class PaintingObject : MonoBehaviour
     [SerializeField]
     private OilRoot triggerRoots;
 
-    private const int OIL_MAX_SIZE = 100;
+    private const int OIL_MAX_SIZE = 120;
 
     private float distanceChecker = 0f;
     private Vector3 prevPosition = Vector3.zero;
