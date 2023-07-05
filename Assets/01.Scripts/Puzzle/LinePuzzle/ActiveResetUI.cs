@@ -33,13 +33,11 @@ public class ActiveResetUI : MonoBehaviour
         seq.AppendInterval(2f);
         seq.AppendCallback(Show);
 
-        InputManager.StartListeningInput(InputAction.Down_Pet, ChangePet);
-        InputManager.StartListeningInput(InputAction.Previous_Pet, ChangePet);
-        InputManager.StartListeningInput(InputAction.Select_First_Pet, ChangePet);
-        InputManager.StartListeningInput(InputAction.Select_Second_Pet, ChangePet);
-        InputManager.StartListeningInput(InputAction.Select_Third_Pet, ChangePet);
-        InputManager.StartListeningInput(InputAction.Up_Pet, ChangePet);
-
+        PetManager.Instance.StartListen(InputAction.Down_Pet, ChangePet);
+        PetManager.Instance.StartListen(InputAction.Select_First_Pet, ChangePet);
+        PetManager.Instance.StartListen(InputAction.Select_Second_Pet, ChangePet);
+        PetManager.Instance.StartListen(InputAction.Select_Third_Pet, ChangePet);
+        PetManager.Instance.StartListen(InputAction.Up_Pet, ChangePet);
     }
 
     public void Inactive()
@@ -47,12 +45,11 @@ public class ActiveResetUI : MonoBehaviour
         onInactive?.Invoke();
         gameObject.SetActive(false);
 
-        InputManager.StopListeningInput(InputAction.Down_Pet, ChangePet);
-        InputManager.StopListeningInput(InputAction.Previous_Pet, ChangePet);
-        InputManager.StopListeningInput(InputAction.Select_First_Pet, ChangePet);
-        InputManager.StopListeningInput(InputAction.Select_Second_Pet, ChangePet);
-        InputManager.StopListeningInput(InputAction.Select_Third_Pet, ChangePet);
-        InputManager.StopListeningInput(InputAction.Up_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Down_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Select_First_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Select_Second_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Select_Third_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Up_Pet, ChangePet);
     }
 
     private void Show()
@@ -64,8 +61,16 @@ public class ActiveResetUI : MonoBehaviour
         onActive?.Invoke();
     }
 
+
     private void ChangePet(InputAction action = InputAction.Select_First_Pet, float value = 0f)
     {
+        StartCoroutine(DelayChange());
+    }
+
+    private IEnumerator DelayChange()
+    {
+        yield return null;
+
         PetType type = PetManager.Instance.GetSelectPet.GetPetType;
 
         switch (type)

@@ -214,7 +214,8 @@ public class PetManager : MonoSingleton<PetManager>
     {
         foreach (var pair in inputActions)
         {
-            StartListen(pair.Key, pair.Value);
+            InputManager.StopListeningInput(pair.Key, pair.Value);
+            InputManager.StartListeningInput(pair.Key, pair.Value);
         }
     }
 
@@ -222,7 +223,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         foreach (var pair in inputActions)
         {
-            StopListen(pair.Key, pair.Value);
+            InputManager.StopListeningInput(pair.Key, pair.Value);
         }
     }
 
@@ -233,7 +234,13 @@ public class PetManager : MonoSingleton<PetManager>
             if (action == null) return;
             inputActions.Add(inputAction, action);
         }
+        else
+        {
+            inputActions[inputAction] += action;
+        }
 
+
+        InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
         InputManager.StartListeningInput(inputAction, inputActions[inputAction]);
     }
 
@@ -244,7 +251,9 @@ public class PetManager : MonoSingleton<PetManager>
             if (action == null) return;
             inputActions.Add(inputAction, action);
         }
+
         InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
+        inputActions[inputAction] -= action;
     }
 
     private void OnSkillUp(InputAction input, float value)
