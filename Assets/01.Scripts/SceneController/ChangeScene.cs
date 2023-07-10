@@ -40,6 +40,8 @@ public class ChangeScene : MonoBehaviour
     [ContextMenu("Go To")]
     public void GoTo()
     {
+        if (SceneController.IsChanging) return;
+
         if (isOnce && changeTime != 0)
             return;
 
