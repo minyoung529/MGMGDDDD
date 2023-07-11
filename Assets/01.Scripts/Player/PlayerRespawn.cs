@@ -48,8 +48,9 @@ public class PlayerRespawn : PlayerMono
         if (points.Length == 0) return;
         foreach(SavePoint p in points)
         {
-            i++;
             pointDic.Add(p, i);
+            i++;
+            Debug.Log(p.transform.position);
         }
     }
 
@@ -156,6 +157,7 @@ public class PlayerRespawn : PlayerMono
             controller.Move.ChangeState(PlayerStateName.DefaultMove);
 
             transform.position = point;
+            controller.Rigid.velocity= Vector3.zero;
         });
         seq.AppendCallback(() => Time.timeScale = 1f);
         seq.AppendCallback(() => respawnEvent?.Invoke());
