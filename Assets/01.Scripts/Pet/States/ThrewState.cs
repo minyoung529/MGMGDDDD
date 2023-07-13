@@ -14,7 +14,7 @@ public class ThrewState : PetState
     {
         pet.OnThrow();
         pet.Event.StartListening((int)PetEventName.OnLanding, OnLanding);
-        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        //pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
         pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
     }
@@ -22,8 +22,8 @@ public class ThrewState : PetState
     public override void OnExit()
     {
         pet.Event.StopListening((int)PetEventName.OnLanding, OnLanding);
-        pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
-        pet.Event.StartListening((int)PetEventName.OnHold, OnHold);
+        //pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
+        pet.Event.StopListening((int)PetEventName.OnHold, OnHold);
         pet.Event.StopListening((int)PetEventName.OnOffPing, PingUp);
     }
 
@@ -81,11 +81,6 @@ public class ThrewState : PetState
     private void OnLanding()
     {
         pet.State.ChangeState((int)PetStateName.Landing);
-    }
-
-    private void OnRecall()
-    {
-        pet.State.ChangeState((int)PetStateName.Recall);
     }
 
     private void OnHold()

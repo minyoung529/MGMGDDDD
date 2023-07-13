@@ -2,7 +2,8 @@ using System.Collections.Generic;
 
 // ! Do Not Edit
 [System.Serializable]
-public class StateMachine<T> {
+public class StateMachine<T>
+{
     private T parent = default;
     public T Parent => parent;
 
@@ -15,23 +16,27 @@ public class StateMachine<T> {
     private int beforeStateIndex;
     public int BeforeStateIndex => beforeStateIndex;
 
-    public StateMachine(T parent, List<IState> states, int startIndex = 0) {
+    public StateMachine(T parent, List<IState> states, int startIndex = 0)
+    {
         this.parent = parent;
         this.states = states;
         curStateIndex = startIndex;
         ChangeState(startIndex);
     }
 
-    public StateMachine(T parent, IState[] states, int startIndex = 0) {
+    public StateMachine(T parent, IState[] states, int startIndex = 0)
+    {
         this.parent = parent;
-        foreach (IState item in states) {
+        foreach (IState item in states)
+        {
             this.states.Add(item);
         }
         curStateIndex = startIndex;
         ChangeState(startIndex);
     }
 
-    public void ChangeState(int index) {
+    public void ChangeState(int index)
+    {
         curState?.OnExit();
         beforeStateIndex = CurStateIndex;
         curStateIndex = index;
@@ -39,9 +44,12 @@ public class StateMachine<T> {
         curState.OnEnter();
     }
 
-    public void ChangeState(IState state) {
-        for (int i = 0; i < states.Count; i++) {
-            if(states[i].GetType() == state.GetType()) {
+    public void ChangeState(IState state)
+    {
+        for (int i = 0; i < states.Count; i++)
+        {
+            if (states[i].GetType() == state.GetType())
+            {
                 curStateIndex = i;
                 ChangeState(i);
                 return;
@@ -52,11 +60,13 @@ public class StateMachine<T> {
         states.Add(state);
     }
 
-    public void OnUpdate() {
+    public void OnUpdate()
+    {
         curState.OnUpdate();
     }
 
-    public void OnDisable() {
+    public void OnDisable()
+    {
         curState.OnExit();
     }
 }

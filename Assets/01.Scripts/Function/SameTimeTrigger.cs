@@ -44,7 +44,6 @@ public class SameTimeTrigger : MonoBehaviour
         outPetAction = null;
 
         triggerPets.Remove(p.GetPetType);
-
     }
 
     private void InnerPet(Pet p)
