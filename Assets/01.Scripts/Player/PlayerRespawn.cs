@@ -50,7 +50,6 @@ public class PlayerRespawn : PlayerMono
         {
             pointDic.Add(p, i);
             i++;
-            Debug.Log(p.transform.position);
         }
     }
 
