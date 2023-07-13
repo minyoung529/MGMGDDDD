@@ -20,7 +20,6 @@ public class SavePoint : MonoBehaviour
             EventParam eventParam = new EventParam();
             eventParam["SavePoint"] = this;
             EventManager.TriggerEvent(EventName.SavePoint, eventParam);
-            Debug.Log("Save");
         }
     }
 }
