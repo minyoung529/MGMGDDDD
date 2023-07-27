@@ -22,11 +22,13 @@ public class Boss : MonoBehaviour
 
     // Component
     private NavMeshAgent agent;
+    public NavMeshAgent Agent => agent;
+
+    // Target
+    private float chaseDistance = 15f;
 
     private Transform target = null;
     public Transform Target => target;
-
-    private Action onArriveAction;
 
     private void Awake()
     {
@@ -40,15 +42,12 @@ public class Boss : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Boss>(this, states);
+
     }
 
     private void Update()
     {
-        if(agent.velocity == Vector3.zero && stateMachine.CurStateIndex != (int)BossStateName.Idle)
-        {
-            onArriveAction?.Invoke();
-            onArriveAction = null;
-        }
+        stateMachine.OnUpdate();
     }
 
     public void ChangeState(BossStateName state)
@@ -56,12 +55,14 @@ public class Boss : MonoBehaviour
         stateMachine.ChangeState((int)state);
     }
 
-    public void SetDestination(Vector3 point)
+    public void CheckTarget()
     {
-        agent.SetDestination(point);
-    }
-    public void AddArriveEvent(Action act)
-    {
-        onArriveAction += act;
+        // Ray·Î Å¸°Ù Ã£±â
+        Collider[] coll = Physics.OverlapSphere(transform.position, chaseDistance, (1 << Define.PLAYER_LAYER));
+        if(coll.Length > 0)
+        {
+            target = coll[0].transform;
+            ChangeState(BossStateName.Chase);
+        }
     }
 }
