@@ -66,7 +66,6 @@ public class PatrolState : BossState
     {
         curWaypointCount++;
         if (curWaypointCount >= waypoints.Length) curWaypointCount = minWayCount;
-
         SetDestination(waypoints[curWaypointCount].position);
     }
 

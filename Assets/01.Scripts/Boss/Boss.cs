@@ -43,6 +43,7 @@ public class Boss : MonoBehaviour
         }
         stateMachine = new StateMachine<Boss>(this, states);
 
+        GameManager.Instance.CursorDisabled();
     }
 
     private void Update()
