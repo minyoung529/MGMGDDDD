@@ -23,6 +23,7 @@ public class PatrolState : BossState
 
     public override void OnEnter()
     {
+        boss.Anim.ChangeAnimation(BossAnimType.Walk);
         SetNearWaypoint();
     }
 

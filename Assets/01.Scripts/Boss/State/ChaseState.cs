@@ -13,6 +13,8 @@ public class ChaseState : BossState
         {
             boss.ChangeState(BossStateName.Patrol);
         }
+
+        boss.Anim.ChangeAnimation(BossAnimType.Run);
     }
 
     public override void OnExit()
@@ -31,7 +33,14 @@ public class ChaseState : BossState
         }
         if (distance <= boss.Agent.stoppingDistance)
         {
-            boss.ChangeState(BossStateName.Idle);
+            boss.Anim.ChangeAnimation(BossAnimType.Catch);
+            StartCoroutine(CatchDelay());
         }
+    }
+
+    private IEnumerator CatchDelay()
+    {
+        yield return new WaitForSeconds(10f);
+            boss.ChangeState(BossStateName.Idle);
     }
 }

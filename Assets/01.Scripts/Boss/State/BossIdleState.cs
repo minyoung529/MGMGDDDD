@@ -15,6 +15,7 @@ public class BossIdleState : BossState
 
     private IEnumerator IdleTime()
     {
+        boss.Anim.ChangeAnimation(BossAnimType.Idle);
         yield return new WaitForSeconds(idleTime);
         boss.ChangeState(BossStateName.Patrol);
     }

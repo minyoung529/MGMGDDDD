@@ -23,6 +23,8 @@ public class Boss : MonoBehaviour
     // Component
     private NavMeshAgent agent;
     public NavMeshAgent Agent => agent;
+    private PlayBossAnimation anim;
+    public PlayBossAnimation Anim => anim;
 
     // Target
     private float chaseDistance = 15f;
@@ -30,9 +32,15 @@ public class Boss : MonoBehaviour
     private Transform target = null;
     public Transform Target => target;
 
+    // Event
+    private LocalEvent bossEvent = new LocalEvent();
+    public LocalEvent Event => bossEvent;
+
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<PlayBossAnimation>();
 
         BossState[] compos = stateParent.GetComponents<BossState>();
         BossState[] states = new BossState[(int)PetStateName.Length];
@@ -66,4 +74,7 @@ public class Boss : MonoBehaviour
             ChangeState(BossStateName.Chase);
         }
     }
+}
+public enum BossEventName
+{
 }
