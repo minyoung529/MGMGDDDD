@@ -36,6 +36,9 @@ public class Boss : MonoBehaviour
     private LocalEvent bossEvent = new LocalEvent();
     public LocalEvent Event => bossEvent;
 
+    // Waypoint
+    private Transform itemWaypoint;
+    public Transform ItemWaypoint => itemWaypoint;
 
     private void Awake()
     {
@@ -43,7 +46,7 @@ public class Boss : MonoBehaviour
         anim = GetComponent<PlayBossAnimation>();
 
         BossState[] compos = stateParent.GetComponents<BossState>();
-        BossState[] states = new BossState[(int)PetStateName.Length];
+        BossState[] states = new BossState[(int)BossStateName.Count];
         foreach (BossState item in compos)
         {
             states[(int)item.StateName] = item;
@@ -54,27 +57,64 @@ public class Boss : MonoBehaviour
         GameManager.Instance.CursorDisabled();
     }
 
+    private void Start()
+    {
+        EventManager.StartListening((int)BossEventName.DetectObject, DetectWaypoint);
+    }
+
     private void Update()
     {
         stateMachine.OnUpdate();
     }
 
+    #region Waypoint
+
+    private void DetectWaypoint(EventParam eventParam = null)
+    {
+        if(eventParam.Contain("DetectPosition"))
+        {
+            DetectWaypoint((Transform)eventParam["DetectPosition"]);
+        }
+    }
+    public void DetectWaypoint(Transform point)
+    {
+        itemWaypoint = point;
+        ChangeState(BossStateName.Patrol);
+    }
+
+    #endregion
+
+    #region State
     public void ChangeState(BossStateName state)
     {
         stateMachine.ChangeState((int)state);
     }
+    #endregion
 
+    #region Target
+    public void SetItemWaypoint(Transform target)
+    {
+        itemWaypoint = target;
+    }
     public void CheckTarget()
     {
         // Ray·Î Å¸°Ù Ã£±â
         Collider[] coll = Physics.OverlapSphere(transform.position, chaseDistance, (1 << Define.PLAYER_LAYER));
         if(coll.Length > 0)
         {
-            target = coll[0].transform;
+            SetItemWaypoint(coll[0].transform);
             ChangeState(BossStateName.Chase);
         }
+    }
+    #endregion
+
+    private void OnDestroy()
+    {
+        EventManager.StopListening((int)BossEventName.DetectObject, DetectWaypoint);
     }
 }
 public enum BossEventName
 {
+    DetectObject,
+    Count
 }

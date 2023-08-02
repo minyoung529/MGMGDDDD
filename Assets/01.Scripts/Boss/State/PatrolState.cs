@@ -13,6 +13,8 @@ public class PatrolState : BossState
     private int curWaypointCount = 1;
     private const int minWayCount = 1;
 
+    private Transform detectWay;
+
     public override BossStateName StateName => BossStateName.Patrol;
 
     private void Awake()
@@ -24,12 +26,25 @@ public class PatrolState : BossState
     public override void OnEnter()
     {
         boss.Anim.ChangeAnimation(BossAnimType.Walk);
-        SetNearWaypoint();
+
+        Vector3 target = boss.transform.position;
+        if(boss.ItemWaypoint != null)
+        {
+            detectWay = boss.ItemWaypoint;
+            boss.SetItemWaypoint(null);
+            target = detectWay.position;
+
+            Debug.Log(target);
+        }
+        SetNearWaypoint(target);
+
+        if (detectWay) SetDestination(detectWay.position);
+        else SetDestination(waypoints[curWaypointCount].position);
     }
 
     public override void OnExit()
     {
-
+        detectWay= null;
     }
 
     public override void OnUpdate()
@@ -43,23 +58,21 @@ public class PatrolState : BossState
         boss.CheckTarget();
     }
 
-    private void SetNearWaypoint()
+    private void SetNearWaypoint(Vector3 point)
     {
         beforeWaypointCount = curWaypointCount;
         curWaypointCount = minWayCount;
 
-        float minDistance = Vector3.Distance(boss.transform.position, waypoints[curWaypointCount].position);
+        float minDistance = Vector3.Distance(point, waypoints[curWaypointCount].position);
         for (int i = 2; i < waypoints.Length; i++)
         {
-            float dis = Vector3.Distance(boss.transform.position, waypoints[i].position);
+            float dis = Vector3.Distance(point, waypoints[i].position);
             if (dis < minDistance)
             {
                 minDistance = dis;
                 curWaypointCount = i;
             }
         }
-
-        SetDestination(waypoints[curWaypointCount].position);
     }
 
     // Patrol State
@@ -72,6 +85,7 @@ public class PatrolState : BossState
 
     private void SetDestination(Vector3 point)
     {
+        Debug.Log(curWaypointCount);
         boss.Agent.SetDestination(point);
     }
 

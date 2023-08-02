@@ -23,7 +23,7 @@ public class PlayBossAnimation : MonoBehaviour
     private void Awake()
     {
         boss = GetComponent<Boss>();
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponent<Animator>();
     }
     private void Start()
     {
