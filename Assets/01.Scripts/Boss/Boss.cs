@@ -27,7 +27,7 @@ public class Boss : MonoBehaviour
     public PlayBossAnimation Anim => anim;
 
     // Target
-    private float chaseDistance = 15f;
+    private float chaseDistance = 12f;
 
     private Transform target = null;
     public Transform Target => target;

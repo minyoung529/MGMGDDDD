@@ -16,6 +16,17 @@ public class BossDetect : MonoBehaviour
     private void Awake()
     {
         boss = GetComponent<Boss>();
+
+        EventManager.StartListening((int)BossEventName.DetectObject, EventDetect);
+    }
+
+    private void EventDetect(EventParam eventParam = null)
+    {
+        if (eventParam.Contain("DetectPosition"))
+        {
+            Transform target = (Transform)eventParam["DetectPosition"];
+            SetTarget(target);
+        }
     }
 
     public void DetectSound(GameObject sound)
@@ -30,5 +41,9 @@ public class BossDetect : MonoBehaviour
     private void SetTarget(Transform target)
     {
         boss.SetItemWaypoint(target);
+    }
+    private void OnDestroy()
+    {
+        EventManager.StopListening((int)BossEventName.DetectObject, EventDetect);
     }
 }

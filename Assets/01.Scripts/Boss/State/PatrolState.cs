@@ -33,8 +33,6 @@ public class PatrolState : BossState
             detectWay = boss.ItemWaypoint;
             boss.SetItemWaypoint(null);
             target = detectWay.position;
-
-            Debug.Log(target);
         }
         SetNearWaypoint(target);
 
@@ -85,7 +83,6 @@ public class PatrolState : BossState
 
     private void SetDestination(Vector3 point)
     {
-        Debug.Log(curWaypointCount);
         boss.Agent.SetDestination(point);
     }
 
