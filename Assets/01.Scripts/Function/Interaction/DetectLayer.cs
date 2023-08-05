@@ -12,6 +12,9 @@ public class DetectLayer : MonoBehaviour
     private UnityEvent onContact;
 
     [SerializeField]
+    private UnityEvent<Collision> onContactWithCollision;
+
+    [SerializeField]
     private bool isOnce;
     private int enterCount = 0;
 
@@ -23,6 +26,7 @@ public class DetectLayer : MonoBehaviour
         {
             enterCount++;
             onContact?.Invoke();
+            onContactWithCollision?.Invoke(other);
         }
     }
 }

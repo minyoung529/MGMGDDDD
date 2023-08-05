@@ -15,6 +15,9 @@ public class DetectTrigger : MonoBehaviour
     private UnityEvent OnExit;
 
     [SerializeField]
+    private UnityEvent<GameObject> OnContact;
+
+    [SerializeField]
     private bool isOnce = true;
     private bool isTrigger = false;
 
@@ -26,6 +29,7 @@ public class DetectTrigger : MonoBehaviour
         {
             isTrigger = true;
             OnEnter?.Invoke();
+            OnContact?.Invoke(other.gameObject);
         }
     }
 
@@ -34,6 +38,7 @@ public class DetectTrigger : MonoBehaviour
         if (((1 << other.gameObject.layer) & layerMask) != 0)
         {
             OnExit?.Invoke();
+            OnContact?.Invoke(other.gameObject);
         }
     }
 }
