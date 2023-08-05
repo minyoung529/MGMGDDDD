@@ -7,5 +7,6 @@ public enum PlayerStateName
     PickUp,
     Throw,
     Drop,
-    Fall
+    Fall,
+    SlowMove
 }

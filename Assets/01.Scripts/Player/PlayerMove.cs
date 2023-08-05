@@ -220,7 +220,7 @@ public class PlayerMove : PlayerMono
             StopAction();
             controller.Anim.SetInteger(hash_iStateNum, animIndex);
             controller.Anim.SetTrigger(hash_tStateChange);
-            curState.OnStateStart();
+            targetState.OnStateStart();
         });
     }
 
