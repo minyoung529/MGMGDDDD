@@ -176,7 +176,7 @@ public class TutorialTrigger : MonoBehaviour
     public void Inactive()
     {
         StopListeningEvent();
-        if (!isCollide) col.enabled = false;
+        if (isCollide) col.enabled = false;
     }
 
     public void Active()
