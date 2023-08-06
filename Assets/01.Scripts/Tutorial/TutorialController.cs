@@ -54,7 +54,7 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    public void StartTutorial(TutorialType type, Action onEnd, string name = "")
+    public void  StartTutorial(TutorialType type, Action onEnd, string name = "")
     {
         tutorials[type].Animator = animator;
         tutorials[type].StartTutorial(name);

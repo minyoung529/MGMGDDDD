@@ -40,6 +40,8 @@ public class Boss : MonoBehaviour
     private Transform itemWaypoint;
     public Transform ItemWaypoint => itemWaypoint;
 
+    private bool canFind = true;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -59,7 +61,10 @@ public class Boss : MonoBehaviour
 
     private void Start()
     {
-        EventManager.StartListening((int)BossEventName.DetectObject, DetectWaypoint);
+        EventManager.StartListening(EventName.BossDetectObject, DetectWaypoint);
+
+        EventManager.StartListening(EventName.InPlayerCupboard, SetNotFindTarget);
+        EventManager.StartListening(EventName.OutPlayerCupboard, SetFindTarget);
     }
 
     private void Update()
@@ -96,21 +101,50 @@ public class Boss : MonoBehaviour
     {
         itemWaypoint = target;
     }
+
+    public void SetNotFindTarget(EventParam eventParam = null)
+    {
+        canFind = false;
+    }
+    public void SetFindTarget(EventParam eventParam = null)
+    {
+        canFind = true;
+    }
+    private void SetFindTargetState(EventParam eventParam)
+    {
+        if (eventParam.Contain("findState"))
+        {
+            canFind = (bool)eventParam["findState"];
+            Debug.Log(canFind);
+        }
+    }
     public void CheckTarget()
     {
         // Ray·Î Å¸°Ù Ã£±â
         Collider[] coll = Physics.OverlapSphere(transform.position, chaseDistance, (1 << Define.PLAYER_LAYER));
         if(coll.Length > 0)
         {
-            SetItemWaypoint(coll[0].transform);
-            ChangeState(BossStateName.Chase);
+            if (!canFind)
+            {
+                NotFind();
+                Debug.Log("Not fine");
+            }
+            else
+            {
+                SetItemWaypoint(coll[0].transform);
+                ChangeState(BossStateName.Chase);
+            }
         }
+    }
+    private void NotFind()
+    {
+        ChangeState(BossStateName.Idle);
     }
     #endregion
 
     private void OnDestroy()
     {
-        EventManager.StopListening((int)BossEventName.DetectObject, DetectWaypoint);
+        EventManager.StopListening(EventName.BossDetectObject, DetectWaypoint);
     }
 }
 public enum BossEventName

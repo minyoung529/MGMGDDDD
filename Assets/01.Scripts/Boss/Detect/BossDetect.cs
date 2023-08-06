@@ -17,13 +17,12 @@ public class BossDetect : MonoBehaviour
     {
         boss = GetComponent<Boss>();
 
-        EventManager.StartListening((int)BossEventName.DetectObject, EventDetect);
+        EventManager.StartListening(EventName.BossDetectObject, EventDetect);
     }
 
     private void EventDetect(EventParam eventParam = null)
     {
-        if (eventParam.Contain("DetectPosition"))
-        {
+        if (eventParam.Contain("DetectPosition")) {
             Transform target = (Transform)eventParam["DetectPosition"];
             SetTarget(target);
         }
@@ -44,6 +43,6 @@ public class BossDetect : MonoBehaviour
     }
     private void OnDestroy()
     {
-        EventManager.StopListening((int)BossEventName.DetectObject, EventDetect);
+        EventManager.StopListening(EventName.BossDetectObject, EventDetect);
     }
 }

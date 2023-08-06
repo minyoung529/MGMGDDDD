@@ -42,7 +42,7 @@ public class PatrolState : BossState
 
     public override void OnExit()
     {
-        detectWay= null;
+        detectWay = null;
     }
 
     public override void OnUpdate()

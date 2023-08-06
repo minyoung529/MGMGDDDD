@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
-[RequireComponent(typeof(Collider))]
 public class DetectObject : MonoBehaviour
 {
     [SerializeField] private bool isOnce = false;
@@ -29,7 +28,7 @@ public class DetectObject : MonoBehaviour
 
         EventParam param= new();
         param["DetectPosition"] = transform;
-        EventManager.TriggerEvent((int)BossEventName.DetectObject, param);
+        EventManager.TriggerEvent(EventName.BossDetectObject, param);
     }
 
     private void OnTriggerEnter(Collider other)
