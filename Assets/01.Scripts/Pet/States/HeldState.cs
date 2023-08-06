@@ -9,7 +9,7 @@ public class HeldState : PetState
 
     public override void OnEnter()
     {
-        pet.OnHold();
+        pet.HoldabpePet.OnHold();
         pet.Event.StartListening((int)PetEventName.OnThrew, OnThrew);
         pet.Event.StartListening((int)PetEventName.OnDrop, OnDrop);
         pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
@@ -41,7 +41,7 @@ public class HeldState : PetState
 
     private void OnDrop()
     {
-        pet.OnDrop();
+        pet.HoldabpePet.OnDrop();
         pet.State.ChangeState((int)PetStateName.Idle);
     }
 }

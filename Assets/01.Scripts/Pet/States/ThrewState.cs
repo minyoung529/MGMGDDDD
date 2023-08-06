@@ -12,7 +12,7 @@ public class ThrewState : PetState
 
     public override void OnEnter()
     {
-        pet.OnThrow();
+        pet.HoldabpePet.OnThrow();
         pet.Event.StartListening((int)PetEventName.OnLanding, OnLanding);
         //pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnHold, OnHold);

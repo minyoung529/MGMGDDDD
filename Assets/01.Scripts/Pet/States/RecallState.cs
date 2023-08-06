@@ -87,7 +87,7 @@ public class RecallState : PetState
             onFlyEnd?.Invoke();
             arriveParticle.Play();
             pet.SetTargetPlayer();
-            pet.Throw(Vector3.up * 300);
+            pet.HoldabpePet.Throw(Vector3.up * 300);
 
             pet.Event.TriggerEvent((int)PetEventName.OnFlyEnd);
         });

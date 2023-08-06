@@ -28,6 +28,11 @@ public class PuzzleClearCounter : MonoBehaviour
         count--;
     }
 
+    public void ResetCount()
+    {
+        count = 0;
+    }
+
     [ContextMenu("Clear")]
     private void Clear()
     {

@@ -92,14 +92,14 @@ public class CannonScript : MonoBehaviour
         }
         explosion.Play();
 
-        pet.Throw(barrel.up * firePow);
+        pet.HoldabpePet.Throw(barrel.up * firePow);
         StartCoroutine(SetIgnore(0.5f, false));
         pet = null;
     }
 
     public void GetOutPet() {
         if (!pet) return;
-        pet.Throw(barrel.up * 500);
+        pet.HoldabpePet.Throw(barrel.up * 500);
         StartCoroutine(SetIgnore(0.5f, false));
         pet = null;
     }

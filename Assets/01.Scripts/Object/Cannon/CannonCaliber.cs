@@ -53,7 +53,7 @@ public class CannonCaliber : MonoBehaviour
             if (angle > 10) {
                 dir = Vector3.RotateTowards(dir, Vector3.up, Mathf.Deg2Rad * (angle - 10) , 0).normalized;
             }
-            item.Throw(dir * bumpPow);
+            item.HoldabpePet.Throw(dir * bumpPow);
         }
     }
 }

@@ -26,7 +26,9 @@ public enum Chapter
     // Second Scene
     Maze = 11,
 
-    Count = 12
+    Boss = 12,
+
+    Count
 }
 public class ChapterManager : MonoSingleton<ChapterManager>
 {

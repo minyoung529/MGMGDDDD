@@ -25,7 +25,7 @@ public class LandingState : PetState
     }
 
     private void Landing() {
-        pet.OnLanding();
+        pet.HoldabpePet.OnLanding();
         pet.State.ChangeState((int)PetStateName.Idle);
     }
 

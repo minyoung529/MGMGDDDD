@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
 
-public abstract class Pet : MonoBehaviour, IThrowable
+public abstract class Pet : MonoBehaviour
 {
     [SerializeField] public PetTypeSO petInform;
 
@@ -72,6 +72,8 @@ public abstract class Pet : MonoBehaviour, IThrowable
     public Sprite petSprite => petInform.petUISprite;
     public PetType GetPetType => petInform.petType;
     public Color petColor => petInform.outlineColor;
+    private HoldablePet holdablePet;
+    public HoldablePet HoldabpePet => holdablePet;
     #endregion
 
     private static bool isCameraAimPoint = true;
@@ -99,6 +101,7 @@ public abstract class Pet : MonoBehaviour, IThrowable
         coll = GetComponent<Collider>();
         anim = GetComponent<PlayPetAnimation>();
         emission = GetComponentInChildren<ChangePetEmission>();
+        holdablePet = GetComponent<HoldablePet>();
         pingPool = new ObjectPool<Ping>(CreatePing, OnGetPing, OnReleasePing, OnDestroyedPing, maxSize: 20);
 
         AxisController = new AxisController(transform);
@@ -472,42 +475,4 @@ public abstract class Pet : MonoBehaviour, IThrowable
     {
         State.OnDisable();
     }
-
-    #region IThrowable
-    public void OnHold()
-    {
-        Rigid.velocity = Vector3.zero;
-        Rigid.isKinematic = true;
-        Coll.enabled = false;
-        SetNavEnabled(false);
-    }
-
-    public void OnDrop()
-    {
-        Coll.enabled = true;
-        Rigid.isKinematic = false;
-        Rigid.velocity = Vector3.zero;
-        SetNavEnabled(true);
-    }
-
-    public void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse)
-    {
-        Rigid.velocity = Vector3.zero;
-        Rigid.isKinematic = false;
-        Rigid.AddForce(force, forceMode);
-        Event.TriggerEvent((int)PetEventName.OnThrew);
-    }
-
-    public void OnThrow()
-    {
-        Coll.enabled = true;
-        Rigid.constraints = RigidbodyConstraints.None;
-    }
-
-    public void OnLanding()
-    {
-        Rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
-        Rigid.velocity = Vector3.zero;
-    }
-    #endregion
 }

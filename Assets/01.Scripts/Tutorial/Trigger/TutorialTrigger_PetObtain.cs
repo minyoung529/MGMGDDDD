@@ -21,6 +21,17 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
 
         boxCollider = GetComponent<BoxCollider>();
         keyDownAction += InactiveTrigger;
+
+        // 튜토리얼 플리킹 에러
+        transform.SetParent(null);
+    }
+
+    private void LateUpdate()
+    {
+        if (gameObject.activeSelf && Vector3.Distance(transform.position, pet.transform.position) > 0.1f)
+        {
+            transform.position = pet.transform.position;
+        }
     }
 
     protected override bool Condition(Transform player)
