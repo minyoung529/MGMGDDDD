@@ -9,11 +9,7 @@ public class ChaseState : BossState
 
     public override void OnEnter()
     {
-        if (boss.Target == null)
-        {
-            boss.ChangeState(BossStateName.Patrol);
-        }
-
+        Debug.Log("Chase");
         boss.Anim.ChangeAnimation(BossAnimType.Run);
     }
 
@@ -24,6 +20,12 @@ public class ChaseState : BossState
 
     public override void OnUpdate()
     {
+        if (boss.Target == null)
+        {
+            boss.ChangeState(BossStateName.Patrol);
+            return;
+        }
+
         boss.Agent.SetDestination(boss.Target.position);
 
         float distance = Vector3.Distance(boss.transform.position, boss.Target.position);
@@ -31,16 +33,7 @@ public class ChaseState : BossState
         {
             boss.ChangeState(BossStateName.Patrol);
         }
-        if (distance <= boss.Agent.stoppingDistance)
-        {
-            boss.Anim.ChangeAnimation(BossAnimType.Catch);
-            StartCoroutine(CatchDelay());
-        }
+
     }
 
-    private IEnumerator CatchDelay()
-    {
-        yield return new WaitForSeconds(10f);
-            boss.ChangeState(BossStateName.Idle);
-    }
 }

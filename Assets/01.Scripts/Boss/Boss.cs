@@ -27,7 +27,7 @@ public class Boss : MonoBehaviour
     public PlayBossAnimation Anim => anim;
 
     // Target
-    private float chaseDistance = 12f;
+    private float chaseDistance = 15f;
 
     private Transform target = null;
     public Transform Target => target;
@@ -63,13 +63,24 @@ public class Boss : MonoBehaviour
     {
         EventManager.StartListening(EventName.BossDetectObject, DetectWaypoint);
 
-        EventManager.StartListening(EventName.InPlayerCupboard, SetNotFindTarget);
-        EventManager.StartListening(EventName.OutPlayerCupboard, SetFindTarget);
+        EventManager.StartListening(EventName.InPlayerCupboard, SetFindTargetState);
+        EventManager.StartListening(EventName.InPlayerCupboard, ResetTarget);
+        EventManager.StartListening(EventName.OutPlayerCupboard, SetFindTargetState);
     }
 
     private void Update()
     {
         stateMachine.OnUpdate();
+        if(target && canFind)
+        {
+            float distance = Vector3.Distance(agent.transform.position, target.position);
+                Debug.Log(target.name);
+            if (distance <= agent.stoppingDistance)
+            {
+                ChangeState(BossStateName.Catch);
+            }
+        }
+        
     }
 
     #region Waypoint
@@ -102,21 +113,18 @@ public class Boss : MonoBehaviour
         itemWaypoint = target;
     }
 
-    public void SetNotFindTarget(EventParam eventParam = null)
+    private void SetFindTargetState(EventParam eventParam = null)
     {
-        canFind = false;
-    }
-    public void SetFindTarget(EventParam eventParam = null)
-    {
-        canFind = true;
-    }
-    private void SetFindTargetState(EventParam eventParam)
-    {
-        if (eventParam.Contain("findState"))
+        if(eventParam.Contain("State"))
         {
-            canFind = (bool)eventParam["findState"];
+            canFind = (bool)eventParam["State"];
+            if (!canFind) target = null;
             Debug.Log(canFind);
         }
+    }
+    public void ResetTarget(EventParam eventParam = null)
+    {
+        target = null;
     }
     public void CheckTarget()
     {
@@ -124,13 +132,9 @@ public class Boss : MonoBehaviour
         Collider[] coll = Physics.OverlapSphere(transform.position, chaseDistance, (1 << Define.PLAYER_LAYER));
         if(coll.Length > 0)
         {
-            if (!canFind)
+            if (canFind)
             {
-                NotFind();
-                Debug.Log("Not fine");
-            }
-            else
-            {
+                target = coll[0].transform;
                 SetItemWaypoint(coll[0].transform);
                 ChangeState(BossStateName.Chase);
             }
@@ -145,6 +149,9 @@ public class Boss : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.BossDetectObject, DetectWaypoint);
+        EventManager.StopListening(EventName.InPlayerCupboard, ResetTarget);
+        EventManager.StopListening(EventName.InPlayerCupboard, SetFindTargetState);
+        EventManager.StopListening(EventName.OutPlayerCupboard, SetFindTargetState);
     }
 }
 public enum BossEventName

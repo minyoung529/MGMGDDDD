@@ -11,7 +11,7 @@ public class DetectObject : MonoBehaviour
 
     private int trying = 0;
     private bool canTrigger = true;
-    private const float coolTime = 5;
+    private const float coolTime = 0.7f;
 
     private void Awake()
     {

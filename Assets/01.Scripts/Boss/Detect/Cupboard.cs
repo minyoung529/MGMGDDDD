@@ -2,6 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UIElements;
 /// <summary>
 /// 
@@ -17,6 +18,9 @@ public class Cupboard : MonoBehaviour
     [SerializeField] private Transform inPos;
     [SerializeField] private TutorialTrigger inTutorialTip;
     [SerializeField] private TutorialTrigger outTutorialTip;
+
+    [SerializeField] private PlayableDirector openTimeline;
+    [SerializeField] private PlayableDirector closeTimeline;
 
     [SerializeField] private CinemachineVirtualCamera innerCam;
 
@@ -36,11 +40,15 @@ public class Cupboard : MonoBehaviour
     public void InCupboard()
     {
         if (playerIn || player == null) return;
+        openTimeline.Play();
 
         playerIn = true;
         anim.SetTrigger("Trigger");
         player.transform.position = inPos.position;
-        EventManager.TriggerEvent(EventName.InPlayerCupboard);
+
+        EventParam param = new();
+        param["State"] = false;
+        EventManager.TriggerEvent(EventName.InPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.LockInput();
 
         SetEnableTutorial(inTutorialTip, false);
@@ -58,12 +66,16 @@ public class Cupboard : MonoBehaviour
     public void OutCupboard()
     {
         if (!playerIn) return;
+        closeTimeline.Play();
 
         innerCam.gameObject.SetActive(false);
         player = null;
         playerIn = false;
         anim.SetTrigger("Close");
-        EventManager.TriggerEvent(EventName.OutPlayerCupboard);
+
+        EventParam param = new();
+        param["State"] = true;
+        EventManager.TriggerEvent(EventName.OutPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.UnLockInput();
 
         SetEnableTutorial(outTutorialTip, false);

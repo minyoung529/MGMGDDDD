@@ -10,6 +10,8 @@ public class BossIdleState : BossState
 
     public override void OnEnter()
     {
+        Debug.Log("Idle");
+        boss.Agent.isStopped = true;
         StartCoroutine(IdleTime());
     }
 
@@ -21,6 +23,7 @@ public class BossIdleState : BossState
 
     public override void OnExit()
     {
+        boss.Agent.isStopped = false;
     }
 
     public override void OnUpdate()
