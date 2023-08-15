@@ -58,7 +58,6 @@ public class Lever : MonoBehaviour
 
     #region Event
     // Event Toggle
-    [ContextMenu("Lever")]
 
     public void ToggleEvent(InputAction action, float value)
     {
@@ -66,6 +65,7 @@ public class Lever : MonoBehaviour
     }
 
     // Inspector View
+    [ContextMenu("Lever")]
     public void ToggleEvent()
     {
         if (!CheckLever()) return;
@@ -155,5 +155,17 @@ public class Lever : MonoBehaviour
     private void OnDestroy()
     {
         StopListen();
+    }
+
+    [ContextMenu("PlayOnLever")]
+    public void PlayOnLever()
+    {
+        OnLever?.Invoke();
+    }
+
+    [ContextMenu("PlayOffLever")]
+    public void PlayOffLever()
+    {
+        OffLever?.Invoke();
     }
 }

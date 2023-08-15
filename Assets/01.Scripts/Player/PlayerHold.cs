@@ -41,7 +41,7 @@ public class PlayerHold : PlayerMono
         defaultPower = throwPow;
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         PlayRotation();
     }
@@ -193,6 +193,7 @@ public class PlayerHold : PlayerMono
         isHolding = true;
         while (isHolding)
         {
+            if (holdableObject == null) yield return null;
             if (holdableObject.CanThrew)
             {
                 trajectory.DrawLine(holdableObject.transform.position, Quaternion.AngleAxis(throwAngle, -Vector3.right) * Vector3.forward * throwPow, holdableObject.Rigid.mass);
@@ -207,7 +208,7 @@ public class PlayerHold : PlayerMono
             yield return null;
         }
 
-        if (holdableObject.CanThrew)
+        if (holdableObject && holdableObject.CanThrew)
         {
             trajectory.StopDraw();
         }
@@ -281,6 +282,7 @@ public class PlayerHold : PlayerMono
             Vector3 forward = GameManager.Instance.MainCam.transform.forward;
             forward.y = 0f;
 
+            holdableObject.transform.forward = forward;
             transform.forward = forward;
         }
     }

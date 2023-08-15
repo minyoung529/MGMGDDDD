@@ -14,6 +14,7 @@ public class BossGameController : MonoBehaviour
 
     public void Clear()
     {
+        Debug.Log("Clear");
         onClear?.Invoke();
     }
 
