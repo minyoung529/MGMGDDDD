@@ -9,12 +9,14 @@ using UnityEngine.Pool;
 public class Sign : MonoBehaviour
 {
     [SerializeField] ParticleSystem tearsParticle;
+    [SerializeField] bool isCollide = true;
 
     [Header("Change Emotion Type")]
     private EmotionType changeEmotionType = EmotionType.Afraid;
 
     private IObjectPool<ParticleSystem> pool;
     private Dictionary<Pet, ParticleSystem> petParticles = new Dictionary<Pet, ParticleSystem>();
+    private Dictionary<GameObject, ParticleSystem> objectParticles = new Dictionary<GameObject, ParticleSystem>();
     Action notAfraid;
 
     private void Awake()
@@ -74,10 +76,52 @@ public class Sign : MonoBehaviour
         }
     }
 
+    public void Active(GameObject obj)
+    {
+        PlayPetAnimation afraidAnim = obj.GetComponent<PlayPetAnimation>();
+        if (afraidAnim)
+        {
+            if (afraidAnim.CurAnim == AnimType.Afraid) return;
+            afraidAnim.ChangeAnimation(AnimType.Afraid);
+        }
+
+        ChangePetEmotion emotion = obj.GetComponent<ChangePetEmotion>();
+        if (emotion)
+            emotion.ChangeEmotion(EmotionType.Sad);
+
+        ParticleSystem tears = pool.Get();
+        if (tears)
+        {
+            tears.transform.SetParent(obj.transform);
+            tears.transform.localPosition = new Vector3(0, 0, 0);
+        }
+        if (obj && tears) objectParticles.Add(obj, tears);
+    }
+    public void Inactive(GameObject obj)
+    {
+        PlayPetAnimation afraidAnim = obj.GetComponent<PlayPetAnimation>();
+        if (afraidAnim)
+        {
+            if (afraidAnim.CurAnim != AnimType.Afraid) return;
+            afraidAnim.ChangeAnimation(AnimType.Idle);
+        }
+
+        ChangePetEmotion emotion = obj.GetComponent<ChangePetEmotion>();
+        if (emotion)
+            emotion.ChangeEmotion(EmotionType.None);
+
+        if (objectParticles.ContainsKey(obj))
+        {
+            pool.Release(objectParticles[obj]);
+            objectParticles.Remove(obj);
+        }
+    }
+
     #region Trigger
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!isCollide) return;
         Pet pet = other.GetComponent<Pet>();
         if (pet)
         {
@@ -87,6 +131,7 @@ public class Sign : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (!isCollide) return;
         Pet pet = other.GetComponent<Pet>();
         if (pet)
         {
