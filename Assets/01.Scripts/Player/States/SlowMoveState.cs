@@ -43,7 +43,7 @@ public class SlowMoveState : MoveState
     private void Start()
     {
         // TEST
-        GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.SlowMove);
+        //GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.SlowMove);
     }
 
     public override void OnStateStart()
