@@ -13,8 +13,7 @@ public class PetEmotionMixerBehaviour : PlayableBehaviour
     {
         petEmotion = playerData as PetEmotion;
 
-        if (!petEmotion)
-            return;
+        if (!petEmotion)  return;
 
         int inputCount = playable.GetInputCount();
         int currentInputCount = 0;
@@ -40,11 +39,14 @@ public class PetEmotionMixerBehaviour : PlayableBehaviour
         // 클립이 1개인 곳을 지나는 중
         else if (currentInputCount == 1)
         {
-
+            if (petEmotion == null) return;
+            petEmotion.SetEmotion(input.Type);
         }
         // 클립이 2개 이상인 블렌딩되고 있는 곳을 지나는 중
         else
         {
+            if (petEmotion == null) return;
+            petEmotion.SetEmotion(input.Type);
         }
     }
     public override void OnBehaviourPlay(Playable playable, FrameData info)

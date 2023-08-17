@@ -8,5 +8,8 @@ public enum EventName
     StartPetAllListen,
     StopPetAllListen,
     SavePoint,
+    BossDetectObject,
+    InPlayerCupboard,
+    OutPlayerCupboard,
     Count
 }

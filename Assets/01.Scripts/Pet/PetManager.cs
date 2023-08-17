@@ -264,7 +264,7 @@ public class PetManager : MonoSingleton<PetManager>
     }
     private void OnMoveUp(InputAction input, float value)
     {
-        if (selectIndex < 0) return;
+        if (selectIndex < 0 || selectIndex >= pets.Count) return;
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnOffPing);
     }
     private void OnClickMove(InputAction input, float value)

@@ -11,6 +11,7 @@ public class CannonDirectorBinding : MonoBehaviour
     [SerializeField] private GameObject[] pets;
     [SerializeField] private CheckPetType check;
 
+
     public void PetEmotionTrackBinding()
     {
         DirectorTrackBinding.Binding(failDirector, "PetEmotionTrack", pets[(int)check.GetInputPet].GetComponent<PetEmotion>());
