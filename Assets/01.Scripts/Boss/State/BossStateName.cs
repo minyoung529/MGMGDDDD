@@ -4,5 +4,6 @@ public enum BossStateName
    Patrol,
    Chase,
    Catch,
+   PetCatch,
    Count
 }

@@ -42,6 +42,9 @@ public class Boss : MonoBehaviour
 
     private bool canFind = true;
 
+    [SerializeField]
+    private LayerMask targetLayer;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -70,24 +73,25 @@ public class Boss : MonoBehaviour
 
     private void Update()
     {
-        stateMachine.OnUpdate();
-        if(target && canFind)
-        {
-            float distance = Vector3.Distance(agent.transform.position, target.position);
-                Debug.Log(target.name);
-            if (distance <= agent.stoppingDistance)
-            {
-                ChangeState(BossStateName.Catch);
-            }
-        }
-        
+        // 레이더로 변경
+
+        //stateMachine.OnUpdate();
+        //if (target && canFind)
+        //{
+        //    float distance = Vector3.Distance(agent.transform.position, target.position);
+        //    Debug.Log(target.name);
+        //    if (distance <= agent.stoppingDistance)
+        //    {
+        //        ChangeState(BossStateName.Catch);
+        //    }
+        //}
     }
 
     #region Waypoint
 
     private void DetectWaypoint(EventParam eventParam = null)
     {
-        if(eventParam.Contain("DetectPosition"))
+        if (eventParam.Contain("DetectPosition"))
         {
             DetectWaypoint((Transform)eventParam["DetectPosition"]);
         }
@@ -115,10 +119,13 @@ public class Boss : MonoBehaviour
 
     private void SetFindTargetState(EventParam eventParam = null)
     {
-        if(eventParam.Contain("State"))
+        if (eventParam.Contain("State"))
         {
             canFind = (bool)eventParam["State"];
-            if (!canFind) target = null;
+            if (!canFind)
+            {
+                ResetTarget();
+            }
             Debug.Log(canFind);
         }
     }
@@ -129,21 +136,49 @@ public class Boss : MonoBehaviour
     public void CheckTarget()
     {
         // Ray로 타겟 찾기
-        Collider[] coll = Physics.OverlapSphere(transform.position, chaseDistance, (1 << Define.PLAYER_LAYER));
-        if(coll.Length > 0)
-        {
-            if (canFind)
-            {
-                target = coll[0].transform;
-                SetItemWaypoint(coll[0].transform);
-                ChangeState(BossStateName.Chase);
-            }
-        }
+        //Collider[] coll = Physics.OverlapSphere(transform.position, chaseDistance, targetLayer);
+        //if (coll.Length > 0)
+        //{
+        //    if (canFind)
+        //    {
+        //        target = coll[0].transform;
+        //        SetItemWaypoint(coll[0].transform);
+        //        ChangeState(BossStateName.Chase);
+        //    }
+        //}
     }
     private void NotFind()
     {
         ChangeState(BossStateName.Idle);
     }
+    #endregion
+
+    #region Event
+    public void OnEnterInnerRadar(GameObject obj)
+    {
+        // 이미 잡는 중이면 Return
+        if (stateMachine.CurStateIndex == (int)BossStateName.Catch ||
+           stateMachine.CurStateIndex == (int)BossStateName.PetCatch)
+            return;
+
+        ChangeState(BossStateName.Catch);
+    }
+
+    public void OnExitInnerRadar(GameObject obj)
+    {
+    }
+
+    public void OnEnterOuterRadar(GameObject obj)
+    {
+        target = obj.transform;
+    }
+
+    public void OnExitOuterRadar(GameObject obj)
+    {
+        ResetTarget();  // TEMP
+    }
+
+
     #endregion
 
     private void OnDestroy()
@@ -156,6 +191,11 @@ public class Boss : MonoBehaviour
 }
 public enum BossEventName
 {
+    OnEnterInnerRadar,
+    OnExitInnerRadar,
+    OnEnterOuterRadar,
+    OnExitOuterRadar,
+
     DetectObject,
     Count
 }

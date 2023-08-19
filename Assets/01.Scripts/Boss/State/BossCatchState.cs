@@ -9,9 +9,19 @@ public class BossCatchState : BossState
 
     public override void OnEnter()
     {
-        Debug.Log("Catch");
-        boss.ResetTarget();
-        StartCoroutine(CatchDelay());
+        Pet pet = boss.Target.GetComponent<Pet>();
+
+        // 잡은 게 펫이라면
+        if (pet != null)
+        {
+            boss.ChangeState(BossStateName.PetCatch);
+        }
+        else
+        {
+            Debug.Log("Catch");
+            boss.ResetTarget();
+            StartCoroutine(CatchDelay());
+        }
     }
 
     public override void OnExit()

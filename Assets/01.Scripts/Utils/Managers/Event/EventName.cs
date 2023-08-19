@@ -11,5 +11,6 @@ public enum EventName
     BossDetectObject,
     InPlayerCupboard,
     OutPlayerCupboard,
+
     Count
 }

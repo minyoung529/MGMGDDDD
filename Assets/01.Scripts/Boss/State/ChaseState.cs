@@ -33,7 +33,5 @@ public class ChaseState : BossState
         {
             boss.ChangeState(BossStateName.Patrol);
         }
-
     }
-
 }

@@ -25,7 +25,7 @@ public class PetManager : MonoSingleton<PetManager>
 
     [SerializeField]
     private SpriteAtlas spriteAtlas;
-    
+
     #region Get
     public int PetCount { get { return pets.Count; } }
     public Pet GetSelectPet { get { return pets[selectIndex]; } }
@@ -316,7 +316,7 @@ public class PetManager : MonoSingleton<PetManager>
 
         if (pets[selectIndex].GetPetType == PetType.OilPet)
             pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
-        if(beforeIndex > -1)pets[beforeIndex].Event.TriggerEvent((int)PetEventName.OnOffPing);
+        if (beforeIndex > -1) pets[beforeIndex].Event.TriggerEvent((int)PetEventName.OnOffPing);
 
         addIndex = 0;
 
@@ -457,6 +457,8 @@ public class PetManager : MonoSingleton<PetManager>
 
         int index = pets.IndexOf(p);
 
+        if (index < 0) return;
+
         DisablePetUI(index);
 
         petTypes.RemoveAt(index);
@@ -504,11 +506,15 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void ActivePetUI(int index)
     {
+        if (index < 0 || index >= petInvens.Count) return;
+
         petInvens[index].gameObject.SetActive(true);
         petImages[index].sprite = spriteAtlas.GetSprite(pets[index].petSprite.name);
     }
     private void DisablePetUI(int index)
     {
+        if (index < 0 || index >= petInvens.Count) return;
+
         petInvens[index].gameObject.SetActive(false);
     }
 
