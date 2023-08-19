@@ -73,9 +73,10 @@ public class Boss : MonoBehaviour
 
     private void Update()
     {
+        stateMachine.OnUpdate();
+
         // 레이더로 변경
 
-        //stateMachine.OnUpdate();
         //if (target && canFind)
         //{
         //    float distance = Vector3.Distance(agent.transform.position, target.position);
@@ -85,6 +86,11 @@ public class Boss : MonoBehaviour
         //        ChangeState(BossStateName.Catch);
         //    }
         //}
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            ChangeState(BossStateName.Stun);
+        }
     }
 
     #region Waypoint
