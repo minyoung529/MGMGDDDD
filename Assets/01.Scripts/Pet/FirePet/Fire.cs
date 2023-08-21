@@ -56,6 +56,7 @@ public class Fire : MonoBehaviour
 
     public void Burn(bool isPhysics = false)
     {
+        Debug.Log(gameObject.activeSelf);
         if (!gameObject.activeSelf) return;
         if (isPhysics && onlyScriptBurn) return;
 

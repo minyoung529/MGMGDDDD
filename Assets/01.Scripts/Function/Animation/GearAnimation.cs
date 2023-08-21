@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GearAnimation : MonoBehaviour
 {
-    private List<Animator> animators;
+    [SerializeField] private UnityEvent rotateEvent;
+    [SerializeField] private UnityEvent stopRotateEvent;
+
+    private Animator[] animators;
 
     private void Start()
     {
-        animators ??= new List<Animator>(transform.GetComponentsInChildren<Animator>());
+        animators = transform.GetComponentsInChildren<Animator>();
     }
 
     [ContextMenu("Roll")]
@@ -18,6 +22,7 @@ public class GearAnimation : MonoBehaviour
         {
             animator.SetBool("Rotate", true);
         }
+        rotateEvent?.Invoke();
     }
 
     public void StopRotate()
@@ -26,5 +31,6 @@ public class GearAnimation : MonoBehaviour
         {
             animator.SetBool("Rotate", false);
         }
+        stopRotateEvent?.Invoke();
     }
 }
