@@ -15,11 +15,13 @@ public class BossStunState : BossState
     {
         curTime = stunTime;
         boss.Anim.ChangeAnimation(BossAnimType.Stun);
+        boss.Agent.isStopped = true;
         stunning = true;
     }
 
     public override void OnExit()
     {
+        boss.Agent.isStopped = false;
         stunning = false;
     }
 
