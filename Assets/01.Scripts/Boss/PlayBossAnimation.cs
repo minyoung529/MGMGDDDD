@@ -8,7 +8,8 @@ public enum BossAnimType
     Idle = 0,
     Walk = 1,
     Run = 2,
-    Catch = 3
+    Catch = 3,
+    Stun = 4
 }
 public class PlayBossAnimation : MonoBehaviour
 {

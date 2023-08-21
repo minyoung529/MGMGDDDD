@@ -5,5 +5,6 @@ public enum BossStateName
    Chase,
    Catch,
    PetCatch,
+   Stun,
    Count
 }
