@@ -92,10 +92,12 @@ public class PlayerHold : PlayerMono
                 }
 
             case InputAction.Throw:
-                if (holdableObject && holdableObject.CanThrew)
                 {
-                    Throw();
-                    controller.Move.LockInput();
+                    if (holdableObject && holdableObject.CanThrew)
+                    {
+                        Throw();
+                        controller.Move.LockInput();
+                    }
                 }
                 break;
 
@@ -181,9 +183,11 @@ public class PlayerHold : PlayerMono
         if (holdableObject == null)
         {
             controller.Move.UnLockInput();
+            Debug.Log("Holdable Object is null");
             return;
         }
 
+        Debug.Log("Throw");
         OnExitHold();
         controller.Move.ChangeState(PlayerStateName.Throw);
     }
@@ -208,10 +212,7 @@ public class PlayerHold : PlayerMono
             yield return null;
         }
 
-        if (holdableObject && holdableObject.CanThrew)
-        {
-            trajectory.StopDraw();
-        }
+        trajectory.StopDraw();
     }
 
     #region Anim Events
