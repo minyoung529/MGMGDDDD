@@ -33,6 +33,16 @@ public class OutlineScript : MonoBehaviour
     private bool used = false;
     public bool IsInteract => used;
 
+    [SerializeField]
+    private bool isPetInteract = true;
+
+    public bool IsPetInteract => isPetInteract;
+
+    [SerializeField]
+    private Color outlineColor;
+
+    public Color OutlineColor => outlineColor;
+
     void Start()
     {
         outlineLayer = Utils.LayerToInteger(LayerMask.GetMask("Outline"));

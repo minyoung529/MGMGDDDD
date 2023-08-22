@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,17 +9,27 @@ public abstract class HoldableObject : MonoBehaviour
     private bool canThrew = true;
 
     [SerializeField] protected Collider collider;
-    public Collider Coll => collider;
 
     [SerializeField] protected Rigidbody rigid;
-    public Rigidbody Rigid => rigid;
 
     protected bool isHold = false;
-    public bool IsHold => isHold;
 
-    public bool CanThrew => canThrew;
+    [SerializeField]
+    protected bool existGuideKey = false;
 
     protected Pet pet;
+
+
+
+    #region Property
+    public Collider Coll => collider;
+    public Rigidbody Rigid => rigid;
+    public bool IsHold => isHold;
+    public bool CanThrew => canThrew;
+    public bool ExistGuideKey => existGuideKey;
+    #endregion
+
+    private Action onDestroy;
 
     private void Awake()
     {
@@ -40,5 +51,20 @@ public abstract class HoldableObject : MonoBehaviour
     public bool GetIsPet()
     {
         return pet;
+    }
+
+    public void ListeningOnDestroy(Action action)
+    {
+        onDestroy += action;
+    }
+
+    public void StopListeningOnDestroy(Action action)
+    {
+        onDestroy -= action;
+    }
+
+    private void OnDestroy()
+    {
+        onDestroy?.Invoke();
     }
 }

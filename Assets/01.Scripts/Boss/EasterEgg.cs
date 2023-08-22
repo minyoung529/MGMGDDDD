@@ -40,6 +40,7 @@ public class EasterEgg : HoldableObject
 
     public override void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse)
     {
+        isHold = false;
         collider.enabled = true;
         rigid.velocity = Vector3.zero;
         rigid.isKinematic = false;

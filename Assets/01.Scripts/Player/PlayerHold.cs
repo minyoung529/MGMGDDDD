@@ -14,6 +14,8 @@ public class PlayerHold : PlayerMono
     [SerializeField][Range(0, 90)] private float throwAngle;
     [SerializeField] private float throwPow;
     [SerializeField] private LayerMask layer;
+
+    [SerializeField] protected TutorialTrigger guide;
     private Vector3 ThrowVector
     {
         get
@@ -44,6 +46,24 @@ public class PlayerHold : PlayerMono
     private void LateUpdate()
     {
         PlayRotation();
+
+        HoldableObject holdable = GetHodlableObject();
+
+        if (!isHolding && holdable)
+        {
+            if (holdable.ExistGuideKey)
+            {
+                // 가이드 띄우기
+                if (!guide.IsEnableTutorial)
+                    guide?.StartTutorial();
+            }
+        }
+        else if (!isHolding && holdable == null)
+        {
+            // 가이드 지우기
+            if (guide.IsEnableTutorial)
+                guide?.EndTutorial();
+        }
     }
 
     public void SetThrowAngle(float value)
@@ -88,6 +108,8 @@ public class PlayerHold : PlayerMono
                         PickUp(obj);
                         controller.Move.LockInput();
                     }
+                    guide?.EndTutorial();
+
                     break;
                 }
 
@@ -112,6 +134,7 @@ public class PlayerHold : PlayerMono
         OnHold();
 
         holdableObject = obj;
+        holdableObject.ListeningOnDestroy(OnHoldableObjectDestroyed);
 
         Physics.IgnoreCollision(controller.Coll, holdableObject.Coll, true);
         Vector3 petPos = holdableObject.transform.position;
@@ -234,6 +257,7 @@ public class PlayerHold : PlayerMono
         {
             holdableObject.OnDropFinish();
             Physics.IgnoreCollision(controller.Coll, holdableObject.Coll, false);
+            holdableObject?.StopListeningOnDestroy(OnHoldableObjectDestroyed);
             holdableObject = null;
         });
     }
@@ -248,6 +272,7 @@ public class PlayerHold : PlayerMono
         isHolding = false;
         holdableObject.Throw(ThrowVector);
         StartCoroutine(EnableCollision(holdableObject));
+        holdableObject?.StopListeningOnDestroy(OnHoldableObjectDestroyed);
         holdableObject = null;
     }
 
@@ -312,5 +337,10 @@ public class PlayerHold : PlayerMono
 
         playerController.Move.IsBlockRotate = false;
         playerController.Camera.ActiveCrossHair();
+    }
+
+    private void OnHoldableObjectDestroyed()
+    {
+        holdableObject = null;
     }
 }

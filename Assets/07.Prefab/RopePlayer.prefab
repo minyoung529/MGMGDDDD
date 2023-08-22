@@ -684,6 +684,7 @@ GameObject:
   - component: {fileID: 5935958867484099401}
   - component: {fileID: 1379336032578559027}
   - component: {fileID: 2005583636}
+  - component: {fileID: 2902818354387872963}
   m_Layer: 3
   m_Name: RopePlayer
   m_TagString: Player
@@ -993,6 +994,7 @@ MonoBehaviour:
   layer:
     serializedVersion: 2
     m_Bits: 257
+  guide: {fileID: 2902818354387872963}
 --- !u!114 &5935958867484099401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,6 +1040,30 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.27
   m_Center: {x: 0, y: 0.25, z: 0}
+--- !u!114 &2902818354387872963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575653875229823198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4223a9ac3d70b4f95434e9d0cf3486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCollide: 0
+  autoEnd: 0
+  exitEqualsUnShow: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  tutorialType: 5
+  tutorialName: "\uB4E4\uAE30"
+  inputAction: 20
+  onKeyDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2473812658451148972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1851,27 +1877,35 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6909802
+      value: 0.69098026
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0713913
+      value: -0.07139131
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7155308
+      value: -0.71553075
       objectReference: {fileID: 0}
     - target: {fileID: 172443364573305782, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.073927835
+      value: -0.07392783
+      objectReference: {fileID: 0}
+    - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.694575
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.010773348
+      value: -0.010773352
+      objectReference: {fileID: 0}
+    - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7192531
       objectReference: {fileID: 0}
     - target: {fileID: 172443364628277472, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.011156125
+      value: -0.011156128
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802920, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_Follow
@@ -1887,7 +1921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 172443365008802921, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.31726575
+      value: 0.31726488
       objectReference: {fileID: 0}
     - target: {fileID: 172443365801666672, guid: 8136b3c088afa714180f136b6f556049, type: 3}
       propertyPath: m_LocalPosition.y
