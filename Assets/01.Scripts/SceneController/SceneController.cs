@@ -10,6 +10,7 @@ public enum SceneType
     Clock_Lobby = 2,
     SecondScene = 3,
     StartScene = 4,
+    Boss = 5,
     Count
 }
 

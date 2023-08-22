@@ -7,7 +7,8 @@ using static UnityEngine.ParticleSystem;
 public class WindSupply : MonoBehaviour
 {
     [SerializeField] private float delayTime = 4f;
-    [SerializeField] private Transform sticky;
+    [SerializeField] private StickyPet sticky;
+    [SerializeField] private BreakableWindow cage;
 
     private Vector3 originScale = Vector3.zero;
     public void Trigger()
@@ -19,7 +20,12 @@ public class WindSupply : MonoBehaviour
     private IEnumerator AddScale()
     {
         yield return new WaitForSeconds(delayTime);
-        sticky.DOScale(originScale * 6f, 1.5f).SetEase(Ease.InBounce);
+        sticky.Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
+    }
+    
+    public void BreakCage()
+    {
+        sticky.transform.SetParent(null);
     }
 
 }
