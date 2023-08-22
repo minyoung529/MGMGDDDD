@@ -149,7 +149,6 @@ public abstract class Pet : MonoBehaviour
         {
             agent.speed = originalAgentSpeed;
         }
-
     }
 
     public void Pause()
@@ -182,7 +181,7 @@ public abstract class Pet : MonoBehaviour
         SetTargetPlayer();
         PetManager.Instance.AddPet(this);
 
-        if(!bind)
+        if (!bind)
         {
             if (!anim) anim = GetComponent<PlayPetAnimation>();
             anim.ChangeAnimation(AnimType.Follow, 1f);
@@ -235,7 +234,6 @@ public abstract class Pet : MonoBehaviour
         if (!target && agent.enabled)
         {
             agent.ResetPath();
-            return;
         }
     }
 
@@ -288,18 +286,32 @@ public abstract class Pet : MonoBehaviour
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
     }
 
+    void p()
+    {
+        if (gameObject.name == "FirePet")
+        {
+            Debug.Log("POINT");
+        }
+    }
+
     private void Chase()
     {
-        if (!target || !GetIsOnNavMesh()) return;
+        if (!target || !GetIsOnNavMesh())
+        {
+            p();
+            return;
+        }
 
         if (!IsTargetOnRoute(target))
         {
+            p();
             SetTargetNull();
             return;
         }
         if (Vector3.Distance(GetNearestNavMeshPosition(transform.position), GetNearestNavMeshPosition(target.position))
             >= agent.stoppingDistance)
         {
+            p();
             SetDestination(target.position);
         }
     }
@@ -359,7 +371,7 @@ public abstract class Pet : MonoBehaviour
         NavMeshPath path = new NavMeshPath();
         NavMesh.CalculatePath(transform.position, GetNearestNavMeshPosition(target.position, 20f), NavMesh.AllAreas, path); //��ΰ� �׷�������
         if (path.corners.Length < 1) return false;
-      //  if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //����� �������� �÷��̾� ��ó����
+        //  if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 5f) return false; //����� �������� �÷��̾� ��ó����
         if (Vector3.Distance(target.position, path.corners[path.corners.Length - 1]) > 8f) return false; //����� �������� �÷��̾� ��ó����
         return true;
     }
@@ -370,7 +382,7 @@ public abstract class Pet : MonoBehaviour
     {
         if (IsMovePointLock) return;
         GameObject hitObject = null;
-        
+
         if (IsCameraAimPoint)
         {
             hitObject = GameManager.Instance.GetCameraHitObject();
@@ -396,7 +408,7 @@ public abstract class Pet : MonoBehaviour
     private Ping CreatePing()
     {
         Ping obj = Instantiate(pingPrefab).transform.GetComponent<Ping>();
-        obj.name = pingPrefab.name + "_"+index;
+        obj.name = pingPrefab.name + "_" + index;
         obj.transform.position = transform.position;
         index++;
         return obj;
@@ -423,7 +435,7 @@ public abstract class Pet : MonoBehaviour
     public void SetPing(Vector3 destination)
     {
         if (State.CurStateIndex != (int)PetStateName.Move) return;
-        if(curPing == null)
+        if (curPing == null)
         {
             curPing = pingPool.Get();
         }
@@ -438,7 +450,7 @@ public abstract class Pet : MonoBehaviour
     }
     public void ReleasePing(Ping ping)
     {
-        if(ping.gameObject.activeSelf) pingPool.Release(ping);
+        if (ping.gameObject.activeSelf) pingPool.Release(ping);
     }
     #endregion
 

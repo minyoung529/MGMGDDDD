@@ -23,6 +23,21 @@ public class CatchingPet : MonoBehaviour
         fixedY = petTransforms[0].position.y;
     }
 
+    private void Update()
+    {
+        if (catchedPets.Count > 0)
+        {
+            for (int i = 0; i < catchedPets.Count; i++)
+            {
+                if (catchedPets[i].Agent.enabled)
+                {
+                    catchedPets[i].Agent.SetDestination(transform.position);
+                    catchedPets[i].Agent.stoppingDistance = i * 1f + 5f;
+                }
+            }
+        }
+    }
+
     public void EquipPet(Pet pet, Action onEquipEnd)
     {
         if (index >= petTransforms.Length)
@@ -30,16 +45,18 @@ public class CatchingPet : MonoBehaviour
 
         if (catchedPets.Contains(pet)) return;
 
+        pet.State.ChangeState((int)PetStateName.Idle);  // 펫 동작 끄기
+        pet.SetNavIsStopped(true);
+        pet.SetNavEnabled(false);
+        pet.Rigid.velocity = Vector3.zero;
+
+        // 펫 없애기
+        PetManager.Instance.DeletePet(pet.GetPetType);
+
         catchedPets.Add(pet);
 
         StartCoroutine(EquipAnimation(pet, onEquipEnd));
         index++;
-    }
-
-    public void UnEquipPet(Pet pet)
-    {
-        catchedPets.Remove(pet);
-        index--;
     }
 
     private IEnumerator EquipAnimation(Pet pet, Action onEquipEnd)
@@ -51,16 +68,24 @@ public class CatchingPet : MonoBehaviour
 
         // Y 동일해 물리 버그 나지 않게
         start.y = end.y = fixedY;
-        mid.y = start.y + 7f;
+        mid.y = start.y + 5f;
 
         float duration = 1f;
+        pet.transform.position = start;
+
+        yield return null;
+
         pet.transform.DOPath(new Vector3[] { start, mid, end }, duration, PathType.CatmullRom);
 
         yield return new WaitForSeconds(duration + 0.5f);
 
         pet.Rigid.velocity = Vector3.zero;
-        pet.transform.SetParent(transform);
+        pet.SetNavEnabled(true);
+        pet.SetNavIsStopped(false);
+        pet.SetTarget(transform);
+
         onEquipEnd?.Invoke();
+        index++;
     }
 
     [ContextMenu("UnEquipAllPets")]
@@ -72,14 +97,17 @@ public class CatchingPet : MonoBehaviour
             pet.GetPet(GameManager.Instance.PlayerController.transform);
 
             pet.State.ChangeState((int)PetStateName.Idle);
-            pet.SetNavIsStopped(false);
-            pet.SetNavEnabled(true);
+            pet.SetTargetNull();
 
-            pet.transform.SetParent(null);
-
-            UnEquipPet(pet);
+            index--;
         }
 
+        index = 0;
         catchedPets.Clear();
+    }
+
+    public bool IsContain(Pet pet)
+    {
+        return catchedPets.Contains(pet);
     }
 }

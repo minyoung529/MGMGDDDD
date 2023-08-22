@@ -26,6 +26,9 @@ public class Boss : MonoBehaviour
     private PlayBossAnimation anim;
     public PlayBossAnimation Anim => anim;
 
+    private CatchingPet catchingPet;
+    public CatchingPet CatchingPet => catchingPet;
+
     // Target
     private float chaseDistance = 15f;
 
@@ -49,6 +52,7 @@ public class Boss : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<PlayBossAnimation>();
+        catchingPet = GetComponent<CatchingPet>();
 
         BossState[] compos = stateParent.GetComponents<BossState>();
         BossState[] states = new BossState[(int)BossStateName.Count];
@@ -201,6 +205,7 @@ public class Boss : MonoBehaviour
 
         if (egg)
         {
+            catchingPet.UnEquipAllPets();
             ChangeState(BossStateName.Stun);
             egg.Delete();
         }
