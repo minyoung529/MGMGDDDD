@@ -7,6 +7,7 @@ public class PuzzleClearCounter : MonoBehaviour
 {
     [SerializeField] private int clearCount = 1;
     [SerializeField] UnityEvent onClear;
+    private bool isClear = false;
 
     private int count = 0;
 
@@ -36,6 +37,8 @@ public class PuzzleClearCounter : MonoBehaviour
     [ContextMenu("Clear")]
     private void Clear()
     {
+        if (isClear) return;
+        isClear = true;
         onClear?.Invoke();
     }
 }

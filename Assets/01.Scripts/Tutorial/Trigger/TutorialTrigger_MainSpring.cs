@@ -17,11 +17,17 @@ public class TutorialTrigger_MainSpring : TutorialTrigger
 
     protected override bool Condition(Transform player)
     {
+        if (obj == null)
+            return false;
+
         return obj.IsHold;
     }
-    
+
     private void OnPutSpring(InputAction action, float value)
     {
-        Destroy(obj.gameObject);
+        if (obj)
+        {
+            Destroy(obj.gameObject);
+        }
     }
 }

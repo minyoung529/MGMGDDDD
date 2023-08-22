@@ -21,9 +21,11 @@ public class Funnel : MonoBehaviour
     [SerializeField]
     private UnityEvent onClear;
 
+    private bool isClear = false;
+
     private void Awake()
     {
-        bolts = boltRoot.GetComponentsInChildren<Bolt>().ToList();
+        bolts = boltRoot?.GetComponentsInChildren<Bolt>().ToList();
 
         if (bolts == null || bolts.Count == 0)
         {
@@ -48,6 +50,8 @@ public class Funnel : MonoBehaviour
 
         if (curBoltCount == boltCount)
         {
+            if (isClear) return;
+            isClear = true;
             onClear?.Invoke();
         }
     }

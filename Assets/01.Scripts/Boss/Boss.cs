@@ -166,10 +166,7 @@ public class Boss : MonoBehaviour
     #region Event
     public void OnEnterInnerRadar(GameObject obj)
     {
-        // 이미 잡는 중이면 Return
-        if (stateMachine.CurStateIndex == (int)BossStateName.Catch ||
-           stateMachine.CurStateIndex == (int)BossStateName.PetCatch)
-            return;
+        if (!CanMove()) return;
 
         ChangeState(BossStateName.Catch);
     }
@@ -180,12 +177,22 @@ public class Boss : MonoBehaviour
 
     public void OnEnterOuterRadar(GameObject obj)
     {
+        if (!CanMove()) return;
+
         target = obj.transform;
+        ChangeState(BossStateName.Chase);
     }
 
     public void OnExitOuterRadar(GameObject obj)
     {
         ResetTarget();  // TEMP
+    }
+
+    private bool CanMove()
+    {
+        return stateMachine.CurStateIndex != (int)BossStateName.Catch &&
+        stateMachine.CurStateIndex != (int)BossStateName.PetCatch &&
+        stateMachine.CurStateIndex != (int)BossStateName.Stun;
     }
 
 

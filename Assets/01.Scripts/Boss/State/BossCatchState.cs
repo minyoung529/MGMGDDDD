@@ -9,6 +9,12 @@ public class BossCatchState : BossState
 
     public override void OnEnter()
     {
+        if(boss.Target == null)
+        {
+            boss.ChangeState(BossStateName.Patrol);
+            return;
+        }
+
         Pet pet = boss.Target.GetComponent<Pet>();
 
         // 잡은 게 펫이라면
@@ -26,8 +32,14 @@ public class BossCatchState : BossState
         }
         else
         {
-            boss.ResetTarget();
-            StartCoroutine(CatchDelay());
+            // Game Over
+            if (boss.Target.transform == GameManager.Instance.PlayerController.transform)
+            {
+                EventManager.TriggerEvent(EventName.BossFail);
+            }
+
+            // TEMP
+            boss.ChangeState(BossStateName.Patrol);
         }
     }
 
@@ -37,12 +49,6 @@ public class BossCatchState : BossState
 
     public override void OnUpdate()
     {
-        
-    }
 
-    private IEnumerator CatchDelay()
-    {
-        yield return new WaitForSeconds(delayTime);
-        boss.ChangeState(BossStateName.Patrol);
     }
 }
