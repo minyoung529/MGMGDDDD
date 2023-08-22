@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EasterEgg : HoldableObject
 {
+    [SerializeField]
+    private ParticleSystem hitParticle;
     public override void OnDrop()
     {
         collider.enabled = true;
@@ -45,5 +47,19 @@ public class EasterEgg : HoldableObject
         rigid.velocity = Vector3.zero;
         rigid.isKinematic = false;
         rigid.AddForce(force, forceMode);
+    }
+
+    public void Delete()
+    {
+        StartCoroutine(ParticlePlayAndDestroy());
+    }
+
+    private IEnumerator ParticlePlayAndDestroy()
+    {
+        hitParticle.Play();
+
+        yield return new WaitForSeconds(hitParticle.main.duration);
+
+        Destroy(gameObject);
     }
 }

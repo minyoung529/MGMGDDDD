@@ -56,6 +56,12 @@ public class OutlineScript : MonoBehaviour
 
         foreach (Renderer renderer in renderers)
         {
+            if (renderer.GetType() == typeof(ParticleSystemRenderer))
+            {
+                Debug.Log("SFD");
+                continue;
+            }
+
             Renderer newRenderer = CreateOutline(renderer.transform, outlineMaterial, outlineScaleFactor, Color.white);
             outlineRenderer.Add(newRenderer);
         }
@@ -92,6 +98,8 @@ public class OutlineScript : MonoBehaviour
     {
         for (int i = 0; i < outlineRenderer.Count; i++)
         {
+            Debug.Log(outlineRenderer[i].gameObject.name);
+            Debug.Log(outlineRenderer[i].material.name);
             outlineRenderer[i].material.SetColor("_OutLine_Color", color);
         }
     }

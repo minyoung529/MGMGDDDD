@@ -202,7 +202,7 @@ public class Boss : MonoBehaviour
         if (egg)
         {
             ChangeState(BossStateName.Stun);
-            Destroy(egg.gameObject);
+            egg.Delete();
         }
     }
 }

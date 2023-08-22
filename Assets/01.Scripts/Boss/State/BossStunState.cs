@@ -6,10 +6,22 @@ public class BossStunState : BossState
 {
     public override BossStateName StateName => BossStateName.Stun;
 
-    private const float stunTime = 10f;
+    private const float stunTime = 2.5f;
     private float curTime = 0f;
 
     private bool stunning = false;
+
+    [SerializeField]
+    private List<ParticleSystem> stunParticles;
+
+    private void Start()
+    {
+        foreach(ParticleSystem particle in stunParticles)
+        {
+            ParticleSystem.MainModule main = particle.main;
+            main.duration = stunTime;
+        }
+    }
 
     public override void OnEnter()
     {
@@ -17,6 +29,11 @@ public class BossStunState : BossState
         boss.Anim.ChangeAnimation(BossAnimType.Stun);
         boss.Agent.isStopped = true;
         stunning = true;
+
+        foreach(ParticleSystem particle in stunParticles)
+        {
+            particle.Play();
+        }
     }
 
     public override void OnExit()
