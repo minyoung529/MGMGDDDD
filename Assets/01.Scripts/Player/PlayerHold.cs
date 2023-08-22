@@ -47,7 +47,7 @@ public class PlayerHold : PlayerMono
     {
         PlayRotation();
 
-        HoldableObject holdable = GetHodlableObject();
+        HoldableObject holdable = GetHodlableObject(true);  // except pet
 
         if (!isHolding && holdable)
         {
@@ -144,7 +144,7 @@ public class PlayerHold : PlayerMono
         controller.Move.ChangeState(PlayerStateName.PickUp);
     }
 
-    private HoldableObject GetHodlableObject()
+    private HoldableObject GetHodlableObject(bool exceptPet = false)
     {
         HoldableObject holdingPet = null;
 
@@ -176,6 +176,12 @@ public class PlayerHold : PlayerMono
 
         foreach (HoldableObject item in objs)
         {
+            // 펫 제외 옵션이면 넘긴다
+            if (exceptPet && item.GetIsPet())
+            {
+                continue;
+            }
+
             //각도 순으로 집어지는지 확인
             if (item.CanHold())
             {
