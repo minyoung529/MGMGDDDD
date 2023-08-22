@@ -286,32 +286,21 @@ public abstract class Pet : MonoBehaviour
         Event.TriggerEvent((int)PetEventName.OnSetDestination);
     }
 
-    void p()
-    {
-        if (gameObject.name == "FirePet")
-        {
-            Debug.Log("POINT");
-        }
-    }
-
     private void Chase()
     {
         if (!target || !GetIsOnNavMesh())
         {
-            p();
             return;
         }
 
         if (!IsTargetOnRoute(target))
         {
-            p();
             SetTargetNull();
             return;
         }
         if (Vector3.Distance(GetNearestNavMeshPosition(transform.position), GetNearestNavMeshPosition(target.position))
             >= agent.stoppingDistance)
         {
-            p();
             SetDestination(target.position);
         }
     }
