@@ -29,4 +29,9 @@ public class MainSpringObject : HoldableObject
     public override void OnLanding()
     {
     }
+
+    public void OnClear()
+    {
+        Destroy(gameObject);
+    }
 }

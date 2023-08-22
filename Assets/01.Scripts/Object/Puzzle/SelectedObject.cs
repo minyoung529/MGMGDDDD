@@ -21,7 +21,6 @@ public class SelectedObject : MonoBehaviour
 
     private void Update()
     {
-        if (PetManager.Instance.GetSelectedPet() == null) return;
         CheckObject();
     }
 
@@ -37,12 +36,8 @@ public class SelectedObject : MonoBehaviour
             OutlineScript selected = hit.collider.GetComponent<OutlineScript>();
             Pet pet = PetManager.Instance.GetSelectedPet();
 
-            if (selected == null || pet == null)
-            {
-                OffInteration();
-                return;
-            }
-            if ((selected.PetType.GetHashCode() & pet.GetPetType.GetHashCode()) == 0)
+            if (selected == null || (selected.IsPetInteract && pet == null) ||
+                (selected.IsPetInteract && (selected.PetType.GetHashCode() & pet.GetPetType.GetHashCode()) == 0))
             {
                 OffInteration();
                 return;
@@ -50,20 +45,26 @@ public class SelectedObject : MonoBehaviour
 
             if (selected.IsInteract) return;
             if (interactObj == selected) return;
-
             interactObj = selected;
 
-            if (interactObj.GuideName.Length == 0)
+            if (selected.IsPetInteract)
             {
-                mouseGuide.SetTutorialName("작동");
+                if (interactObj.GuideName.Length == 0)
+                {
+                    mouseGuide.SetTutorialName("작동");
+                }
+                else
+                {
+                    mouseGuide.SetTutorialName(interactObj.GuideName);
+                }
+                interactObj.SetColor(pet.petColor);
+                mouseGuide.StartTutorial();
             }
             else
             {
-                mouseGuide.SetTutorialName(interactObj.GuideName);
+                interactObj.SetColor(interactObj.OutlineColor);
             }
-            
-            mouseGuide.StartTutorial();
-            interactObj.SetColor(pet.petColor);
+
             interactObj.OnOutline();
         }
         else

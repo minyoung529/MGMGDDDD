@@ -27,7 +27,9 @@ public class TutorialTrigger : MonoBehaviour
 
     private TutorialController tutorialController = null;
     private bool isEnter = false;
-    
+    private bool isEnableTutorial = false;
+    public bool IsEnableTutorial => isEnableTutorial;
+
     private Action onEnter;
     private Action onExit;
 
@@ -90,12 +92,14 @@ public class TutorialTrigger : MonoBehaviour
 
     public void StartTutorial()
     {
+        isEnableTutorial = true;
         tutorialController ??= FindObjectOfType<TutorialController>();
         tutorialController?.StartTutorial(tutorialType, onExit, tutorialName);
     }
 
     public void EndTutorial()
     {
+        isEnableTutorial = false;
         tutorialController ??= FindObjectOfType<TutorialController>();
         tutorialController?.StopTutorial(tutorialType);
     }
@@ -182,7 +186,7 @@ public class TutorialTrigger : MonoBehaviour
     public void Active()
     {
         ListeningEvent();
-        if(isCollide) col.enabled = true;
+        if (isCollide) col.enabled = true;
     }
 
     #region  SET
