@@ -10,8 +10,18 @@ public class TutorialTrigger_MainSpring : TutorialTrigger
     [SerializeField]
     private HoldableObject obj;
 
+    protected override void Start()
+    {
+        keyDownAction += OnPutSpring;
+    }
+
     protected override bool Condition(Transform player)
     {
         return obj.IsHold;
+    }
+    
+    private void OnPutSpring(InputAction action, float value)
+    {
+        Destroy(obj.gameObject);
     }
 }

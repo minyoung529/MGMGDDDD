@@ -194,6 +194,17 @@ public class Boss : MonoBehaviour
         EventManager.StopListening(EventName.InPlayerCupboard, SetFindTargetState);
         EventManager.StopListening(EventName.OutPlayerCupboard, SetFindTargetState);
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        EasterEgg egg = collision.gameObject.GetComponent<EasterEgg>();
+
+        if (egg)
+        {
+            ChangeState(BossStateName.Stun);
+            egg.Delete();
+        }
+    }
 }
 public enum BossEventName
 {
