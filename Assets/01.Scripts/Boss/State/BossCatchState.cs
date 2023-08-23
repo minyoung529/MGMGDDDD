@@ -9,18 +9,37 @@ public class BossCatchState : BossState
 
     public override void OnEnter()
     {
+        if(boss.Target == null)
+        {
+            boss.ChangeState(BossStateName.Patrol);
+            return;
+        }
+
         Pet pet = boss.Target.GetComponent<Pet>();
 
         // 잡은 게 펫이라면
         if (pet != null)
         {
-            boss.ChangeState(BossStateName.PetCatch);
+            // 이미 잡았다면 잡지 않는다
+            if (!boss.CatchingPet.IsContain(pet))
+            {
+                boss.ChangeState(BossStateName.PetCatch);
+            }
+            else
+            {
+                boss.ChangeState(BossStateName.Patrol);
+            }
         }
         else
         {
-            Debug.Log("Catch");
-            boss.ResetTarget();
-            StartCoroutine(CatchDelay());
+            // Game Over
+            if (boss.Target.transform == GameManager.Instance.PlayerController.transform)
+            {
+                EventManager.TriggerEvent(EventName.BossFail);
+            }
+
+            // TEMP
+            boss.ChangeState(BossStateName.Patrol);
         }
     }
 
@@ -30,12 +49,6 @@ public class BossCatchState : BossState
 
     public override void OnUpdate()
     {
-    }
 
-
-    private IEnumerator CatchDelay()
-    {
-        yield return new WaitForSeconds(delayTime);
-        boss.ChangeState(BossStateName.Idle);
     }
 }

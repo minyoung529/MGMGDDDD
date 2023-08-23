@@ -26,6 +26,9 @@ public class Boss : MonoBehaviour
     private PlayBossAnimation anim;
     public PlayBossAnimation Anim => anim;
 
+    private CatchingPet catchingPet;
+    public CatchingPet CatchingPet => catchingPet;
+
     // Target
     private float chaseDistance = 15f;
 
@@ -49,6 +52,7 @@ public class Boss : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<PlayBossAnimation>();
+        catchingPet = GetComponent<CatchingPet>();
 
         BossState[] compos = stateParent.GetComponents<BossState>();
         BossState[] states = new BossState[(int)BossStateName.Count];
@@ -58,8 +62,6 @@ public class Boss : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Boss>(this, states);
-
-        GameManager.Instance.CursorDisabled();
     }
 
     private void Start()
@@ -69,6 +71,8 @@ public class Boss : MonoBehaviour
         EventManager.StartListening(EventName.InPlayerCupboard, SetFindTargetState);
         EventManager.StartListening(EventName.InPlayerCupboard, ResetTarget);
         EventManager.StartListening(EventName.OutPlayerCupboard, SetFindTargetState);
+
+        GameManager.Instance.CursorDisabled();
     }
 
     private void Update()
@@ -162,10 +166,7 @@ public class Boss : MonoBehaviour
     #region Event
     public void OnEnterInnerRadar(GameObject obj)
     {
-        // 이미 잡는 중이면 Return
-        if (stateMachine.CurStateIndex == (int)BossStateName.Catch ||
-           stateMachine.CurStateIndex == (int)BossStateName.PetCatch)
-            return;
+        if (!CanMove()) return;
 
         ChangeState(BossStateName.Catch);
     }
@@ -176,12 +177,22 @@ public class Boss : MonoBehaviour
 
     public void OnEnterOuterRadar(GameObject obj)
     {
+        if (!CanMove()) return;
+
         target = obj.transform;
+        ChangeState(BossStateName.Chase);
     }
 
     public void OnExitOuterRadar(GameObject obj)
     {
         ResetTarget();  // TEMP
+    }
+
+    private bool CanMove()
+    {
+        return stateMachine.CurStateIndex != (int)BossStateName.Catch &&
+        stateMachine.CurStateIndex != (int)BossStateName.PetCatch &&
+        stateMachine.CurStateIndex != (int)BossStateName.Stun;
     }
 
 
@@ -201,6 +212,7 @@ public class Boss : MonoBehaviour
 
         if (egg)
         {
+            catchingPet.UnEquipAllPets();
             ChangeState(BossStateName.Stun);
             egg.Delete();
         }
