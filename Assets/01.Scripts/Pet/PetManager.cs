@@ -271,6 +271,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
+        if (selectIndex >= pets.Count) return;
 
         pets[selectIndex].MovePoint();
     }
@@ -464,9 +465,10 @@ public class PetManager : MonoSingleton<PetManager>
         petTypes.RemoveAt(index);
         pets.Remove(p);
 
+        selectIndex = pets.Count - 1;
+
         SelectPet(0);
         p.gameObject.SetActive(false);
-
     }
 
     public void DeletePet(int index)

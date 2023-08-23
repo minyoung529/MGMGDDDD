@@ -10,7 +10,7 @@ using UnityEngine;
 public class CatchingPet : MonoBehaviour
 {
     [SerializeField]
-    private Transform[] petTransforms;
+    private Transform petTransform;
 
     private List<Pet> catchedPets = new List<Pet>();
 
@@ -20,7 +20,7 @@ public class CatchingPet : MonoBehaviour
 
     private void Start()
     {
-        fixedY = petTransforms[0].position.y;
+        fixedY = petTransform.position.y;
     }
 
     private void Update()
@@ -29,7 +29,12 @@ public class CatchingPet : MonoBehaviour
         {
             for (int i = 0; i < catchedPets.Count; i++)
             {
-                if (catchedPets[i].Agent.enabled)
+                if(!catchedPets[i].gameObject.activeSelf)
+                {
+                    return;
+                }
+
+                if (catchedPets[i].Agent.enabled && !catchedPets[i].Agent.isStopped)
                 {
                     catchedPets[i].Agent.SetDestination(transform.position);
                     catchedPets[i].Agent.stoppingDistance = i * 1f + 5f;
@@ -40,9 +45,6 @@ public class CatchingPet : MonoBehaviour
 
     public void EquipPet(Pet pet, Action onEquipEnd)
     {
-        if (index >= petTransforms.Length)
-            return;
-
         if (catchedPets.Contains(pet)) return;
 
         pet.State.ChangeState((int)PetStateName.Idle);  // 펫 동작 끄기
@@ -51,7 +53,8 @@ public class CatchingPet : MonoBehaviour
         pet.Rigid.velocity = Vector3.zero;
 
         // 펫 없애기
-        PetManager.Instance.DeletePet(pet.GetPetType);
+        PetManager.Instance.DeletePet(pet.GetPetType);  // DeletePet을 하면 inactive가 되기 때문에
+        pet.gameObject.SetActive(true);                 // 다시 Active를 켜줌
 
         catchedPets.Add(pet);
 
@@ -62,13 +65,13 @@ public class CatchingPet : MonoBehaviour
     private IEnumerator EquipAnimation(Pet pet, Action onEquipEnd)
     {
         Vector3 start = pet.transform.position;
-        Vector3 end = petTransforms[index].transform.position;
+        Vector3 end = petTransform.transform.position;
         float dist = Vector3.Distance(start, end);
         Vector3 mid = start + (end - start).normalized * dist * 0.5f;
 
         // Y 동일해 물리 버그 나지 않게
         start.y = end.y = fixedY;
-        mid.y = start.y + 5f;
+        mid.y = start.y + 4f;
 
         float duration = 1f;
         pet.transform.position = start;
@@ -80,8 +83,8 @@ public class CatchingPet : MonoBehaviour
         yield return new WaitForSeconds(duration + 0.5f);
 
         pet.Rigid.velocity = Vector3.zero;
-        pet.SetNavEnabled(true);
         pet.SetNavIsStopped(false);
+        pet.SetNavEnabled(true);
         pet.SetTarget(transform);
 
         onEquipEnd?.Invoke();

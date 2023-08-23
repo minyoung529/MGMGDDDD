@@ -62,8 +62,6 @@ public class Boss : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Boss>(this, states);
-
-        GameManager.Instance.CursorDisabled();
     }
 
     private void Start()
@@ -73,6 +71,8 @@ public class Boss : MonoBehaviour
         EventManager.StartListening(EventName.InPlayerCupboard, SetFindTargetState);
         EventManager.StartListening(EventName.InPlayerCupboard, ResetTarget);
         EventManager.StartListening(EventName.OutPlayerCupboard, SetFindTargetState);
+
+        GameManager.Instance.CursorDisabled();
     }
 
     private void Update()
