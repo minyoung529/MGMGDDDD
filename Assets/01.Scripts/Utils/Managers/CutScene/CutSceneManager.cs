@@ -17,6 +17,9 @@ public class CutSceneManager : MonoSingleton<CutSceneManager>
     [SerializeField]
     protected Image bottomBar;
 
+    private bool isPlaying = false;
+    public bool IsPlaying => isPlaying;
+
     public void Play(PlayableDirector director, Action callback)
     {
         if(director == null) return;
@@ -25,6 +28,7 @@ public class CutSceneManager : MonoSingleton<CutSceneManager>
         director.Play();
         director.playableGraph.GetRootPlayable(0).SetSpeed(1f);
         OnCutsceneStart?.Invoke();
+        isPlaying = true;
 
         StartCoroutine(WaitForDuration(director, (float)director.duration * 1f, callback));
     }
@@ -37,6 +41,7 @@ public class CutSceneManager : MonoSingleton<CutSceneManager>
         OnCutsceneEnd?.Invoke();
         callback?.Invoke();
         InactiveBlackBar();
+        isPlaying = false;
     }
 
     public void AddStartCutscene(Action action)

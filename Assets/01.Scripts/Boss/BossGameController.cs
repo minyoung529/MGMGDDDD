@@ -22,6 +22,7 @@ public class BossGameController : MonoBehaviour
     private void Awake()
     {
         EventManager.StartListening(EventName.BossFail, Fail);
+        EventManager.StartListening(EventName.BossSuccess, Clear);
     }
 
     private void Start()
@@ -37,7 +38,7 @@ public class BossGameController : MonoBehaviour
         onStart?.Invoke();
     }
 
-    public void Clear()
+    public void Clear(EventParam param)
     {
         onClear?.Invoke();
     }
@@ -54,5 +55,6 @@ public class BossGameController : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.BossFail, Fail);
+        EventManager.StopListening(EventName.BossSuccess, Clear);
     }
 }

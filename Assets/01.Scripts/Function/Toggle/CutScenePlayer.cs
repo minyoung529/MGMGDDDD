@@ -54,6 +54,7 @@ public class CutScenePlayer : MonoBehaviour
     public void Play()
     {
         if (hasPlayed && isOnce) return;
+        if (CutSceneManager.Instance.IsPlaying) return; // 다른 컷신이 플레이 중이면 실행 X
 
         hasPlayed = true;
         EventManager.TriggerEvent(EventName.PlayerDrop);
