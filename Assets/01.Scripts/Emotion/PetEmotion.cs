@@ -61,11 +61,13 @@ public class PetEmotion : MonoBehaviour
     {
         emotionType = type;
 
-        material.SetFloat(tileHash, (int)type);
-
         if (material == null)
         {
             SetMaterial();
         }
+
+        if (material == null) return;
+
+        material.SetFloat(tileHash, (int)type);
     }
 }

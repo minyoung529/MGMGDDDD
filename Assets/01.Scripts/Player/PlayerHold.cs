@@ -345,7 +345,7 @@ public class PlayerHold : PlayerMono
         playerController.Camera.ActiveCrossHair();
     }
 
-    private void OnHoldableObjectDestroyed()
+    private void OnHoldableObjectDestroyed(HoldableObject holdable)
     {
         holdableObject = null;
     }

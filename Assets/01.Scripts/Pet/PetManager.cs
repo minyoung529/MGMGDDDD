@@ -280,6 +280,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         if (selectIndex < 0) return;
         if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
+        if (selectIndex >= pets.Count) return;
 
         if (SelectedObject.GetInteract() == null) return;
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnInputInteractAction);
@@ -289,6 +290,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         // 펫이 없을 때
         if (selectIndex < 0) return;
+        if (selectIndex >= pets.Count) return;
 
         if (pets[selectIndex].Skilling)
         {
@@ -303,6 +305,8 @@ public class PetManager : MonoSingleton<PetManager>
     private void ReCall(InputAction input, float value)
     {
         if (pets.Count == 0) return;
+        if (selectIndex >= pets.Count) return;
+        if (selectIndex < 0) return;
 
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }

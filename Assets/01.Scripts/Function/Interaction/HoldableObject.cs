@@ -29,7 +29,7 @@ public abstract class HoldableObject : MonoBehaviour
     public bool ExistGuideKey => existGuideKey;
     #endregion
 
-    private Action onDestroy;
+    private Action<HoldableObject> onDestroy;
 
     private void Awake()
     {
@@ -53,18 +53,18 @@ public abstract class HoldableObject : MonoBehaviour
         return pet;
     }
 
-    public void ListeningOnDestroy(Action action)
+    public void ListeningOnDestroy(Action<HoldableObject> action)
     {
         onDestroy += action;
     }
 
-    public void StopListeningOnDestroy(Action action)
+    public void StopListeningOnDestroy(Action<HoldableObject> action)
     {
         onDestroy -= action;
     }
 
     private void OnDestroy()
     {
-        onDestroy?.Invoke();
+        onDestroy?.Invoke(this);
     }
 }

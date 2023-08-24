@@ -75,6 +75,11 @@ public class Boss : MonoBehaviour
         GameManager.Instance.CursorDisabled();
     }
 
+    public void GameStart()
+    {
+        ChangeState(BossStateName.Patrol);
+    }
+
     private void Update()
     {
         stateMachine.OnUpdate();
