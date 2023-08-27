@@ -50,6 +50,7 @@ public class Sticky : MonoBehaviour
             return true;
         }
     }
+    public StickyPet StickyPet => stickyPet;
     #endregion
 
     private void Awake()

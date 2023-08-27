@@ -25,10 +25,12 @@ public class PatrolState : BossState
 
     public override void OnEnter()
     {
+        Debug.Log("Patrol");
+
         boss.Anim.ChangeAnimation(BossAnimType.Walk);
 
         Vector3 target = boss.transform.position;
-        if(boss.ItemWaypoint != null)
+        if (boss.ItemWaypoint != null)
         {
             detectWay = boss.ItemWaypoint;
             boss.SetItemWaypoint(null);
@@ -84,7 +86,8 @@ public class PatrolState : BossState
 
     private void SetDestination(Vector3 point)
     {
-        boss.Agent.SetDestination(point);
+        if (boss.gameObject.activeSelf && boss.Agent.enabled)
+            boss.Agent.SetDestination(point);
     }
 
 }

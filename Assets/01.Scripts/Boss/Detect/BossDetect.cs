@@ -22,6 +22,8 @@ public class BossDetect : MonoBehaviour
 
     private void EventDetect(EventParam eventParam = null)
     {
+        if (boss.StateMachine.CurStateIndex == (int)BossStateName.Stun) return;
+
         if (eventParam.Contain("DetectPosition")) {
             Transform target = (Transform)eventParam["DetectPosition"];
             SetTarget(target);

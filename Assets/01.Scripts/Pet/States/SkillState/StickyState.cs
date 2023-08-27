@@ -16,6 +16,8 @@ public class StickyState : MonoBehaviour
     private StickyPet pet;
     private Sticky sticky;
 
+    public Sticky StickyObject => sticky;
+
     private void Start()
     {
         pet = transform.parent.GetComponent<StickyPet>();

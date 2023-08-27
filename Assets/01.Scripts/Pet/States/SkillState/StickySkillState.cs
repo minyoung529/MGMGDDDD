@@ -22,7 +22,8 @@ public class StickySkillState : PetState
 
     public override void OnEnter()
     {
-        if(SelectedObject.CurInteractObject)
+        if (SelectedObject.CurInteractObject &&
+       (SelectedObject.CurInteractObject.PetType & PetFlag.StickyPet) != 0)
         {
             pet.State.ChangeState(pet.State.BeforeStateIndex);
             return;
@@ -30,6 +31,7 @@ public class StickySkillState : PetState
 
         pet.Skilling = true;
 
+        Debug.Log("Billow");
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, OffBillow);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
@@ -46,7 +48,7 @@ public class StickySkillState : PetState
     {
         if (SelectedObject.CurInteractObject) return;
 
-            pet.Skilling = false;
+        pet.Skilling = false;
         exitVisual.Trigger();
 
         explosion.gameObject.SetActive(false);

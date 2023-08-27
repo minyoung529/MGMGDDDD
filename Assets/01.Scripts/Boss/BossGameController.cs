@@ -19,9 +19,13 @@ public class BossGameController : MonoBehaviour
     [SerializeField]
     private bool onAwake = false;
 
+    [SerializeField]
+    private Pet[] originalPets;
+
     private void Awake()
     {
         EventManager.StartListening(EventName.BossFail, Fail);
+        EventManager.StartListening(EventName.BossSuccess, Clear);
     }
 
     private void Start()
@@ -37,7 +41,7 @@ public class BossGameController : MonoBehaviour
         onStart?.Invoke();
     }
 
-    public void Clear()
+    public void Clear(EventParam param)
     {
         onClear?.Invoke();
     }
@@ -49,10 +53,16 @@ public class BossGameController : MonoBehaviour
 
         isFail = true;
         onFail?.Invoke();
+
+        foreach (Pet pet in originalPets)
+        {
+            pet.GetPet(GameManager.Instance.PlayerController.transform);
+        }
     }
 
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.BossFail, Fail);
+        EventManager.StopListening(EventName.BossSuccess, Clear);
     }
 }

@@ -111,7 +111,6 @@ public class PetManager : MonoSingleton<PetManager>
             }
             else
             {
-
                 SceneController.ListeningEnter((SceneType)i, ActivePetCanvas);
             }
         }
@@ -142,7 +141,6 @@ public class PetManager : MonoSingleton<PetManager>
             offset.x -= 2f;
             bindingPet.SetForcePosition(GameManager.Instance.PlayerController.transform.position + offset);
         }
-
     }
 
     private void Update()
@@ -200,7 +198,6 @@ public class PetManager : MonoSingleton<PetManager>
     }
 
     #region Listen
-
     private void StopPetAllListen(EventParam eventParam = null)
     {
         StopAllListen();
@@ -238,7 +235,6 @@ public class PetManager : MonoSingleton<PetManager>
         {
             inputActions[inputAction] += action;
         }
-
 
         InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
         InputManager.StartListeningInput(inputAction, inputActions[inputAction]);
@@ -310,24 +306,24 @@ public class PetManager : MonoSingleton<PetManager>
 
         pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
     }
-
     #endregion
 
     #region SwitchPet
-
     private void SwitchPet(InputAction input, float addIndex)
     {
         if (PetCount <= 0) return;
+        if (selectIndex >= pets.Count) return;
 
         if (pets[selectIndex].GetPetType == PetType.OilPet)
             pets[selectIndex].Event.TriggerEvent((int)PetEventName.OnSkillCancel);
         if (beforeIndex > -1) pets[beforeIndex].Event.TriggerEvent((int)PetEventName.OnOffPing);
 
-        addIndex = 0;
-
         if (input == InputAction.Up_Pet && !isSwitching) addIndex = -1;
         else if (input == InputAction.Down_Pet && !isSwitching) addIndex = 1;
         else return;
+
+        if (selectIndex + addIndex >= PetCount && selectIndex + addIndex < 0)
+            return;
 
         SwitchPetIndex(selectIndex + (int)addIndex);
     }
@@ -338,6 +334,9 @@ public class PetManager : MonoSingleton<PetManager>
 
         if (selectIndex >= pets.Count) selectIndex = 0;
         else if (selectIndex < 0) selectIndex = pets.Count - 1;
+
+        if (selectIndex + addIndex >= PetCount && selectIndex + addIndex < 0)
+            return;
 
         StartCoroutine(SwitchDelay(selectIndex));
     }
@@ -470,8 +469,7 @@ public class PetManager : MonoSingleton<PetManager>
         pets.Remove(p);
 
         selectIndex = pets.Count - 1;
-
-        SelectPet(0);
+        SelectPet(selectIndex);
         p.gameObject.SetActive(false);
     }
 
@@ -482,7 +480,8 @@ public class PetManager : MonoSingleton<PetManager>
         petTypes.RemoveAt(index);
         pets.RemoveAt(index);
 
-        SelectPet(0);
+        selectIndex = pets.Count - 1;
+        SelectPet(selectIndex);
     }
 
 
@@ -492,6 +491,8 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnSelectPetUI(int index)
     {
+        if(index < 0 || index >= pets.Count) return;
+
         for (int i = 0; i < pets.Count; i++)
         {
             petInvens[i].DOFade(0.2f, 0.5f);

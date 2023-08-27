@@ -23,7 +23,8 @@ public class BossIdleState : BossState
 
     public override void OnExit()
     {
-        boss.Agent.isStopped = false;
+        if (boss.gameObject.activeSelf && boss.Agent.enabled)
+            boss.Agent.isStopped = false;
     }
 
     public override void OnUpdate()

@@ -100,7 +100,7 @@ public class CatchingPet : MonoBehaviour
             pet.GetPet(GameManager.Instance.PlayerController.transform);
 
             pet.State.ChangeState((int)PetStateName.Idle);
-            pet.SetTargetNull();
+            pet.Event.TriggerEvent((int)PetEventName.OnRecallKeyPress);
 
             index--;
         }

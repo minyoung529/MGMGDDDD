@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerMoveSound : MonoBehaviour
 {
@@ -25,9 +26,19 @@ public class PlayerMoveSound : MonoBehaviour
     [SerializeField]
     private AudioClip pickupClip;
 
+    [SerializeField]
+    private UnityEvent onPlayWalkSound;
+
+    [SerializeField]
+    private UnityEvent onPlayRunSound;
+
+    [SerializeField]
+    private UnityEvent onPlayLandingSound;
+
     public void WalkSound()
     {
         SoundManager.Instance.PlayRandomPitch(walkClip, transform.position, 0.08f, 10f);
+        onPlayWalkSound?.Invoke();
     }
 
     public void PickupSound()
@@ -40,6 +51,7 @@ public class PlayerMoveSound : MonoBehaviour
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(runClip, transform.position);
         obj?.transform.SetParent(transform);
+        onPlayRunSound?.Invoke();
     }
 
     public void JumpSound()
@@ -52,6 +64,7 @@ public class PlayerMoveSound : MonoBehaviour
     {
         AudioSourceObject obj = SoundManager.Instance.PlayEffect(landingClip, transform.position);
         obj?.transform.SetParent(transform);
+        onPlayLandingSound?.Invoke();
     }
 
     public void ThrowSound()

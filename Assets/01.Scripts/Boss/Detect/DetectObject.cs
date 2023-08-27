@@ -26,9 +26,9 @@ public class DetectObject : MonoBehaviour
         onTrigger?.Invoke();
         StartCoroutine(CoolTime());
 
-        EventParam param= new();
-        param["DetectPosition"] = transform;
-        EventManager.TriggerEvent(EventName.BossDetectObject, param);
+        //EventParam param= new();
+        //param["DetectPosition"] = transform;
+        //EventManager.TriggerEvent(EventName.BossDetectObject, param);
     }
 
     private void OnTriggerEnter(Collider other)

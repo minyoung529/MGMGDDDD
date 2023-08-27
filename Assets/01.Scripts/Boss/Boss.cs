@@ -19,7 +19,8 @@ public class Boss : MonoBehaviour
     // State
     [SerializeField] private Transform stateParent = null;
     private StateMachine<Boss> stateMachine;
-
+    public StateMachine<Boss> StateMachine => stateMachine;
+ 
     // Component
     private NavMeshAgent agent;
     public NavMeshAgent Agent => agent;
@@ -34,6 +35,9 @@ public class Boss : MonoBehaviour
 
     private Transform target = null;
     public Transform Target => target;
+
+    private string prevTarget = null;
+    public string PrevTarget => prevTarget;
 
     // Event
     private LocalEvent bossEvent = new LocalEvent();
@@ -75,6 +79,7 @@ public class Boss : MonoBehaviour
         GameManager.Instance.CursorDisabled();
     }
 
+
     public void GameStart()
     {
         ChangeState(BossStateName.Patrol);
@@ -83,29 +88,14 @@ public class Boss : MonoBehaviour
     private void Update()
     {
         stateMachine.OnUpdate();
-
-        // 레이더로 변경
-
-        //if (target && canFind)
-        //{
-        //    float distance = Vector3.Distance(agent.transform.position, target.position);
-        //    Debug.Log(target.name);
-        //    if (distance <= agent.stoppingDistance)
-        //    {
-        //        ChangeState(BossStateName.Catch);
-        //    }
-        //}
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            ChangeState(BossStateName.Stun);
-        }
     }
 
     #region Waypoint
 
     private void DetectWaypoint(EventParam eventParam = null)
     {
+        if (StateMachine.CurStateIndex == (int)BossStateName.Stun) return;
+
         if (eventParam.Contain("DetectPosition"))
         {
             DetectWaypoint((Transform)eventParam["DetectPosition"]);
@@ -173,6 +163,12 @@ public class Boss : MonoBehaviour
     {
         if (!CanMove()) return;
 
+        if (target)
+            prevTarget = target.name;
+        else
+            prevTarget = "Null";
+
+        target = obj.transform;
         ChangeState(BossStateName.Catch);
     }
 
@@ -184,8 +180,16 @@ public class Boss : MonoBehaviour
     {
         if (!CanMove()) return;
 
+        if (target == null)
+            prevTarget = "Null";
+        else
+            prevTarget = target.name;
         target = obj.transform;
-        ChangeState(BossStateName.Chase);
+
+        if (stateMachine.CurStateIndex != (int)BossStateName.Stun)
+        {
+            ChangeState(BossStateName.Chase);
+        }
     }
 
     public void OnExitOuterRadar(GameObject obj)
@@ -215,7 +219,7 @@ public class Boss : MonoBehaviour
     {
         EasterEgg egg = collision.gameObject.GetComponent<EasterEgg>();
 
-        if (egg)
+        if (egg && egg.IsThrowing)
         {
             catchingPet.UnEquipAllPets();
             ChangeState(BossStateName.Stun);
