@@ -35,12 +35,12 @@ public class CutScenePlayer : MonoBehaviour
 
     void Start()
     {
-        if(playOnAwake)
+        if (playOnAwake)
         {
-           Play();
+            Play();
         }
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (isCollide)

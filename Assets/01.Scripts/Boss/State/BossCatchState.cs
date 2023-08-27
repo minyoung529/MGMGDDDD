@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class BossCatchState : BossState
 {
+    private Cupboard[] cupboards;
+
+
     public override BossStateName StateName => BossStateName.Catch;
     private float delayTime = 5f;
 
+    private void Awake()
+    {
+        cupboards = FindObjectsOfType<Cupboard>();
+    }
     public override void OnEnter()
     {
-        if(boss.Target == null)
+        if (boss.Target == null)
         {
             boss.ChangeState(BossStateName.Patrol);
             return;
+        }
+
+        foreach (var cupboard in cupboards)
+        {
+            if (cupboard.PlayerIn)
+            {
+                boss.ChangeState(BossStateName.Patrol);
+                return;
+            }
         }
 
         Pet pet = boss.Target.GetComponent<Pet>();
@@ -35,6 +51,7 @@ public class BossCatchState : BossState
             // Game Over
             if (boss.Target.transform == GameManager.Instance.PlayerController.transform)
             {
+
                 EventManager.TriggerEvent(EventName.BossFail);
             }
 

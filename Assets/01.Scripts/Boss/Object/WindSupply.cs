@@ -20,6 +20,7 @@ public class WindSupply : MonoBehaviour
     private IEnumerator AddScale()
     {
         yield return new WaitForSeconds(delayTime);
+        //sticky.State.ChangeState((int)PetStateName.Skill);
         sticky.Event.TriggerEvent((int)PetEventName.OnSkillKeyPress);
     }
     

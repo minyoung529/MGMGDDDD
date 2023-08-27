@@ -136,6 +136,17 @@ public class PlayerHold : PlayerMono
         holdableObject = obj;
         holdableObject.ListeningOnDestroy(OnHoldableObjectDestroyed);
 
+        if(holdableObject is EasterEgg)
+        {
+            throwPow = 2000;
+            throwAngle = 12;
+        }
+        else
+        {
+            throwPow = 700;
+            throwAngle = 60;
+        }
+
         Physics.IgnoreCollision(controller.Coll, holdableObject.Coll, true);
         Vector3 petPos = holdableObject.transform.position;
         petPos.y = transform.position.y;

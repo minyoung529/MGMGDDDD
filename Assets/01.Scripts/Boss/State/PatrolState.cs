@@ -25,6 +25,8 @@ public class PatrolState : BossState
 
     public override void OnEnter()
     {
+        Debug.Log("Patrol");
+
         boss.Anim.ChangeAnimation(BossAnimType.Walk);
 
         Vector3 target = boss.transform.position;

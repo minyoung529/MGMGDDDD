@@ -6,6 +6,9 @@ public class EasterEgg : HoldableObject
 {
     [SerializeField]
     private ParticleSystem hitParticle;
+
+    public bool IsThrowing { get; set; } = false;
+
     public override void OnDrop()
     {
         collider.enabled = true;
@@ -30,18 +33,22 @@ public class EasterEgg : HoldableObject
     public override void OnLanding()
     {
         isHold = false;
+        IsThrowing = false;
+
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         rigid.velocity = Vector3.zero;
     }
 
     public override void OnThrow()
     {
+        IsThrowing = true;
         collider.enabled = true;
         rigid.constraints = RigidbodyConstraints.None;
     }
 
     public override void Throw(Vector3 force, ForceMode forceMode = ForceMode.Impulse)
     {
+        IsThrowing = true;
         isHold = false;
         collider.enabled = true;
         rigid.velocity = Vector3.zero;
@@ -57,6 +64,7 @@ public class EasterEgg : HoldableObject
     private IEnumerator ParticlePlayAndDestroy()
     {
         hitParticle.Play();
+        IsThrowing = false;
 
         yield return new WaitForSeconds(hitParticle.main.duration);
 

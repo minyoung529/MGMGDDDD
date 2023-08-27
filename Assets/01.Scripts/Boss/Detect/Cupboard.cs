@@ -28,6 +28,7 @@ public class Cupboard : MonoBehaviour
 
     private float delayTime = 0.5f;
     private bool playerIn = false;
+    public bool PlayerIn => playerIn;
     private PlayerController player = null;
 
     private void Awake()
