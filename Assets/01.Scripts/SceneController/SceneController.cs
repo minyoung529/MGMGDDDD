@@ -11,6 +11,7 @@ public enum SceneType
     SecondScene = 3,
     StartScene = 4,
     Boss = 5,
+    EndingCutscene = 6,
     Count
 }
 
