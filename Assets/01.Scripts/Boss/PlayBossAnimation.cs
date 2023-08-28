@@ -14,6 +14,8 @@ public enum BossAnimType
 public class PlayBossAnimation : MonoBehaviour
 {
     private Boss boss;
+
+    [SerializeField]
     private Animator anim;
 
     [SerializeField]
@@ -21,11 +23,12 @@ public class PlayBossAnimation : MonoBehaviour
 
     private BossAnimType curType = BossAnimType.Idle;
     public BossAnimType CurAnim { get { return curType; } }
+
     private void Awake()
     {
         boss = GetComponent<Boss>();
-        anim = GetComponent<Animator>();
     }
+
     private void Start()
     {
         foreach (AnimationByBossEvent animEvent in animByPetEvents)
