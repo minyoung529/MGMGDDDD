@@ -20,7 +20,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private Transform stateParent = null;
     private StateMachine<Boss> stateMachine;
     public StateMachine<Boss> StateMachine => stateMachine;
- 
+
     // Component
     private NavMeshAgent agent;
     public NavMeshAgent Agent => agent;
@@ -103,6 +103,12 @@ public class Boss : MonoBehaviour
     }
     public void DetectWaypoint(Transform point)
     {
+        // 계속 추적한다
+        if (stateMachine.CurStateIndex == (int)BossStateName.Chase && point.name == target.name)
+            return;
+
+        if (!CanMove()) return;
+
         itemWaypoint = point;
         ChangeState(BossStateName.Patrol);
     }
@@ -186,10 +192,7 @@ public class Boss : MonoBehaviour
             prevTarget = target.name;
         target = obj.transform;
 
-        if (stateMachine.CurStateIndex != (int)BossStateName.Stun)
-        {
-            ChangeState(BossStateName.Chase);
-        }
+        ChangeState(BossStateName.Chase);
     }
 
     public void OnExitOuterRadar(GameObject obj)

@@ -29,6 +29,9 @@ public class OutlineScript : MonoBehaviour
 
     private List<Renderer> outlineRenderer = new List<Renderer>();
 
+    [SerializeField]
+    private List<Renderer> ignoreRenderers;
+
     private int outlineLayer;
     private bool used = false;
     public bool IsInteract => used;
@@ -52,7 +55,7 @@ public class OutlineScript : MonoBehaviour
 
     private void InitRenderer()
     {
-        Renderer[] renderers = transform.GetComponentsInChildren<Renderer>();
+        Renderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
 
         foreach (Renderer renderer in renderers)
         {
@@ -97,7 +100,10 @@ public class OutlineScript : MonoBehaviour
     {
         for (int i = 0; i < outlineRenderer.Count; i++)
         {
-            outlineRenderer[i].material.SetColor("_OutLine_Color", color);
+            if (!ignoreRenderers.Contains(outlineRenderer[i]))
+            {
+                outlineRenderer[i].material.SetColor("_OutLine_Color", color);
+            }
         }
     }
 

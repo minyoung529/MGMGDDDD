@@ -29,10 +29,10 @@ public class ChaseState : BossState
 
         boss.Agent.SetDestination(boss.Target.position);
 
-        float distance = Vector3.Distance(boss.transform.position, boss.Target.position);
-        if (distance > maxDistance)
-        {
-            boss.ChangeState(BossStateName.Patrol);
-        }
+        //float distance = Vector3.Distance(boss.transform.position, boss.Target.position);
+        //if (distance > maxDistance)
+        //{
+        //    boss.ChangeState(BossStateName.Patrol);
+        //}
     }
 }
