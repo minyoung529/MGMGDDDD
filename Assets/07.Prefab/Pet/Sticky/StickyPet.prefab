@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1032357913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1032357914}
+  - component: {fileID: 1032357915}
+  m_Layer: 8
+  m_Name: WaveObject(Explosion)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1032357914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032357913}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.062, y: -0.535, z: 0.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2611246238103810627}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1032357915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032357913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fcb394043d61e84184d276902a8a41d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 100
+  exclamationMark: 1
 --- !u!1 &1580502350
 GameObject:
   m_ObjectHideFlags: 0
@@ -52,6 +98,52 @@ MonoBehaviour:
   isChildToTransform: 0
   volume: 1
   forceLoadVolume: 0
+--- !u!1 &2051894853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2051894854}
+  - component: {fileID: 2051894855}
+  m_Layer: 8
+  m_Name: WaveObject(Billow)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2051894854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051894853}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.062, y: -0.535, z: 0.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2611246238103810627}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2051894855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051894853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fcb394043d61e84184d276902a8a41d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 10.78
+  exclamationMark: 1
 --- !u!1 &1301286451771402472
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,6 +283,8 @@ Transform:
   - {fileID: 816428402338977558}
   - {fileID: 1683757980992159576}
   - {fileID: 1253882418130302453}
+  - {fileID: 2051894854}
+  - {fileID: 1032357914}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -354,6 +448,7 @@ MonoBehaviour:
   canThrew: 1
   collider: {fileID: 0}
   rigid: {fileID: 0}
+  existGuideKey: 0
 --- !u!1 &4191933907231695496
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +645,18 @@ MonoBehaviour:
       - m_Target: {fileID: 4147953114228902565}
         m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
         m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2051894855}
+        m_TargetAssemblyTypeName: BossSFXObject, Assembly-CSharp
+        m_MethodName: PlaySFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1082,6 +1189,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 3079004540808670053, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3088026146034141708, guid: b7277b59b56269942aa85f3de74d58fd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.3068943
@@ -1357,6 +1468,34 @@ PrefabInstance:
       propertyPath: ignoreList.Array.data[0]
       value: 
       objectReference: {fileID: 2611246238103810629}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1032357915}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlaySFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: BossSFXObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018906288344426051, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
+      propertyPath: onBomb.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2018906288344426057, guid: 1ab00f496f3bf0d44957c0a885fece1b, type: 3}
       propertyPath: m_Name
       value: StickyExplosion
