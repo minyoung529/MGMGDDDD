@@ -71,8 +71,6 @@ public class ExclamationMark : MonoBehaviour
             return;
         }
 
-        Debug.Log(boss.PrevTarget + " : " + detected.name);
-
         if (GetIsQuestionMark(detected.gameObject.name))
         {
             renderer.sprite = sprites[0];   // ?

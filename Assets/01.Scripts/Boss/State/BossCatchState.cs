@@ -36,27 +36,29 @@ public class BossCatchState : BossState
         // 잡은 게 펫이라면
         if (pet != null)
         {
-            // 이미 잡았다면 잡지 않는다
-            if (!boss.CatchingPet.IsContain(pet))
+            // 잡은 적 없고 플레이어가 소유한 펫이면~
+            if (!boss.CatchingPet.IsContain(pet) && PetManager.Instance.Contain(pet))
             {
                 boss.ChangeState(BossStateName.PetCatch);
             }
             else
             {
+                // 이미 잡았다면 잡지 않는다
                 boss.ChangeState(BossStateName.Patrol);
             }
         }
         else
         {
             // Game Over
-            if (boss.Target.transform == GameManager.Instance.PlayerController.transform)
+            if (boss.Target.CompareTag("Player"))
             {
-
                 EventManager.TriggerEvent(EventName.BossFail);
             }
-
-            // TEMP
-            boss.ChangeState(BossStateName.Patrol);
+            else
+            {
+                // TEMP
+                boss.ChangeState(BossStateName.Patrol);
+            }
         }
     }
 
