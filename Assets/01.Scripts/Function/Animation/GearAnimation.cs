@@ -22,6 +22,7 @@ public class GearAnimation : MonoBehaviour
         {
             animator.SetBool("Rotate", true);
         }
+
         rotateEvent?.Invoke();
     }
 
