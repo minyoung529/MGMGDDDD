@@ -19,9 +19,6 @@ public class BossGameController : MonoBehaviour
     [SerializeField]
     private bool onAwake = false;
 
-    [SerializeField]
-    private Pet[] originalPets;
-
     private void Awake()
     {
         EventManager.StartListening(EventName.BossFail, Fail);
@@ -54,10 +51,7 @@ public class BossGameController : MonoBehaviour
         isFail = true;
         onFail?.Invoke();
 
-        foreach (Pet pet in originalPets)
-        {
-            pet.GetPet(GameManager.Instance.PlayerController.transform);
-        }
+        PetManager.Instance.ResetPetManager();
     }
 
     private void OnDestroy()

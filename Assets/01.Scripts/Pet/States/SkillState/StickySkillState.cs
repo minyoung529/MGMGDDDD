@@ -31,7 +31,6 @@ public class StickySkillState : PetState
 
         pet.Skilling = true;
 
-        Debug.Log("Billow");
         pet.Event.StartListening((int)PetEventName.OnSkillCancel, OffBillow);
         pet.Event.StartListening((int)PetEventName.OnRecallKeyPress, OnRecall);
         pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
@@ -85,6 +84,7 @@ public class StickySkillState : PetState
         BillowAction();
         enterVisual.Trigger();
         onBillow?.Invoke();
+        Debug.Log("Billow");
     }
 
     private void OffBillow()

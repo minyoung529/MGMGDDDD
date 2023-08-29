@@ -9,8 +9,6 @@ using UnityEngine.U2D;
 
 public class PetManager : MonoSingleton<PetManager>
 {
-    private List<Image> petImages = new List<Image>();
-    private List<Image> petInvens = new List<Image>();
     private List<Pet> pets = new List<Pet>();
     private List<Type> petTypes = new List<Type>();
 
@@ -20,12 +18,6 @@ public class PetManager : MonoSingleton<PetManager>
 
     private bool isSwitching = false;
 
-    private Vector3 scaleUp = new Vector3(1.25f, 1.25f, 1.25f);
-    private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
-
-    [SerializeField]
-    private SpriteAtlas spriteAtlas;
-
     #region Get
     public int PetCount { get { return pets.Count; } }
     public Pet GetSelectPet { get { return pets[selectIndex]; } }
@@ -34,6 +26,9 @@ public class PetManager : MonoSingleton<PetManager>
 
     [SerializeField]
     private GameObject[] petPrefabs;
+
+    private PetUI ui;
+    public PetUI UI { get { return ui; } }
 
     private Dictionary<InputAction, Action<InputAction, float>> inputActions = new();
 
@@ -81,10 +76,23 @@ public class PetManager : MonoSingleton<PetManager>
 
         return pet;
     }
+    public int GetIndexPetType(PetType type)
+    {
+        for (int i = 0; i < pets.Count; i++)
+        {
+            if (pets[i].GetPetType == type)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     protected override void Awake()
     {
         base.Awake();
+
+        ui = GetComponent<PetUI>();
         inputActions.Add(InputAction.Up_Pet, SwitchPet);
         inputActions.Add(InputAction.Down_Pet, SwitchPet);
         inputActions.Add(InputAction.Select_First_Pet, SelectPet);
@@ -107,26 +115,25 @@ public class PetManager : MonoSingleton<PetManager>
         {
             if (i == (int)SceneType.StartScene)
             {
-                SceneController.ListeningEnter(SceneType.StartScene, InactivePetCanvas);
+                SceneController.ListeningEnter(SceneType.StartScene, UI.InactivePetCanvas);
             }
             else
             {
-                SceneController.ListeningEnter((SceneType)i, ActivePetCanvas);
+                SceneController.ListeningEnter((SceneType)i, UI.ActivePetCanvas);
             }
         }
     }
 
     private void Start()
     {
-        CutSceneManager.Instance.AddStartCutscene(InactivePetCanvas);
+        CutSceneManager.Instance.AddStartCutscene(UI.InactivePetCanvas);
         CutSceneManager.Instance.AddStartCutscene(StopAllListen);
-        CutSceneManager.Instance.AddEndCutscene(ActivePetCanvas);
+        CutSceneManager.Instance.AddEndCutscene(UI.ActivePetCanvas);
         CutSceneManager.Instance.AddEndCutscene(StartAllListen);
     }
 
     private void LoadPet(EventParam eventParam = null)
     {
-        ResetPetManager();
         if (!eventParam.Contain("pets")) return;
         List<PetType> petList = SaveSystem.CurSaveData.pets;
 
@@ -177,8 +184,8 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void OnDestroy()
     {
-        CutSceneManager.Instance?.RemoveStartCutscene(InactivePetCanvas);
-        CutSceneManager.Instance?.RemoveEndCutscene(ActivePetCanvas);
+        CutSceneManager.Instance?.RemoveStartCutscene(UI.InactivePetCanvas);
+        CutSceneManager.Instance?.RemoveEndCutscene(UI.ActivePetCanvas);
         EventManager.StopListening(EventName.LoadChapter, LoadPet);
         EventManager.StopListening(EventName.StopPetAllListen, StopPetAllListen);
         StopAllListen();
@@ -187,12 +194,12 @@ public class PetManager : MonoSingleton<PetManager>
         {
             if (i == (int)SceneType.StartScene)
             {
-                SceneController.StopListeningEnter(SceneType.StartScene, InactivePetCanvas);
+                SceneController.StopListeningEnter(SceneType.StartScene, UI.InactivePetCanvas);
             }
             else
             {
 
-                SceneController.StopListeningEnter((SceneType)i, ActivePetCanvas);
+                SceneController.StopListeningEnter((SceneType)i, UI.ActivePetCanvas);
             }
         }
     }
@@ -392,14 +399,7 @@ public class PetManager : MonoSingleton<PetManager>
     {
         beforeIndex = selectIndex;
         selectIndex = index;
-        OnSelectPetUI(selectIndex);
-    }
-
-    public void NotSelectPet()
-    {
-        beforeIndex = selectIndex;
-        selectIndex = -1;
-        OffSelectPetUI();
+        UI.SelectPetUI(pets[selectIndex].GetPetType);
     }
 
     public Pet GetSelectedPet()
@@ -412,25 +412,19 @@ public class PetManager : MonoSingleton<PetManager>
     #region Set
     public void ResetPetManager()
     {
-        pets.Clear();
-        petTypes.Clear();
-
-        for (int i = 0; i < transform.GetChild(0).childCount; i++)
+        for(int i=0;i<pets.Count;i++)
         {
-            GameObject inven = transform.GetChild(0).GetChild(i).gameObject;
-            if (!inven.activeSelf) continue;
-            petInvens.Add(inven.GetComponent<Image>());
-            petImages.Add(inven.transform.GetChild(0).gameObject.GetComponent<Image>());
+            DeletePet(i);
         }
+
+        petTypes.Clear();
+        pets.Clear();
+
+        UI.ResetPetUI();
+
         beforeIndex = -1;
         selectIndex = -1;
         isSwitching = false;
-
-        OffSelectPetUI();
-        for (int i = 0; i < petInvens.Count; i++)
-        {
-            DisablePetUI(i);
-        }
     }
 
     public void AddPet(Pet p)
@@ -439,8 +433,8 @@ public class PetManager : MonoSingleton<PetManager>
         pets.Add(p);
         petTypes.Add(p.GetType());
 
+        UI.Active(p.GetPetType);
         SelectPet(pets.Count - 1);
-        ActivePetUI(selectIndex);
     }
     public void DeletePet(PetType type)
     {
@@ -460,81 +454,41 @@ public class PetManager : MonoSingleton<PetManager>
         if (p == null) return;
 
         int index = pets.IndexOf(p);
-
         if (index < 0) return;
 
-        DisablePetUI(index);
+        UI.Inactive(p.GetPetType);
 
         petTypes.RemoveAt(index);
         pets.Remove(p);
 
-        selectIndex = pets.Count - 1;
-        SelectPet(selectIndex);
+        selectIndex = -1;
+        if(pets.Count > 0)
+        {
+            selectIndex = 0;
+            SelectPet(0);
+        }
+        
         p.gameObject.SetActive(false);
     }
 
     public void DeletePet(int index)
     {
-        DisablePetUI(index);
+        if (pets[index] == null) return;
+        UI.Inactive(pets[index].GetPetType);
 
         petTypes.RemoveAt(index);
         pets.RemoveAt(index);
 
-        selectIndex = pets.Count - 1;
-        SelectPet(selectIndex);
-    }
-
-
-    #endregion
-
-    #region PetUI
-
-    private void OnSelectPetUI(int index)
-    {
-        if(index < 0 || index >= pets.Count) return;
-
-        for (int i = 0; i < pets.Count; i++)
+        selectIndex = -1;
+        if(pets.Count > 0)
         {
-            petInvens[i].DOFade(0.2f, 0.5f);
-            petImages[i].DOFade(0.2f, 0.5f);
-            petInvens[i].transform.DOScale(defaultScale, 0.5f);
-        }
-        petInvens[index].DOFade(1f, 0.5f);
-        petImages[index].DOFade(1f, 0.5f);
-        petInvens[index].transform.DOScale(scaleUp, 0.5f).SetEase(Ease.Flash);
-    }
-    private void OffSelectPetUI()
-    {
-        for (int i = 0; i < pets.Count; i++)
-        {
-            petInvens[i].transform.DOScale(defaultScale, 0.5f);
+        selectIndex = 0;
+        SelectPet(0);
         }
     }
 
-    private void ActivePetUI(int index)
-    {
-        if (index < 0 || index >= petInvens.Count) return;
-
-        petInvens[index].gameObject.SetActive(true);
-        petImages[index].sprite = spriteAtlas.GetSprite(pets[index].petSprite.name);
-    }
-    private void DisablePetUI(int index)
-    {
-        if (index < 0 || index >= petInvens.Count) return;
-
-        petInvens[index].gameObject.SetActive(false);
-    }
-
-    public void ActivePetCanvas()
-    {
-        transform.GetChild(0).gameObject.SetActive(true);
-    }
-
-    public void InactivePetCanvas()
-    {
-        transform.GetChild(0).gameObject.SetActive(false);
-    }
     #endregion
+
 
     #region ACCESS
     public void AllPetActions(Action<Pet> action)

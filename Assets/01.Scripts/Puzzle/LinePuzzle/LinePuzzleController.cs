@@ -140,7 +140,7 @@ public class LinePuzzleController : MonoBehaviour
         OilPetSkill.IsCrosshair = false;
         GameManager.Instance.PlayerController.Move.LockInput();
         PetManager.Instance.StopListen(InputAction.Pet_Follow);
-        PetManager.Instance.InactivePetCanvas();
+        PetManager.Instance.UI.InactivePetCanvas();
 
         GameManager.Instance.PlayerController.Move.ChangeState(PlayerStateName.DefaultMove);
 
@@ -191,7 +191,7 @@ public class LinePuzzleController : MonoBehaviour
         oilPet.SkillState.SkillData.IsCheckDistance = true;
         GameManager.Instance.PlayerController.Move.UnLockInput();
         PetManager.Instance.StartListen(InputAction.Pet_Follow);
-        PetManager.Instance.ActivePetCanvas();
+        PetManager.Instance.UI.ActivePetCanvas();
 
         onExitGame?.Invoke();
     }
