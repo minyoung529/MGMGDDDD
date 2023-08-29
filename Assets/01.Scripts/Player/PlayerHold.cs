@@ -227,7 +227,6 @@ public class PlayerHold : PlayerMono
             return;
         }
 
-        Debug.Log("Throw");
         OnExitHold();
         controller.Move.ChangeState(PlayerStateName.Throw);
     }

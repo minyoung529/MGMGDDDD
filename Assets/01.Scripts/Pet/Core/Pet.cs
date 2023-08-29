@@ -149,6 +149,7 @@ public abstract class Pet : MonoBehaviour
         {
             agent.speed = originalAgentSpeed;
         }
+
     }
 
     public void Pause()
