@@ -33,7 +33,7 @@ public class DetectObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag("Player") || other.tag.Contains("Pet"))
         {
             if(canTrigger) TriggerDetect();
         }
@@ -41,7 +41,7 @@ public class DetectObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Player") || collision.collider.tag.Contains("Pet"))
         {
             if(canTrigger) TriggerDetect();
         }
