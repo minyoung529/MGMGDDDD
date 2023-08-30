@@ -7,6 +7,9 @@ public class EasterEgg : HoldableObject
     [SerializeField]
     private ParticleSystem hitParticle;
 
+    [SerializeField]
+    private ParticleSystem eggParticle;
+
     public bool IsThrowing { get; set; } = false;
 
     public override void OnDrop()
@@ -30,6 +33,14 @@ public class EasterEgg : HoldableObject
         pet.Event.TriggerEvent((int)PetEventName.OnDrop);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(IsThrowing && collision.gameObject.CompareTag("Floor"))
+        {
+            OnLanding();
+        }
+    }
+
     public override void OnLanding()
     {
         isHold = false;
@@ -37,6 +48,13 @@ public class EasterEgg : HoldableObject
 
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         rigid.velocity = Vector3.zero;
+
+        eggParticle.Play();
+        eggParticle.transform.SetParent(null);
+        eggParticle.transform.localScale = Vector3.one;
+
+        Destroy(eggParticle, eggParticle.main.duration);
+        Destroy(gameObject);
     }
 
     public override void OnThrow()
@@ -54,6 +72,8 @@ public class EasterEgg : HoldableObject
         rigid.velocity = Vector3.zero;
         rigid.isKinematic = false;
         rigid.AddForce(force, forceMode);
+
+        rigid.constraints = RigidbodyConstraints.None;
     }
 
     public void Delete()
