@@ -84,7 +84,6 @@ public class StickySkillState : PetState
         BillowAction();
         enterVisual.Trigger();
         onBillow?.Invoke();
-        Debug.Log("Billow");
     }
 
     private void OffBillow()

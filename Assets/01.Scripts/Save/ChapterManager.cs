@@ -122,7 +122,6 @@ public class ChapterManager : MonoSingleton<ChapterManager>
         if (SaveSystem.CurSaveData.pets.Count>0)  eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
 
-        Debug.Log(GetCurChapterSO);
         EventManager.TriggerEvent(EventName.LoadChapter, eventParam);
     }
 

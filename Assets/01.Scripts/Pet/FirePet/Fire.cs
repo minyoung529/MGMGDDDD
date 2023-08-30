@@ -70,7 +70,7 @@ public class Fire : MonoBehaviour
             FireParticlePlay();
             if (isDestroyType) StartCoroutine(DestroyBurn());
             fireEvent?.Invoke();
-
+            
             if (isCool)
             {
                 StartCoroutine(CoolFire());
