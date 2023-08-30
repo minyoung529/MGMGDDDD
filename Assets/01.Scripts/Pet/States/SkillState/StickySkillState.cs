@@ -22,6 +22,8 @@ public class StickySkillState : PetState
 
     public override void OnEnter()
     {
+        Debug.Log("Skill");
+
         if (SelectedObject.CurInteractObject &&
        (SelectedObject.CurInteractObject.PetType & PetFlag.StickyPet) != 0)
         {
@@ -36,6 +38,11 @@ public class StickySkillState : PetState
         pet.Event.StartListening((int)PetEventName.OnOffPing, PingUp);
 
         OnBillow();
+    }
+
+    public void OnExplosionStart()
+    {
+        pet.Event.StopListening((int)PetEventName.OnSkillCancel, OffBillow);
     }
 
     private void PingUp()
