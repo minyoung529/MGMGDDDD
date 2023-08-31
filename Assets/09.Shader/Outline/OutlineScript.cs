@@ -97,10 +97,10 @@ public class OutlineScript : MonoBehaviour
         {
             outline = gameObject.AddComponent<Outline>();
             outline.OutlineWidth = 0f;
+            outline.OutlineMode = Outline.Mode.OutlineVisible;
         }
 
         outline.SetRenderer(renderers.ToArray());
-        outline.OutlineMode = Outline.Mode.OutlineVisible;
     }
 
     #region Set
