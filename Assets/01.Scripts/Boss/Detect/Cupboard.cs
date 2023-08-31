@@ -16,17 +16,13 @@ using UnityEngine.UIElements;
 public class Cupboard : MonoBehaviour
 {
     [SerializeField] private Transform inPos;
+    [SerializeField] private Transform outPos;
     [SerializeField] private TutorialTrigger inTutorialTip;
-    [SerializeField] private TutorialTrigger outTutorialTip;
-
-    [SerializeField] private PlayableDirector openTimeline;
-    [SerializeField] private PlayableDirector closeTimeline;
 
     [SerializeField] private CinemachineVirtualCamera innerCam;
 
     private Animator anim;
 
-    private float delayTime = 0.5f;
     private bool playerIn = false;
     public bool PlayerIn => playerIn;
     private PlayerController player = null;
@@ -35,51 +31,46 @@ public class Cupboard : MonoBehaviour
     {
         anim = GetComponent<Animator>();
 
-        innerCam.gameObject.SetActive(false);
+        innerCam.Priority = 0;
     }
 
     public void InCupboard()
     {
-        if (playerIn || player == null) return;
-        openTimeline.Play();
-
-        playerIn = true;
-        anim.SetTrigger("Trigger");
+        if (playerIn || player == null)
+        {
+            SetEnableTutorial(inTutorialTip, true);
+            return;
+        }
+        
+        SetEnableTutorial(inTutorialTip, false);
+        anim.SetBool("Open", true);
+        innerCam.Priority = 1000;
         player.transform.position = inPos.position;
+        playerIn = true;
 
         EventParam param = new();
         param["State"] = false;
         EventManager.TriggerEvent(EventName.InPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.LockInput();
-
-        SetEnableTutorial(inTutorialTip, false);
-        StartCoroutine(DelayOutTrigger());
-        innerCam.gameObject.SetActive(true);
-    }
-
-    private IEnumerator DelayOutTrigger()
-    {
-        yield return new WaitForSeconds(delayTime);
-
-        SetEnableTutorial(outTutorialTip, true);
     }
 
     public void OutCupboard()
     {
-        if (!playerIn) return;
-        closeTimeline.Play();
+        if (!playerIn)
+        {
+            return;
+        }
 
-        innerCam.gameObject.SetActive(false);
+        player.transform.position = outPos.position;
         player = null;
         playerIn = false;
-        anim.SetTrigger("Close");
+        innerCam.Priority = 0;
+        anim.SetBool("Open", false);
 
         EventParam param = new();
         param["State"] = true;
         EventManager.TriggerEvent(EventName.OutPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.UnLockInput();
-
-        SetEnableTutorial(outTutorialTip, false);
     }
 
     private void SetEnableTutorial(TutorialTrigger tuto, bool listen)

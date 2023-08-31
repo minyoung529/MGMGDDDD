@@ -137,7 +137,6 @@ public class Boss : MonoBehaviour
             {
                 ResetTarget();
             }
-            Debug.Log(canFind);
         }
     }
     public void ResetTarget(EventParam eventParam = null)
