@@ -73,6 +73,7 @@ public class Cupboard : MonoBehaviour
         GameManager.Instance.PlayerController.Move.UnLockInput();
     }
 
+
     private void SetEnableTutorial(TutorialTrigger tuto, bool listen)
     {
         if (listen)
