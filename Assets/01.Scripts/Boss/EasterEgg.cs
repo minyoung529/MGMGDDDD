@@ -11,6 +11,7 @@ public class EasterEgg : HoldableObject
     private ParticleSystem eggParticle;
 
     public bool IsThrowing { get; set; } = false;
+    public int SpawnIndex { get; set; }
 
     public override void OnDrop()
     {
