@@ -2,6 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Playables;
 using UnityEngine.UIElements;
 /// <summary>
@@ -26,6 +27,9 @@ public class Cupboard : MonoBehaviour
     private bool playerIn = false;
     public bool PlayerIn => playerIn;
     private PlayerController player = null;
+
+    [SerializeField]
+    private bool playerDetect = false;
 
     private void Awake()
     {
@@ -78,11 +82,13 @@ public class Cupboard : MonoBehaviour
     {
         if (listen)
         {
+            Debug.Log("On Listen");
             tuto.Active();
             tuto.StartTutorial();
         }
         else
         {
+            Debug.Log("Off Listen");
             tuto.Inactive();
             tuto.EndTutorial();
         }
@@ -91,8 +97,11 @@ public class Cupboard : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (playerIn) return;
+        if (playerDetect) return;
+
         if (other.CompareTag("Player"))
         {
+            playerDetect = true;
             player = other.GetComponent<PlayerController>();
             SetEnableTutorial(inTutorialTip, true);
         }
@@ -100,10 +109,12 @@ public class Cupboard : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (!playerDetect) return;
+
         if (other.CompareTag("Player"))
         {
+            playerDetect = false;
             SetEnableTutorial(inTutorialTip, false);
         }
     }
-
 }

@@ -108,8 +108,6 @@ public class OutlineScript : MonoBehaviour
     [ContextMenu("OnOutline")]
     public void OnOutline()
     {
-        Debug.Log("ONOUTLINE");
-
         if (outline != null)
         {
             SetEnableRenderer(true);
@@ -120,7 +118,6 @@ public class OutlineScript : MonoBehaviour
     [ContextMenu("OffOutline")]
     public void OffOutline()
     {
-        Debug.Log("OFFOUTLINE");
         if (outline != null)
         {
             SetEnableRenderer(false);

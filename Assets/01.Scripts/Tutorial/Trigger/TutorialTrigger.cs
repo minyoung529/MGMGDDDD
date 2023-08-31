@@ -52,6 +52,7 @@ public class TutorialTrigger : MonoBehaviour
         col = GetComponent<Collider>();
 
         keyDownAction = (InputAction x, float y) => onKeyDownEvent?.Invoke();
+        keyDownAction += (x, t) => Debug.Log($"Key Down {gameObject.name}");
 
         onEnter += OnEnter;
         onEnter += ListeningEvent;

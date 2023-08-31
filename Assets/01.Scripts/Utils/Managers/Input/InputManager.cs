@@ -172,7 +172,10 @@ public class InputManager : MonoSingleton<InputManager>
     {
         if (eventDictionary.ContainsKey(action))
         {
-            eventDictionary[action] -= listener;
+            if (eventDictionary[action].GetInvocationList().ToList().Contains(listener))
+            {
+                eventDictionary[action] -= listener;
+            }
 
             if (eventDictionary[action] == null)
             {

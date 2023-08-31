@@ -58,15 +58,24 @@ public class AutoInputPanel : MonoBehaviour
 
     private void Awake()
     {
-        if (useInputAction)
-            InputManager.StartListeningInput(action, SuccessInput);
-
         firstName = nameText.text;
     }
 
     public void Init(Animator animator)
     {
         this.animator = animator;
+    }
+
+    public void StartInput()
+    {
+        if (useInputAction)
+            InputManager.StartListeningInput(action, SuccessInput);
+    }
+
+    public void StopInput()
+    {
+        if (useInputAction)
+            InputManager.StopListeningInput(action, SuccessInput);
     }
 
     void Update()
@@ -121,17 +130,12 @@ public class AutoInputPanel : MonoBehaviour
         success = true;
     }
 
-    private void OnDestroy()
-    {
-        if (useInputAction)
-            InputManager.StopListeningInput(action, SuccessInput);
-    }
-
     public void ResetData()
     {
         success = false;
         active = false;
         timer = 0f;
+        StopInput();
     }
 
     public void SetName(string name)

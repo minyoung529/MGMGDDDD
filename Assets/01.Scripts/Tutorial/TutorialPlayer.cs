@@ -24,7 +24,7 @@ public class TutorialPlayer : MonoBehaviour
 
     private int autoIdx = 0;
 
-    private bool isChainging = false;
+    private bool isChainging = false;   // 바뀌는 중인가
     private bool isStarted = false;     // 튜토리얼이 시작했는가
     private bool isFinish = false;      // 튜토리얼이 끝났는가
 
@@ -35,6 +35,8 @@ public class TutorialPlayer : MonoBehaviour
     private bool IsValidIdx => autoIdx >= 0 && autoIdx < autoGroups.Count;
     public TutorialType TutorialType => tutorialType;
     #endregion
+
+    private Sequence seq;
 
     private void Start()
     {
@@ -57,14 +59,19 @@ public class TutorialPlayer : MonoBehaviour
 
     private void ShowNextTutorial()
     {
-        Sequence seq = DOTween.Sequence();
+        seq.Kill();
+        seq = DOTween.Sequence();
 
         if (autoGroups.Count <= autoIdx) return;
 
         CanvasGroup curGroup = autoGroups[autoIdx];
         isChainging = true;
 
+        autoPanelList[autoIdx].StopInput();
         ++autoIdx;
+
+        if (IsValidIdx)
+            autoPanelList[autoIdx].StartInput();
 
         seq.AppendInterval(removeDelayTime);
         seq.Append(RemovePreviusPanel(curGroup));
@@ -141,12 +148,17 @@ public class TutorialPlayer : MonoBehaviour
 
 
         ShowCurrentPanel(name);
+        autoPanelList[autoIdx].StartInput();
         isStarted = true;
     }
 
     public void StopTutorial()
     {
         if (isFinish) return;
+
+        Debug.Log($"__ Stop Tutorial __ {tutorialType.ToString()}");
+        autoIdx = 0;
+        seq.Kill();
 
         foreach (CanvasGroup canvas in autoGroups)
         {
@@ -155,6 +167,7 @@ public class TutorialPlayer : MonoBehaviour
 
         autoPanelList.ForEach(x => x.ResetData());
 
+        isStarted = false;
         isFinish = true;
     }
 
@@ -170,5 +183,6 @@ public class TutorialPlayer : MonoBehaviour
     {
         //SceneController.StopListningEnter(SceneType.NewClock_QU, Init);
         SceneController.StopListeningEnter(SceneType.StartScene, StopTutorial);
+        seq?.Kill();
     }
 }

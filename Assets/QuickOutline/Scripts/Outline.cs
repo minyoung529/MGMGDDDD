@@ -248,7 +248,6 @@ public class Outline : MonoBehaviour
 
         // Group vertices by location
         var groups = mesh.vertices.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);
-        Debug.Log(gameObject.name);
         // Copy normals to a new list
         var smoothNormals = new List<Vector3>(mesh.normals);
 
