@@ -38,6 +38,11 @@ public class StickySkillState : PetState
         OnBillow();
     }
 
+    public void OnExplosionStart()
+    {
+        pet.Event.StopListening((int)PetEventName.OnSkillCancel, OffBillow);
+    }
+
     private void PingUp()
     {
         pet.StopPing();
