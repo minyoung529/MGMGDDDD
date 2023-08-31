@@ -46,6 +46,15 @@ public class OutlineScript : MonoBehaviour
     private Outline outline;
 
     [SerializeField]
+    private bool useOldOutline = false;
+
+    [SerializeField]
+    private UnityEvent<Renderer[]> onInitialized;
+
+    [SerializeField]
+    private UnityEvent<Color> onColorChange;
+
+    [SerializeField]
     private UnityEvent onEnterCursor;
 
     [SerializeField]
@@ -76,9 +85,15 @@ public class OutlineScript : MonoBehaviour
             renderers.Add(renderer);
         }
 
+        onInitialized?.Invoke(renderers.ToArray());
+
+        if (useOldOutline)
+        {
+            return;
+        }
         outline = GetComponent<Outline>();
 
-        if(outline == null)
+        if (outline == null)
         {
             outline = gameObject.AddComponent<Outline>();
             outline.OutlineWidth = 0f;
@@ -99,6 +114,8 @@ public class OutlineScript : MonoBehaviour
         {
             SetEnableRenderer(true);
         }
+
+        onEnterCursor?.Invoke();
     }
     [ContextMenu("OffOutline")]
     public void OffOutline()
@@ -108,6 +125,8 @@ public class OutlineScript : MonoBehaviour
         {
             SetEnableRenderer(false);
         }
+
+        onExitCursor?.Invoke();
     }
 
     private void SetEnableRenderer(bool value)
@@ -126,7 +145,10 @@ public class OutlineScript : MonoBehaviour
 
     public void SetColor(Color color)
     {
-        outline.OutlineColor = color;
+        if (outline != null)
+            outline.OutlineColor = color;
+
+        onColorChange?.Invoke(color);
     }
 
     #endregion
