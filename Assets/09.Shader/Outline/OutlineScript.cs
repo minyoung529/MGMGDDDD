@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.ProBuilder;
+using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
 
 [Flags]
@@ -18,7 +19,6 @@ public enum PetFlag
 
 public class OutlineScript : MonoBehaviour
 {
-    [SerializeField] private Material outlineMaterial;
     [SerializeField] private float outlineScaleFactor = 0.06f;
     [SerializeField] private PetFlag petType;
     [SerializeField] private UnityEvent onInteractPet;
@@ -27,12 +27,9 @@ public class OutlineScript : MonoBehaviour
     [SerializeField] private string guideName;
     public string GuideName => guideName;
 
-    private List<Renderer> outlineRenderer = new List<Renderer>();
-
     [SerializeField]
-    private List<Renderer> ignoreRenderers;
+    private List<GameObject> ignoreRenderers;
 
-    private int outlineLayer;
     private bool used = false;
     public bool IsInteract => used;
 
@@ -46,27 +43,49 @@ public class OutlineScript : MonoBehaviour
 
     public Color OutlineColor => outlineColor;
 
+    private Outline outline;
+
+    [SerializeField]
+    private UnityEvent onEnterCursor;
+
+    [SerializeField]
+    private UnityEvent onExitCursor;
+
     void Start()
     {
-        outlineLayer = Utils.LayerToInteger(LayerMask.GetMask("Outline"));
-
         InitRenderer();
     }
 
     private void InitRenderer()
     {
-        Renderer[] renderers = transform.GetComponentsInChildren<MeshRenderer>();
+        Renderer[] temp = transform.GetComponentsInChildren<MeshRenderer>();
+        List<Renderer> renderers = new();
 
-        foreach (Renderer renderer in renderers)
+        foreach (Renderer renderer in temp)
         {
             if (renderer.GetType() == typeof(ParticleSystemRenderer))
             {
                 continue;
             }
 
-            Renderer newRenderer = CreateOutline(renderer.transform, outlineMaterial, outlineScaleFactor, Color.white);
-            outlineRenderer.Add(newRenderer);
+            if (ignoreRenderers.Contains(renderer.gameObject))
+            {
+                continue;
+            }
+
+            renderers.Add(renderer);
         }
+
+        outline = GetComponent<Outline>();
+
+        if(outline == null)
+        {
+            outline = gameObject.AddComponent<Outline>();
+            outline.OutlineWidth = 0f;
+        }
+
+        outline.SetRenderer(renderers.ToArray());
+        outline.OutlineMode = Outline.Mode.OutlineVisible;
     }
 
     #region Set
@@ -74,7 +93,9 @@ public class OutlineScript : MonoBehaviour
     [ContextMenu("OnOutline")]
     public void OnOutline()
     {
-        if (outlineRenderer != null)
+        Debug.Log("ONOUTLINE");
+
+        if (outline != null)
         {
             SetEnableRenderer(true);
         }
@@ -82,7 +103,8 @@ public class OutlineScript : MonoBehaviour
     [ContextMenu("OffOutline")]
     public void OffOutline()
     {
-        if (outlineRenderer != null)
+        Debug.Log("OFFOUTLINE");
+        if (outline != null)
         {
             SetEnableRenderer(false);
         }
@@ -90,61 +112,23 @@ public class OutlineScript : MonoBehaviour
 
     private void SetEnableRenderer(bool value)
     {
-        for (int i = 0; i < outlineRenderer.Count; i++)
+        if (value)
         {
-            outlineRenderer[i].enabled = value;
+            onEnterCursor?.Invoke();
+            outline.OutlineWidth = 10f;
+        }
+        else
+        {
+            onExitCursor?.Invoke();
+            outline.OutlineWidth = 0f;
         }
     }
 
     public void SetColor(Color color)
     {
-        for (int i = 0; i < outlineRenderer.Count; i++)
-        {
-            if (!ignoreRenderers.Contains(outlineRenderer[i]))
-            {
-                outlineRenderer[i].material.SetColor("_OutLine_Color", color);
-            }
-        }
+        outline.OutlineColor = color;
     }
 
-    #endregion
-
-    #region Draw_Outline
-
-    Renderer CreateOutline(Transform origin, Material outlineMat, float scaleFactor, Color color)
-    {
-        GameObject outlineObject = new GameObject($"{origin.name}_Outline");
-
-        outlineObject.layer = outlineLayer;
-        // Reset Transform
-        outlineObject.transform.SetParent(origin);
-        outlineObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        outlineObject.transform.localScale = new Vector3(1f, 1f, 1f);
-
-        MeshFilter originFilter = origin.GetComponent<MeshFilter>();
-
-        if (originFilter == null)
-        {
-            return null;
-        }
-
-        AddMesh(outlineObject, originFilter);
-
-        MeshRenderer render = outlineObject.AddComponent<MeshRenderer>();
-        render.material = outlineMat;
-        render.material.SetColor("_OutLine_Color", color);
-        render.material.SetFloat("_Outline_Thickness", scaleFactor);
-        render.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        render.enabled = false;
-
-        return render;
-    }
-
-    private void AddMesh(GameObject newObj, MeshFilter meshFilter)
-    {
-        MeshFilter filter = newObj.AddComponent<MeshFilter>();
-        filter.mesh = meshFilter.mesh;
-    }
     #endregion
 
     public void OnInteract()

@@ -22,8 +22,6 @@ public class StickySkillState : PetState
 
     public override void OnEnter()
     {
-        Debug.Log("Skill");
-
         if (SelectedObject.CurInteractObject &&
        (SelectedObject.CurInteractObject.PetType & PetFlag.StickyPet) != 0)
         {

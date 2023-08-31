@@ -539,7 +539,7 @@ GameObject:
   - component: {fileID: 5333100329417052831}
   - component: {fileID: 1039399583812612994}
   - component: {fileID: 3415943194086372782}
-  - component: {fileID: 8704176867888306122}
+  - component: {fileID: 6834532334577937224}
   m_Layer: 0
   m_Name: Cupboard
   m_TagString: Untagged
@@ -638,7 +638,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5.1912513, y: 8.347493, z: 4.9862394}
   m_Center: {x: -2.3507915, y: 4.031734, z: 2.5957842}
---- !u!114 &8704176867888306122
+--- !u!114 &6834532334577937224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -650,14 +650,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4facf786299c0934398504e17c9e4a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 2100000, guid: 803332580b97401449c2affc6e26cefd, type: 2}
   outlineScaleFactor: 0.06
-  petType: 0
+  petType: -1
   onInteractPet:
     m_PersistentCalls:
       m_Calls: []
   guideName: 
-  isPetInteract: 0
+  ignoreRenderers:
+  - {fileID: 3415943195401035259}
+  - {fileID: 3415943195100444061}
+  isPetInteract: 1
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2881376471860836676
 GameObject:
@@ -844,8 +846,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3415943195100444061}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -1.1878358, y: 4.123, z: 0.06921184}
-  m_LocalScale: {x: 2.058086, y: 7.806026, z: 1}
+  m_LocalPosition: {x: -1.1466, y: 3.9558, z: 0.0692}
+  m_LocalScale: {x: 1.9755567, y: 7.471928, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7667858324449560254}
@@ -942,8 +944,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3415943195401035259}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.49053603, y: 4.1918, z: 2.250912}
-  m_LocalScale: {x: 4.6033845, y: 7.9434123, z: 1}
+  m_LocalPosition: {x: -0.49053603, y: 3.9119, z: 2.250912}
+  m_LocalScale: {x: 4.6033845, y: 7.3834014, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7667858324449560254}
@@ -1284,6 +1286,7 @@ GameObject:
   - component: {fileID: 832239778}
   - component: {fileID: 832239777}
   - component: {fileID: 832239776}
+  - component: {fileID: 3104498248362457902}
   m_Layer: 0
   m_Name: Cube.097
   m_TagString: Untagged
@@ -1409,6 +1412,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.0275364, y: 0.09264627, z: 2.1468678}
   m_Center: {x: 0.0009338426, y: -0.98532414, z: 0.0026779175}
+--- !u!114 &3104498248362457902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8457873035300210035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 10
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &8707659426072107728
 GameObject:
   m_ObjectHideFlags: 0
