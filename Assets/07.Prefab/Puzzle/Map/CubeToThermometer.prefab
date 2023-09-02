@@ -80,6 +80,9 @@ MonoBehaviour:
   OnExit:
     m_PersistentCalls:
       m_Calls: []
+  OnContact:
+    m_PersistentCalls:
+      m_Calls: []
   isOnce: 1
 --- !u!114 &8123691520887154917
 MonoBehaviour:
@@ -10478,13 +10481,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4facf786299c0934398504e17c9e4a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 2100000, guid: 803332580b97401449c2affc6e26cefd, type: 2}
   outlineScaleFactor: 0.06
   petType: 4
   onInteractPet:
     m_PersistentCalls:
       m_Calls: []
   guideName: "\uBD99\uC774\uAE30"
+  ignoreRenderers: []
+  isPetInteract: 1
+  outlineColor: {r: 0, g: 0, b: 0, a: 0}
+  useOldOutline: 0
+  onInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  onColorChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnterCursor:
+    m_PersistentCalls:
+      m_Calls: []
+  onExitCursor:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3328139442749644992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10626,13 +10644,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4facf786299c0934398504e17c9e4a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 2100000, guid: 803332580b97401449c2affc6e26cefd, type: 2}
   outlineScaleFactor: 0.06
   petType: 4
   onInteractPet:
     m_PersistentCalls:
       m_Calls: []
   guideName: "\uBD99\uC774\uAE30"
+  ignoreRenderers: []
+  isPetInteract: 1
+  outlineColor: {r: 0, g: 0, b: 0, a: 0}
+  useOldOutline: 0
+  onInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  onColorChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnterCursor:
+    m_PersistentCalls:
+      m_Calls: []
+  onExitCursor:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3328139443248716502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10774,13 +10807,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4facf786299c0934398504e17c9e4a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 2100000, guid: 803332580b97401449c2affc6e26cefd, type: 2}
   outlineScaleFactor: 0.06
   petType: 4
   onInteractPet:
     m_PersistentCalls:
       m_Calls: []
   guideName: "\uBD99\uC774\uAE30"
+  ignoreRenderers: []
+  isPetInteract: 1
+  outlineColor: {r: 0, g: 0, b: 0, a: 0}
+  useOldOutline: 0
+  onInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  onColorChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnterCursor:
+    m_PersistentCalls:
+      m_Calls: []
+  onExitCursor:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3328139443175244093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10984,6 +11032,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnContact:
     m_PersistentCalls:
       m_Calls: []
   isOnce: 1
@@ -11731,6 +11782,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnContact:
     m_PersistentCalls:
       m_Calls: []
   isOnce: 1
@@ -17505,6 +17559,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5165015474134284474}
     m_Modifications:
+    - target: {fileID: 153849634, guid: 715f7b06dd6d50f439a8fd83aa51aef8, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[0].m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2131072201}
     - target: {fileID: 2131072202, guid: 715f7b06dd6d50f439a8fd83aa51aef8, type: 3}
       propertyPath: boltRoot
       value: 
@@ -17579,6 +17637,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d83042948f118840ba01f9147afc5a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &743939693860373026 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 153849629, guid: 715f7b06dd6d50f439a8fd83aa51aef8, type: 3}
+  m_PrefabInstance: {fileID: 743939694013173055}
+  m_PrefabAsset: {fileID: 0}
+--- !u!208 &2131072201
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743939693860373026}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &981329070971601745 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 562211781434478190, guid: 715f7b06dd6d50f439a8fd83aa51aef8, type: 3}
