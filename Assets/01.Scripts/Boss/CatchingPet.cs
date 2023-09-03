@@ -66,6 +66,8 @@ public class CatchingPet : MonoBehaviour
 
     private IEnumerator EquipAnimation(Pet pet, Action onEquipEnd)
     {
+        yield return new WaitForSeconds(0.6f);
+
         Vector3 start = pet.transform.position;
         Vector3 end = petTransform.transform.position;
         float dist = Vector3.Distance(start, end);

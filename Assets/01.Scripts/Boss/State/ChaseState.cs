@@ -10,12 +10,14 @@ public class ChaseState : BossState
 
     public override void OnEnter()
     {
-        boss.Anim.ChangeAnimation(BossAnimType.Run);
+        //boss.Anim.ChangeAnimation(BossAnimType.Run);
+        boss.Anim.GetAnimator().SetBool("Chase", true);
     }
 
     public override void OnExit()
     {
         boss.Agent.ResetPath();
+        boss.Anim.GetAnimator().SetBool("Chase", false);
     }
 
     public override void OnUpdate()
