@@ -10,7 +10,6 @@ public class ChaseState : BossState
 
     public override void OnEnter()
     {
-        Debug.Log(boss.Target.name);
         boss.Anim.ChangeAnimation(BossAnimType.Run);
     }
 

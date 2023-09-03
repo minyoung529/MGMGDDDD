@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class EggSpawner : MonoBehaviour
@@ -49,28 +50,19 @@ public class EggSpawner : MonoBehaviour
     {
         EasterEgg easterEgg = egg as EasterEgg;
         indexes.Add(easterEgg.SpawnIndex);
-        Debug.Log(easterEgg.SpawnIndex);
         list.Remove(easterEgg);
 
         curCount--;
     }
 
     private void SpawnEgg()
-    {
+    { 
         EasterEgg newEgg = Instantiate(prefab, GetRandomPos(out int index), Quaternion.Euler(-90f, 0f, 0f));
-        newEgg.SpawnIndex = indexes[index];
+        newEgg.SpawnIndex = index;
         newEgg.ListeningOnDestroy(OnEggDestroyed);
         list.Add(newEgg);
 
         curCount++;
-
-        // RANDOM.RANGE(0, INDEXES.LENGTH) => 1 0 2
-        // INDEXES[1] = 0
-
-        // 0을 써줄 거야
-        // spawnPosition[0]
-        // newEgg.num = 0;
-        // indexes.add(0);
     }
 
     private Vector3 GetRandomPos(out int randomIndex)
@@ -79,7 +71,8 @@ public class EggSpawner : MonoBehaviour
         int spawnIdx = indexes[randomIndex];
         Vector3 pos = spawnPositions[spawnIdx].position;
 
-        indexes.RemoveAt(spawnIdx);
+        indexes.RemoveAt(randomIndex);
+        randomIndex = spawnIdx;
 
         return pos;
     }
