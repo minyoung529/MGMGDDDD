@@ -45,7 +45,8 @@ public class Cupboard : MonoBehaviour
             SetEnableTutorial(inTutorialTip, true);
             return;
         }
-        
+
+        inTutorialTip.EndTutorial();
         SetEnableTutorial(inTutorialTip, false);
         anim.SetBool("Open", true);
         innerCam.Priority = 1000;
@@ -82,13 +83,11 @@ public class Cupboard : MonoBehaviour
     {
         if (listen)
         {
-            Debug.Log("On Listen");
             tuto.Active();
             tuto.StartTutorial();
         }
         else
         {
-            Debug.Log("Off Listen");
             tuto.Inactive();
             tuto.EndTutorial();
         }

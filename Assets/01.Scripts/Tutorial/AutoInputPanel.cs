@@ -69,13 +69,20 @@ public class AutoInputPanel : MonoBehaviour
     public void StartInput()
     {
         if (useInputAction)
+        {
+            Debug.Log("AUTO: START INPUT");
+            InputManager.StopListeningInput(action, SuccessInput);
             InputManager.StartListeningInput(action, SuccessInput);
+        }
     }
 
     public void StopInput()
     {
         if (useInputAction)
+        {
+            Debug.Log("AUTO: STOP INPUT");
             InputManager.StopListeningInput(action, SuccessInput);
+        }
     }
 
     void Update()
@@ -84,6 +91,8 @@ public class AutoInputPanel : MonoBehaviour
         {
             if (!useInputAction && !isInfinity)
             {
+                Debug.Log("Success Input");
+
                 success = true;
                 return;
             }
@@ -106,12 +115,16 @@ public class AutoInputPanel : MonoBehaviour
                 if (timer > MAX_TIME)
                 {
                     // SUCCESS
+                    Debug.Log("Success Input");
+
                     success = true;
                 }
             }
             else
             {
                 // SUCCESS
+                Debug.Log("Success Input");
+
                 success = true;
             }
         }
@@ -127,6 +140,7 @@ public class AutoInputPanel : MonoBehaviour
 
     private void SuccessInput(InputAction inputAction, float value)
     {
+        Debug.Log("Success Input");
         success = true;
     }
 

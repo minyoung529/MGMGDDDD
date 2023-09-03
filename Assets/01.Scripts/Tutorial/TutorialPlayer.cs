@@ -53,6 +53,7 @@ public class TutorialPlayer : MonoBehaviour
 
         if (SuccessCount != 0 && !isChainging && SuccessCount == ActiveCount)
         {
+            Debug.Log(SuccessCount + " : " + ActiveCount);
             ShowNextTutorial();
         }
     }
@@ -85,6 +86,8 @@ public class TutorialPlayer : MonoBehaviour
             {
                 StopTutorial();
             }
+
+            isChainging = false;
         });
     }
 
@@ -146,8 +149,11 @@ public class TutorialPlayer : MonoBehaviour
             isFinish = false;
         }
 
+        Debug.Log($"Start tutorial {SuccessCount}, {ActiveCount}");
 
+        isChainging = true;
         ShowCurrentPanel(name);
+        autoPanelList[autoIdx].ResetData();
         autoPanelList[autoIdx].StartInput();
         isStarted = true;
     }
@@ -156,7 +162,6 @@ public class TutorialPlayer : MonoBehaviour
     {
         if (isFinish) return;
 
-        Debug.Log($"__ Stop Tutorial __ {tutorialType.ToString()}");
         autoIdx = 0;
         seq.Kill();
 
@@ -169,6 +174,7 @@ public class TutorialPlayer : MonoBehaviour
 
         isStarted = false;
         isFinish = true;
+        isChainging = true;
     }
 
     public void Init()
