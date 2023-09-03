@@ -13,6 +13,7 @@ public class CatchingPet : MonoBehaviour
     private Transform petTransform;
 
     private List<Pet> catchedPets = new List<Pet>();
+    private List<GameObject> catchedPetGameObjects = new List<GameObject>();
 
     private int index = 0;
 
@@ -57,6 +58,7 @@ public class CatchingPet : MonoBehaviour
         pet.gameObject.SetActive(true);                 // ´Ù½Ã Active¸¦ ÄÑÁÜ
 
         catchedPets.Add(pet);
+        catchedPetGameObjects.Add(pet.gameObject);
 
         StartCoroutine(EquipAnimation(pet, onEquipEnd));
         index++;
@@ -107,10 +109,16 @@ public class CatchingPet : MonoBehaviour
 
         index = 0;
         catchedPets.Clear();
+        catchedPetGameObjects.Clear();
     }
 
     public bool IsContain(Pet pet)
     {
         return catchedPets.Contains(pet);
+    }
+
+    public bool IsContain(GameObject pet)
+    {
+        return catchedPetGameObjects.Contains(pet);
     }
 }
