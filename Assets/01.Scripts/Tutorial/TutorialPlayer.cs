@@ -53,7 +53,6 @@ public class TutorialPlayer : MonoBehaviour
 
         if (SuccessCount != 0 && !isChainging && SuccessCount == ActiveCount)
         {
-            Debug.Log(SuccessCount + " : " + ActiveCount);
             ShowNextTutorial();
         }
     }
@@ -148,8 +147,6 @@ public class TutorialPlayer : MonoBehaviour
             autoIdx = 0;
             isFinish = false;
         }
-
-        Debug.Log($"Start tutorial {SuccessCount}, {ActiveCount}");
 
         isChainging = true;
         ShowCurrentPanel(name);

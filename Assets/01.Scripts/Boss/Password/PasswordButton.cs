@@ -26,13 +26,10 @@ public class PasswordButton : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (isSelected) return;
-        Debug.Log("Non Select");
         if (CanInput != null && !CanInput.Invoke()) return;
-        Debug.Log("Can Input");
 
         if (((1 << collision.gameObject.layer) & layerMask) != 0) // pet or player
         {
-            Debug.Log("Player or Pet");
             isSelected = true;
             SetEmissionColor(new Color(0.03636537f, 0.4150943f, 0f));
             OnSelectNumber?.Invoke(number);
