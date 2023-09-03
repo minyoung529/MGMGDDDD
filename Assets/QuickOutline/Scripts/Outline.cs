@@ -89,6 +89,17 @@ public class Outline : MonoBehaviour
 
     private bool needsUpdate;
 
+    [SerializeField]
+    private bool playOnAwake = false;
+
+    private void Start()
+    {
+        if(playOnAwake)
+        {
+            SetRenderer(GetComponentsInChildren<Renderer>());
+        }
+    }
+
     public void SetRenderer(Renderer[] renderers)
     {
         // Cache renderers

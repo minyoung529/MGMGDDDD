@@ -1,5 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class EggSpawner : MonoBehaviour
@@ -21,6 +22,16 @@ public class EggSpawner : MonoBehaviour
     [SerializeField]
     private List<Transform> spawnPositions;
 
+    private List<int> indexes = new List<int>();
+
+    private void Start()
+    {
+        for (int i = 0; i < maxCount; i++)
+        {
+            indexes.Add(i);
+        }
+    }
+
     private void Update()
     {
         if (curCount < maxCount)
@@ -37,52 +48,33 @@ public class EggSpawner : MonoBehaviour
 
     private void OnEggDestroyed(HoldableObject egg)
     {
-        list.Remove(egg as EasterEgg);
+        EasterEgg easterEgg = egg as EasterEgg;
+        indexes.Add(easterEgg.SpawnIndex);
+        list.Remove(easterEgg);
+
         curCount--;
     }
 
     private void SpawnEgg()
-    {
-        EasterEgg newEgg = Instantiate(prefab, GetRandomPos(), Quaternion.Euler(-90f, 0f, 0f));
+    { 
+        EasterEgg newEgg = Instantiate(prefab, GetRandomPos(out int index), Quaternion.Euler(-90f, 0f, 0f));
+        newEgg.SpawnIndex = index;
         newEgg.ListeningOnDestroy(OnEggDestroyed);
-
         list.Add(newEgg);
 
         curCount++;
     }
 
-    private Vector3 GetRandomPos()
+    private Vector3 GetRandomPos(out int randomIndex)
     {
-        int fence = 0;
+        randomIndex = UnityEngine.Random.Range(0, indexes.Count);
+        int spawnIdx = indexes[randomIndex];
+        Vector3 pos = spawnPositions[spawnIdx].position;
 
-        while (fence < 100)
-        {
-            int rand = Random.Range(0, spawnPositions.Count);
-            float dist = 999f;
-            bool tooClose = false;
+        indexes.RemoveAt(randomIndex);
+        randomIndex = spawnIdx;
 
-            if (list.Count > 0)
-            {
-                foreach (EasterEgg egg in list)
-                {
-                    dist = Mathf.Min(dist, Vector3.Distance(spawnPositions[rand].position, egg.transform.position));
-
-                    if (dist < 5f)
-                        tooClose = true;
-                }
-            }
-
-            fence++;
-
-            if (tooClose)
-                continue;
-
-            else return spawnPositions[rand].position;
-        }
-
-        // 비정상적으로 많이 돌았을 때
-        Debug.LogError("Egg GetRandomPos");
-        return spawnPositions[Random.Range(0, spawnPositions.Count)].position;
+        return pos;
     }
 
     private void OnDestroy()
