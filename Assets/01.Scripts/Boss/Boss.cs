@@ -168,6 +168,9 @@ public class Boss : MonoBehaviour
     {
         if (!CanMove()) return;
 
+        if (catchingPet.IsContain(obj))
+            return;
+
         if (target)
             prevTarget = target.name;
         else
@@ -184,6 +187,9 @@ public class Boss : MonoBehaviour
     public void OnEnterOuterRadar(GameObject obj)
     {
         if (!CanMove()) return;
+
+        if (catchingPet.IsContain(obj))
+            return;
 
         if (target == null)
             prevTarget = "Null";

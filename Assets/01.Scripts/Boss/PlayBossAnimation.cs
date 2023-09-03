@@ -68,6 +68,8 @@ public class PlayBossAnimation : MonoBehaviour
         yield return new WaitForSeconds(delayTime + 0.1f);
         ChangeAnimation(BossAnimType.Idle);
     }
+
+    public Animator GetAnimator() => anim;
 }
 
 [System.Serializable]

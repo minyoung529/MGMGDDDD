@@ -14,6 +14,7 @@ public class PetCatchState : BossState
 
         boss.CatchingPet.EquipPet(pet, OnEndAnimation);
         boss.ResetTarget();
+        boss.Anim.GetAnimator().SetTrigger("PetCatch");
     }
 
     private void OnEndAnimation()
