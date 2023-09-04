@@ -34,7 +34,17 @@ public class ChangeShaderFloat : MonoBehaviour
         {
             material = GetComponent<Renderer>().material;
         }
-        material ??= GetComponent<RawImage>().material;
+
+        else if (GetComponent<RawImage>())
+        {
+            material ??= GetComponent<RawImage>().material;
+        }
+
+        else
+        {
+            Debug.LogError("ERROR!!!");
+        }
+
         fillId = Shader.PropertyToID(name);
     }
 
