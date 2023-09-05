@@ -79,8 +79,6 @@ public class StickyExplosion : MonoBehaviour
     private void Explosion()
     {
         if (isExplosioning) return;
-
-        stickyPet.Event.TriggerEvent((int)PetEventName.OnExplosion);
         isExplosioning = true;
 
         if (jumper)
@@ -103,8 +101,8 @@ public class StickyExplosion : MonoBehaviour
         {
             jumper.CanJump = true;
         }
-
         stickyPet.State.ChangeState((int)PetStateName.Idle);
+        fire.StopBurn();
         gameObject?.SetActive(false);
     }
 
