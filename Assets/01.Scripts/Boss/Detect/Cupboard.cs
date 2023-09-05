@@ -31,9 +31,12 @@ public class Cupboard : MonoBehaviour
     [SerializeField]
     private bool playerDetect = false;
 
+    private PlaySound doorSound;
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        doorSound= GetComponent<PlaySound>();
 
         innerCam.Priority = 0;
     }
@@ -46,6 +49,7 @@ public class Cupboard : MonoBehaviour
             return;
         }
 
+        doorSound.Play();
         inTutorialTip.EndTutorial();
         SetEnableTutorial(inTutorialTip, false);
         anim.SetBool("Open", true);
@@ -67,6 +71,7 @@ public class Cupboard : MonoBehaviour
         }
 
         player.transform.position = outPos.position;
+        doorSound.Play();
         player = null;
         playerIn = false;
         innerCam.Priority = 0;
