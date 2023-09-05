@@ -66,6 +66,9 @@ public class Boss : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Boss>(this, states);
+
+        CutSceneManager.Instance.AddStartCutscene(AllStop);
+        CutSceneManager.Instance.AddEndCutscene(AllPlay);
     }
 
     private void Start()
@@ -215,12 +218,25 @@ public class Boss : MonoBehaviour
 
     #endregion
 
+    private void AllStop()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void AllPlay()
+    {
+        gameObject.SetActive(true);
+    }
+
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.BossDetectObject, DetectWaypoint);
         EventManager.StopListening(EventName.InPlayerCupboard, ResetTarget);
         EventManager.StopListening(EventName.InPlayerCupboard, SetFindTargetState);
         EventManager.StopListening(EventName.OutPlayerCupboard, SetFindTargetState);
+
+        CutSceneManager.Instance?.RemoveStartCutscene(AllStop);
+        CutSceneManager.Instance?.RemoveEndCutscene(AllPlay);
     }
 
     private void OnCollisionEnter(Collision collision)
