@@ -13,6 +13,8 @@ public class EasterEgg : HoldableObject
     public bool IsThrowing { get; set; } = false;
     public int SpawnIndex { get; set; }
 
+    [SerializeField] private PlaySound hitSound;
+
     public override void OnDrop()
     {
         collider.enabled = true;
@@ -75,6 +77,7 @@ public class EasterEgg : HoldableObject
         rigid.AddForce(force, forceMode);
 
         rigid.constraints = RigidbodyConstraints.None;
+
     }
 
     public void Delete()
@@ -85,6 +88,7 @@ public class EasterEgg : HoldableObject
     private IEnumerator ParticlePlayAndDestroy()
     {
         hitParticle.Play();
+        hitSound.Play();
         IsThrowing = false;
 
         yield return new WaitForSeconds(hitParticle.main.duration);
