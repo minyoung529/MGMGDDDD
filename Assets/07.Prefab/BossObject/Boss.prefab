@@ -3926,6 +3926,24 @@ MonoBehaviour:
   questionNames:
   - DuckToy
   - Scarecrow
+  onQuestionMark:
+    m_PersistentCalls:
+      m_Calls: []
+  onExclamationMark:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2765225730114916845}
+        m_TargetAssemblyTypeName: BossSound, Assembly-CSharp
+        m_MethodName: PlayFindPlayerSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2981869308626699650
 GameObject:
   m_ObjectHideFlags: 0
@@ -4773,3 +4791,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &2765225730114916845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011532054365529529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f91a67588a642f546acd9be8b3348b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSound: {fileID: 8300000, guid: b7d985d5b512a8546aa83c250b5eab72, type: 3}
+  catchingPetSound: {fileID: 8300000, guid: f7e7db35385d1c840b6cd10f2270705a, type: 3}
+  findPlayerSound: {fileID: 8300000, guid: 7e4a3b644dd85d144a5ea20bd10d51ee, type: 3}
