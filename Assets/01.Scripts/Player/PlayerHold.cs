@@ -99,7 +99,7 @@ public class PlayerHold : PlayerMono
                             holdableObject.OnDrop();
 
                         Drop();
-                        controller.Move.LockInput();
+                        //controller.Move.LockInput();
                     }
                     else if (obj) // 잡을 수 있는 펫이 있으면 잡기
                     {
@@ -135,7 +135,7 @@ public class PlayerHold : PlayerMono
         holdableObject = obj;
         holdableObject.ListeningOnDestroy(OnHoldableObjectDestroyed);
 
-        if(holdableObject is EasterEgg)
+        if (holdableObject is EasterEgg)
         {
             throwPow = 2000;
             throwAngle = 12;
@@ -205,16 +205,20 @@ public class PlayerHold : PlayerMono
 
     private void Drop()
     {
-        OnExitHold();
         controller.Rigid.velocity = Vector3.zero;
         controller.Move.ChangeState(PlayerStateName.Drop);
+
+        if (!holdableObject.GetIsPet())
+            holdableObject.OnDrop();
+
+        //controller.Move.LockInput();
+        OnExitHold();
+        //holdableObject = null;
     }
     private void DropEvent(EventParam eventParam = null)
     {
         if (holdableObject == null) return;
-        OnExitHold();
-        controller.Rigid.velocity = Vector3.zero;
-        controller.Move.ChangeState(PlayerStateName.Drop);
+        Drop();
     }
 
     private void Throw()

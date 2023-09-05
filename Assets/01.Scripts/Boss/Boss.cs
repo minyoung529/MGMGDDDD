@@ -174,6 +174,11 @@ public class Boss : MonoBehaviour
         if (catchingPet.IsContain(obj))
             return;
 
+        Pet pet = obj.GetComponent<Pet>();
+
+        if (pet && !PetManager.Instance.Contain(pet))
+            return;
+
         if (target)
             prevTarget = target.name;
         else
@@ -192,6 +197,11 @@ public class Boss : MonoBehaviour
         if (!CanMove()) return;
 
         if (catchingPet.IsContain(obj))
+            return;
+
+        Pet pet = obj.GetComponent<Pet>();
+
+        if (pet && !PetManager.Instance.Contain(pet))
             return;
 
         if (target == null)
