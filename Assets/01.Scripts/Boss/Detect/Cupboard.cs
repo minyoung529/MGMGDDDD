@@ -31,6 +31,9 @@ public class Cupboard : MonoBehaviour
     [SerializeField]
     private bool playerDetect = false;
 
+    [SerializeField]
+    private UnityEvent onInCupBoard;
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
@@ -57,6 +60,11 @@ public class Cupboard : MonoBehaviour
         param["State"] = false;
         EventManager.TriggerEvent(EventName.InPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.LockInput();
+
+        List<Pet> petList = PetManager.Instance.GetPetList;
+        petList.ForEach(x => x.gameObject.SetActive(false));
+
+        onInCupBoard?.Invoke();
     }
 
     public void OutCupboard()
@@ -76,6 +84,9 @@ public class Cupboard : MonoBehaviour
         param["State"] = true;
         EventManager.TriggerEvent(EventName.OutPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.UnLockInput();
+
+        List<Pet> petList = PetManager.Instance.GetPetList;
+        petList.ForEach(x => x.gameObject.SetActive(true));
     }
 
 

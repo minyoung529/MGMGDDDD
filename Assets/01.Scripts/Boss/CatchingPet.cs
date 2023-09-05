@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Æê ¹­¾î³õ´Â ½ºÅ©¸³Æ®
@@ -18,6 +19,9 @@ public class CatchingPet : MonoBehaviour
     private int index = 0;
 
     private float fixedY = 0f;
+
+    [SerializeField]
+    private UnityEvent onCatchPet;
 
     private void Start()
     {
@@ -60,6 +64,7 @@ public class CatchingPet : MonoBehaviour
         catchedPets.Add(pet);
         catchedPetGameObjects.Add(pet.gameObject);
 
+        onCatchPet?.Invoke();
         StartCoroutine(EquipAnimation(pet, onEquipEnd));
         index++;
     }
