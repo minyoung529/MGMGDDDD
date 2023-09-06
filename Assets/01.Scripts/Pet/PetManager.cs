@@ -254,9 +254,16 @@ public class PetManager : MonoSingleton<PetManager>
             if (action == null) return;
             inputActions.Add(inputAction, action);
         }
-        
-        InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
-        inputActions[inputAction] -= action;
+
+        if (action == null)
+        {
+            InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
+        }
+        else
+        {
+            InputManager.StopListeningInput(inputAction, action);
+            inputActions[inputAction] -= action;
+        }
     }
 
     private void OnSkillUp(InputAction input, float value)
@@ -412,7 +419,7 @@ public class PetManager : MonoSingleton<PetManager>
     #region Set
     public void ResetPetManager()
     {
-        for(int i=0;i<pets.Count;i++)
+        for (int i = 0; i < pets.Count; i++)
         {
             DeletePet(i);
         }
@@ -462,12 +469,12 @@ public class PetManager : MonoSingleton<PetManager>
         pets.Remove(p);
 
         selectIndex = -1;
-        if(pets.Count > 0)
+        if (pets.Count > 0)
         {
             selectIndex = 0;
             SelectPet(0);
         }
-        
+
         p.gameObject.SetActive(false);
     }
 
@@ -480,10 +487,10 @@ public class PetManager : MonoSingleton<PetManager>
         pets.RemoveAt(index);
 
         selectIndex = -1;
-        if(pets.Count > 0)
+        if (pets.Count > 0)
         {
-        selectIndex = 0;
-        SelectPet(0);
+            selectIndex = 0;
+            SelectPet(0);
         }
     }
 

@@ -119,7 +119,6 @@ public class AutoInputPanel : MonoBehaviour
             else
             {
                 // SUCCESS
-                Debug.Log($"{gameObject.name} Success");
                 success = true;
             }
         }
