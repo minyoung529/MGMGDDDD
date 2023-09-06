@@ -85,6 +85,8 @@ public class AutoInputPanel : MonoBehaviour
 
     void Update()
     {
+        if (success) return;
+
         if ((string.IsNullOrEmpty(animatorBoolName) || animatorBoolName == ""))
         {
             if (!useInputAction && !isInfinity)
@@ -111,16 +113,13 @@ public class AutoInputPanel : MonoBehaviour
                 if (timer > MAX_TIME)
                 {
                     // SUCCESS
-                    Debug.Log("Success Input");
-
                     success = true;
                 }
             }
             else
             {
                 // SUCCESS
-                Debug.Log("Success Input");
-
+                Debug.Log($"{gameObject.name} Success");
                 success = true;
             }
         }
