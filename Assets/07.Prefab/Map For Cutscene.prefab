@@ -484,6 +484,7 @@ GameObject:
   - component: {fileID: 1294055078}
   - component: {fileID: 1294055080}
   - component: {fileID: 1294055079}
+  - component: {fileID: 5736247932961819349}
   m_Layer: 5
   m_Name: FadeImage
   m_TagString: Untagged
@@ -549,6 +550,36 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5736247932961819349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294055077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 5eb05dc501a6ca44cb4491edf982de4b, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1294055077}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1704508884
 GameObject:
   m_ObjectHideFlags: 0
@@ -19339,7 +19370,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2218
+  m_VersionIndex: 2221
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -21202,7 +21233,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2807
+  m_VersionIndex: 2810
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -21796,7 +21827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5466726308256088726, guid: cdc137f230f1a914ba3ab4e6a2d31f66, type: 3}
       propertyPath: m_VersionIndex
-      value: 2308
+      value: 2311
       objectReference: {fileID: 0}
     - target: {fileID: 5466726308256088729, guid: cdc137f230f1a914ba3ab4e6a2d31f66, type: 3}
       propertyPath: m_Mesh
@@ -21820,7 +21851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5466726308659944540, guid: cdc137f230f1a914ba3ab4e6a2d31f66, type: 3}
       propertyPath: m_VersionIndex
-      value: 2314
+      value: 2317
       objectReference: {fileID: 0}
     - target: {fileID: 5466726308659944543, guid: cdc137f230f1a914ba3ab4e6a2d31f66, type: 3}
       propertyPath: m_Mesh
@@ -22229,25 +22260,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &5126471583691446280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6869255318070417093}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c996e0a8f1a41d347a9ce48d4f555460, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animatorParams:
-  - type: 2
-    parameterName: Fly
-    integerValue: 0
-    floatValue: 0
-    booleanValue: 0
-  onAwake: 0
 --- !u!114 &1075897485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22284,6 +22296,25 @@ MonoBehaviour:
   ease: 6
   activeValue: 0
   inactiveValue: 1
+--- !u!114 &5126471583691446280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869255318070417093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c996e0a8f1a41d347a9ce48d4f555460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animatorParams:
+  - type: 2
+    parameterName: Fly
+    integerValue: 0
+    floatValue: 0
+    booleanValue: 0
+  onAwake: 0
 --- !u!1 &7488632333964974869 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7622953834505606050, guid: cdc137f230f1a914ba3ab4e6a2d31f66, type: 3}
@@ -22347,7 +22378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 2270
+      value: 2273
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder
@@ -22478,7 +22509,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805344, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_VersionIndex
-      value: 2267
+      value: 2270
       objectReference: {fileID: 0}
     - target: {fileID: 934090100098805345, guid: cdc34ba1bfc7078419c92e7a17d055fe, type: 3}
       propertyPath: m_RootOrder
