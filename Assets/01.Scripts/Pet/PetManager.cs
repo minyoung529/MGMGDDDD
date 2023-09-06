@@ -254,7 +254,7 @@ public class PetManager : MonoSingleton<PetManager>
             if (action == null) return;
             inputActions.Add(inputAction, action);
         }
-
+        
         InputManager.StopListeningInput(inputAction, inputActions[inputAction]);
         inputActions[inputAction] -= action;
     }
