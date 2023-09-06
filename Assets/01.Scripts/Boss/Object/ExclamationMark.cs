@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ExclamationMark : MonoBehaviour
 {
@@ -33,6 +34,11 @@ public class ExclamationMark : MonoBehaviour
     private string[] questionNames;
 
     private Color markColor;
+
+    [SerializeField]
+    private UnityEvent onQuestionMark;
+    [SerializeField]
+    private UnityEvent onExclamationMark;
 
     private void Awake()
     {
@@ -73,10 +79,12 @@ public class ExclamationMark : MonoBehaviour
         if (GetIsQuestionMark(detected.gameObject.name))
         {
             renderer.sprite = sprites[0];   // ?
+            onQuestionMark?.Invoke();
         }
         else
         {
             renderer.sprite = sprites[1];   // !
+            onExclamationMark?.Invoke();
         }
 
         StartCoroutine(ExclamationMarkAnim());

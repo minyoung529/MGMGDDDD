@@ -1814,6 +1814,14 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDefaultBGM
+      objectReference: {fileID: 0}
     - target: {fileID: 2568942866488179821, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
       propertyPath: m_Name
       value: Cupboard (2)
@@ -2459,6 +2467,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec20df5e43a75ea408937d844601f33d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &456759607
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 456759609}
+  - component: {fileID: 456759608}
+  m_Layer: 0
+  m_Name: BossSoundController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &456759608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456759607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3b160802143e374b8a8506da1eb5188, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultBGM: {fileID: 8300000, guid: cdbceb19fa438a94f924814025ff472a, type: 3}
+  chaseBGM: {fileID: 8300000, guid: a6cff3ac3ca36674a8d1972b06b6f358, type: 3}
+--- !u!4 &456759609
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456759607}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &461394959 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4586198276244333030, guid: 2f522fa5aa1f01846a3b929dbcc8f506, type: 3}
@@ -2842,7 +2896,7 @@ PrefabInstance:
     - target: {fileID: 5889148747232633708, guid: 2f522fa5aa1f01846a3b929dbcc8f506, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 576483047}
+      objectReference: {fileID: 1969956025}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f522fa5aa1f01846a3b929dbcc8f506, type: 3}
 --- !u!1001 &530541079
@@ -2852,6 +2906,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1968452876}
     m_Modifications:
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDefaultBGM
+      objectReference: {fileID: 0}
     - target: {fileID: 2568942866488179821, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
       propertyPath: m_Name
       value: Cupboard (1)
@@ -3024,7 +3086,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-644832
+  m_Name: pb_Mesh-6360
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3182,135 +3244,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!21 &550482407
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: LiquidEffect
-  m_Shader: {fileID: -6465566751694194690, guid: b87669f561ca9804db352db3139a646d, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2999
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BaseMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Main_Texture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - Vector1_1AEEBAF1: 0.26
-    - Vector1_86B367DE: 0.7
-    - _AlphaClip: 0
-    - _Amplitude: 0.22
-    - _Blend: 0
-    - _BumpScale: 1
-    - _ClearCoatMask: 0
-    - _ClearCoatSmoothness: 0
-    - _Cull: 2
-    - _Cutoff: 0.5
-    - _DetailAlbedoMapScale: 1
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _EnvironmentReflections: 1
-    - _FoamWidth: 0.5
-    - _Foam_Smoothness: 0.29
-    - _Frequency: 2.43
-    - _GlossMapScale: 0
-    - _Glossiness: 0
-    - _GlossyReflections: 0
-    - _Metallic: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.005
-    - _QueueControl: 1
-    - _QueueOffset: 0
-    - _ReceiveShadows: 1
-    - _Rim_Power: 1.81
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Surface: 0
-    - _WorkflowMode: 1
-    - _ZWrite: 1
-    m_Colors:
-    - Color_12DEDFED: {r: 0.28502128, g: 0.99056596, b: 0.7492778, a: 1}
-    - Color_1B2A4228: {r: 0, g: 0.8207547, b: 0.29611537, a: 1}
-    - Color_E9C3FC1D: {r: 0, g: 0.6946828, b: 0.764151, a: 1}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BottomColor: {r: 0.6431373, g: 0.5822421, b: 0, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 1, g: 0.93751323, b: 0.2584905, a: 1}
-    - _Rim_Color: {r: 1, g: 0.6837744, b: 0, a: 1}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _TopColor: {r: 0.5660378, g: 0.38392127, b: 0, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &563874590
 GameObject:
   m_ObjectHideFlags: 0
@@ -3414,135 +3347,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1001036110254553156, guid: 3aa9feda531062242938c785073dfb28, type: 3}
   m_PrefabInstance: {fileID: 1001036110762059073}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &576483047
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: LiquidEffect
-  m_Shader: {fileID: -6465566751694194690, guid: b87669f561ca9804db352db3139a646d, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2999
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BaseMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Main_Texture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - Vector1_1AEEBAF1: 0.26
-    - Vector1_86B367DE: 0.7
-    - _AlphaClip: 0
-    - _Amplitude: 0.22
-    - _Blend: 0
-    - _BumpScale: 1
-    - _ClearCoatMask: 0
-    - _ClearCoatSmoothness: 0
-    - _Cull: 2
-    - _Cutoff: 0.5
-    - _DetailAlbedoMapScale: 1
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _EnvironmentReflections: 1
-    - _FoamWidth: 0.5
-    - _Foam_Smoothness: 0.29
-    - _Frequency: 2.43
-    - _GlossMapScale: 0
-    - _Glossiness: 0
-    - _GlossyReflections: 0
-    - _Metallic: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.005
-    - _QueueControl: 1
-    - _QueueOffset: 0
-    - _ReceiveShadows: 1
-    - _Rim_Power: 1.81
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Surface: 0
-    - _WorkflowMode: 1
-    - _ZWrite: 1
-    m_Colors:
-    - Color_12DEDFED: {r: 0.28502128, g: 0.99056596, b: 0.7492778, a: 1}
-    - Color_1B2A4228: {r: 0, g: 0.8207547, b: 0.29611537, a: 1}
-    - Color_E9C3FC1D: {r: 0, g: 0.6946828, b: 0.764151, a: 1}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BottomColor: {r: 0.6431373, g: 0.5822421, b: 0, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 1, g: 0.93751323, b: 0.2584905, a: 1}
-    - _Rim_Color: {r: 1, g: 0.6837744, b: 0, a: 1}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _TopColor: {r: 0.5660378, g: 0.38392127, b: 0, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &582382255
 GameObject:
   m_ObjectHideFlags: 0
@@ -5519,7 +5323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466203279174, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.01449238
+      value: -0.014492381
       objectReference: {fileID: 0}
     - target: {fileID: 1709534466203279174, guid: 2ca9784e01693ea4a8affc1053f9a361, type: 3}
       propertyPath: m_LocalRotation.y
@@ -7681,6 +7485,135 @@ Transform:
   m_Father: {fileID: 1855143988}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1172689586
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LiquidEffect
+  m_Shader: {fileID: -6465566751694194690, guid: b87669f561ca9804db352db3139a646d, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2999
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Main_Texture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - Vector1_1AEEBAF1: 0.26
+    - Vector1_86B367DE: 0.7
+    - _AlphaClip: 0
+    - _Amplitude: 0.22
+    - _Blend: 0
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _FoamWidth: 0.5
+    - _Foam_Smoothness: 0.29
+    - _Frequency: 2.43
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _Metallic: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.005
+    - _QueueControl: 1
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Rim_Power: 1.81
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - Color_12DEDFED: {r: 0.28502128, g: 0.99056596, b: 0.7492778, a: 1}
+    - Color_1B2A4228: {r: 0, g: 0.8207547, b: 0.29611537, a: 1}
+    - Color_E9C3FC1D: {r: 0, g: 0.6946828, b: 0.764151, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BottomColor: {r: 0.6431373, g: 0.5822421, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 1, g: 0.93751323, b: 0.2584905, a: 1}
+    - _Rim_Color: {r: 1, g: 0.6837744, b: 0, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TopColor: {r: 0.5660378, g: 0.38392127, b: 0, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1200896533
 GameObject:
   m_ObjectHideFlags: 0
@@ -10911,7 +10844,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-644816
+  m_Name: pb_Mesh-6344
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -11667,6 +11600,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1968452876}
     m_Modifications:
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDefaultBGM
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BossSoundController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2568942866488179821, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
       propertyPath: m_Name
       value: Cupboard (3)
@@ -11715,22 +11668,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6042406144996522014, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
-      propertyPath: m_SceneBindings.Array.data[0].value
-      value: 
-      objectReference: {fileID: 613024893}
-    - target: {fileID: 6042406144996522014, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
-      propertyPath: m_SceneBindings.Array.data[1].value
-      value: 
-      objectReference: {fileID: 125710509}
-    - target: {fileID: 6042406144996522014, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
-      propertyPath: m_SceneBindings.Array.data[2].value
-      value: 
-      objectReference: {fileID: 613024893}
-    - target: {fileID: 6042406144996522014, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
-      propertyPath: m_SceneBindings.Array.data[3].value
-      value: 
-      objectReference: {fileID: 830293282}
     - target: {fileID: 8172768448201917133, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
@@ -12048,6 +11985,135 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1969956025
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LiquidEffect
+  m_Shader: {fileID: -6465566751694194690, guid: b87669f561ca9804db352db3139a646d, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2999
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Main_Texture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - Vector1_1AEEBAF1: 0.26
+    - Vector1_86B367DE: 0.7
+    - _AlphaClip: 0
+    - _Amplitude: 0.22
+    - _Blend: 0
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _FoamWidth: 0.5
+    - _Foam_Smoothness: 0.29
+    - _Frequency: 2.43
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _Metallic: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.005
+    - _QueueControl: 1
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Rim_Power: 1.81
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - Color_12DEDFED: {r: 0.28502128, g: 0.99056596, b: 0.7492778, a: 1}
+    - Color_1B2A4228: {r: 0, g: 0.8207547, b: 0.29611537, a: 1}
+    - Color_E9C3FC1D: {r: 0, g: 0.6946828, b: 0.764151, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BottomColor: {r: 0.6431373, g: 0.5822421, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 1, g: 0.93751323, b: 0.2584905, a: 1}
+    - _Rim_Color: {r: 1, g: 0.6837744, b: 0, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TopColor: {r: 0.5660378, g: 0.38392127, b: 0, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1985937022
 GameObject:
   m_ObjectHideFlags: 0
@@ -13138,7 +13204,6 @@ GameObject:
   - component: {fileID: 543450653543032377}
   - component: {fileID: 919132149352938628}
   - component: {fileID: 919132149352938629}
-  - component: {fileID: 919132149352938630}
   m_Layer: 0
   m_Name: Drawer
   m_TagString: Untagged
@@ -13195,38 +13260,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 919132149352938630}
-        m_TargetAssemblyTypeName: PlaySound, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &919132149352938630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149352938627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: 883eacee8e4d8774f9a7ddc6fbb30247, type: 3}
-  soundType: 1
-  playOnAwake: 0
-  loop: 0
-  isPositioning: 0
-  isChildToTransform: 0
-  volume: 1
-  forceLoadVolume: 0
 --- !u!1 &928897112555472642
 GameObject:
   m_ObjectHideFlags: 0
@@ -13460,6 +13493,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1968452876}
     m_Modifications:
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 1836453471626052090, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
+      propertyPath: onInCupBoard.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDefaultBGM
+      objectReference: {fileID: 0}
     - target: {fileID: 2568942866488179821, guid: 0a1da1ac2d1a2fa4389c47659ca41605, type: 3}
       propertyPath: m_Name
       value: Cupboard
@@ -14110,7 +14151,7 @@ PrefabInstance:
       objectReference: {fileID: 1747274681}
     - target: {fileID: 719220697, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: m_VersionIndex
-      value: 2326
+      value: 2365
       objectReference: {fileID: 0}
     - target: {fileID: 851980559, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: m_Mesh
@@ -14126,7 +14167,35 @@ PrefabInstance:
       objectReference: {fileID: 536683933}
     - target: {fileID: 851980563, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: m_VersionIndex
-      value: 2918
+      value: 2957
+      objectReference: {fileID: 0}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDefaultBGM
+      objectReference: {fileID: 0}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BossSoundController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 206760105917920720, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onCatchPet.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 912460065914188409, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: trigger
@@ -14136,6 +14205,34 @@ PrefabInstance:
       propertyPath: mainSpringObject
       value: 
       objectReference: {fileID: 8756836931139835769}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SetChaseBGM
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: BossSoundController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339684174123893435, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onExclamationMark.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6057572573027691587, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: m_Name
       value: Boss
@@ -14147,6 +14244,34 @@ PrefabInstance:
     - target: {fileID: 6400103222727135505, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: m_Speed
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 456759608}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDefaultBGM
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BossSoundController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400103222727135510, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
+      propertyPath: onPlayerExit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6871088429737096953, guid: d6ef8a995a66ef54f85345307adf9497, type: 3}
       propertyPath: m_RootOrder
@@ -14935,7 +15060,7 @@ PrefabInstance:
     - target: {fileID: 9009038669504317718, guid: bba02f405ac136e4197119bf542b9049, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 550482407}
+      objectReference: {fileID: 1172689586}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bba02f405ac136e4197119bf542b9049, type: 3}
 --- !u!4 &8753987506954833088 stripped

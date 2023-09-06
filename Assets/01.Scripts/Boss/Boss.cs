@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 /// <summary>
 /// 
 /// Waypoint를 순서대로 순찰
@@ -51,6 +52,9 @@ public class Boss : MonoBehaviour
 
     [SerializeField]
     private LayerMask targetLayer;
+
+    [SerializeField]
+    private UnityEvent onPlayerExit;
 
     private void Awake()
     {
@@ -216,6 +220,11 @@ public class Boss : MonoBehaviour
     public void OnExitOuterRadar(GameObject obj)
     {
         ResetTarget();  // TEMP
+
+        if(obj.transform == GameManager.Instance.PlayerController.gameObject)
+        {
+            onPlayerExit.Invoke();
+        }
     }
 
     private bool CanMove()
