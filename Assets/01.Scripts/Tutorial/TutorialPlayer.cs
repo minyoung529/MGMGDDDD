@@ -53,7 +53,6 @@ public class TutorialPlayer : MonoBehaviour
 
         if (SuccessCount != 0 && !isChainging && SuccessCount == ActiveCount)
         {
-            Debug.Log($"[SUCCESS] {SuccessCount} / {ActiveCount}");
             ShowNextTutorial();
         }
     }
@@ -61,8 +60,6 @@ public class TutorialPlayer : MonoBehaviour
     private void ShowNextTutorial()
     {
         seq.Kill();
-        Debug.Log("CHANGE");
-
         seq = DOTween.Sequence();
 
         if (autoGroups.Count <= autoIdx) return;
@@ -123,7 +120,6 @@ public class TutorialPlayer : MonoBehaviour
                 }
             }
 
-            Debug.Log($"ANOTHER PANEL => {SuccessCount} / {ActiveCount}");
             isChainging = false;
         });
     }
