@@ -10,6 +10,9 @@ public class BossSoundController : MonoBehaviour
     [SerializeField]
     private AudioClip chaseBGM;
 
+    [SerializeField]
+    private AudioClip warningSFX;
+
     private bool isDefault = false;
 
     private void Start()
@@ -30,6 +33,10 @@ public class BossSoundController : MonoBehaviour
         if (!isDefault) return;
 
         isDefault = false;
+
         SoundManager.Instance.PlayMusic(chaseBGM);
+
+        AudioSourceObject soundObj = SoundManager.Instance.PlayEffect(warningSFX, transform.position, 1f);
+        soundObj.AudioSource.spatialBlend = 0f;
     }
 }
