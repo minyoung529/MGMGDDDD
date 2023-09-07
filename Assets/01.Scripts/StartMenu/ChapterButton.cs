@@ -29,6 +29,7 @@ public class ChapterButton : MonoBehaviour
     private PlaySound clickSound;
     private Chapter chapter;
     ChapterProgressType curType = ChapterProgressType.Lock;
+    private ChapterSO chapterSO;
 
     private void Awake()
     {
@@ -63,7 +64,8 @@ public class ChapterButton : MonoBehaviour
 
         TextMeshProUGUI chapterNameText = button.transform.Find("ChapterNameText").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI chapterNumberText = button.transform.Find("ChapterNumberText").GetComponent<TextMeshProUGUI>();
-        ChapterSO chapterSO = ChapterManager.Instance.GetChapterSO(chapter);
+        chapterSO = ChapterManager.Instance.GetChapterSO(chapter);
+        SceneController.ListeningEnter(OnAction);
 
         chapterNameText.SetText(chapterSO.chapterKoreanName);
         chapterNumberText.SetText(chapterSO.chapterNumber);
@@ -72,9 +74,24 @@ public class ChapterButton : MonoBehaviour
         return this;
     }
 
+    public void OnAction()
+    {
+        if (chapterSO.bgm)
+        {
+            SceneController.StopListeningEnter(OnAction);
+            SoundManager.Instance.PlayMusic(chapterSO.bgm);
+        }
+    }
+
     private void OnClick()
     {
         clickSound.Play();
+
         loadChapterList.LoadChapterData(this, chapter);
+    }
+
+    private void OnDestroy()
+    {
+        SceneController.StopListeningEnter(OnAction);
     }
 }

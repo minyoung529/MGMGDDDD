@@ -12,5 +12,5 @@ public class ChapterSO : ScriptableObject
     public Chapter chapterName;
     public Sprite chapterTitleImage;
     public Vector3 savePoint = Vector3.zero;
-
+    public AudioClip bgm;
 }
