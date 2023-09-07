@@ -120,6 +120,7 @@ public class Outline : MonoBehaviour
 
         foreach (var renderer in renderers)
         {
+            if (renderer is ParticleSystemRenderer) continue;
             // Append outline shaders
             var materials = renderer.sharedMaterials.ToList();
 
