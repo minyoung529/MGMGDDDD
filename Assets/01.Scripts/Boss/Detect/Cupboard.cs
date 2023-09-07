@@ -7,11 +7,11 @@ using UnityEngine.Playables;
 using UnityEngine.UIElements;
 /// <summary>
 /// 
-/// º®Àå : ÇÃ·¹ÀÌ¾î°¡ º¸½º¸¦ ÇÇÇØ ¼ûÀ» °ø°£
+/// ï¿½ï¿½ï¿½ï¿½ : ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 /// 
-/// Collider °¡±îÀÌ °¡¸é µé¾î°¡±â ¶ç¿ì±â
-/// In : ³ª°¡±â¸¦ ¶ç¿ì±â, ÇÃ·¹ÀÌ¾î ¸ØÃß±â + ¿òÁ÷ÀÓ °íÁ¤
-/// Out : ³ª°¡±â ³»¸®±â, ÇÃ·¹ÀÌ¾î Ç®¾îÁÖ±â
+/// Collider ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+/// In : ï¿½ï¿½ï¿½ï¿½ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ß±ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+/// Out : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Ç®ï¿½ï¿½ï¿½Ö±ï¿½
 /// 
 /// </summary>
 public class Cupboard : MonoBehaviour
@@ -31,9 +31,15 @@ public class Cupboard : MonoBehaviour
     [SerializeField]
     private bool playerDetect = false;
 
+    [SerializeField]
+    private UnityEvent onInCupBoard;
+
+    private PlaySound doorSound;
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        doorSound= GetComponent<PlaySound>();
 
         innerCam.Priority = 0;
     }
@@ -46,6 +52,7 @@ public class Cupboard : MonoBehaviour
             return;
         }
 
+        doorSound.Play();
         inTutorialTip.EndTutorial();
         SetEnableTutorial(inTutorialTip, false);
         anim.SetBool("Open", true);
@@ -57,6 +64,11 @@ public class Cupboard : MonoBehaviour
         param["State"] = false;
         EventManager.TriggerEvent(EventName.InPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.LockInput();
+
+        List<Pet> petList = PetManager.Instance.GetPetList;
+        petList.ForEach(x => x.gameObject.SetActive(false));
+
+        onInCupBoard?.Invoke();
     }
 
     public void OutCupboard()
@@ -67,6 +79,7 @@ public class Cupboard : MonoBehaviour
         }
 
         player.transform.position = outPos.position;
+        doorSound.Play();
         player = null;
         playerIn = false;
         innerCam.Priority = 0;
@@ -76,6 +89,9 @@ public class Cupboard : MonoBehaviour
         param["State"] = true;
         EventManager.TriggerEvent(EventName.OutPlayerCupboard, param);
         GameManager.Instance.PlayerController.Move.UnLockInput();
+
+        List<Pet> petList = PetManager.Instance.GetPetList;
+        petList.ForEach(x => x.gameObject.SetActive(true));
     }
 
 

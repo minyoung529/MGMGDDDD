@@ -28,6 +28,7 @@ public class ChapterButton : MonoBehaviour
     private LoadChapterList loadChapterList;
     private PlaySound clickSound;
     private Chapter chapter;
+    ChapterProgressType curType = ChapterProgressType.Lock;
 
     private void Awake()
     {
@@ -36,6 +37,17 @@ public class ChapterButton : MonoBehaviour
 
     public void ChangeState(ChapterProgressType type)
     {
+        curType = type;
+
+        if (curType == ChapterProgressType.Lock)
+        {
+            button.enabled = false;
+        }
+        else
+        {
+            button.enabled = true;
+        }
+
         for (int i = 0; i < (int)ChapterProgressType.Count; i++)
         {
             bool isSelected = i == (int)type;

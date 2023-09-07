@@ -390,6 +390,7 @@ GameObject:
   - component: {fileID: 1836453471626052090}
   - component: {fileID: 1039399583812612994}
   - component: {fileID: 9006842230527610519}
+  - component: {fileID: 2861867568097109305}
   m_Layer: 2
   m_Name: Cupboard
   m_TagString: Untagged
@@ -439,6 +440,21 @@ MonoBehaviour:
   inTutorialTip: {fileID: 1973960558}
   innerCam: {fileID: 4740126389135439950}
   playerDetect: 0
+  onInCupBoard:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: BossSoundController, Assembly-CSharp
+        m_MethodName: SetDefaultBGM
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &1039399583812612994
 Animator:
   serializedVersion: 5
@@ -475,6 +491,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &2861867568097109305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2568942866488179821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bb6c8a0dad5a84ab9f260c946386fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 883eacee8e4d8774f9a7ddc6fbb30247, type: 3}
+  soundType: 1
+  playOnAwake: 0
+  loop: 0
+  isPositioning: 0
+  isChildToTransform: 0
+  volume: 1
+  forceLoadVolume: 0
 --- !u!1 &3561519878177003525
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,19 +1097,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 94155405878397612, guid: d9476c1b56b56044c96c96e6a20c7566, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 973897819899764976, guid: d9476c1b56b56044c96c96e6a20c7566, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3298788134720799262, guid: d9476c1b56b56044c96c96e6a20c7566, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3298788134956558968, guid: d9476c1b56b56044c96c96e6a20c7566, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3340739687691628734, guid: d9476c1b56b56044c96c96e6a20c7566, type: 3}
       propertyPath: m_Layer

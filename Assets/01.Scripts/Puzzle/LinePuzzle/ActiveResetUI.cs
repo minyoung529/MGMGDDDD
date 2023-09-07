@@ -42,14 +42,14 @@ public class ActiveResetUI : MonoBehaviour
 
     public void Inactive()
     {
-        onInactive?.Invoke();
-        gameObject.SetActive(false);
-
         PetManager.Instance.StopListen(InputAction.Down_Pet, ChangePet);
         PetManager.Instance.StopListen(InputAction.Select_First_Pet, ChangePet);
         PetManager.Instance.StopListen(InputAction.Select_Second_Pet, ChangePet);
         PetManager.Instance.StopListen(InputAction.Select_Third_Pet, ChangePet);
         PetManager.Instance.StopListen(InputAction.Up_Pet, ChangePet);
+
+        onInactive?.Invoke();
+        gameObject.SetActive(false);
     }
 
     private void Show()
@@ -64,6 +64,7 @@ public class ActiveResetUI : MonoBehaviour
 
     private void ChangePet(InputAction action = InputAction.Select_First_Pet, float value = 0f)
     {
+        if (!gameObject.activeSelf) return;
         StartCoroutine(DelayChange());
     }
 
@@ -89,5 +90,14 @@ public class ActiveResetUI : MonoBehaviour
         }
 
         onChangePet?.Invoke();
+    }
+
+    private void OnDestroy()
+    {
+        PetManager.Instance.StopListen(InputAction.Down_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Select_First_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Select_Second_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Select_Third_Pet, ChangePet);
+        PetManager.Instance.StopListen(InputAction.Up_Pet, ChangePet);
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class TutorialTrigger_PetObtain : TutorialTrigger
 {
     private Pet pet;
+    bool isObtain = false;
 
     private BoxCollider boxCollider;
 
@@ -43,8 +44,14 @@ public class TutorialTrigger_PetObtain : TutorialTrigger
     private void InactiveTrigger(InputAction action, float value)
     {
         if (pet == null || PetManager.Instance.IsGet(pet)) return;
+        if (isObtain) return;
 
         pet.GetPet(GameManager.Instance.PlayerController.transform);
         Inactive();
+
+        InputManager.StopListeningInput(InputAction.Interaction, keyDownAction);
+        Destroy(gameObject);
+
+        isObtain = true;
     }
 }

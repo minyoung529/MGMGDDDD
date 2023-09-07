@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 /// <summary>
 /// 
 /// Waypoint를 순서대로 순찰
@@ -52,6 +53,9 @@ public class Boss : MonoBehaviour
     [SerializeField]
     private LayerMask targetLayer;
 
+    [SerializeField]
+    private UnityEvent onPlayerExit;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -66,6 +70,9 @@ public class Boss : MonoBehaviour
             states[(int)item.StateName].SetUp(transform);
         }
         stateMachine = new StateMachine<Boss>(this, states);
+
+        CutSceneManager.Instance.AddStartCutscene(AllStop);
+        CutSceneManager.Instance.AddEndCutscene(AllPlay);
     }
 
     private void Start()
@@ -171,6 +178,11 @@ public class Boss : MonoBehaviour
         if (catchingPet.IsContain(obj))
             return;
 
+        Pet pet = obj.GetComponent<Pet>();
+
+        if (pet && !PetManager.Instance.Contain(pet))
+            return;
+
         if (target)
             prevTarget = target.name;
         else
@@ -191,6 +203,11 @@ public class Boss : MonoBehaviour
         if (catchingPet.IsContain(obj))
             return;
 
+        Pet pet = obj.GetComponent<Pet>();
+
+        if (pet && !PetManager.Instance.Contain(pet))
+            return;
+
         if (target == null)
             prevTarget = "Null";
         else
@@ -203,6 +220,11 @@ public class Boss : MonoBehaviour
     public void OnExitOuterRadar(GameObject obj)
     {
         ResetTarget();  // TEMP
+
+        if(obj.transform == GameManager.Instance.PlayerController.gameObject)
+        {
+            onPlayerExit.Invoke();
+        }
     }
 
     private bool CanMove()
@@ -215,12 +237,25 @@ public class Boss : MonoBehaviour
 
     #endregion
 
+    private void AllStop()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void AllPlay()
+    {
+        gameObject.SetActive(true);
+    }
+
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.BossDetectObject, DetectWaypoint);
         EventManager.StopListening(EventName.InPlayerCupboard, ResetTarget);
         EventManager.StopListening(EventName.InPlayerCupboard, SetFindTargetState);
         EventManager.StopListening(EventName.OutPlayerCupboard, SetFindTargetState);
+
+        CutSceneManager.Instance?.RemoveStartCutscene(AllStop);
+        CutSceneManager.Instance?.RemoveEndCutscene(AllPlay);
     }
 
     private void OnCollisionEnter(Collision collision)

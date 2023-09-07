@@ -58,6 +58,7 @@ public class Fire : MonoBehaviour
     {
         if (!gameObject.activeSelf) return;
         if (isPhysics && onlyScriptBurn) return;
+        if (IsBurn) return;
 
         isBurn = true;
 

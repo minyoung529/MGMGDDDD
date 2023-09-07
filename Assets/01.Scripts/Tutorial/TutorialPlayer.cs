@@ -83,10 +83,9 @@ public class TutorialPlayer : MonoBehaviour
             }
             else
             {
+                isChainging = false;
                 StopTutorial();
             }
-
-            isChainging = false;
         });
     }
 
