@@ -27,6 +27,7 @@ public class StickyState : MonoBehaviour
     {
         if (SelectedObject.CurInteractObject == null)
         {
+        Debug.Log("NULL");
             pet.State.ChangeState((int)PetStateName.Idle);
             return;
         }
@@ -49,8 +50,8 @@ public class StickyState : MonoBehaviour
 
     private void OffSticky()
     {
-        if (sticky == null) return;
         Debug.Log("OFF");
+        if (sticky == null) return;
 
         pet.SetInteractNull();
         pet.Rigid.isKinematic = false;
