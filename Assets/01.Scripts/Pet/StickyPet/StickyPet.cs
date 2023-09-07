@@ -21,6 +21,7 @@ public class StickyPet : Pet
   
     private void InteractEvent()
     {
+        Debug.Log("InteractEvent");
         stickyInteract.OnSticky();
     }
 
