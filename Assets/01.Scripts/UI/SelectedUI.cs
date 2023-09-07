@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class SelectedUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class SelectedUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private RectTransform rectTransform;
     [SerializeField]
@@ -35,5 +35,10 @@ public class SelectedUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         rectTransform.DOKill();
         rectTransform.DOAnchorPosX(originalPosX, duration);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnPointerExit(null);
     }
 }
