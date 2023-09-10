@@ -56,6 +56,8 @@ public class Boss : MonoBehaviour
     [SerializeField]
     private UnityEvent onPlayerExit;
 
+    private bool playerInCupboard = false;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -78,14 +80,31 @@ public class Boss : MonoBehaviour
     private void Start()
     {
         EventManager.StartListening(EventName.BossDetectObject, DetectWaypoint);
-
-        EventManager.StartListening(EventName.InPlayerCupboard, SetFindTargetState);
-        EventManager.StartListening(EventName.InPlayerCupboard, ResetTarget);
-        EventManager.StartListening(EventName.OutPlayerCupboard, SetFindTargetState);
+        EventManager.StartListening(EventName.InPlayerCupboard, PlayerInCupboard);
+        EventManager.StartListening(EventName.OutPlayerCupboard, PlayerOutCupboard);
 
         GameManager.Instance.CursorDisabled();
     }
 
+    private void PlayerInCupboard(EventParam eventParam = null)
+    {
+        playerInCupboard = true;
+
+        if (target == GameManager.Instance.PlayerController)
+        {
+            ResetTarget();
+        }
+    }
+
+    private void PlayerOutCupboard(EventParam eventParam = null)
+    {
+        playerInCupboard = false;
+
+        if (target == GameManager.Instance.PlayerController)
+        {
+            ResetTarget();
+        }
+    }
 
     public void GameStart()
     {
@@ -148,6 +167,7 @@ public class Boss : MonoBehaviour
     }
     public void ResetTarget(EventParam eventParam = null)
     {
+        onPlayerExit.Invoke();
         target = null;
     }
     public void CheckTarget()
@@ -173,6 +193,7 @@ public class Boss : MonoBehaviour
     #region Event
     public void OnEnterInnerRadar(GameObject obj)
     {
+        if (playerInCupboard) return;
         if (!CanMove()) return;
 
         if (catchingPet.IsContain(obj))
@@ -199,6 +220,7 @@ public class Boss : MonoBehaviour
     public void OnEnterOuterRadar(GameObject obj)
     {
         if (!CanMove()) return;
+        if (playerInCupboard) return;
 
         if (catchingPet.IsContain(obj))
             return;
@@ -219,9 +241,11 @@ public class Boss : MonoBehaviour
 
     public void OnExitOuterRadar(GameObject obj)
     {
+        if (playerInCupboard) return;
+
         ResetTarget();  // TEMP
 
-        if(obj.transform == GameManager.Instance.PlayerController.gameObject)
+        if (obj.transform == GameManager.Instance.PlayerController.gameObject)
         {
             onPlayerExit.Invoke();
         }
@@ -250,9 +274,8 @@ public class Boss : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.StopListening(EventName.BossDetectObject, DetectWaypoint);
-        EventManager.StopListening(EventName.InPlayerCupboard, ResetTarget);
-        EventManager.StopListening(EventName.InPlayerCupboard, SetFindTargetState);
-        EventManager.StopListening(EventName.OutPlayerCupboard, SetFindTargetState);
+        EventManager.StopListening(EventName.InPlayerCupboard, PlayerInCupboard);
+        EventManager.StopListening(EventName.OutPlayerCupboard, PlayerOutCupboard);
 
         CutSceneManager.Instance?.RemoveStartCutscene(AllStop);
         CutSceneManager.Instance?.RemoveEndCutscene(AllPlay);
@@ -269,7 +292,20 @@ public class Boss : MonoBehaviour
             egg.Delete();
         }
     }
+
+    public void RemoveCutsceneListen()
+    {
+        CutSceneManager.Instance.RemoveStartCutscene(AllStop);
+        CutSceneManager.Instance.RemoveEndCutscene(AllPlay);
+    }
+
+    public void StartCutsceneListen()
+    {
+        CutSceneManager.Instance.RemoveEndCutscene(AllPlay);
+        CutSceneManager.Instance.AddStartCutscene(AllStop);
+    }
 }
+
 public enum BossEventName
 {
     OnEnterInnerRadar,

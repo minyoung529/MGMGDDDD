@@ -30,6 +30,7 @@ public class HoldablePet : HoldableObject
     public override void OnDropFinish()
     {
         isHold = false;
+        pet.State.ChangeState((int)PetStateName.Held);  
         pet.Event.TriggerEvent((int)PetEventName.OnDrop);
     }
 

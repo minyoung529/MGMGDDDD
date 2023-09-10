@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
 using UnityEngine.UIElements;
+using static DigitalNumber;
 /// <summary>
 /// 
 /// ���� : �÷��̾ ������ ���� ���� ����
@@ -35,11 +36,13 @@ public class Cupboard : MonoBehaviour
     private UnityEvent onInCupBoard;
 
     private PlaySound doorSound;
+    private Boss boss;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
-        doorSound= GetComponent<PlaySound>();
+        doorSound = GetComponent<PlaySound>();
+        boss = FindObjectOfType<Boss>();
 
         innerCam.Priority = 0;
     }
@@ -63,10 +66,20 @@ public class Cupboard : MonoBehaviour
         EventParam param = new();
         param["State"] = false;
         EventManager.TriggerEvent(EventName.InPlayerCupboard, param);
+        EventManager.TriggerEvent(EventName.PlayerDrop);
         GameManager.Instance.PlayerController.Move.LockInput();
 
         List<Pet> petList = PetManager.Instance.GetPetList;
-        petList.ForEach(x => x.gameObject.SetActive(false));
+
+        foreach (Pet pet in petList)
+        {
+            if (boss.Target != pet.transform && pet.Target != boss)
+                pet.RendererInactive();
+
+            pet.RemoveCutsceneListening();
+        }
+
+        boss.RemoveCutsceneListen();
 
         onInCupBoard?.Invoke();
     }
@@ -91,7 +104,16 @@ public class Cupboard : MonoBehaviour
         GameManager.Instance.PlayerController.Move.UnLockInput();
 
         List<Pet> petList = PetManager.Instance.GetPetList;
-        petList.ForEach(x => x.gameObject.SetActive(true));
+
+        foreach (Pet pet in petList)
+        {
+            if (boss.Target != pet.transform && pet.Target != boss)
+                pet.RendererActive();
+
+            pet.AddCutsceneListening();
+        }
+
+        boss.StartCutsceneListen();
     }
 
 

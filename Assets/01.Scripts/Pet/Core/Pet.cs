@@ -94,6 +94,8 @@ public abstract class Pet : MonoBehaviour
 
     PlayPetAnimation anim;
 
+    private Renderer[] renderers;
+
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -102,6 +104,7 @@ public abstract class Pet : MonoBehaviour
         anim = GetComponent<PlayPetAnimation>();
         emission = GetComponentInChildren<ChangePetEmission>();
         holdablePet = GetComponent<HoldablePet>();
+        renderers = GetComponents<Renderer>();
         pingPool = new ObjectPool<Ping>(CreatePing, OnGetPing, OnReleasePing, OnDestroyedPing, maxSize: 20);
 
         AxisController = new AxisController(transform);
@@ -154,6 +157,7 @@ public abstract class Pet : MonoBehaviour
 
     public void Pause()
     {
+        Debug.Log("Pause");
         State.ChangeState((int)PetStateName.Pause);
     }
 
@@ -476,5 +480,32 @@ public abstract class Pet : MonoBehaviour
     private void OnDisable()
     {
         State.OnDisable();
+    }
+
+    public void RendererActive()
+    {
+        foreach (Renderer renderer in renderers)
+        {
+            if (!renderer.enabled)
+                renderer.enabled = true;
+        }
+    }
+
+    public void RendererInactive()
+    {
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+    }
+
+    public void RemoveCutsceneListening()
+    {
+        CutSceneManager.Instance?.RemoveStartCutscene(Pause);
+    }
+
+    public void AddCutsceneListening()
+    {
+        CutSceneManager.Instance?.AddStartCutscene(Pause);
     }
 }

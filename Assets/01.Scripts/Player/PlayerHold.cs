@@ -209,7 +209,9 @@ public class PlayerHold : PlayerMono
         controller.Move.ChangeState(PlayerStateName.Drop);
 
         if (!holdableObject.GetIsPet())
+        {
             holdableObject.OnDrop();
+        }
 
         //controller.Move.LockInput();
         OnExitHold();
@@ -274,7 +276,7 @@ public class PlayerHold : PlayerMono
         seq.Append(holdableObject.transform.DOMove(holdableObject.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() =>
         {
-            holdableObject.OnDropFinish();
+            holdableObject.OnDropFinish();  
             Physics.IgnoreCollision(controller.Coll, holdableObject.Coll, false);
             holdableObject?.StopListeningOnDestroy(OnHoldableObjectDestroyed);
             holdableObject = null;
