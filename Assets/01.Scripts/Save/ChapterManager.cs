@@ -115,10 +115,9 @@ public class ChapterManager : MonoSingleton<ChapterManager>
     public void LoadGame()
     {
         if (SaveSystem.CurSaveData == null) return;
-        EventParam eventParam = new();
-
-
         if(PetManager.Instance)  PetManager.Instance.ResetPetManager();
+        
+        EventParam eventParam = new();
         if (SaveSystem.CurSaveData.pets.Count>0)  eventParam["pets"] = SaveSystem.CurSaveData.pets;
         eventParam["position"] = GetCurChapterSO.savePoint;
 

@@ -383,4 +383,5 @@ public class LinePuzzleController : MonoBehaviour
         PetManager.Instance.StartListen(InputAction.Pet_Skill);
         PetManager.Instance.StartListen(InputAction.Pet_Skill_Up);
     }
+
 }

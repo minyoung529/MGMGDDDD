@@ -123,10 +123,10 @@ public class LoadChapterList : MonoBehaviour
 
     private void Play(Chapter chapter)
     {
-        ChapterSO chapterSO = ChapterManager.Instance.GetCurChapterSO;
-        
         ChapterManager.Instance.CurChapter = chapter;
         ChapterManager.Instance.SaveEnumToListPet(chapter);
+
+        ChapterSO chapterSO = ChapterManager.Instance.GetCurChapterSO;
 
         SaveSystem.Save(SaveSystem.CurSaveData);
         SceneController.ChangeScene(chapterSO.scene, true);

@@ -122,7 +122,7 @@ public abstract class Pet : MonoBehaviour
         }
         stateMachine = new StateMachine<Pet>(this, states);
 
-        CutSceneManager.Instance?.AddStartCutscene(Pause);
+        AddCutsceneListening();
         StartCoroutine(MassOneFrame());
     }
 
@@ -157,7 +157,6 @@ public abstract class Pet : MonoBehaviour
 
     public void Pause()
     {
-        Debug.Log("Pause");
         State.ChangeState((int)PetStateName.Pause);
     }
 

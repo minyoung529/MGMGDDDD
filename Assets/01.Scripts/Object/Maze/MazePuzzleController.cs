@@ -18,11 +18,8 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     [SerializeField] CinemachineVirtualCamera oilCam;
 
     [SerializeField] Canvas crosshairCanvas;
-    [SerializeField] Text countText;
 
-    private const int maxUndoCount = 2;
     private bool crossHairMove = false;
-    private int undoCount = 2;
 
     private RectTransform crosshair;
     Stack<MazeButton> buttons = new Stack<MazeButton>();
@@ -31,7 +28,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         crosshair = crosshairCanvas.transform.GetChild(0).GetComponent<RectTransform>();
         RegisterCamera();
-        ResetController();
     }
 
     private void StartListen()
@@ -60,13 +56,13 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         yield return null;
 
-        if (PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet)
+        if ((PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet || PetManager.Instance.GetPetByKind<OilPet>() == null)) yield return null;
+        else
         {
-            CameraSwitcher.SwitchCamera(fireCam);
-        }
-        else if (PetManager.Instance.GetSelectPet.GetPetType == PetType.OilPet)
-        {
-            CameraSwitcher.SwitchCamera(oilCam);
+            if (PetManager.Instance.GetSelectPet.GetPetType == PetType.OilPet)
+                CameraSwitcher.SwitchCamera(oilCam);
+            if (PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet)
+                CameraSwitcher.SwitchCamera(fireCam);
         }
     }
 
@@ -74,12 +70,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         CameraSwitcher.Register(oilCam);
         CameraSwitcher.Register(fireCam);
-    }
-
-    private void ResetController()
-    {
-        undoCount = maxUndoCount;
-        countText.text = string.Format($"{undoCount}");
     }
 
     #region EnterGame
@@ -155,35 +145,6 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     }
 
     #endregion
-
-    #region Undo
-
-    public void UndoButton()
-    {
-        if (buttons.Count < 1 || undoCount < 1) return;
-        UndoCount();
-
-        MazeButton b = buttons.Peek();
-        StartCoroutine(DelayUndo(b));
-        buttons.Pop();
-        b.Undo();
-    }
-
-    private IEnumerator DelayUndo(MazeButton b)
-    {
-        yield return new WaitForSeconds(0.2f);
-        b.ButtonAction();
-    }
-
-    private void UndoCount()
-    {
-        undoCount -= 1;
-        countText.text = string.Format($"{undoCount}");
-    }
-
-    #endregion
-
-
 
     #region Camera
 
