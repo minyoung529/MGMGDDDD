@@ -56,7 +56,7 @@ public class MazePuzzleController : MonoSingleton<MazePuzzleController>
     {
         yield return null;
 
-        if ((PetManager.Instance.GetSelectPet.GetPetType == PetType.FirePet || PetManager.Instance.GetPetByKind<OilPet>() == null)) yield return null;
+        if ((PetManager.Instance.GetPetByKind<FirePet>() == null || PetManager.Instance.GetPetByKind<OilPet>() == null)) yield return null;
         else
         {
             if (PetManager.Instance.GetSelectPet.GetPetType == PetType.OilPet)
