@@ -86,7 +86,6 @@ public class DropperPattern : MonoBehaviour
 
     public void ExitPatternAnimation()
     {
-        Debug.Log("Exit");
         onEndPattern?.Invoke();
         ChangePositions(beginTransforms, duration, () => gameObject.SetActive(false));
     }
