@@ -38,31 +38,31 @@ public class EasterEgg : HoldableObject
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if(IsThrowing && collision.gameObject.CompareTag("Floor"))
-        //{
-        //    OnLanding();
-        //}
+        if (IsThrowing && collision.gameObject.CompareTag("Floor"))
+        {
+            OnLanding();
+        }
     }
 
     public override void OnLanding()
     {
         //isHold = false;
+            Debug.Log("Landing");
         IsThrowing = false;
 
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;
         rigid.velocity = Vector3.zero;
 
-        //eggParticle.Play();
-        //eggParticle.transform.SetParent(null);
-        //eggParticle.transform.localScale = Vector3.one;
+        eggParticle.Play();
+        eggParticle.transform.SetParent(null);
+        eggParticle.transform.localScale = Vector3.one;
 
-        //Destroy(eggParticle, eggParticle.main.duration);
-        //Destroy(gameObject);
+        Destroy(eggParticle, eggParticle.main.duration);
+        Destroy(gameObject);
     }
 
     public override void OnThrow()
     {
-        //IsThrowing = true;
         IsThrowing = true;
         collider.enabled = true;
         rigid.constraints = RigidbodyConstraints.None;

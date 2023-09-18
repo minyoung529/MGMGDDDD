@@ -283,10 +283,14 @@ public class Boss : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.name + "와(과) 충돌");
         EasterEgg egg = collision.gameObject.GetComponent<EasterEgg>();
+        Debug.Log(egg);
+        Debug.Log(egg.IsThrowing);
 
         if (egg && egg.IsThrowing)
         {
+            Debug.Log("Egg");
             catchingPet.UnEquipAllPets();
             ChangeState(BossStateName.Stun);
             egg.Delete();
