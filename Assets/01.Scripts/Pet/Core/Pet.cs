@@ -172,6 +172,9 @@ public abstract class Pet : MonoBehaviour
         isCoolTime = false;
         skilling = false;
         agent.enabled = true;
+        rigid.useGravity = true;
+        rigid.isKinematic = false;
+        coll.enabled = true;
         transform.localScale = originScale;
 
         agent.stoppingDistance = distanceToPlayer;

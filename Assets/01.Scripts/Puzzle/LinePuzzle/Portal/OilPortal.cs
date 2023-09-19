@@ -27,11 +27,12 @@ public class OilPortal : ConnectionPortal
     private void Start()
     {
         navMeshObstacle = GetComponent<NavMeshObstacle>();
-        targetTransform = PetManager.Instance.GetMyPetByKind<OilPet>().transform;
+     //   targetTransform = PetManager.Instance.GetMyPetByKind<OilPet>().transform;
     }
 
     protected override void OnContactPet(Pet pet)
     {
+        Debug.Log("Contact");
         //pet.AgentEnabled(false);
         //pet.transform.position = LinePuzzleController.CurrentPiece.transform.position;
         //pet.AgentEnabled(true);

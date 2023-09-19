@@ -113,6 +113,7 @@ public class LinePuzzleController : MonoBehaviour
     private void ResetBoard(InputAction action = InputAction.Interaction, float value = 0f)
     {
         CurrentPuzzle.ResetPuzzle();
+        PetManager.Instance.GetPetByKind<OilPet>().ResetPet();
         isOilMove = false;
 
         SelectedPieces.Clear();
