@@ -122,7 +122,7 @@ public abstract class Pet : MonoBehaviour
         }
         stateMachine = new StateMachine<Pet>(this, states);
 
-        CutSceneManager.Instance?.AddStartCutscene(Pause);
+        AddCutsceneListening();
         StartCoroutine(MassOneFrame());
     }
 

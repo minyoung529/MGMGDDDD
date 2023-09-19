@@ -27,7 +27,6 @@ public class StickyState : MonoBehaviour
     {
         if (SelectedObject.CurInteractObject == null)
         {
-        Debug.Log("NULL");
             pet.State.ChangeState((int)PetStateName.Idle);
             return;
         }
