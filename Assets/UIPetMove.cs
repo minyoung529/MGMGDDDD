@@ -8,6 +8,7 @@ public class UIPetMove : MonoBehaviour
     public Image slide;
     public Image birdTrait;
     public Image myImage;
+    public List<Image>  birdTraitImages;
     RectTransform myRect;
     RectTransform birdRect;
     float xMin = -850f;
@@ -47,20 +48,32 @@ public class UIPetMove : MonoBehaviour
 
 
             myImage.rectTransform.SetAsLastSibling();
+            birdTraitImages.Add(birdTraitImage);
+
+
+
+            if (xPos >= 850)
+            {
+                for(int i = 0; i < birdTraitImages.Count;i++)
+                {
+                    birdTraitImages[i].gameObject.SetActive(false);
+                }
+                //birdTraitImages.Clear();
+                traitSpawnPosLimitIndex = 0;
+
+            }
+
             StartCoroutine(ImagePaid(birdTraitImage));
-
         }
 
-        if(xPos >= 850)
-        {
-            traitSpawnPosLimitIndex = 0;
-        }
+      
         //포지션이 -10 될때마다 트레잇 생성
 
 
     }
 
-    IEnumerator ImagePaid(Image birdTraitImage)
+    //씬 이동할떄 바로 그냥 삭제해버려
+    IEnumerator ImagePaid(Image birdTraitImage) //씬넘어가니까 저게 있는데? 그냥 리스트에 넣고 끝나면 다 삭제해야겠다.
     {
         float fadeCount = 1;
         while (fadeCount > 0.0f)
@@ -69,8 +82,8 @@ public class UIPetMove : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
             birdTraitImage.color = new Color(birdTraitImage.color.r, birdTraitImage.color.g, birdTraitImage.color.b, fadeCount);
         }
-   
-      
+     
+
     }
 }
                                                                              
