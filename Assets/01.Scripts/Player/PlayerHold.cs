@@ -42,6 +42,11 @@ public class PlayerHold : PlayerMono
         defaultPower = throwPow;
     }
 
+    public void ResetHold()
+    {
+        Drop();
+    }
+
     private void LateUpdate()
     {
         PlayRotation();
@@ -205,12 +210,15 @@ public class PlayerHold : PlayerMono
 
     private void Drop()
     {
-        controller.Rigid.velocity = Vector3.zero;
-        controller.Move.ChangeState(PlayerStateName.Drop);
-
-        if (!holdableObject.GetIsPet())
+        if (controller != null)
         {
-            holdableObject.OnDrop();
+            controller.Rigid.velocity = Vector3.zero;
+            controller.Move.ChangeState(PlayerStateName.Drop);
+        }
+
+        if(holdableObject != null)
+        {
+            if (!holdableObject.GetIsPet())  holdableObject.OnDrop();
         }
 
         //controller.Move.LockInput();

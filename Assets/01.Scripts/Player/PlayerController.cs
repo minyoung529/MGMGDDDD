@@ -54,4 +54,12 @@ public class PlayerController : MonoBehaviour {
             playerMonoDictionary.Add(item.GetType().ToString(), item);
         }
     }
+
+    public void ResetPlayerSetting()
+    {
+     //   Move.ChangeState(PlayerStateName.DefaultMove);
+        Hold.ResetHold();
+        cameraController.SetDefault();
+    }
+
 }

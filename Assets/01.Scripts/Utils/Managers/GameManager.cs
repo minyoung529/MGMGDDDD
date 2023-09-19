@@ -86,6 +86,10 @@ public class GameManager : MonoSingleton<GameManager>
     private void FindPlayer()
     {
         playerController = FindObjectOfType<PlayerController>();
+        if (playerController)
+        {
+            playerController.ResetPlayerSetting();
+        }
     }
 
     [ContextMenu("FindFindableObject")]

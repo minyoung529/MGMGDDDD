@@ -41,7 +41,6 @@ public class HeldState : PetState
 
     private void OnDrop()
     {
-        Debug.Log("OnDrop");
         pet.HoldabpePet.OnDrop();
         pet.State.ChangeState((int)PetStateName.Idle);
     }
