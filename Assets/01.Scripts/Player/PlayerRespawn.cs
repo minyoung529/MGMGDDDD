@@ -65,16 +65,23 @@ public class PlayerRespawn : PlayerMono
         transform.position = pos;
         PetManager.Instance.AllPetActions(x => x.transform.position = pos);
         controller.Move.ChangeState(PlayerStateName.DefaultMove);
+
+        curIndex = ChapterManager.Instance.GetCurChapterSO.spawnIndex;
     }
     private void Save(EventParam param = null)
     {
         if (points.Length < 1) return;
         if (!param.Contain("SavePoint")) return;
-        curIndex = pointDic[(SavePoint)param["SavePoint"]];
-        if(maxIndex < curIndex)
+
+        if(pointDic.ContainsKey((SavePoint)param["SavePoint"]))
         {
-            maxIndex = curIndex;
+            curIndex = pointDic[(SavePoint)param["SavePoint"]];
+            if (maxIndex < curIndex)
+            {
+                maxIndex = curIndex;
+            }
         }
+        
     }
     private void ResetCheckPoint(EventParam param = null)
     {
@@ -124,9 +131,13 @@ public class PlayerRespawn : PlayerMono
     private void OnDie(EventParam param = null)
     {
         if (param == null || !param.Contain("position"))
+        {
             Respawn(CurRespawnPoint);
+        }
         else
+        {
             Respawn((Vector3)param["position"]);
+        }
     }
 
     private void Respawn(Vector3 point)
@@ -154,7 +165,7 @@ public class PlayerRespawn : PlayerMono
         {
             //gameObject.SetActive(true);
             controller.Move.ChangeState(PlayerStateName.DefaultMove);
-
+            controller.ResetPlayerSetting();
             transform.position = point;
             controller.Rigid.velocity= Vector3.zero;
         });
