@@ -279,15 +279,16 @@ public class PlayerHold : PlayerMono
         if (holdableObject == null) return;
 
         isHolding = false;
+        HoldableObject holdObject = holdableObject;
+        holdableObject = null;
 
         seq = DOTween.Sequence();
-        seq.Append(holdableObject.transform.DOMove(holdableObject.transform.position + transform.forward.normalized * 0.5f, 0.2f));
+        seq.Append(holdObject.transform.DOMove(holdObject.transform.position + transform.forward.normalized * 0.5f, 0.2f));
         seq.AppendCallback(() =>
         {
-            holdableObject.OnDropFinish();  
-            Physics.IgnoreCollision(controller.Coll, holdableObject.Coll, false);
-            holdableObject?.StopListeningOnDestroy(OnHoldableObjectDestroyed);
-            holdableObject = null;
+            holdObject.OnDropFinish();  
+            Physics.IgnoreCollision(controller.Coll, holdObject.Coll, false);
+            holdObject?.StopListeningOnDestroy(OnHoldableObjectDestroyed);
         });
     }
 
