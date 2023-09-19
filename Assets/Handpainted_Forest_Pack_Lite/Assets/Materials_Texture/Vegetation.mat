@@ -22,13 +22,14 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Vegetation
   m_Shader: {fileID: 4800000, guid: b7839dad95683814aa64166edc107ae2, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _RECEIVE_SHADOWS_OFF
   m_InvalidKeywords:
   - _FLIPBOOKBLENDING_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses: []
@@ -115,10 +116,10 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _ShadowStrength: 1
     - _Shininess: 0.5
-    - _Smoothness: 0.5
+    - _Smoothness: 0.046
     - _SmoothnessTextureChannel: 0
     - _SoftParticlesEnabled: 0
     - _SoftParticlesFarFadeDistance: 1
@@ -132,7 +133,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.026763566, g: 0.6039216, b: 0, a: 1}
-    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0.026763568, g: 0.6039216, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
