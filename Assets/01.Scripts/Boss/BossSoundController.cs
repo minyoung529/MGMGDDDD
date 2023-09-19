@@ -25,7 +25,6 @@ public class BossSoundController : MonoBehaviour
     {
         if (isDefault) return;
 
-        Debug.Log("DEFAULT");
         isDefault = true;
         SoundManager.Instance.PlayMusic(defaultBGM);
     }

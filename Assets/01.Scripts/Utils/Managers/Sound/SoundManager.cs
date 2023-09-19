@@ -177,7 +177,6 @@ public class SoundManager : MonoSingleton<SoundManager>
     /// </summary>
     public void PlayMusic(AudioClip clip, bool loop = false)
     {
-        Debug.Log("Play Music " + clip.name);
         musicSource.clip = clip;
         musicSource.Play();
         musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("BGM")[0];

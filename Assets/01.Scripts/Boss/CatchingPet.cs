@@ -96,7 +96,6 @@ public class CatchingPet : MonoBehaviour
         pet.SetNavEnabled(true);
         pet.SetTarget(transform);
 
-        Debug.Log("On Equip ENd");
         onEquipEnd?.Invoke();
         index++;
     }
