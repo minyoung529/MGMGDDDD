@@ -65,7 +65,6 @@ public class ChapterButton : MonoBehaviour
         TextMeshProUGUI chapterNameText = button.transform.Find("ChapterNameText").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI chapterNumberText = button.transform.Find("ChapterNumberText").GetComponent<TextMeshProUGUI>();
         chapterSO = ChapterManager.Instance.GetChapterSO(chapter);
-        SceneController.ListeningEnter(OnAction);
 
         chapterNameText.SetText(chapterSO.chapterKoreanName);
         chapterNumberText.SetText(chapterSO.chapterNumber);
@@ -74,11 +73,12 @@ public class ChapterButton : MonoBehaviour
         return this;
     }
 
-    public void OnAction()
+    public void OnEnterScene()
     {
         if (chapterSO.bgm)
         {
-            SceneController.StopListeningEnter(OnAction);
+            SceneController.StopListeningEnter(chapterSO.scene, OnEnterScene);
+            SceneController.ListeningEnter(chapterSO.scene, OnEnterScene);
             SoundManager.Instance.PlayMusic(chapterSO.bgm);
         }
     }
@@ -86,12 +86,6 @@ public class ChapterButton : MonoBehaviour
     private void OnClick()
     {
         clickSound.Play();
-
         loadChapterList.LoadChapterData(this, chapter);
-    }
-
-    private void OnDestroy()
-    {
-        SceneController.StopListeningEnter(OnAction);
     }
 }

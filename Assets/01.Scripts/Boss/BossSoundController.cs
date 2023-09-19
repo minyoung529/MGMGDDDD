@@ -13,10 +13,11 @@ public class BossSoundController : MonoBehaviour
     [SerializeField]
     private AudioClip warningSFX;
 
-    private bool isDefault = false;
+    private bool isDefault = true;
 
     private void Start()
     {
+        isDefault = false;
         SetDefaultBGM();
     }
 
@@ -24,6 +25,7 @@ public class BossSoundController : MonoBehaviour
     {
         if (isDefault) return;
 
+        Debug.Log("DEFAULT");
         isDefault = true;
         SoundManager.Instance.PlayMusic(defaultBGM);
     }
@@ -35,7 +37,10 @@ public class BossSoundController : MonoBehaviour
         isDefault = false;
 
         SoundManager.Instance.PlayMusic(chaseBGM);
+    }
 
+    public void PlayWarningSFX()
+    {
         AudioSourceObject soundObj = SoundManager.Instance.PlayEffect(warningSFX, transform.position, 1f);
         soundObj.AudioSource.spatialBlend = 0f;
     }

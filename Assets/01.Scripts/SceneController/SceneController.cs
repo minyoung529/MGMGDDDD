@@ -83,6 +83,8 @@ public class SceneController : MonoBehaviour
         loadingScene.InactiveScene();
         Check(curScene, OnEnterScene);
         OnEnterScene[curScene]?.Invoke();
+
+        Debug.Log(curScene.ToString() + " Entered");
         IsChanging = false;
     }
 
