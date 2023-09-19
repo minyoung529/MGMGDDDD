@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour {
     {
      //   Move.ChangeState(PlayerStateName.DefaultMove);
         Hold.ResetHold();
-        cameraController.SetDefault();
+       // cameraController.SetDefault();
     }
 
 }
