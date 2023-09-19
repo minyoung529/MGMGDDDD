@@ -6,6 +6,9 @@ using UnityEngine.Events;
 
 public class SelectLever : MonoBehaviour
 {
+    [SerializeField] private GameObject controlObject;
+    [SerializeField] private Vector3[] controlObjectRotate;
+
     public UnityEvent firstLever;
     public UnityEvent secondLever;
     public UnityEvent thirdLever;
@@ -87,11 +90,13 @@ public class SelectLever : MonoBehaviour
     private void OnRotateLever()
     {
         handle.DOKill();
+        
         float val = 0;
-
         if (selectIndex == 0) val = -45f;
         else if (selectIndex == 2) val = 45f;
+        
         handle.DOLocalRotate(new Vector3(0f, 0f, -val), 1f);
+        controlObject.transform.DOLocalRotate(controlObjectRotate[selectIndex], 1f);
     }
 
     private void OnTriggerEnter(Collider other)
