@@ -25,10 +25,15 @@ public class PasswordButton : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+      
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
         if (isSelected) return;
         if (CanInput != null && !CanInput.Invoke()) return;
 
-        if (((1 << collision.gameObject.layer) & layerMask) != 0) // pet or player
+        if (((1 << other.gameObject.layer) & layerMask) != 0) // pet or player
         {
             isSelected = true;
             SetEmissionColor(new Color(0.03636537f, 0.4150943f, 0f));
