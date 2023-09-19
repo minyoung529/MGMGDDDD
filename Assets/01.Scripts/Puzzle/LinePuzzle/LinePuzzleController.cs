@@ -115,6 +115,7 @@ public class LinePuzzleController : MonoBehaviour
         CurrentPuzzle.ResetPuzzle();
         PetManager.Instance.GetPetByKind<OilPet>().ResetPet();
         isOilMove = false;
+        oilPet.Event.StopListening((int)PetEventName.OnArrive, ForceMoveBoard);
 
         SelectedPieces.Clear();
         BurningPieces.Clear();

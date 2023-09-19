@@ -32,7 +32,6 @@ public class OilPortal : ConnectionPortal
 
     protected override void OnContactPet(Pet pet)
     {
-        Debug.Log("Contact");
         //pet.AgentEnabled(false);
         //pet.transform.position = LinePuzzleController.CurrentPiece.transform.position;
         //pet.AgentEnabled(true);
