@@ -56,6 +56,9 @@ public class Boss : MonoBehaviour
     [SerializeField]
     private UnityEvent onPlayerExit;
 
+    [SerializeField]
+    private UnityEvent onPlayerEnter;
+
     private bool playerInCupboard = false;
 
     private void Awake()
@@ -167,7 +170,7 @@ public class Boss : MonoBehaviour
     }
     public void ResetTarget(EventParam eventParam = null)
     {
-        onPlayerExit.Invoke();
+        //onPlayerExit.Invoke();
         target = null;
     }
     public void CheckTarget()
@@ -224,6 +227,9 @@ public class Boss : MonoBehaviour
 
         if (catchingPet.IsContain(obj))
             return;
+
+        if (obj.transform == GameManager.Instance.PlayerController)
+            onPlayerEnter?.Invoke();
 
         Pet pet = obj.GetComponent<Pet>();
 

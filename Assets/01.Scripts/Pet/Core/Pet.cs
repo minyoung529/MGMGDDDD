@@ -157,7 +157,6 @@ public abstract class Pet : MonoBehaviour
 
     public void Pause()
     {
-        Debug.Log("Pause");
         State.ChangeState((int)PetStateName.Pause);
     }
 
