@@ -100,10 +100,12 @@ public class PlayerHold : PlayerMono
                     // Drop
                     if (holdableObject)
                     {
-                        if (!holdableObject.GetIsPet())
+                        if (holdableObject.GetIsPet())
+                        {
                             holdableObject.OnDrop();
+                            Drop();
+                        }
 
-                        Drop();
                         //controller.Move.LockInput();
                     }
                     else if (obj) // 잡을 수 있는 펫이 있으면 잡기
@@ -228,7 +230,7 @@ public class PlayerHold : PlayerMono
     private void DropEvent(EventParam eventParam = null)
     {
         if (holdableObject == null) return;
-        Drop();
+        if(holdableObject.GetIsPet())   Drop();
     }
 
     private void Throw()

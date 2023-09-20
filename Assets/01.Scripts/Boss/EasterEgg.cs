@@ -15,6 +15,12 @@ public class EasterEgg : HoldableObject
 
     [SerializeField] private PlaySound hitSound;
 
+
+    private void Update()
+    {
+        if(transform.position.y <= -6.0f) OnLanding();
+    }
+
     public override void OnDrop()
     {
         collider.enabled = true;
@@ -47,7 +53,6 @@ public class EasterEgg : HoldableObject
     public override void OnLanding()
     {
         //isHold = false;
-            Debug.Log("Landing");
         IsThrowing = false;
 
         rigid.constraints = RigidbodyConstraints.FreezeAll & ~RigidbodyConstraints.FreezePositionY;

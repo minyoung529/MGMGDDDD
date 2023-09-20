@@ -152,6 +152,9 @@ public class PetManager : MonoSingleton<PetManager>
 
     private void Update()
     {
+        Debug_CreateAndGetPet();
+
+
         for (int i = 0; i < pets.Count; i++)
         {
             if (pets[i] == null)
@@ -172,9 +175,6 @@ public class PetManager : MonoSingleton<PetManager>
             pets[i]?.OnUpdate();
         }
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-        Debug_CreateAndGetPet();
-#endif
     }
 
     public bool IsGet(Pet p)
@@ -483,8 +483,11 @@ public class PetManager : MonoSingleton<PetManager>
         if (pets[index] == null) return;
         UI.Inactive(pets[index].GetPetType);
 
+        Pet pet = pets[index];
         petTypes.RemoveAt(index);
         pets.RemoveAt(index);
+
+        Destroy(pet.gameObject);
 
         selectIndex = -1;
         if (pets.Count > 0)
@@ -512,11 +515,25 @@ public class PetManager : MonoSingleton<PetManager>
     #region Debug
     private void Debug_CreateAndGetPet()
     {
-        for (int i = 0; i < petPrefabs.Length; i++)
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha4 + i)))
+            if(Input.GetKey(KeyCode.Keypad0))
             {
-                Pet pet = Instantiate(petPrefabs[i], GameManager.Instance.PlayerController.transform.position, Quaternion.identity).GetComponent<Pet>();
+                ResetPetManager();
+            }
+            else if(Input.GetKey(KeyCode.Keypad1)) {
+                if (GetIndexPetType(PetType.FirePet) != -1) return;
+                Pet pet = Instantiate(petPrefabs[0], GameManager.Instance.PlayerController.transform.position, Quaternion.identity).GetComponent<Pet>();
+                pet.GetPet(GameManager.Instance.PlayerController.transform);
+            }
+            else if(Input.GetKey(KeyCode.Keypad2)) {
+                if (GetIndexPetType(PetType.OilPet) != -1) return;
+                Pet pet = Instantiate(petPrefabs[1], GameManager.Instance.PlayerController.transform.position, Quaternion.identity).GetComponent<Pet>();
+                pet.GetPet(GameManager.Instance.PlayerController.transform);
+            }
+            else if(Input.GetKey(KeyCode.Keypad3)) {
+                if (GetIndexPetType(PetType.StickyPet) != -1) return;
+                Pet pet = Instantiate(petPrefabs[2], GameManager.Instance.PlayerController.transform.position, Quaternion.identity).GetComponent<Pet>();
                 pet.GetPet(GameManager.Instance.PlayerController.transform);
             }
         }
