@@ -23,11 +23,6 @@ public class PasswordButton : MonoBehaviour
 
     [SerializeField] private new MeshRenderer renderer;
 
-    private void OnCollisionEnter(Collision collision)
-    {
-      
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (isSelected) return;
