@@ -154,7 +154,6 @@ public class PetManager : MonoSingleton<PetManager>
     {
         Debug_CreateAndGetPet();
 
-
         for (int i = 0; i < pets.Count; i++)
         {
             if (pets[i] == null)

@@ -313,11 +313,13 @@ public class PlayerMove : PlayerMono
     public void LockInput()
     {
         isInputLock++;
+        if (isInputLock > 1) isInputLock = 1;
     }
 
     public void UnLockInput()
     {
         isInputLock--;
+        if (isInputLock < -1) isInputLock = -1;
     }
 
     public void LockInput(float time)
