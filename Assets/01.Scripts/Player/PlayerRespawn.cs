@@ -58,6 +58,7 @@ public class PlayerRespawn : PlayerMono
         CheckSpawnPoint();
         CheckFallDown();
     }
+
     private void InitPlayer(EventParam param = null)
     {
         if (param == null || !param.Contain("position")) return;

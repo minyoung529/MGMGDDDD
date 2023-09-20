@@ -86,7 +86,7 @@ public class GameManager : MonoSingleton<GameManager>
     private void FindPlayer()
     {
         playerController = FindObjectOfType<PlayerController>();
-        if (playerController)
+        if(playerController != null )
         {
             playerController.ResetPlayerSetting();
         }
